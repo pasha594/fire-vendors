@@ -62,6 +62,7 @@ import hashlib
 import http.cookiejar
 import io
 import json
+import math
 import re
 import ssl
 import sys
@@ -103,6 +104,7 @@ NOT_FIRE_NAME = re.compile(r"POLICE|HYDRANT|FIRE ?LOSS|FIREWORK|INSURANCE|ESCROW
 # with at least two other lines paid to other payees (Jackson Township (Stark), 2026: every line of a day shows
 # the same $0.5-4.7 million). Its lines are dropped.
 BROKEN_SHARE = decimal.Decimal("0.5")
+DOUBLED_MIN = 10  # lines in a month before the month can be judged as uploaded twice
 # Special districts that are fire agencies (whole checkbook), and the ones whose name suggests fire or EMS but
 # which are not fire agencies, by participant name.
 FIRE_DISTRICT = re.compile(r"\bFIRE\b", re.I)
@@ -421,6 +423,13 @@ def process_entity(viz, kind, p, entry, dom, date):
     years = dom.get("Select Transaction Date Year", [])
     entry.update({"funds": funds, "departments": depts, "years": years})
     recent = [y for y in years if y.isdigit() and int(y) >= FIRST_FY]
+    if not years and "decision" not in entry:
+        # no filter lists at all: confirm with the chart's own totals that the participant has no rows (and was not
+        # just answered without filter lists)
+        raw, data = viz.summary()
+        entry["summary_rows"] = len(table_rows(data))
+        if entry["summary_rows"]:
+            raise RuntimeError(f"{name}: no filter lists but {entry['summary_rows']} summary rows")
     if "decision" not in entry and not recent:
         entry["decision"] = f"no transactions from {FIRST_FY} on"
     slices = [] if "decision" in entry else fire_slices(kind, name, funds, depts)
@@ -462,8 +471,11 @@ def fetch(date=None, only=None, cache=None):
         name, key = p["Name"], f"{kind}:{p['Id']}"
         if only and name not in only:
             continue
-        if key in screen or (folder / f"entity_{p['Id']}.json.gz").exists():
+        if (folder / f"entity_{p['Id']}.json.gz").exists():
             continue
+        if key in screen and not (not screen[key].get("years") and "summary_rows" not in screen[key]
+                                  and screen[key].get("decision") == f"no transactions from {FIRST_FY} on"):
+            continue  # screened (participants without filter lists screened before the summary check are redone)
         entry = {"kind": kind, "id": p["Id"], "name": name, "county": p["County"]}
         if kind == "special_districts" and not FIRE_DISTRICT.search(name):
             entry["decision"] = "not a fire district"
@@ -588,6 +600,34 @@ def broken_months(rows):
     return {m for m in n if rep[m] > BROKEN_SHARE * n[m]}
 
 
+def undouble(entity, rows, stats):
+    """A month uploaded k times: with DOUBLED_MIN lines or more, every group of lines identical in date, payee,
+    fund, department, object and amount has a size divisible by k >= 2 (the gcd of the group sizes). Keep the
+    first size/k lines of each group (lowest row Ids). Elsewhere identical lines are separate payments and kept."""
+    groups = collections.defaultdict(list)
+    for r in rows:
+        groups[(r["TransDate"][:7], r["TransDate"][:10], r["Payee"], r["FundCode"], r["DeptCode"], r["ObjCode"],
+                r["Amt"])].append(r)
+    k = collections.defaultdict(int)
+    n = collections.Counter()
+    for key, g in groups.items():
+        k[key[0]] = math.gcd(k[key[0]], len(g))
+        n[key[0]] += len(g)
+    doubled = {m: k[m] for m in n if n[m] >= DOUBLED_MIN and k[m] >= 2}
+    drop = set()
+    for key, g in groups.items():
+        if key[0] in doubled:
+            keep = len(g) // doubled[key[0]]
+            drop |= {r["Id"] for r in sorted(g, key=lambda r: int(r["Id"]))[keep:]}
+    for m in sorted(doubled):
+        lines = [r for r in rows if r["Id"] in drop and r["TransDate"][:7] == m]
+        stats["doubled_lines"] += len(lines)
+        stats["doubled_dollars"] += sum(money(r["Amt"]) for r in lines)
+        print(f"  {entity['name']}: {m}: uploaded {doubled[m]} times; {len(lines)} repeated lines dropped "
+              f"(${sum(money(r['Amt']) for r in lines):,.2f})")
+    return [r for r in rows if r["Id"] not in drop]
+
+
 def entity_rows(eid, entity, by_id, stats):
     """The entity's published lines: fire lines from FIRST_FY, re-uploads once, broken-upload months dropped."""
     seen, rows = set(), []
@@ -603,6 +643,7 @@ def entity_rows(eid, entity, by_id, stats):
             continue
         seen.add(key)
         rows.append(r)
+    rows = undouble(entity, rows, stats)
     broken = broken_months(rows)
     for m in sorted(broken):
         lines = [r for r in rows if r["TransDate"][:7] == m]
@@ -645,6 +686,7 @@ def normalize():
     neg = [r for r in out if r["amount"].startswith("-")]
     print(f"{ST}: {SOURCE}: {len(out)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}, {len(links)} agencies; "
           f"{stats['reuploads']} re-uploaded lines dropped (${stats['reupload_dollars']:,.2f}); "
+          f"{stats['doubled_lines']} lines of months uploaded twice dropped (${stats['doubled_dollars']:,.2f}); "
           f"{stats['broken_lines']} lines of broken-upload months dropped (${stats['broken_dollars']:,.2f}); "
           f"{stats['outside']} fetched lines outside the rule or years; {len(neg)} negative lines "
           f"(${sum(decimal.Decimal(r['amount']) for r in neg):,.2f}) kept")

@@ -28,6 +28,7 @@ import decimal
 import gzip
 import io
 import json
+import math
 import pathlib
 import re
 import sys
@@ -61,6 +62,8 @@ FIRE_WORD = re.compile(r"\bfire(s|fighters?|fighting|men|men'?s)?\b", re.I)
 NOT_FIRE_WORDS = re.compile(r"police|hydrant|fire ?loss|firework|insurance|escrow|damaged structure|garnish", re.I)
 EMS_ONLY_DISTRICTS = {"Joint Emergency Medical Service"}
 EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+")
+BROKEN = set()  # (participant, month) left out as broken uploads, for the summary line
+DOUBLED = set()  # (participant, month) uploaded more than once
 
 
 def rows_of(path):
@@ -229,16 +232,47 @@ def expected_checkbook_local(agency_county):
                     got[r["TransDate"][:4]] += D(r["Amt"]).quantize(CENTS)
             assert all(abs(want[y] - got[y]) <= CENTS for y in set(want) | set(got)), \
                 f"{eid}: rows differ from the summary totals for {filters}"
-        seen = set()
+        seen, kept = set(), []
         for rid in sorted(by_id, key=int):
             r = by_id[rid]
-            fy = r["TransDate"][:4]
-            if int(fy) < FIRST_FY or not fire_line(kind, r):
+            if int(r["TransDate"][:4]) < FIRST_FY or not fire_line(kind, r):
                 continue
             key = (r["TransactionId"], r["TransDate"], r["Payee"], r["FundCode"], r["DeptCode"], r["ObjCode"], r["Amt"])
             if key in seen:
                 continue
             seen.add(key)
+            kept.append(r)
+        # months uploaded k times (10+ lines, every group of identical date, payee, fund, department, object and
+        # amount has a size divisible by k >= 2): keep size/k lines of each group, lowest row Ids first
+        same = collections.defaultdict(list)
+        for r in kept:
+            same[(r["TransDate"][:10], r["Payee"], r["FundCode"], r["DeptCode"], r["ObjCode"], r["Amt"])].append(r)
+        month_sizes = collections.defaultdict(list)
+        for key, g in same.items():
+            month_sizes[key[0][:7]].append(len(g))
+        times = {m: math.gcd(*sz) for m, sz in month_sizes.items() if sum(sz) >= 10 and math.gcd(*sz) >= 2}
+        DOUBLED.update((p["Name"], m) for m in times)
+        extra = set()
+        for key, g in same.items():
+            if key[0][:7] in times:
+                extra |= {r["Id"] for r in sorted(g, key=lambda r: int(r["Id"]))[len(g) // times[key[0][:7]]:]}
+        kept = [r for r in kept if r["Id"] not in extra]
+        # broken uploads: a month in which more than half the lines share date and amount with 2+ other lines
+        # paid to 2+ different payees carries batch totals, not line amounts; the whole month is left out
+        groups = collections.defaultdict(list)
+        for r in kept:
+            groups[(r["TransDate"][:10], r["Amt"])].append(r["Payee"])
+        month_n, month_rep = collections.Counter(), collections.Counter()
+        for r in kept:
+            g = groups[(r["TransDate"][:10], r["Amt"])]
+            month_n[r["TransDate"][:7]] += 1
+            month_rep[r["TransDate"][:7]] += len(g) >= 3 and len(set(g)) >= 2
+        broken = {m for m, n in month_n.items() if 2 * month_rep[m] > n}
+        BROKEN.update((p["Name"], m) for m in broken)
+        for r in kept:
+            if r["TransDate"][:7] in broken:
+                continue
+            fy = r["TransDate"][:4]
             amount = D(r["Amt"]).quantize(CENTS)
             k = (link["agency_id"], fy)
             out[k][0] += 1
@@ -250,7 +284,7 @@ def expected_checkbook_local(agency_county):
                                      f"{r['DeptCode']} / {r['ObjDescription']} - {r['ObjCode']}",
                           "category_published": r["ObjDescription"]}
             r["_payee"] = r["Payee"]
-            lines[f"{eid}-{rid}"] = r
+            lines[f"{eid}-{r['Id']}"] = r
     return out, lines
 
 
