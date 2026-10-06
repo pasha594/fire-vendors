@@ -1,0 +1,96 @@
+name_key,vendor,category,confidence,spend,agencies
+911 FLEET AND FIRE EQUIPMENT HOLDINGS,911 Fleet & Fire Equipment,fire-equipment,medium,5316886.35,1
+DUKE ENERGY OHIO,Duke Energy,utilities,high,3637270.94,1
+UNIVERSITY OF CINCINNATI PHYSICIANS,UC Physicians,professional,medium,3484867.51,1
+CHANGE HEALTHCARE,Change Healthcare,ems-billing,medium,3409581.90,1
+VOGELPOHL FIRE EQUIPMENT,Vogelpohl Fire Equipment,fire-equipment,high,2989524.92,1
+GALLS,Galls,uniforms,high,2735848.97,1
+HENRY SCHEIN,Henry Schein,ems-supplies,high,2120612.21,1
+US BANK NA,U.S. Bank,finance,high,1782204.66,1
+STRYKER,Stryker,ems-equipment,high,1501459.13,1
+BOUND TREE MEDICAL,Bound Tree Medical,ems-supplies,high,969943.59,1
+WW GRAINGER,Grainger,general,high,913014.60,1
+HOWMEDICA OSTEONICS,Stryker,ems-equipment,medium,618285.91,1
+HOWELL RESCUE SYS,Howell Rescue Systems,fire-equipment,high,566595.20,1
+DIGITECH COMPUTER,Digitech,ems-billing,high,493939.33,1
+PROFESSIONAL AWARDS SERVICE IN,Professional Awards Service,uniforms,low,429952.62,1
+CHANGE HEALTHCARE HOLDCO,Change Healthcare,ems-billing,medium,426914.40,1
+TARGETSOLUTIONS LEARNING,Vector Solutions,training-software,high,403644.08,1
+UC HEALTH,UC Health,ems-supplies,medium,403463.98,1
+ARROW INTL,Teleflex,ems-supplies,medium,396994.68,1
+MISCELLANEOUS,No vendor named,placeholder,high,393659.73,1
+SOMERS BOAT WORKS,Somers Boat Works,apparatus,low,350889.00,1
+INTEGRATED SUP AND SERV,Integrated Supply & Services,facilities,medium,349484.18,1
+JS SOAP AND SUPPLY,J.S. Soap & Supply,facilities,medium,342655.33,1
+FIFTH THIRD BANK,Fifth Third Bank,finance,high,294149.40,1
+HASTINGS AIR ENERGY CONTROL,Hastings Air Energy Control,facilities,medium,284305.33,1
+SELECT PEST CONTROL,Select Pest Control,facilities,high,215080.00,1
+FIRE LINE EQUIPMENT,Fire Line Equipment,fire-equipment,high,210141.29,1
+HAMILTON COUNTY,Hamilton County,government,high,191690.76,1
+MOTOROLA,Motorola Solutions,radios,high,180511.75,1
+JB DOPPES SONS LUMBER,J.B. Doppes Sons Lumber,facilities,high,143528.74,1
+MOBILE CONCEPTS BY SCOTTY,Mobile Concepts by Scotty,apparatus,medium,142452.00,1
+JONES AND BARTLETT LEARNING,Jones & Bartlett Learning,training,high,141457.06,1
+ESO SOLUTIONS,ESO Solutions,rms,high,131820.76,1
+EXERCISE AND LEISURE EQUIP,Exercise & Leisure Equipment,medical-exams,medium,131546.00,1
+CDW GOVERNMENT,CDW Government,it,high,125570.98,1
+MURPHY SUPPLY,Murphy Supply,facilities,medium,123508.60,1
+UPSTATE WHOLESALE SUPPLY,Upstate Wholesale Supply,it,medium,120761.25,1
+DELL MARKETING LP,Dell Technologies,it,high,120749.28,1
+AIRGAS,Airgas,ems-supplies,high,116883.30,1
+GENERAL FACTORY SUPPLIES,General Factory Supplies,facilities,medium,115183.86,1
+OHIO POLICE AND FIRE PENSION,Ohio Police & Fire Pension Fund,payroll,high,114351.44,1
+GREENLEAF ENVIRONMENTAL SERVICES,Greenleaf Environmental Services,utilities,medium,113068.96,1
+SUB AQUAUTUS,Sub-Aquatics,fire-equipment,medium,110462.77,1
+RUMPKE SANITARY LANDFILL,Rumpke,utilities,high,103106.05,1
+STATE INDUSTRIAL PRODUCTS,State Industrial Products,facilities,medium,96596.92,1
+PROSOURCE,ProSource,it,medium,92740.66,1
+TEAM CYCLING AND FITNESS,Team Cycling & Fitness,medical-exams,medium,91325.58,1
+SYMTECH FIRE,Symtech Fire,training,medium,86850.00,1
+MOBILCOMM,MobilComm,radios,high,86260.01,1
+SPECIFIC WASTE INDUSTRIES,Specific Waste Industries,utilities,medium,79701.50,1
+OVERHEAD DOOR OF COVINGTON,Overhead Door,facilities,high,72527.00,1
+BOWLING GREEN STATE UNIVERSITY,Bowling Green State University,training,medium,67250.00,1
+DB3 SOLUTIONS,DB3 Solutions,facilities,medium,61098.00,1
+ARGUS GROUP HOLDINGS,Argus Group Holdings,fire-equipment,low,55662.04,1
+CINCINNATI COPIERS,Cincinnati Copiers,it,medium,48056.21,1
+WS ELECTRONICS,W.S. Electronics,radios,medium,47801.07,1
+RIVER CITY FURNITURE RCF GROUP,River City Furniture,facilities,medium,47530.51,1
+CSA SERVICE SOLUTIONS EMSAR,EMSAR,ems-equipment,high,47441.05,1
+ALL SAFE INDUSTRIES,All Safe Industries,fire-equipment,medium,45019.03,1
+RICORE INVESTMENT MANAGEMENT SPECIAL ASSETS,RICORE Investment Management,facilities,low,41542.53,1
+HM,H-M Company,general,low,40941.00,1
+MENTALLY TOUGHER,Mentally Tougher,training,medium,40000.00,1
+JOHNSON DOPPLER LUMBER,Johnson Doppler Lumber,facilities,high,38740.38,1
+T MOBILE USA,T-Mobile,telecom,high,37830.16,1
+INTERIOR SERVICES ENRICHING SPACES,Enriching Spaces,facilities,medium,37113.00,1
+22ND CENTURY TECHNOLOGIES,22nd Century Technologies,professional,medium,36638.55,1
+TELEFLEX,Teleflex,ems-supplies,high,36310.00,1
+MRO EXPRESS,MRO Express,facilities,medium,35675.27,1
+SUB AQUATICS,Sub-Aquatics,fire-equipment,medium,35479.79,1
+SMITHS DETECTION EDGEWOOD,Smiths Detection,fire-equipment,medium,35175.00,1
+PUBLIC CONSULTING GROUP,Public Consulting Group,professional,high,35000.00,1
+CORE AND MAIN LP,Core & Main,fire-equipment,low,34842.00,1
+GBEX,GBEX,facilities,low,34581.78,1
+ORKIN,Orkin,facilities,high,34406.00,1
+PHILIPS ELECTRON N AMER,Philips,ems-equipment,medium,32336.50,1
+PENN CREDIT,Penn Credit,ems-billing,medium,31846.15,1
+MIKE ALBERT LEASING,Mike Albert Fleet Solutions,fleet,medium,30282.96,1
+LAWMENS AND SHOOTERS SUPPLY,Lawmen's & Shooters' Supply,general,medium,29707.94,1
+OHD LLLP,OHD,scba,medium,27924.80,1
+BUD HERBERT MOTORS,Bud Herbert Motors,fleet,medium,24601.03,1
+NELBUD SERVICES,Nelbud Services,facilities,medium,23135.51,1
+TERRACON CONSULTANTS,Terracon,construction,high,22478.77,1
+MEGEN CONSTRUCTION,Megen Construction,construction,high,21115.00,1
+PK PRESSURE KLEEN,PK Pressure Kleen,facilities,medium,19920.00,1
+TREASURER STATE OF OHIO,Treasurer of State of Ohio,government,high,19792.00,1
+CINTAS,Cintas,uniforms,medium,17249.55,1
+CITY OF CINCINNATI,City of Cincinnati,government,high,16764.95,1
+BIRKLEY CONSULTING,Birkley Consulting,professional,medium,5000.00,1
+KEISER,Keiser,medical-exams,medium,4992.13,1
+BEARS MULCH,Bear's Mulch,facilities,medium,1545.00,1
+SYCAMORE TOWNSHIP,Sycamore Township,government,high,250.00,1
+TOASTMASTERS INTERNATIONAL,Toastmasters International,training,high,180.00,1
+FC CINCINNATI,FC Cincinnati,general,low,150.00,1
+PORTA KLEEN,Porta Kleen,facilities,medium,140.00,1
+CINCINNATI MAGAZINE,Cincinnati Magazine,general,medium,36.00,1

@@ -13,12 +13,13 @@ Fiscal year is the Texas state fiscal year, September to August (the year it end
 fetch      raw/<date>/tx/tx_dir/archive_fy2021_2025.json.gz  rows of w64c-ndf7, fiscal_year >= 2021
            raw/<date>/tx/tx_dir/current_fy2026.json.gz       rows of a743-wj72
            both filtered server-side (SoQL) to customer names that look fire-related (FIRE_WHERE); the full
-           datasets hold about 3.7 million FY2021-2025 rows and 2.2 million FY2026 rows
+           datasets hold about 3.7 million FY2021-2025 rows and 2.2 million FY2026 rows. Person-name columns
+           are not requested (see *_COLUMNS).
            raw/<date>/tx/tx_dir/<dataset>_meta.json.gz       Socrata metadata (columns, update time)
            raw/<date>/tx/tx_dir/sample.json.gz               100 unfiltered FY2026 rows
 normalize  data/states/tx/line_items.csv.gz    one row per sales line of a linked customer
-           data/states/tx/transactions.csv.gz  the same lines rolled up as payee rows (payee = reseller, else
-                                               the DIR contract vendor)
+           data/states/tx/transactions.csv.gz  the same lines as payee rows (payee = reseller, else the DIR
+                                               contract vendor)
            data/states/tx/agencies.json        via common.assemble_agencies
 
 Attribution: a customer is a fire agency only through a row in config/states/tx/agency_sources.csv (source
@@ -27,9 +28,13 @@ departments, volunteer fire departments, ESDs and city fire departments that DIR
 ("City of Houston Fire"). City, county, 911-district, EMS-only, pension and regulator customers are never
 linked, so a city's own IT purchase is never fire spend.
 
-Duplicates: an exact duplicate line (every published field equal except the row id) is kept once. The archive
-has no such lines for linked customers; FY2026 telecom lines that repeat are distinct monthly bills and differ
-in invoice number or date, so they are kept. Credits are published as negative purchase amounts and kept.
+Duplicates and reversals:
+  - Re-reports: a line whose every published field matches a line from an earlier reporting month (only the
+    reporting month differs) is the same sale reported twice; only the earliest month's copies are kept.
+  - Identical lines inside one monthly report are kept. They carry distinct DIR record numbers and are items
+    DIR publishes without a line number: three toner cartridges at one price on one invoice, or six $20 phone
+    lines on one wireless bill. No vendor-month report is duplicated as a whole.
+  - Credits are negative purchase amounts and are kept, so a returned item nets out against its sale.
 """
 import collections
 import json
@@ -61,6 +66,8 @@ CURRENT_COLUMNS = [
     "order_quantity", "unit_price", "invoice_number", "invoice_date", "po_number", "order_date", "product_type",
     "product_subtype", "staffing_technology", "staffing_title", "staffing_level", "staffing_portal_solicitation_number",
     "bulk_purchase_agreement"]
+MONTH_FIELDS = {"report_received_month", "reporting_month", "purchase_month", "fiscal_year"}
+ID_FIELDS = {":id", "sales_fact_number"}
 
 # Customer names that might be fire agencies. Deliberately broad: normalize keeps only names linked in
 # agency_sources.csv. ('%EMERG%' alone would pull in the Division of Emergency Management and 911 districts.)
@@ -94,6 +101,29 @@ def fetch():
     common.save_raw(ST, SOURCE, "sample.json", sample)
 
 
+# --- Payee names --------------------------------------------------------------------------------------------
+
+_BUSINESS = None
+
+
+def payee(name, person_flag=False):
+    """common.withhold_person, except that a name config/states/tx/vendor_map_additions.csv lists as a business
+    (rows reviewed by hand, never a person) is kept. withhold_person already trusts config/vendor_map.csv for its
+    looks_like_person test; its is_person and looks_like_person tests also catch company names such as
+    'WW GRAINGER' or 'Brycer, LP'. Payees a source flags (person_flag) and redaction patterns stay withheld."""
+    global _BUSINESS
+    if _BUSINESS is None:
+        _BUSINESS = {r["name_key"] for r in common.read_config(ST, "vendor_map_additions.csv")
+                     if r["category"] != "individuals"}
+    name = " ".join((name or "").split())
+    out = common.withhold_person(name, person_flag)
+    if out == common.WITHHELD and not person_flag and common.norm(name) in _BUSINESS:
+        return name
+    return out
+
+
+# --- Normalize ----------------------------------------------------------------------------------------------
+
 def money(x):
     return f"{float(x or 0):.2f}"
 
@@ -111,38 +141,35 @@ def day(x):
 
 
 def lines(raw):
-    """Common shape for rows of both datasets."""
+    """Rows of both datasets in one shape, in raw-file order."""
     for r in json.loads(common.read_gz(raw / "archive_fy2021_2025.json.gz")):
         yield {
-            "dataset": ARCHIVE, "id": r[":id"], "record": r.get("sales_fact_number") or r[":id"],
+            "dataset": ARCHIVE, "record": r.get("sales_fact_number") or r[":id"], "month": r.get("report_received_month", ""),
             "fiscal_year": int(float(r["fiscal_year"])), "customer": " ".join(r.get("customer_name", "").split()),
-            "vendor": r.get("vendor_name", ""), "reseller": r.get("reseller_name", ""),
-            "brand": r.get("brand_name", ""),
+            "vendor": r.get("vendor_name", ""), "reseller": r.get("reseller_name", ""), "brand": r.get("brand_name", ""),
             "product_type": " / ".join(x for x in (r.get("contract_type", ""), r.get("contract_subtype", "")) if x),
             "description": r.get("rfo_description", ""), "contract": r.get("contract_number", ""),
-            "category": r.get("contract_type", ""),
-            "quantity": r.get("order_quantity"), "unit_price": r.get("unit_price"), "amount": r.get("purchase_amount"),
-            "date": day(r.get("order_date") or r.get("shipped_date")), "po": r.get("po_number", ""),
-            "invoice": r.get("invoice_number", ""), "row": r,
+            "category": r.get("contract_type", ""), "quantity": r.get("order_quantity"),
+            "unit_price": r.get("unit_price"), "amount": r.get("purchase_amount"),
+            "date": day(r.get("order_date") or r.get("shipped_date")), "po": r.get("po_number", ""), "row": r,
         }
     for r in json.loads(common.read_gz(raw / "current_fy2026.json.gz")):
         yield {
-            "dataset": CURRENT, "id": r[":id"], "record": r[":id"],
+            "dataset": CURRENT, "record": r[":id"], "month": r.get("reporting_month", ""),
             "fiscal_year": int(float(r["fiscal_year"])), "customer": " ".join(r.get("customer_name", "").split()),
-            "vendor": r.get("vendor_name", ""), "reseller": r.get("reseller_name", ""),
-            "brand": r.get("brand_name", ""),
+            "vendor": r.get("vendor_name", ""), "reseller": r.get("reseller_name", ""), "brand": r.get("brand_name", ""),
             "product_type": " / ".join(x for x in (r.get("product_type", ""), r.get("product_subtype", "")) if x),
             "description": r.get("rfo_description", ""), "contract": r.get("contract_number", ""),
-            "category": r.get("contract_category", ""),
-            "quantity": r.get("order_quantity"), "unit_price": r.get("unit_price"), "amount": r.get("purchase_amount"),
-            "date": day(r.get("order_date") or r.get("invoice_date")), "po": r.get("po_number", ""),
-            "invoice": r.get("invoice_number", ""), "row": r,
+            "category": r.get("contract_category", ""), "quantity": r.get("order_quantity"),
+            "unit_price": r.get("unit_price"), "amount": r.get("purchase_amount"),
+            "date": day(r.get("invoice_date") or r.get("order_date")), "po": r.get("po_number", ""), "row": r,
         }
 
 
-def dedup_key(line):
+def sale_key(line):
+    """Every published field except row ids and reporting/fiscal month: equal keys in two months = re-report."""
     return (line["dataset"],) + tuple(sorted((k, str(v)) for k, v in line["row"].items()
-                                             if k not in (":id", "sales_fact_number")))
+                                             if k not in ID_FIELDS | MONTH_FIELDS))
 
 
 def normalize():
@@ -151,40 +178,40 @@ def normalize():
     links = {r["source_entity_name"]: r["agency_id"] for r in common.read_config(ST, "agency_sources.csv")
              if r["source"] == SOURCE}
     assert links, "no tx_dir rows in config/states/tx/agency_sources.csv"
-    seen, items, txns = set(), [], []
-    stats = collections.Counter()
-    for ln in lines(raw):
-        aid = links.get(ln["customer"])
-        if not aid or ln["fiscal_year"] < FIRST_FY:
+    kept = [ln for ln in lines(raw) if ln["customer"] in links and ln["fiscal_year"] >= FIRST_FY]
+    first_month = {}
+    for ln in kept:
+        k = sale_key(ln)
+        first_month[k] = min(first_month.get(k, ln["month"]), ln["month"])
+    items, txns, stats = [], [], collections.Counter()
+    for ln in kept:
+        if ln["month"] != first_month[sale_key(ln)]:
+            stats["re-reported lines dropped"] += 1
+            stats["re-reported dollars dropped"] += float(ln["amount"] or 0)
             continue
-        k = dedup_key(ln)
-        if k in seen:
-            stats["duplicate lines dropped"] += 1
-            continue
-        seen.add(k)
-        seller = (ln["reseller"] or ln["vendor"]).strip()
+        aid = links[ln["customer"]]
+        seller = payee(ln["reseller"] or ln["vendor"])
         rid = f"{ln['dataset']}:{ln['record']}"
         desc = " / ".join(x for x in (ln["description"], f"DIR vendor {ln['vendor']}" if ln["reseller"] else "") if x)
         items.append({
-            "agency_id": aid, "fiscal_year": ln["fiscal_year"], "date": ln["date"],
-            "vendor": common.withhold_person(seller), "brand": ln["brand"], "product_type": ln["product_type"],
-            "description": desc, "quantity": num(ln["quantity"]), "unit_price": num(ln["unit_price"]),
-            "amount": money(ln["amount"]), "source_record_id": rid,
+            "agency_id": aid, "fiscal_year": ln["fiscal_year"], "date": ln["date"], "vendor": seller,
+            "brand": ln["brand"], "product_type": ln["product_type"], "description": desc,
+            "quantity": num(ln["quantity"]), "unit_price": num(ln["unit_price"]), "amount": money(ln["amount"]),
+            "source_record_id": rid,
         })
         txns.append({
-            "agency_id": aid, "fiscal_year": ln["fiscal_year"], "posting_date": ln["date"],
-            "payee_name": common.withhold_person(seller),
+            "agency_id": aid, "fiscal_year": ln["fiscal_year"], "posting_date": ln["date"], "payee_name": seller,
             "description": " / ".join(x for x in (ln["brand"], ln["product_type"], desc) if x),
             "account": " / ".join(x for x in (ln["contract"], f"PO {ln['po']}" if ln["po"] else "") if x),
             "category_published": ln["category"], "amount": money(ln["amount"]), "source_record_id": rid,
         })
-        stats["lines"] += 1
     common.upsert_rows(ST, "line_items.csv.gz", SOURCE, items)
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, txns)
     common.assemble_agencies(ST)
     total = sum(float(i["amount"]) for i in items)
-    print(f"{ST} {SOURCE}: {stats['lines']} lines, ${total:,.2f}, {len({i['agency_id'] for i in items})} agencies;"
-          f" {stats['duplicate lines dropped']} duplicate lines dropped")
+    print(f"{ST} {SOURCE}: {len(items)} lines, ${total:,.2f}, {len({i['agency_id'] for i in items})} agencies;"
+          f" {stats['re-reported lines dropped']} re-reported lines dropped"
+          f" (${stats['re-reported dollars dropped']:,.2f})")
 
 
 if __name__ == "__main__":

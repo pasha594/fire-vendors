@@ -1,1 +1,2 @@
 source,name,tier,url,years,fiscal_year,fetched,note
+oh_cincinnati,City of Cincinnati Vendor Payments,1,https://data.cincinnati-oh.gov/d/qrj9-83t8,2021-2027,"City of Cincinnati FY, Jul-Jun",2026-10-06,"Cincinnati Fire Department only (department codes 224, 271, 272); purchases other city departments make for Fire (fleet, IT) are not included; FY2027 partial (payments through 2026-10-02)"

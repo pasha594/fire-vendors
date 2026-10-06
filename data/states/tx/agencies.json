@@ -1,11 +1,62 @@
 {
  "state": "TX",
- "sources": [],
+ "sources": [
+  {
+   "source": "tx_austin",
+   "name": "City of Austin eCheckbook (Austin Fire Department)",
+   "tier": "1",
+   "url": "https://data.austintexas.gov/d/8c6z-qnmj",
+   "years": "2021-2027",
+   "fiscal_year": "City FY, Oct-Sep",
+   "fetched": "2026-10-06",
+   "note": "Fire department (code 83) payment lines; FY2027 holds only its first days"
+  },
+  {
+   "source": "tx_cpa",
+   "name": "Texas Comptroller state expenditures by county (Texas A&M Forest Service)",
+   "tier": "3",
+   "url": "https://data.texas.gov/d/2zpi-yjjs",
+   "years": "2021-2024",
+   "fiscal_year": "Texas state FY, Sep-Aug",
+   "fetched": "2026-10-06",
+   "note": "Annual totals by major spending category for the state's wildland fire agency (whole agency, forestry and fire; State Treasury funds only); FY2025 not yet published"
+  },
+  {
+   "source": "tx_dallas",
+   "name": "City of Dallas vendor payments (Dallas Fire-Rescue)",
+   "tier": "1",
+   "url": "https://www.dallasopendata.com/d/x5ih-idh7",
+   "years": "2026-2027",
+   "fiscal_year": "City FY, Oct-Sep",
+   "fetched": "2026-10-06",
+   "note": "Dallas Fire-Rescue (DFD) payment lines; the open data set now keeps only FY2026 and the first days of FY2027; the City withholds some payments for vendor anonymity"
+  },
+  {
+   "source": "tx_dir",
+   "name": "Texas DIR cooperative contract sales",
+   "tier": "2",
+   "url": "https://data.texas.gov/d/a743-wj72",
+   "years": "2021-2026",
+   "fiscal_year": "Texas state FY, Sep-Aug",
+   "fetched": "2026-10-06",
+   "note": "IT and telecom bought on DIR contracts only; FY2021-2025 cover cooperative contracts, FY2026 adds telecom (TEX-AN) contracts; FY2026 reported through August 2026, late vendor reports may still add lines"
+  },
+  {
+   "source": "tx_houston",
+   "name": "City of Houston checkbook (Houston Fire Department)",
+   "tier": "1",
+   "url": "https://data.houstontx.gov/dataset/checkbook",
+   "years": "2021-2027",
+   "fiscal_year": "City FY, Jul-Jun",
+   "fetched": "2026-10-06",
+   "note": "Houston Fire Department (department 1200) payment lines; FY2027 holds July to September 2026"
+  }
+ ],
  "coverage_counts": {
-  "1": 0,
-  "2": 0,
+  "1": 3,
+  "2": 322,
   "3": 0,
-  "4": 1530
+  "4": 1289
  },
  "agencies": [
   {
@@ -250,11 +301,12 @@
    "county": "Anderson",
    "city": "Palestine",
    "usfa_fdid": "AA401",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -508,11 +560,12 @@
    "county": "Angelina",
    "city": "Huntington",
    "usfa_fdid": "AC409",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -577,12 +630,13 @@
    "county": "Angelina",
    "city": "Lufkin",
    "usfa_fdid": "AC608",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -647,12 +701,13 @@
    "county": "Aransas",
    "city": "Rockport",
    "usfa_fdid": "AD404",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -1228,11 +1283,12 @@
    "county": "Bandera",
    "city": "Tarpley",
    "usfa_fdid": "AP306",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -1461,11 +1517,12 @@
    "county": "Bastrop",
    "city": "Red Rock",
    "usfa_fdid": "AR499",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -1737,11 +1794,12 @@
    "county": "Bell",
    "city": "Salado",
    "usfa_fdid": "AV311",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -1806,12 +1864,13 @@
    "county": "Bell",
    "city": "Temple",
    "usfa_fdid": "AV315",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -1853,12 +1912,13 @@
    "county": "Bell",
    "city": "Bartlett",
    "usfa_fdid": "AV401",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -2040,11 +2100,12 @@
    "county": "Bexar",
    "city": "San Antonio",
    "usfa_fdid": "AW302",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -2272,11 +2333,12 @@
    "county": "Bexar",
    "city": "San Antonio",
    "usfa_fdid": "AW416",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -2365,11 +2427,12 @@
    "county": "Bexar",
    "city": "Shavano Park",
    "usfa_fdid": "AW426",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -2412,12 +2475,13 @@
    "county": "Bexar",
    "city": "Saint Hedwig",
    "usfa_fdid": "AW429",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -2621,11 +2685,12 @@
    "county": "Bexar",
    "city": "San Antonio",
    "usfa_fdid": "AW534",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -2760,11 +2825,12 @@
    "county": "Bexar",
    "city": "San Antonio",
    "usfa_fdid": "AW824",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -2783,11 +2849,12 @@
    "county": "Blanco",
    "city": "Round Mountain",
    "usfa_fdid": "AX303",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -3248,11 +3315,12 @@
    "county": "Bowie",
    "city": "Redwater",
    "usfa_fdid": "BA408",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -3456,11 +3524,12 @@
    "county": "Brazoria",
    "city": "Freeport",
    "usfa_fdid": "BB317",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -3619,12 +3688,13 @@
    "county": "Brazoria",
    "city": "Manvel",
    "usfa_fdid": "BB421",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -3666,12 +3736,13 @@
    "county": "Brazoria",
    "city": "Surfside Beach",
    "usfa_fdid": "BB428",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -3853,11 +3924,12 @@
    "county": "Brazoria",
    "city": "Angleton",
    "usfa_fdid": "BB602",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -3876,11 +3948,12 @@
    "county": "Brazoria",
    "city": "Freeport",
    "usfa_fdid": "BB612",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -3970,11 +4043,12 @@
    "county": "Brazos",
    "city": "Bryan",
    "usfa_fdid": "BC203",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -3993,12 +4067,13 @@
    "county": "Brazos",
    "city": "Navasota",
    "usfa_fdid": "BC206",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -4040,11 +4115,12 @@
    "county": "Brazos",
    "city": "College Station",
    "usfa_fdid": "BC605",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -4178,11 +4254,12 @@
    "county": "Brown",
    "city": "Blanket",
    "usfa_fdid": "BK101",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -4411,11 +4488,12 @@
    "county": "Burleson",
    "city": "Snook",
    "usfa_fdid": "BN304",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -4644,12 +4722,13 @@
    "county": "Burnet",
    "city": "Bertram",
    "usfa_fdid": "BP301",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -4714,11 +4793,12 @@
    "county": "Burnet",
    "city": "Burnet",
    "usfa_fdid": "BP403",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -4783,11 +4863,12 @@
    "county": "Burnet",
    "city": "Marble Falls",
    "usfa_fdid": "BP408",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -4898,11 +4979,12 @@
    "county": "Caldwell",
    "city": "Martindale",
    "usfa_fdid": "BR205",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -5038,12 +5120,13 @@
    "county": "Caldwell",
    "city": "Luling",
    "usfa_fdid": "BR504",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -5318,11 +5401,12 @@
    "county": "Cameron",
    "city": "Laguna Vista",
    "usfa_fdid": "BV305",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -5572,11 +5656,12 @@
    "county": "Carson",
    "city": "Skellytown",
    "usfa_fdid": "BX303",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -6335,12 +6420,13 @@
    "county": "Cherokee",
    "city": "Jacksonville",
    "usfa_fdid": "CB602",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -6686,11 +6772,12 @@
    "county": "Coke",
    "city": "Robert Lee",
    "usfa_fdid": "CH402",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -6709,11 +6796,12 @@
    "county": "Coleman",
    "city": "Santa Anna",
    "usfa_fdid": "CK405",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -6755,12 +6843,13 @@
    "county": "Collin",
    "city": "Nevada",
    "usfa_fdid": "CN119",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -6802,12 +6891,13 @@
    "county": "Collin",
    "city": "Anna",
    "usfa_fdid": "CN302",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -6849,11 +6939,12 @@
    "county": "Collin",
    "city": "Fairview",
    "usfa_fdid": "CN305",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -6919,11 +7010,12 @@
    "county": "Collin",
    "city": "McKinney",
    "usfa_fdid": "CN317",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -6965,11 +7057,12 @@
    "county": "Collin",
    "city": "Celina",
    "usfa_fdid": "CN404",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7128,11 +7221,12 @@
    "county": "Collin",
    "city": "McKinney",
    "usfa_fdid": "CN610",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7381,12 +7475,13 @@
    "county": "Comal",
    "city": "San Antonio",
    "usfa_fdid": "CS305",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7451,11 +7546,12 @@
    "county": "Comal",
    "city": "Spring Branch",
    "usfa_fdid": "CS603",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7497,12 +7593,13 @@
    "county": "Comal",
    "city": "Canyon Lake",
    "usfa_fdid": "CS616",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7590,12 +7687,13 @@
    "county": "Comanche",
    "city": "Comanche",
    "usfa_fdid": "CT401",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7848,11 +7946,12 @@
    "county": "Cooke",
    "city": "Lindsay",
    "usfa_fdid": "CW305",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7940,11 +8039,12 @@
    "county": "Coryell",
    "city": "Gatesville",
    "usfa_fdid": "CX201",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7963,11 +8063,12 @@
    "county": "Coryell",
    "city": "Jonesboro",
    "usfa_fdid": "CX204",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -8056,12 +8157,13 @@
    "county": "Coryell",
    "city": "Gatesville",
    "usfa_fdid": "CX409",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -8198,12 +8300,13 @@
    "county": "Crockett",
    "city": "Ozona",
    "usfa_fdid": "DB401",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -8477,11 +8580,12 @@
    "county": "Dallas",
    "city": "Wilmer",
    "usfa_fdid": "DH427",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -8639,11 +8743,12 @@
    "county": "Dallas",
    "city": "Carrollton",
    "usfa_fdid": "DH603",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -8685,11 +8790,12 @@
    "county": "Dallas",
    "city": "Farmers Branch",
    "usfa_fdid": "DH611",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -8824,11 +8930,12 @@
    "county": "Dallas",
    "city": "Garland",
    "usfa_fdid": "DH712",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -8870,11 +8977,12 @@
    "county": "Dallas",
    "city": "Irving",
    "usfa_fdid": "DH717",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -8941,11 +9049,12 @@
    "county": "Dallas",
    "city": "Dallas",
    "usfa_fdid": "DH807",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "tx_dallas",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "10",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9080,12 +9189,13 @@
    "county": "Denton",
    "city": "Ponder",
    "usfa_fdid": "DR215",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9104,11 +9214,12 @@
    "county": "Denton",
    "city": "Argyle",
    "usfa_fdid": "DR301",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Other",
@@ -9173,11 +9284,12 @@
    "county": "Denton",
    "city": "Justin",
    "usfa_fdid": "DR307",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9196,11 +9308,12 @@
    "county": "Denton",
    "city": "Krum",
    "usfa_fdid": "DR308",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9289,11 +9402,12 @@
    "county": "Denton",
    "city": "Flower Mound",
    "usfa_fdid": "DR405",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9312,11 +9426,12 @@
    "county": "Denton",
    "city": "Corinth",
    "usfa_fdid": "DR409",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9381,12 +9496,13 @@
    "county": "Denton",
    "city": "The Colony",
    "usfa_fdid": "DR503",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9428,11 +9544,12 @@
    "county": "Denton",
    "city": "Sanger",
    "usfa_fdid": "DR517",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9567,11 +9684,12 @@
    "county": "De Witt",
    "city": "Cuero",
    "usfa_fdid": "DS501",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9752,11 +9870,12 @@
    "county": "Donley",
    "city": "Howardwick",
    "usfa_fdid": "DW303",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9798,11 +9917,12 @@
    "county": "Duval",
    "city": "Freer",
    "usfa_fdid": "DX402",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9914,11 +10034,12 @@
    "county": "Eastland",
    "city": "Rising Star",
    "usfa_fdid": "DY308",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -10031,12 +10152,13 @@
    "county": "Ector",
    "city": "Odessa",
    "usfa_fdid": "DZ601",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -10262,11 +10384,12 @@
    "county": "El Paso",
    "city": "Horizon City",
    "usfa_fdid": "GB405",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -10285,11 +10408,12 @@
    "county": "El Paso",
    "city": "San Elizario",
    "usfa_fdid": "GB409",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -10308,11 +10432,12 @@
    "county": "El Paso",
    "city": "El Paso",
    "usfa_fdid": "GB507",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -10566,11 +10691,12 @@
    "county": "Ellis",
    "city": "Ovilla",
    "usfa_fdid": "GC413",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -10660,11 +10786,12 @@
    "county": "Ellis",
    "city": "Ennis",
    "usfa_fdid": "GC605",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -10752,11 +10879,12 @@
    "county": "Erath",
    "city": "Bluff Dale",
    "usfa_fdid": "GD301",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -10775,11 +10903,12 @@
    "county": "Erath",
    "city": "Dublin",
    "usfa_fdid": "GD402",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -10915,12 +11044,13 @@
    "county": "Erath",
    "city": "Stephenville",
    "usfa_fdid": "GD601",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -11170,12 +11300,13 @@
    "county": "Fannin",
    "city": "Honey Grove",
    "usfa_fdid": "GH402",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -11218,11 +11349,12 @@
    "county": "Fannin",
    "city": "Bonham",
    "usfa_fdid": "GH502",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -11542,11 +11674,12 @@
    "county": "Fort Bend",
    "city": "Beasley",
    "usfa_fdid": "GS301",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Other",
@@ -11588,11 +11721,12 @@
    "county": "Fort Bend",
    "city": "Fulshear",
    "usfa_fdid": "GS304",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -11611,11 +11745,12 @@
    "county": "Fort Bend",
    "city": "Orchard",
    "usfa_fdid": "GS309",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -11657,12 +11792,13 @@
    "county": "Fort Bend",
    "city": "Fresno",
    "usfa_fdid": "GS403",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -11704,12 +11840,13 @@
    "county": "Fort Bend",
    "city": "Needville",
    "usfa_fdid": "GS408",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -11774,11 +11911,12 @@
    "county": "Fort Bend",
    "city": "Sugar Land",
    "usfa_fdid": "GS414",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -11866,11 +12004,12 @@
    "county": "Fort Bend",
    "city": "Richmond",
    "usfa_fdid": "GS516",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -11912,11 +12051,12 @@
    "county": "Fort Bend",
    "city": "Rosenberg",
    "usfa_fdid": "GS611",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -12192,11 +12332,12 @@
    "county": "Gaines",
    "city": "Seagraves",
    "usfa_fdid": "GX401",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -12238,11 +12379,12 @@
    "county": "Galveston",
    "city": "Port Bolivar",
    "usfa_fdid": "HA313",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -12307,12 +12449,13 @@
    "county": "Galveston",
    "city": "Kemah",
    "usfa_fdid": "HA410",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -12402,12 +12545,13 @@
    "county": "Galveston",
    "city": "Dickinson",
    "usfa_fdid": "HA505",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -12426,12 +12570,13 @@
    "county": "Galveston",
    "city": "Friendswood",
    "usfa_fdid": "HA506",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -12450,12 +12595,13 @@
    "county": "Galveston",
    "city": "Hitchcock",
    "usfa_fdid": "HA509",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -12474,11 +12620,12 @@
    "county": "Galveston",
    "city": "Santa Fe",
    "usfa_fdid": "HA601",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -12888,12 +13035,13 @@
    "county": "Gonzales",
    "city": "Waelder",
    "usfa_fdid": "HH404",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -13498,12 +13646,13 @@
    "county": "Gregg",
    "city": "Longview",
    "usfa_fdid": "HP501",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -13756,11 +13905,12 @@
    "county": "Guadalupe",
    "city": "Seguin",
    "usfa_fdid": "HS204",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -13872,11 +14022,12 @@
    "county": "Guadalupe",
    "city": "McQueeney",
    "usfa_fdid": "HS403",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -13988,12 +14139,13 @@
    "county": "Guadalupe",
    "city": "Seguin",
    "usfa_fdid": "HS606",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14455,11 +14607,12 @@
    "county": "Harris",
    "city": "Humble",
    "usfa_fdid": "KA303",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14478,12 +14631,13 @@
    "county": "Harris",
    "city": "Tomball",
    "usfa_fdid": "KA347",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14502,11 +14656,12 @@
    "county": "Harris",
    "city": "Houston",
    "usfa_fdid": "KA357",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14525,12 +14680,13 @@
    "county": "Harris",
    "city": "Crosby",
    "usfa_fdid": "KA413",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14549,11 +14705,12 @@
    "county": "Harris",
    "city": "Humble",
    "usfa_fdid": "KA417",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14596,12 +14753,13 @@
    "county": "Harris",
    "city": "Highlands",
    "usfa_fdid": "KA424",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14620,11 +14778,12 @@
    "county": "Harris",
    "city": "Huffman",
    "usfa_fdid": "KA428",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14712,11 +14871,12 @@
    "county": "Harris",
    "city": "Houston",
    "usfa_fdid": "KA450",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14735,11 +14895,12 @@
    "county": "Harris",
    "city": "Houston",
    "usfa_fdid": "KA452",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14804,11 +14965,12 @@
    "county": "Harris",
    "city": "Katy",
    "usfa_fdid": "KA461",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14827,11 +14989,12 @@
    "county": "Harris",
    "city": "Houston",
    "usfa_fdid": "KA501",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14850,11 +15013,12 @@
    "county": "Harris",
    "city": "Houston",
    "usfa_fdid": "KA502",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14896,11 +15060,12 @@
    "county": "Harris",
    "city": "Channelview",
    "usfa_fdid": "KA510",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Contract fire department",
@@ -14919,11 +15084,12 @@
    "county": "Harris",
    "city": "Houston",
    "usfa_fdid": "KA512",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14942,11 +15108,12 @@
    "county": "Harris",
    "city": "Houston",
    "usfa_fdid": "KA514",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "State government (includes state forest fire agencies and state institution fire departments)",
@@ -14965,11 +15132,12 @@
    "county": "Harris",
    "city": "Cypress",
    "usfa_fdid": "KA515",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15058,11 +15226,12 @@
    "county": "Harris",
    "city": "Spring",
    "usfa_fdid": "KA534",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15105,11 +15274,12 @@
    "county": "Harris",
    "city": "Houston",
    "usfa_fdid": "KA536",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15128,11 +15298,12 @@
    "county": "Harris",
    "city": "Houston",
    "usfa_fdid": "KA542",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15151,11 +15322,12 @@
    "county": "Harris",
    "city": "Houston",
    "usfa_fdid": "KA545",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15198,11 +15370,12 @@
    "county": "Harris",
    "city": "Spring",
    "usfa_fdid": "KA554",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15244,11 +15417,12 @@
    "county": "Harris",
    "city": "Houston",
    "usfa_fdid": "KA560",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15290,11 +15464,12 @@
    "county": "Harris",
    "city": "Deer Park",
    "usfa_fdid": "KA616",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15383,11 +15558,12 @@
    "county": "Harris",
    "city": "Katy",
    "usfa_fdid": "KA663",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Private or industrial fire brigade",
@@ -15452,12 +15628,17 @@
    "county": "Harris",
    "city": "Houston",
    "usfa_fdid": "KA926",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
     "openfema",
+    "tx_dir",
+    "tx_houston",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": [
+    "07",
+    "09"
+   ],
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15546,11 +15727,12 @@
    "county": "Harrison",
    "city": "Hallsville",
    "usfa_fdid": "KB402",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15569,11 +15751,12 @@
    "county": "Harrison",
    "city": "Longview",
    "usfa_fdid": "KB406",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15847,11 +16030,12 @@
    "county": "Hays",
    "city": "Dripping Springs",
    "usfa_fdid": "KG303",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15870,11 +16054,12 @@
    "county": "Hays",
    "city": "Kyle",
    "usfa_fdid": "KG405",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15893,11 +16078,12 @@
    "county": "Hays",
    "city": "Wimberley",
    "usfa_fdid": "KG409",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15916,11 +16102,12 @@
    "county": "Hays",
    "city": "San Marcos",
    "usfa_fdid": "KG510",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "State government (includes state forest fire agencies and state institution fire departments)",
@@ -15939,11 +16126,12 @@
    "county": "Hays",
    "city": "San Marcos",
    "usfa_fdid": "KG607",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -16100,12 +16288,13 @@
    "county": "Henderson",
    "city": "Payne Springs",
    "usfa_fdid": "KK214",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -16124,12 +16313,13 @@
    "county": "Henderson",
    "city": "Tool",
    "usfa_fdid": "KK219",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -16240,11 +16430,12 @@
    "county": "Henderson",
    "city": "Log Cabin",
    "usfa_fdid": "KK307",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Other",
@@ -16356,11 +16547,12 @@
    "county": "Henderson",
    "city": "Eustace",
    "usfa_fdid": "KK408",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -16818,11 +17010,12 @@
    "county": "Hidalgo",
    "city": "Mission",
    "usfa_fdid": "KN610",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -16841,11 +17034,12 @@
    "county": "Hidalgo",
    "city": "Pharr",
    "usfa_fdid": "KN612",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -17072,11 +17266,12 @@
    "county": "Hill",
    "city": "Whitney",
    "usfa_fdid": "KP403",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -17394,11 +17589,12 @@
    "county": "Hood",
    "city": "Granbury",
    "usfa_fdid": "KS307",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -17487,11 +17683,12 @@
    "county": "Hood",
    "city": "Granbury",
    "usfa_fdid": "KS405",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -17811,12 +18008,13 @@
    "county": "Houston",
    "city": "Lovelady",
    "usfa_fdid": "KV305",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -18160,11 +18358,12 @@
    "county": "Hunt",
    "city": "Merit",
    "usfa_fdid": "KY410",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -18229,11 +18428,12 @@
    "county": "Hunt",
    "city": "Greenville",
    "usfa_fdid": "KY606",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -18603,11 +18803,12 @@
    "county": "Jasper",
    "city": "Jasper",
    "usfa_fdid": "ND402",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -18836,11 +19037,12 @@
    "county": "Jefferson",
    "city": "Beaumont",
    "usfa_fdid": "NH402",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -18976,11 +19178,12 @@
    "county": "Jefferson",
    "city": "Beaumont",
    "usfa_fdid": "NH701",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -18999,11 +19202,12 @@
    "county": "Jefferson",
    "city": "Port Arthur",
    "usfa_fdid": "NH715",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -19184,11 +19388,12 @@
    "county": "Tarrant",
    "city": "Grandview",
    "usfa_fdid": "NP306",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -19605,11 +19810,12 @@
    "county": "Kaufman",
    "city": "Kaufman",
    "usfa_fdid": "NT401",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -19628,11 +19834,12 @@
    "county": "Kaufman",
    "city": "Crandall",
    "usfa_fdid": "NT402",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -19651,11 +19858,12 @@
    "county": "Kaufman",
    "city": "Forney",
    "usfa_fdid": "NT403",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -19674,11 +19882,12 @@
    "county": "Kaufman",
    "city": "Elmo",
    "usfa_fdid": "NT404",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -19697,11 +19906,12 @@
    "county": "Kaufman",
    "city": "Kemp",
    "usfa_fdid": "NT405",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -19883,11 +20093,12 @@
    "county": "Kenedy",
    "city": "Sarita",
    "usfa_fdid": "NU301",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -19906,11 +20117,12 @@
    "county": "Kendall",
    "city": "Kendalia",
    "usfa_fdid": "NV101",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -19998,11 +20210,12 @@
    "county": "Kendall",
    "city": "Comfort",
    "usfa_fdid": "NV402",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -20113,11 +20326,12 @@
    "county": "Kerr",
    "city": "Ingram",
    "usfa_fdid": "NX303",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -20459,12 +20673,13 @@
    "county": "Lamar",
    "city": "Powderly",
    "usfa_fdid": "PG208",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -20904,11 +21119,12 @@
    "county": "Lampasas",
    "city": "Lampasas",
    "usfa_fdid": "PK101",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -21347,11 +21563,12 @@
    "county": "Leon",
    "city": "HIlltop Lakes",
    "usfa_fdid": "PR307",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -21463,11 +21680,12 @@
    "county": "Liberty",
    "city": "Dayton",
    "usfa_fdid": "PS206",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -21510,11 +21728,12 @@
    "county": "Liberty",
    "city": "Rye",
    "usfa_fdid": "PS218",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -21650,11 +21869,12 @@
    "county": "Liberty",
    "city": "Cleveland",
    "usfa_fdid": "PS411",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -21859,12 +22079,13 @@
    "county": "Limestone",
    "city": "Groesbeck",
    "usfa_fdid": "PT402",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -21906,11 +22127,12 @@
    "county": "Limestone",
    "city": "Thornton",
    "usfa_fdid": "PT405",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -22995,11 +23217,12 @@
    "county": "McCulloch",
    "city": "Lohn",
    "usfa_fdid": "RK203",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -23412,12 +23635,13 @@
    "county": "McLennan",
    "city": "Robinson",
    "usfa_fdid": "RN422",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -24276,12 +24500,13 @@
    "county": "Montgomery",
    "city": "Magnolia",
    "usfa_fdid": "SA306",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -24323,11 +24548,12 @@
    "county": "Montgomery",
    "city": "Montgomery",
    "usfa_fdid": "SA308",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -24346,11 +24572,12 @@
    "county": "Montgomery",
    "city": "Porter",
    "usfa_fdid": "SA311",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -24393,11 +24620,12 @@
    "county": "Montgomery",
    "city": "Spring",
    "usfa_fdid": "SA314",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -24416,11 +24644,12 @@
    "county": "Montgomery",
    "city": "Montgomery",
    "usfa_fdid": "SA404",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -24439,11 +24668,12 @@
    "county": "Montgomery",
    "city": "Conroe",
    "usfa_fdid": "SA409",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -24486,11 +24716,12 @@
    "county": "Montgomery",
    "city": "Spring",
    "usfa_fdid": "SA412",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -24509,12 +24740,13 @@
    "county": "Montgomery",
    "city": "The Woodlands",
    "usfa_fdid": "SA416",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -24579,12 +24811,13 @@
    "county": "Montgomery",
    "city": "Willis",
    "usfa_fdid": "SA603",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Other",
@@ -24603,11 +24836,12 @@
    "county": "Montgomery",
    "city": "Conroe",
    "usfa_fdid": "SA605",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -24903,11 +25137,12 @@
    "county": "Nacogdoches",
    "city": "Etoile",
    "usfa_fdid": "SG206",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -25668,11 +25903,12 @@
    "county": "Nueces",
    "city": "Robstown",
    "usfa_fdid": "SP502",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -25738,11 +25974,12 @@
    "county": "Nueces",
    "city": "Corpus Christi",
    "usfa_fdid": "SP508",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -25993,11 +26230,12 @@
    "county": "Orange",
    "city": "Vidor",
    "usfa_fdid": "ST507",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -26016,11 +26254,12 @@
    "county": "Orange",
    "city": "Orange",
    "usfa_fdid": "ST604",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -26528,12 +26767,13 @@
    "county": "Parker",
    "city": "Weatherford",
    "usfa_fdid": "SY204",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -26598,11 +26838,12 @@
    "county": "Parker",
    "city": "Brock",
    "usfa_fdid": "SY303",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -26738,12 +26979,13 @@
    "county": "Parker",
    "city": "Weatherford",
    "usfa_fdid": "SY617",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -26969,11 +27211,12 @@
    "county": "Polk",
    "city": "Onalaska",
    "usfa_fdid": "TB306",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -27016,11 +27259,12 @@
    "county": "Polk",
    "city": "Corrigan",
    "usfa_fdid": "TB402",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -27062,11 +27306,12 @@
    "county": "Polk",
    "city": "Livingston",
    "usfa_fdid": "TB407",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -27108,11 +27353,12 @@
    "county": "Polk",
    "city": "Livingston",
    "usfa_fdid": "TB505",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -27154,11 +27400,12 @@
    "county": "Potter",
    "city": "Amarillo",
    "usfa_fdid": "TC701",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -27223,11 +27470,12 @@
    "county": "Rains",
    "city": "Emory",
    "usfa_fdid": "TG301",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -27316,11 +27564,12 @@
    "county": "Randall",
    "city": "Amarillo",
    "usfa_fdid": "TK401",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -27455,11 +27704,12 @@
    "county": "Real",
    "city": "Camp Wood",
    "usfa_fdid": "TP303",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -27780,11 +28030,12 @@
    "county": "Robertson",
    "city": "Hearne",
    "usfa_fdid": "TW303",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -28360,12 +28611,13 @@
    "county": "Sabine",
    "city": "Pineland",
    "usfa_fdid": "VA403",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -28384,11 +28636,12 @@
    "county": "Sabine",
    "city": "Hemphill",
    "usfa_fdid": "VA404",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -28547,12 +28800,13 @@
    "county": "San Jacinto",
    "city": "New Waverly",
    "usfa_fdid": "VC303",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -28642,11 +28896,12 @@
    "county": "San Jacinto",
    "city": "Huntsville",
    "usfa_fdid": "VC307",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -28665,11 +28920,12 @@
    "county": "San Jacinto",
    "city": "Cleveland",
    "usfa_fdid": "VC308",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -28923,11 +29179,12 @@
    "county": "Scurry",
    "city": "Snyder",
    "usfa_fdid": "VK601",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -29323,11 +29580,12 @@
    "county": "Smith",
    "city": "Lindale",
    "usfa_fdid": "VS507",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -29784,11 +30042,12 @@
    "county": "Tarrant",
    "city": "Fort Worth",
    "usfa_fdid": "WB311",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -29830,11 +30089,12 @@
    "county": "Tarrant",
    "city": "Blue Mound",
    "usfa_fdid": "WB405",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -30132,12 +30392,13 @@
    "county": "Tarrant",
    "city": "Azle",
    "usfa_fdid": "WB502",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -30226,11 +30487,12 @@
    "county": "Tarrant",
    "city": "Richland Hills",
    "usfa_fdid": "WB529",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -30459,11 +30721,12 @@
    "county": "Tarrant",
    "city": "Arlington",
    "usfa_fdid": "WB701",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -30505,11 +30768,12 @@
    "county": "Tarrant",
    "city": "Fort Worth",
    "usfa_fdid": "WB901",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -30693,11 +30957,12 @@
    "county": "Taylor",
    "city": "Abilene",
    "usfa_fdid": "WC501",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -30832,11 +31097,12 @@
    "county": "Titus",
    "city": "Pittsburg",
    "usfa_fdid": "WK304",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -31133,11 +31399,12 @@
    "county": "Tom Green",
    "city": "San Angelo",
    "usfa_fdid": "WN704",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -31156,11 +31423,12 @@
    "county": "Travis",
    "city": "Austin",
    "usfa_fdid": "WP202",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "State government (includes state forest fire agencies and state institution fire departments)",
@@ -31179,11 +31447,12 @@
    "county": "Travis",
    "city": "Austin",
    "usfa_fdid": "WP303",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -31248,12 +31517,13 @@
    "county": "Travis",
    "city": "Pflugerville",
    "usfa_fdid": "WP312",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -31295,11 +31565,12 @@
    "county": "Travis",
    "city": "Del Valle",
    "usfa_fdid": "WP317",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -31318,11 +31589,12 @@
    "county": "Travis",
    "city": "Austin",
    "usfa_fdid": "WP408",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -31387,11 +31659,12 @@
    "county": "Travis",
    "city": "Austin",
    "usfa_fdid": "WP510",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -31433,11 +31706,12 @@
    "county": "Travis",
    "city": "West Lake Hills",
    "usfa_fdid": "WP607",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -31456,12 +31730,17 @@
    "county": "Travis",
    "city": "Austin",
    "usfa_fdid": "WP801",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
     "openfema",
+    "tx_austin",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": [
+    "09",
+    "10"
+   ],
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -31688,11 +31967,12 @@
    "county": "Tyler",
    "city": "Woodville",
    "usfa_fdid": "WS403",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -31711,12 +31991,13 @@
    "county": "Tyler",
    "city": "Woodville",
    "usfa_fdid": "WS406",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -32129,11 +32410,12 @@
    "county": "Van Zandt",
    "city": "Ben Wheeler",
    "usfa_fdid": "WZ208",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -32982,11 +33264,12 @@
    "county": "Victoria",
    "city": "Nursery",
    "usfa_fdid": "XA307",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -33215,12 +33498,13 @@
    "county": "Walker",
    "city": "New Waverly",
    "usfa_fdid": "XB302",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -33239,12 +33523,13 @@
    "county": "Walker",
    "city": "Riverside",
    "usfa_fdid": "XB303",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -33286,12 +33571,13 @@
    "county": "Walker",
    "city": "Huntsville",
    "usfa_fdid": "XB305",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -33474,12 +33760,13 @@
    "county": "Waller",
    "city": "Waller",
    "usfa_fdid": "XC501",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
     "openfema",
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -33753,11 +34040,12 @@
    "county": "Webb",
    "city": "Laredo",
    "usfa_fdid": "XK702",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -33940,11 +34228,12 @@
    "county": "Wheeler",
    "city": "Wheeler",
    "usfa_fdid": "XP406",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -34263,11 +34552,12 @@
    "county": "Williamson",
    "city": "Volente",
    "usfa_fdid": "XV213",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -34309,11 +34599,12 @@
    "county": "Williamson",
    "city": "Austin",
    "usfa_fdid": "XV307",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -34332,11 +34623,12 @@
    "county": "Williamson",
    "city": "Leander",
    "usfa_fdid": "XV308",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -34378,11 +34670,12 @@
    "county": "Williamson",
    "city": "Cedar Park",
    "usfa_fdid": "XV401",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -34425,11 +34718,12 @@
    "county": "Williamson",
    "city": "Weir",
    "usfa_fdid": "XV406",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -34448,11 +34742,12 @@
    "county": "Williamson",
    "city": "Round Rock",
    "usfa_fdid": "XV414",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -34518,11 +34813,12 @@
    "county": "Williamson",
    "city": "Round Rock",
    "usfa_fdid": "XV510",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -34656,11 +34952,12 @@
    "county": "Wilson",
    "city": "Stockdale",
    "usfa_fdid": "XW404",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -34820,11 +35117,12 @@
    "county": "Wise",
    "city": "Decatyr",
    "usfa_fdid": "XY207",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -34867,11 +35165,12 @@
    "county": "Wise",
    "city": "Boyd",
    "usfa_fdid": "XY303",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -35522,11 +35821,12 @@
    "county": "Zapata",
    "city": "Zapata",
    "usfa_fdid": "ZC501",
-   "coverage": 4,
+   "coverage": 2,
    "sources": [
+    "tx_dir",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "09",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -35558,6 +35858,1351 @@
     "volunteer": 18,
     "paid_per_call": 0
    },
+   "grants": 0
+  },
+  {
+   "id": "TX-S-atascosa-county-emergency-services-district-1",
+   "state": "TX",
+   "name": "Atascosa County Emergency Services District 1",
+   "kind": "Emergency services district",
+   "county": "Atascosa",
+   "city": "Lytle",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-bastrop-county-emergency-services-district-number-3",
+   "state": "TX",
+   "name": "Bastrop County Emergency Services District Number 3",
+   "kind": "Emergency services district",
+   "county": "Bastrop",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-batson-volunteer-fire-department",
+   "state": "TX",
+   "name": "Batson Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-beech-grove-volunteer-fire-department",
+   "state": "TX",
+   "name": "Beech Grove Volunteer Fire Department, Inc.",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-bexar-county-emergency-services-district-no-1",
+   "state": "TX",
+   "name": "Bexar County Emergency Services District No. 1",
+   "kind": "Emergency services district",
+   "county": "Bexar",
+   "city": "Helotes",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-bexar-county-fire-department",
+   "state": "TX",
+   "name": "Bexar County Fire Department",
+   "kind": "County fire department",
+   "county": "Bexar",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-blanco-volunteer-fire-department",
+   "state": "TX",
+   "name": "Blanco Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Blanco",
+   "city": "Blanco",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-brazos-county-district-2-volunteer-fire-department",
+   "state": "TX",
+   "name": "Brazos County District 2 Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Brazos",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-bremond-volunteer-fire-department",
+   "state": "TX",
+   "name": "Bremond Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": "Bremond",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-burkeville-volunteer-fire-department",
+   "state": "TX",
+   "name": "Burkeville Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Newton",
+   "city": "Burkeville",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-burnet-county-emergency-service-district",
+   "state": "TX",
+   "name": "Burnet County Emergency Service District",
+   "kind": "Emergency services district",
+   "county": "Burnet",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-chappell-hill-volunteer-fire-department",
+   "state": "TX",
+   "name": "Chappell Hill Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-china-grove-volunteer-fire-department",
+   "state": "TX",
+   "name": "China Grove Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-city-of-florence-fire-department",
+   "state": "TX",
+   "name": "City of Florence Fire Department",
+   "kind": "Local fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-city-of-pflugerville-fire-department",
+   "state": "TX",
+   "name": "City of Pflugerville Fire Department",
+   "kind": "Local fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-coupland-volunteer-fire-department",
+   "state": "TX",
+   "name": "Coupland Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-crutch-ranch-volunteer-fire-department",
+   "state": "TX",
+   "name": "Crutch Ranch Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-crystal-beach-volunteer-fire-department",
+   "state": "TX",
+   "name": "Crystal Beach Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-cut-n-shoot-volunteer-fire-department",
+   "state": "TX",
+   "name": "Cut-N-Shoot Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-de-leon-volunteer-fire-department",
+   "state": "TX",
+   "name": "De Leon Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Comanche",
+   "city": "Deleon",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-district-2-fire-and-rescue",
+   "state": "TX",
+   "name": "District 2 Fire & Rescue",
+   "kind": "Local fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-district-7-fire-and-rescue",
+   "state": "TX",
+   "name": "District 7 Fire & Rescue",
+   "kind": "Local fire department",
+   "county": null,
+   "city": "San Antonio",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-ector-county-emergency-services-district-no-1-and-2",
+   "state": "TX",
+   "name": "Ector County Emergency Services District No. 1 and 2",
+   "kind": "Emergency services district",
+   "county": "Ector",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-el-paso-county-emergency-services-district",
+   "state": "TX",
+   "name": "El Paso County Emergency Services District",
+   "kind": "Emergency services district",
+   "county": "El Paso",
+   "city": "Clint",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-fairchild-volunteer-fire-department",
+   "state": "TX",
+   "name": "Fairchild Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-falfurrias-volunteer-fire-department",
+   "state": "TX",
+   "name": "Falfurrias Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-franklin-fire-department",
+   "state": "TX",
+   "name": "Franklin Fire Department",
+   "kind": "Local fire department",
+   "county": "Robertson",
+   "city": "Franklin",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-gardendale-volunteer-fire-department",
+   "state": "TX",
+   "name": "Gardendale Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-grey-forest-area-volunteer-fire-department",
+   "state": "TX",
+   "name": "Grey Forest Area Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-hamshire-volunteer-fire-department",
+   "state": "TX",
+   "name": "Hamshire Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-hardin-county-emergency-service-district-no-5",
+   "state": "TX",
+   "name": "Hardin County Emergency Service District No. 5",
+   "kind": "Emergency services district",
+   "county": "Hardin",
+   "city": "Sour Lake",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-harris-county-emergency-services-district-13",
+   "state": "TX",
+   "name": "Harris County Emergency Services District 13",
+   "kind": "Emergency services district",
+   "county": "Harris",
+   "city": "Cypress",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-harris-county-emergency-services-district-28",
+   "state": "TX",
+   "name": "Harris County Emergency Services District 28",
+   "kind": "Emergency services district",
+   "county": "Harris",
+   "city": "Katy",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-harris-county-emergency-services-district-3",
+   "state": "TX",
+   "name": "Harris County Emergency Services District 3",
+   "kind": "Emergency services district",
+   "county": "Harris",
+   "city": "Cypress",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-harris-county-emergency-services-district-48",
+   "state": "TX",
+   "name": "Harris County Emergency Services District 48",
+   "kind": "Emergency services district",
+   "county": "Harris",
+   "city": "Katy",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-harris-county-emergency-services-district-5",
+   "state": "TX",
+   "name": "Harris County Emergency Services District 5",
+   "kind": "Emergency services district",
+   "county": "Harris",
+   "city": "Crosby",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-harris-county-emergency-services-district-7",
+   "state": "TX",
+   "name": "Harris County Emergency Services District 7",
+   "kind": "Emergency services district",
+   "county": "Harris",
+   "city": "Spring",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-harris-county-emergency-services-district-9",
+   "state": "TX",
+   "name": "Harris County Emergency Services District 9",
+   "kind": "Emergency services district",
+   "county": "Harris",
+   "city": "Houston",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-harris-county-emergency-services-district-no-21",
+   "state": "TX",
+   "name": "Harris County Emergency Services District No. 21",
+   "kind": "Emergency services district",
+   "county": "Harris",
+   "city": "Tomball",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-harris-county-emergency-services-district-no-46",
+   "state": "TX",
+   "name": "Harris County Emergency Services District No. 46",
+   "kind": "Emergency services district",
+   "county": "Harris",
+   "city": "Humble",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-hartley-volunteer-fire-department",
+   "state": "TX",
+   "name": "Hartley Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-hays-county-emergency-services-district-no-8",
+   "state": "TX",
+   "name": "Hays County Emergency Services District No. 8",
+   "kind": "Emergency services district",
+   "county": "Hays",
+   "city": "Buda",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-hays-county-emergency-services-district-no-9",
+   "state": "TX",
+   "name": "Hays County Emergency Services District No. 9",
+   "kind": "Emergency services district",
+   "county": "Hays",
+   "city": "Kyle",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-heart-of-pines-volunteer-fire-department",
+   "state": "TX",
+   "name": "Heart of The Pines Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-henderson-county-emergency-service-district-8",
+   "state": "TX",
+   "name": "Henderson County Emergency Service District 8",
+   "kind": "Emergency services district",
+   "county": "Henderson",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-hill-county-emergency-services-district-1",
+   "state": "TX",
+   "name": "Hill County Emergency Services District #1",
+   "kind": "Emergency services district",
+   "county": "Hill",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-horizon-city-fire-department",
+   "state": "TX",
+   "name": "Horizon City Fire Department",
+   "kind": "Local fire department",
+   "county": "El Paso",
+   "city": "Horizon City",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-jefferson-county-emergency-service-district-4",
+   "state": "TX",
+   "name": "Jefferson County Emergency Service District #4",
+   "kind": "Emergency services district",
+   "county": "Jefferson",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-josephine-volunteer-fire-department",
+   "state": "TX",
+   "name": "Josephine Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": "Josephine",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-judson-volunteer-fire-department",
+   "state": "TX",
+   "name": "Judson Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": "Longview",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-la-vernia-volunteer-fire-department",
+   "state": "TX",
+   "name": "La Vernia Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-lake-conroe-fire-department",
+   "state": "TX",
+   "name": "Lake Conroe Fire Department",
+   "kind": "Local fire department",
+   "county": "Montgomery",
+   "city": "Montgomery",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-liberty-hill-volunteer-fire-department",
+   "state": "TX",
+   "name": "Liberty Hill Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-loraine-volunteer-fire-department",
+   "state": "TX",
+   "name": "Loraine Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": "Loraine",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-mcgregor-fire-department",
+   "state": "TX",
+   "name": "McGregor Fire Department",
+   "kind": "Local fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-medina-county-emergency-service-district-no-4",
+   "state": "TX",
+   "name": "Medina County Emergency Service District No. 4",
+   "kind": "Emergency services district",
+   "county": "Medina",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-mobeetie-fire-department",
+   "state": "TX",
+   "name": "Mobeetie Fire Department",
+   "kind": "Local fire department",
+   "county": null,
+   "city": "Mobeetie",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-montgomery-county-emergency-services-district-no-14",
+   "state": "TX",
+   "name": "Montgomery County Emergency Services District No. 14",
+   "kind": "Emergency services district",
+   "county": "Montgomery",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-montgomery-county-emergency-services-district-no-6",
+   "state": "TX",
+   "name": "Montgomery County Emergency Services District No. 6",
+   "kind": "Emergency services district",
+   "county": "Montgomery",
+   "city": "Porter",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-montgomery-county-emergency-services-district-no-8",
+   "state": "TX",
+   "name": "Montgomery County Emergency Services District No. 8",
+   "kind": "Emergency services district",
+   "county": "Montgomery",
+   "city": "Conroe",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-mountain-home-volunteer-fire-department",
+   "state": "TX",
+   "name": "Mountain Home Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-nolan-volunteer-fire-department",
+   "state": "TX",
+   "name": "Nolan Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": "Nolan",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-northeast-gaines-county-emergency-services-district",
+   "state": "TX",
+   "name": "Northeast Gaines County Emergency Services District",
+   "kind": "Emergency services district",
+   "county": "Gaines",
+   "city": "Seagraves",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-nueces-county-emergency-services-district-1",
+   "state": "TX",
+   "name": "Nueces County Emergency Services District 1",
+   "kind": "Emergency services district",
+   "county": "Nueces",
+   "city": "Robstown",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-nueces-county-emergency-services-district-3",
+   "state": "TX",
+   "name": "Nueces County Emergency Services District 3",
+   "kind": "Emergency services district",
+   "county": "Nueces",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-ottine-volunteer-fire-department",
+   "state": "TX",
+   "name": "Ottine Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-oyster-creek-volunteer-fire-department",
+   "state": "TX",
+   "name": "Oyster Creek Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-paisano-volunteer-fire-department",
+   "state": "TX",
+   "name": "Paisano Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-palo-pinto-emergency-service-district-1",
+   "state": "TX",
+   "name": "Palo Pinto Emergency Service District #1",
+   "kind": "Emergency services district",
+   "county": "Palo Pinto",
+   "city": "Palo Pinto",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-pawnee-volunteer-fire-department",
+   "state": "TX",
+   "name": "Pawnee Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-plum-grove-volunteer-fire-department",
+   "state": "TX",
+   "name": "Plum Grove Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-reeves-county-emergency-service-district",
+   "state": "TX",
+   "name": "Reeves County Emergency Service District",
+   "kind": "Emergency services district",
+   "county": "Reeves",
+   "city": "Pecos",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-rendon-fire-department",
+   "state": "TX",
+   "name": "Rendon Fire Department",
+   "kind": "Local fire department",
+   "county": "Johnson",
+   "city": "Burleson",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-sabine-volunteer-fire-department",
+   "state": "TX",
+   "name": "Sabine Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Gregg",
+   "city": "Kilgore",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-shephard-volunteer-fire-department",
+   "state": "TX",
+   "name": "Shephard Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-socorro-fire-department",
+   "state": "TX",
+   "name": "Socorro Fire Department",
+   "kind": "Local fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-south-montgomery-county-emergency-services-district",
+   "state": "TX",
+   "name": "South Montgomery County Emergency Services District",
+   "kind": "Emergency services district",
+   "county": "Montgomery",
+   "city": "Spring",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-sparta-valley-volunteer-fire-department",
+   "state": "TX",
+   "name": "Sparta Valley Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-spring-creek-fire-department",
+   "state": "TX",
+   "name": "Spring Creek Fire Department",
+   "kind": "Local fire department",
+   "county": null,
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-tarrant-county-emergency-services-district-1",
+   "state": "TX",
+   "name": "Tarrant County Emergency Services District 1",
+   "kind": "Emergency services district",
+   "county": "Tarrant",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-texas-a-and-m-forest-service",
+   "state": "TX",
+   "name": "Texas A&M Forest Service",
+   "kind": "State fire agency",
+   "county": "Brazos",
+   "city": "College Station",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_cpa",
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-travis-county-emergency-services-district-no-8",
+   "state": "TX",
+   "name": "Travis County Emergency Services District No. 8",
+   "kind": "Emergency services district",
+   "county": "Travis",
+   "city": "Briarcliff",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-walker-county-emergency-service-district",
+   "state": "TX",
+   "name": "Walker County Emergency Service District",
+   "kind": "Emergency services district",
+   "county": "Walker",
+   "city": "New Waverly",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "TX-S-williamson-county-esd-10",
+   "state": "TX",
+   "name": "Williamson County ESD #10",
+   "kind": "Emergency services district",
+   "county": "Williamson",
+   "city": "Coupland",
+   "usfa_fdid": null,
+   "coverage": 2,
+   "sources": [
+    "tx_dir"
+   ],
+   "fy_start": "09",
+   "usfa": null,
    "grants": 0
   }
  ]

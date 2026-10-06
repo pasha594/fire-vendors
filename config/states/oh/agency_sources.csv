@@ -1,0 +1,4 @@
+agency_id,source,source_entity_id,source_entity_name,fy_start,match_method,note
+OH-31015,oh_cincinnati,224,Department Of Fire,07,department code,"Older City of Cincinnati department code for the Fire Department; it has no payments after FY2016, kept so a re-fetch of older years stays linked"
+OH-31015,oh_cincinnati,271,Fire - Response,07,department code,Cincinnati Fire Department operating division (registry FDID 31015)
+OH-31015,oh_cincinnati,272,Fire - Support Services,07,department code,Cincinnati Fire Department support division (registry FDID 31015)

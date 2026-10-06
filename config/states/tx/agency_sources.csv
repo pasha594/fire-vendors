@@ -1,0 +1,337 @@
+agency_id,source,source_entity_id,source_entity_name,fy_start,match_method,note
+TX-WP801,tx_austin,83,Fire,10,department code,Austin Fire Department; Emergency Medical Services (department 93) is a separate city department and is not linked
+TX-S-texas-a-and-m-forest-service,tx_cpa,576,TEXAS A&M FOREST SERVICE,09,department code,state agency number 576; state fire agency (PRD open question)
+TX-DH807,tx_dallas,DFD,Dallas Fire-Rescue,10,department code,registry name: Dallas Fire Department
+TX-AA401,tx_dir,,Westside Volunteer Fire Department,09,manual,two registry rows share the name; DIR city Palestine = TX-AA401
+TX-AC409,tx_dir,,Huntington Volunteer Fire Department,09,manual,registry: City of Huntington Volunteer Fire Department
+TX-AC608,tx_dir,,City of Lufkin Fire Department,09,exact name,
+TX-AD404,tx_dir,,Lamar Volunteer Fire Department,09,exact name,
+TX-AP306,tx_dir,,Tarpley Volunteer Fire Department,09,exact name,
+TX-AR499,tx_dir,,Bastrop County Emergency Services District Number 1,09,exact name,
+TX-AV311,tx_dir,,Salado Volunteer Fire Department,09,manual,registry: Salado Fire Department
+TX-AV315,tx_dir,,Moffat Volunteer Fire Department,09,exact name,
+TX-AV401,tx_dir,,City of Bartlett Volunteer Fire Department,09,manual,registry: Bartlett Volunteer Fire Department
+TX-AW302,tx_dir,,Ata-Bexar County Line Volunteer Fire Department,09,exact name,
+TX-AW416,tx_dir,,Leon Springs Volunteer Fire Department,09,manual,registry name adds a suffix; same place
+TX-AW426,tx_dir,,City of Shavano Park Fire,09,manual,registry: Shavano Park Fire Department/ EMS
+TX-AW429,tx_dir,,Saint Hedwig Volunteer Fire Department,09,exact name,
+TX-AW534,tx_dir,,Bexar-Bulverde Volunteer Fire Department,09,exact name,
+TX-AW824,tx_dir,,City of San Antonio Fire,09,manual,registry: San Antonio Fire Department
+TX-AX303,tx_dir,,Round Mountain Volunteer Fire Department,09,exact name,
+TX-BA408,tx_dir,,Redwater Volunteer Fire Department,09,exact name,
+TX-BB317,tx_dir,,Jones Creek Volunteer Fire Department,09,exact name,
+TX-BB421,tx_dir,,Manvel Volunteer Fire Department,09,exact name,
+TX-BB428,tx_dir,,Surfside Beach Volunteer Fire Department,09,exact name,
+TX-BB602,tx_dir,,Angleton Volunteer Fire Department,09,manual,registry: Angleton Fire Department
+TX-BB612,tx_dir,,City of Freeport Fire,09,manual,registry: Freeport Fire and EMS Department
+TX-BC203,tx_dir,,Brazos County Precinct 4 Volunteer Fire Department,09,exact name,
+TX-BC206,tx_dir,,South Brazos County Fire Department,09,exact name,
+TX-BC605,tx_dir,,City of College Station Fire,09,manual,registry: College Station Fire Department
+TX-BK101,tx_dir,,Blanket Volunteer Fire Department,09,exact name,
+TX-BN304,tx_dir,,Snook Volunteer Fire Department,09,exact name,
+TX-BP301,tx_dir,,Bertram Volunteer Fire Department,09,exact name,
+TX-BP403,tx_dir,,City of Burnet Fire,09,manual,registry: Burnet Volunteer Fire Department
+TX-BP408,tx_dir,,City of Marble Falls Fire,09,manual,registry: Marble Falls Fire Rescue
+TX-BR205,tx_dir,,Martindale Volunteer Fire Department,09,exact name,
+TX-BR504,tx_dir,,Luling Fire Department,09,manual,registry: Luling Volunteer Fire Department
+TX-BV305,tx_dir,,Laguna Vista Volunteer Fire Department,09,exact name,
+TX-BX303,tx_dir,,Skellytown Volunteer Fire Department,09,manual,registry: Skellytown Area Volunteer Firefighters
+TX-CB602,tx_dir,,City of Jacksonville Fire,09,manual,registry: Jacksonville Fire Department
+TX-CH402,tx_dir,,Robert Lee Volunteer Fire Department,09,exact name,
+TX-CK405,tx_dir,,Santa Anna Volunteer Fire Department,09,exact name,
+TX-CN119,tx_dir,,Nevada Volunteer Fire Department,09,exact name,
+TX-CN302,tx_dir,,City of Anna Fire,09,manual,registry: Anna Fire Department
+TX-CN305,tx_dir,,City of Fairview Fire,09,manual,registry: Fairview Fire & Rescue
+TX-CN317,tx_dir,,Lowry Crossing Volunteer Fire Department,09,manual,registry: Lowry Crossing Fire Department
+TX-CN404,tx_dir,,Celina Fire Department,09,exact name,
+TX-CN610,tx_dir,,City of McKinney Fire,09,manual,registry: McKinney Fire Department
+TX-CS305,tx_dir,,Bracken Volunteer Fire Department,09,exact name,
+TX-CS603,tx_dir,,Bulverde Spring Branch Fire & Emergency Medical Services,09,manual,registry: Bulverde Spring Branch Emergency Services (Spring Branch)
+TX-CS616,tx_dir,,Canyon Lake Fire/Emergency Medical Services,09,manual,registry: Canyon Lake Fire / EMS
+TX-CT401,tx_dir,,Comanche Volunteer Fire Department,09,exact name,
+TX-CW305,tx_dir,,Lindsay Volunteer Fire Department,09,exact name,
+TX-CX201,tx_dir,,Coryell City Osage Volunteer Fire Department,09,manual,registry: Coryell City / Osage Volunteer Fire Department
+TX-CX204,tx_dir,,Jonesboro Fire Department,09,manual,registry: Jonesboro Volunteer Fire Department
+TX-CX409,tx_dir,,Turnersville Fire Department,09,manual,registry: Turnersville Volunteer Fire Department
+TX-DB401,tx_dir,,Ozona Fire Department,09,exact name,
+TX-DH427,tx_dir,,Wilmer Volunteer Fire Department,09,manual,registry: Wilmer Fire Department
+TX-DH603,tx_dir,,City of Carrollton Fire,09,manual,registry: Carrollton Fire Rescue
+TX-DH611,tx_dir,,City of Farmers Branch Fire,09,manual,registry: Farmers Branch Fire Department
+TX-DH712,tx_dir,,City of Garland Fire,09,manual,registry: Garland Fire Department
+TX-DH717,tx_dir,,City of Irving Fire,09,manual,registry: Irving Fire Department
+TX-DR215,tx_dir,,Ponder Volunteer Fire Department,09,exact name,
+TX-DR301,tx_dir,,Argyle Volunteer Fire Department,09,manual,"registry: Argyle Fire District, the only Argyle department; DIR city Argyle"
+TX-DR307,tx_dir,,Justin Volunteer Fire Department,09,manual,"registry: Justin Community Volunteer Fire Department, Inc."
+TX-DR308,tx_dir,,Krum Voluteer Fire Department,09,exact name,
+TX-DR405,tx_dir,,Town of Flower Mound Fire Department,09,manual,registry: Flower Mound Fire Department
+TX-DR409,tx_dir,,Lake Cities Fire Department,09,exact name,
+TX-DR503,tx_dir,,City of The Colony Fire,09,manual,registry: The Colony Fire Department
+TX-DR517,tx_dir,,City of Sanger Fire,09,manual,registry: City of Sanger Fire Department
+TX-DS501,tx_dir,,Cuero Volunteer Fire Department,09,manual,registry: Cuero Fire Department
+TX-DW303,tx_dir,,Howardwick Volunteer Fire Department,09,manual,registry: City of Howardwick Volunteer Fire Department
+TX-DX402,tx_dir,,City of Freer Volunteer Fire Department,09,manual,registry: Freer Volunteer Fire Department
+TX-DY308,tx_dir,,Rising Star Volunteer Fire Department,09,exact name,
+TX-DZ601,tx_dir,,South Ector County Volunteer Fire Department,09,exact name,
+TX-GB405,tx_dir,,El Paso County Emergency Services District No. 1,09,exact name,
+TX-GB409,tx_dir,,San Elizario Fire Department,09,manual,registry: San Elizario Volunteer Fire Department
+TX-GB507,tx_dir,,Montana Vista Fire Rescue,09,exact name,
+TX-GC413,tx_dir,,City of Ovilla Fire,09,manual,registry: Ovilla Fire Department
+TX-GC605,tx_dir,,City of Ennis Fire Department,09,manual,registry: Ennis Fire Department
+TX-GD301,tx_dir,,Bluff Dale Volunteer Fire Department,09,exact name,
+TX-GD402,tx_dir,,Dublin Fire Department,09,exact name,
+TX-GD601,tx_dir,,Erath County Volunteer Fire Rescue,09,exact name,
+TX-GH402,tx_dir,,Honey Grove Volunteer Fire Dept,09,exact name,
+TX-GH502,tx_dir,,Bonham Fire Department,09,exact name,
+TX-GS301,tx_dir,,Beasley Community Volunteer Fire Department,09,exact name,
+TX-GS304,tx_dir,,Fulshear Volunteer Fire Department,09,manual,"registry: Fulshear Simonton Volunteer Fire Department, the only Fulshear department"
+TX-GS309,tx_dir,,Orchard Volunteer Fire Department,09,exact name,
+TX-GS403,tx_dir,,Fresno Volunteer Fire Department,09,exact name,
+TX-GS408,tx_dir,,Needville Volunteer Fire Department,09,exact name,
+TX-GS414,tx_dir,,North East Fort Bend County Volunteer Fire Department,09,exact name,
+TX-GS414,tx_dir,,Northeast Fort Bend Volunteer Fire Department,09,manual,registry: North East Fort Bend County Volunteer Fire Department
+TX-GS516,tx_dir,,Pecan Grove Volunteer Fire Department,09,manual,registry: Pecan Grove Fire Department
+TX-GS611,tx_dir,,City of Rosenberg Fire,09,manual,registry: Rosenberg Fire Department
+TX-GX401,tx_dir,,Seagraves Volunteer Fire Department,09,manual,registry: Seagraves Fire Department
+TX-HA313,tx_dir,,Port Bolivar Volunteer Fire Department,09,exact name,
+TX-HA410,tx_dir,,Kemah Volunteer Fire Department,09,exact name,
+TX-HA505,tx_dir,,City of Dickinson Fire,09,manual,registry: Dickinson Volunteer Fire Department
+TX-HA506,tx_dir,,Friendswood Volunteer Fire Department,09,exact name,
+TX-HA509,tx_dir,,Hitchcock Volunteer Fire Department,09,exact name,
+TX-HA601,tx_dir,,City of Santa Fe Fire,09,manual,registry: Santa Fe Fire & Rescue
+TX-HH404,tx_dir,,Waelder Volunteer Fire Department,09,exact name,
+TX-HP501,tx_dir,,Elderville-Lakeport Volunteer Fire Department,09,exact name,
+TX-HS204,tx_dir,,New Berlin Fire Department,09,manual,registry: New Berlin Volunteer Fire Department
+TX-HS403,tx_dir,,McQueeney Volunteer Fire Department,09,exact name,
+TX-HS606,tx_dir,,City of Seguin Fire,09,manual,registry: Seguin Fire Department
+TX-KA303,tx_dir,,Atascocita Volunteer Fire Department,09,manual,registry: Atascocita Fire Department
+TX-KA347,tx_dir,,Rosehill Fire Department,09,exact name,
+TX-KA357,tx_dir,,Village Fire Department,09,exact name,
+TX-KA413,tx_dir,,Crosby Volunteer Fire Department,09,exact name,
+TX-KA417,tx_dir,,Eastex Fire Department,09,manual,registry: Eastex Freeway Volunteer Fire Department (Harris County ESD #10)
+TX-KA424,tx_dir,,Highland Volunteer Fire Department,09,manual,registry: Highlands Volunteer Fire Department; DIR city Highlands
+TX-KA428,tx_dir,,Harris County Emergency Services District 4,09,exact name,
+TX-KA450,tx_dir,,Sheldon Community Fire and Rescue,09,exact name,
+TX-KA450,tx_dir,,Sheldon Volunteer Fire Department,09,manual,registry: Sheldon Community Fire & Rescue; DIR zip 77044 = registry HQ zip
+TX-KA452,tx_dir,,Southeast Volunteer Fire Department,09,exact name,
+TX-KA461,tx_dir,,Westlake Volunteer Fire Department,09,exact name,
+TX-KA501,tx_dir,,Aldine Fire & Rescue,09,exact name,
+TX-KA502,tx_dir,,Community Volunteer Fire Department,09,exact name,
+TX-KA510,tx_dir,,Channel View Fire Department,09,manual,registry: Channelview Fire Department
+TX-KA512,tx_dir,,Harris County Emergency Services District 12 Fire Department,09,exact name,
+TX-KA514,tx_dir,,City of Fair Volunteer Fire Department,09,manual,no Texas place is named Fair; DIR zip 77095 = Cy-Fair FD HQ zip; read as a misspelling of Cy-Fair
+TX-KA514,tx_dir,,Cy-Fair Volunteer Fire Department,09,manual,registry name drops 'Volunteer'; DIR zip 77095 = registry HQ zip
+TX-KA515,tx_dir,,Cypress Creek Volunteer Fire Department,09,manual,registry: Cypress Creek Fire Department
+TX-KA534,tx_dir,,Harris County Emergency Services District 16,09,manual,registry name carries the ESD number: Harris County Emergency Services District No. 16 dba Klein Fire Department
+TX-KA536,tx_dir,,Harris County Emergency Services District 17,09,exact name,
+TX-KA542,tx_dir,,Northwest Volunteer Fire Department,09,exact name,
+TX-KA545,tx_dir,,Ponderosa Volunteer Fire Department,09,manual,registry: Ponderosa Fire Department
+TX-KA554,tx_dir,,Spring Fire Department,09,manual,registry: Spring Volunteer Fire Department (Spring)
+TX-KA554,tx_dir,,Spring Volunteer Fire Department,09,exact name,
+TX-KA560,tx_dir,,Westfield Fire Department,09,manual,registry: Westfield Road Volunteer Fire Department; DIR zip 77039 = registry HQ zip
+TX-KA616,tx_dir,,City of Deer Park Fire,09,manual,registry: Deer Park Volunteer Fire Department
+TX-KA663,tx_dir,,West I-10 Volunteer Fire Department,09,exact name,
+TX-KA926,tx_dir,,City of Houston Fire,09,manual,registry: Houston Fire Department
+TX-KB402,tx_dir,,Hallsville Volunteer Fire Department,09,exact name,
+TX-KB406,tx_dir,,West Harrison Volunteer Fire Department,09,exact name,
+TX-KG303,tx_dir,,North Hays County Fire Department,09,manual,registry: North Hays County Fire/Rescue Department
+TX-KG303,tx_dir,,North Hays County Fire Rescue,09,manual,registry: North Hays County Fire/Rescue Department
+TX-KG405,tx_dir,,Kyle Volunteer Fire Department,09,manual,registry: Kyle Fire Department
+TX-KG409,tx_dir,,Wimberley Volunteer Fire Department,09,manual,registry: Wimberley Fire Rescue/Hays County ESD #4
+TX-KG510,tx_dir,,South Hays County Emergency Services District #3,09,manual,"registry: South Hays Fire Department, the only South Hays department; DIR city San Marcos = registry"
+TX-KG510,tx_dir,,South Hays Fire Department,09,exact name,
+TX-KG607,tx_dir,,City of San Marcos Fire,09,manual,registry: San Marcos Fire Department
+TX-KK214,tx_dir,,Town of Payne Springs Fire,09,manual,registry: Payne Springs Volunteer Fire Department
+TX-KK219,tx_dir,,Tool Volunteer Fire Department,09,exact name,
+TX-KK307,tx_dir,,Log Cabin Volunteer Fire Department,09,exact name,
+TX-KK408,tx_dir,,Eustace Volunteer Fire Department,09,manual,registry: Eustace Area Volunteer Fire Department
+TX-KN610,tx_dir,,City of Mission Fire,09,manual,registry: Mission Fire Department
+TX-KN612,tx_dir,,City of Pharr Fire,09,manual,registry: Pharr Fire Rescue
+TX-KP403,tx_dir,,White Bluff Volunteer Fire Department,09,exact name,
+TX-KS307,tx_dir,,Pecan Plantation Volunteer Fire Department,09,manual,"registry: Pecan Plantation Volunteer Fire & EMS, Inc.; DIR city Granbury"
+TX-KS405,tx_dir,,North Hood County Volunteer Fire Department,09,exact name,
+TX-KV305,tx_dir,,Lovelady Volunteer Fire Department,09,exact name,
+TX-KY410,tx_dir,,Merit Volunteer Fire Department,09,manual,registry: Merit Fire Department
+TX-KY606,tx_dir,,Cash Fire Department Association,09,manual,registry: Cash Fire Department
+TX-ND402,tx_dir,,Lake Rayburn Fire Department,09,manual,registry: Lake Rayburn Volunteer Fire Department
+TX-NH402,tx_dir,,Jefferson County Emergency Service District #1,09,exact name,
+TX-NH701,tx_dir,,Beaumont Fire-Rescue,09,manual,registry: Beaumont Fire/ Rescue Services
+TX-NH715,tx_dir,,City of Port Arthur Fire,09,manual,registry: Port Arthur Fire Department
+TX-NP306,tx_dir,,Grandview Volunteer Fire Department,09,exact name,
+TX-NT401,tx_dir,,College Mound Volunteer Fire Department,09,manual,registry: College Mound Fire Department
+TX-NT402,tx_dir,,City of Crandall Fire,09,manual,registry: Crandall Volunteer Fire Department
+TX-NT403,tx_dir,,Forney Volunteer Fire Department,09,manual,registry: Forney Fire Department
+TX-NT404,tx_dir,,Elmo Volunteer Fire Department,09,exact name,
+TX-NT405,tx_dir,,Kemp Volunteer Fire Department,09,manual,registry: Kemp Fire Department
+TX-NU301,tx_dir,,Kenedy County Fire and Emergency Services District,09,manual,registry: Kenedy County Fire & Emergency Services District No. 1 (the only one)
+TX-NV101,tx_dir,,Kendalia Volunteer Fire Department,09,exact name,
+TX-NV402,tx_dir,,Comfort Volunteer Fire Department,09,exact name,
+TX-NX303,tx_dir,,Ingram Volunteer Fire Department,09,exact name,
+TX-PG208,tx_dir,,Powderly Volunteer Fire Department,09,exact name,
+TX-PK101,tx_dir,,Adamsville Volunteer Fire Department,09,manual,registry: Adamsville Fire Department
+TX-PR307,tx_dir,,Hilltop Lakes Volunteer Fire Department,09,exact name,
+TX-PS206,tx_dir,,Highway 321 Volunteer Fire Department,09,exact name,
+TX-PS218,tx_dir,,Woodpecker Volunteer Fire Department,09,exact name,
+TX-PS411,tx_dir,,Cypress Lakes Volunteer Fire Department,09,exact name,
+TX-PT402,tx_dir,,Groesbeck Volunteer Fire Department,09,exact name,
+TX-PT405,tx_dir,,West Lake Limestone Volunteer Fire Department,09,exact name,
+TX-RK203,tx_dir,,Lohn Volunteer Fire Department,09,exact name,
+TX-RN422,tx_dir,,Robinson Volunteer Fire Department,09,exact name,
+TX-S-atascosa-county-emergency-services-district-1,tx_dir,,Atascosa County Emergency Services District 1,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-bastrop-county-emergency-services-district-number-3,tx_dir,,Bastrop County Emergency Services District Number 3,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-batson-volunteer-fire-department,tx_dir,,Batson Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-beech-grove-volunteer-fire-department,tx_dir,,"Beech Grove Volunteer Fire Department, Inc.",09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-bexar-county-emergency-services-district-no-1,tx_dir,,BEXAR COUNTY EMERGENCY SRVC DIST NO.1,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-bexar-county-fire-department,tx_dir,,Bexar County Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-blanco-volunteer-fire-department,tx_dir,,Blanco Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-brazos-county-district-2-volunteer-fire-department,tx_dir,,Brazos County District 2 Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-bremond-volunteer-fire-department,tx_dir,,Bremond Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-burkeville-volunteer-fire-department,tx_dir,,Burkeville Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-burnet-county-emergency-service-district,tx_dir,,Burnet County Emergency Service District,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-chappell-hill-volunteer-fire-department,tx_dir,,Chappell Hill Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-china-grove-volunteer-fire-department,tx_dir,,China Grove Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-city-of-florence-fire-department,tx_dir,,City of Florence Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-city-of-pflugerville-fire-department,tx_dir,,City of Pflugerville Fire,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-coupland-volunteer-fire-department,tx_dir,,Coupland Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-crutch-ranch-volunteer-fire-department,tx_dir,,Crutch Ranch Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-crystal-beach-volunteer-fire-department,tx_dir,,Crystal Beach Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-cut-n-shoot-volunteer-fire-department,tx_dir,,Cut-N-Shoot Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-de-leon-volunteer-fire-department,tx_dir,,De Leon Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-district-2-fire-and-rescue,tx_dir,,District 2 Fire & Rescue,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-district-7-fire-and-rescue,tx_dir,,District 7 Fire & Rescue,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-ector-county-emergency-services-district-no-1-and-2,tx_dir,,Ector County Emergency Services District No. 1 and 2,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-el-paso-county-emergency-services-district,tx_dir,,El Paso County Emergency Services District,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-fairchild-volunteer-fire-department,tx_dir,,Fairchild Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-falfurrias-volunteer-fire-department,tx_dir,,Falfurrias Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-franklin-fire-department,tx_dir,,Franklin Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-gardendale-volunteer-fire-department,tx_dir,,Gardendale Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-grey-forest-area-volunteer-fire-department,tx_dir,,Grey Forest Area Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-hamshire-volunteer-fire-department,tx_dir,,Hamshire Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-hardin-county-emergency-service-district-no-5,tx_dir,,Hardin County Emergency Service District No. 5,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-harris-county-emergency-services-district-13,tx_dir,,Harris County Emergency Services District 13,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-harris-county-emergency-services-district-28,tx_dir,,Harris County Emergency Services District 28,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-harris-county-emergency-services-district-3,tx_dir,,Harris County Emergency Services District # 3,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-harris-county-emergency-services-district-48,tx_dir,,Harris County Emergency Services District 48,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-harris-county-emergency-services-district-5,tx_dir,,Harris County Emergency Services District 5,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-harris-county-emergency-services-district-7,tx_dir,,Harris County Emergency Services District 7,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-harris-county-emergency-services-district-9,tx_dir,,Harris County Emergency Services District 9,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-harris-county-emergency-services-district-no-21,tx_dir,,Harris County Emergency Services District No. 21,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-harris-county-emergency-services-district-no-46,tx_dir,,Harris County Emergency Services District No. 46,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-hartley-volunteer-fire-department,tx_dir,,Hartley Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-hays-county-emergency-services-district-no-8,tx_dir,,Hays County Emergency Services District No. 8,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-hays-county-emergency-services-district-no-9,tx_dir,,Hays County Emergency Services District No. 9,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-heart-of-pines-volunteer-fire-department,tx_dir,,Heart of The Pines Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-henderson-county-emergency-service-district-8,tx_dir,,Henderson County Emergency Service District 8,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-hill-county-emergency-services-district-1,tx_dir,,Hill County Emergency Services District #1,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-horizon-city-fire-department,tx_dir,,City of Horizon City Fire,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-jefferson-county-emergency-service-district-4,tx_dir,,Jefferson County Emergency Service District #4,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-josephine-volunteer-fire-department,tx_dir,,Josephine Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-judson-volunteer-fire-department,tx_dir,,Judson Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-la-vernia-volunteer-fire-department,tx_dir,,La Vernia Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-lake-conroe-fire-department,tx_dir,,Lake Conroe Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-liberty-hill-volunteer-fire-department,tx_dir,,Liberty Hill Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-loraine-volunteer-fire-department,tx_dir,,Loraine Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-mcgregor-fire-department,tx_dir,,McGregor Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-medina-county-emergency-service-district-no-4,tx_dir,,Medina County Emergency Service District No. 4,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-mobeetie-fire-department,tx_dir,,Mobeetie Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-montgomery-county-emergency-services-district-no-14,tx_dir,,Montgomery County Emergency Services District No. 14,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-montgomery-county-emergency-services-district-no-6,tx_dir,,Montgomery County Emergency Services District No. 6,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-montgomery-county-emergency-services-district-no-8,tx_dir,,Montgomery County Emergency Services District No. 8,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-mountain-home-volunteer-fire-department,tx_dir,,Mountain Home Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-nolan-volunteer-fire-department,tx_dir,,Nolan Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-northeast-gaines-county-emergency-services-district,tx_dir,,Northeast Gaines County Emergency Services District,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-nueces-county-emergency-services-district-1,tx_dir,,Nueces County Emergency Services District 1,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-nueces-county-emergency-services-district-3,tx_dir,,Nueces County Emergency Services District 3,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-ottine-volunteer-fire-department,tx_dir,,Ottine Volunteer Fd,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-oyster-creek-volunteer-fire-department,tx_dir,,Oyster Creek Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-paisano-volunteer-fire-department,tx_dir,,Paisano Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-palo-pinto-emergency-service-district-1,tx_dir,,Palo Pinto Emergency Service District #1,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-pawnee-volunteer-fire-department,tx_dir,,Pawnee Volunteer Fire Dept,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-plum-grove-volunteer-fire-department,tx_dir,,Plum Grove Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-reeves-county-emergency-service-district,tx_dir,,Reeves County Emergency Service District,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-rendon-fire-department,tx_dir,,Rendon Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-sabine-volunteer-fire-department,tx_dir,,Sabine Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-shephard-volunteer-fire-department,tx_dir,,Shephard Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-socorro-fire-department,tx_dir,,Socorro Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-south-montgomery-county-emergency-services-district,tx_dir,,South Montgomery County Emergency Services District,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-sparta-valley-volunteer-fire-department,tx_dir,,Sparta Valley Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-spring-creek-fire-department,tx_dir,,Spring Creek Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-tarrant-county-emergency-services-district-1,tx_dir,,Tarrant County Emergency Services District 1,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-texas-a-and-m-forest-service,tx_dir,,Texas A&M Forest Service,09,manual,"not in the USFA registry; added from the DIR customer name; Texas A&M Forest Service is the state's wildland fire agency (all its DIR purchases, not only fire)"
+TX-S-travis-county-emergency-services-district-no-8,tx_dir,,Travis County Emergency Services District No. 8,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-walker-county-emergency-service-district,tx_dir,,Walker County Emergency Service District,09,manual,not in the USFA registry; added from the DIR customer name
+TX-S-williamson-county-esd-10,tx_dir,,Williamson County ESD #10,09,manual,not in the USFA registry; added from the DIR customer name
+TX-SA306,tx_dir,,Magnolia Volunteer Fire Department,09,exact name,
+TX-SA308,tx_dir,,Montgomery County Emergency Services District No. 2,09,manual,registry name carries the ESD: MCESD#2/ Montgomery Fire Department
+TX-SA311,tx_dir,,Porter Volunteer Fire Department,09,exact name,
+TX-SA314,tx_dir,,Timberlakes Volunteer Fire Department,09,manual,registry: Timber Lakes Volunteer Fire Department
+TX-SA404,tx_dir,,Montgomery County Emergency Services District No. 3,09,exact name,
+TX-SA409,tx_dir,,Needham Fire Department,09,manual,registry: Needham Fire Rescue Company; DIR city Conroe = registry
+TX-SA412,tx_dir,,South Montgomery County Volunteer Fire Department,09,exact name,
+TX-SA416,tx_dir,,The Woodlands Fire Department,09,exact name,
+TX-SA603,tx_dir,,Montgomery County Emergency Services District No. 1,09,exact name,
+TX-SA605,tx_dir,,Montgomery County Emergency Services District No. 9,09,exact name,
+TX-SG206,tx_dir,,Etoile Volunteer Fire Department,09,exact name,
+TX-SP502,tx_dir,,Annaville Volunteer Fire Department,09,manual,registry: Annaville Fire Department
+TX-SP508,tx_dir,,Nueces County Emergency Services District 2,09,exact name,
+TX-ST507,tx_dir,,Orange County Emergency Services District 1,09,exact name,
+TX-ST604,tx_dir,,Orange County Emergency Services District No. 3,09,exact name,
+TX-SY204,tx_dir,,Greenwood Rural Fire Department,09,manual,registry: Greenwood Rural Volunteer Fire Department
+TX-SY303,tx_dir,,Brock-Dennis Volunteer Fire Department,09,exact name,
+TX-SY617,tx_dir,,Parker County Emergency Services District 6,09,exact name,
+TX-TB306,tx_dir,,Onalaska Volunteer Fire Department,09,exact name,
+TX-TB402,tx_dir,,Corrigan Volunteer Fire Department,09,manual,registry: Corrigan Fire Department
+TX-TB407,tx_dir,,Scenic Loop Volunteer Fire Department,09,exact name,
+TX-TB505,tx_dir,,Livingston Fire Department,09,manual,registry: Livingston Volunteer Fire Department
+TX-TC701,tx_dir,,City of Amarillo Fire,09,manual,registry: Amarillo Fire Department
+TX-TG301,tx_dir,,Emory Volunteer Fire Department,09,exact name,
+TX-TK401,tx_dir,,Timbercreek Canyon Volunteer Fire Department,09,exact name,
+TX-TP303,tx_dir,,Nueces Canyon Volunteer Fire Department,09,exact name,
+TX-TW303,tx_dir,,Blackjack Volunteer Fire Department,09,exact name,
+TX-VA403,tx_dir,,Pineland Volunteer Fire Department,09,manual,registry: Pineland Fire Department
+TX-VA404,tx_dir,,Fairmount Volunteer Fire Department,09,exact name,
+TX-VC303,tx_dir,,Punkin-Evergreen Volunteer Fire Department,09,exact name,
+TX-VC307,tx_dir,,Waterwood Volunteer Fire Department,09,manual,"registry: Waterwood Fire & Rescue, Inc."
+TX-VC308,tx_dir,,Bear Creek Volunteer Fire Department,09,exact name,
+TX-VK601,tx_dir,,Snyder Volunteer Fire Department,09,manual,registry: Snyder Fire Department
+TX-VS507,tx_dir,,Lindale Fire Department,09,exact name,
+TX-WB311,tx_dir,,Eagle Mountain Fire Department,09,manual,registry: Eagle Mountain Fire/ EMS
+TX-WB405,tx_dir,,City of Blue Mound Fire,09,manual,registry: Blue Mound Fire Department
+TX-WB502,tx_dir,,City of Azle Fire,09,manual,registry: Azle Fire Department
+TX-WB529,tx_dir,,Richland Hills Fire Rescue,09,exact name,
+TX-WB701,tx_dir,,City of Arlington Fire,09,manual,registry: Arlington Fire Department
+TX-WB901,tx_dir,,City of Fort Worth Fire,09,manual,registry: Fort Worth Fire Department
+TX-WC501,tx_dir,,Potosi Volunteer Fire Department,09,exact name,
+TX-WK304,tx_dir,,Tri-Lakes Volunteer Fire Department,09,exact name,
+TX-WN704,tx_dir,,City of San Angelo Fire,09,manual,registry: San Angelo Fire Department
+TX-WP202,tx_dir,,Travis County Emergency Services District No. 10,09,exact name,
+TX-WP303,tx_dir,,Travis County Emergency Services District,09,manual,DIR gives no ESD number; DIR zip 78734 = HQ zip of ESD 6/Lake Travis Fire Rescue
+TX-WP303,tx_dir,,Travis County Emergency Services District No. 6,09,exact name,
+TX-WP312,tx_dir,,Travis County Emergency Services District No. 2,09,exact name,
+TX-WP317,tx_dir,,Travis County Fire Department,09,manual,registry: Travis County Fire Rescue; DIR city and zip Del Valle 78617 = registry HQ
+TX-WP408,tx_dir,,Travis County Emergency Services District No. 5,09,exact name,
+TX-WP510,tx_dir,,Oak Hill Fire Department,09,manual,registry: Oak Hill Fire Department-Travis County ESD 3
+TX-WP510,tx_dir,,Travis County Emergency Services District No. 3,09,manual,registry name carries ESD 3: Oak Hill Fire Department-Travis County ESD 3
+TX-WP607,tx_dir,,Westlake Fire Department,09,exact name,
+TX-WP801,tx_dir,,City of Austin Fire,09,manual,registry: Austin Fire Department
+TX-WS403,tx_dir,,Ivanhoe Volunteer Fire Department,09,exact name,
+TX-WS406,tx_dir,,Woodville Volunteer Fire Department,09,exact name,
+TX-WZ208,tx_dir,,Van Zandt Midway Volunteer Fire Department,09,exact name,
+TX-XA307,tx_dir,,Nursery Volunteer Fire Department,09,exact name,
+TX-XB302,tx_dir,,New Waverly Volunteer Fire Department,09,exact name,
+TX-XB303,tx_dir,,Riverside Volunteer Fire Department,09,exact name,
+TX-XB305,tx_dir,,Crabbs Prairie Volunteer Fire Department,09,exact name,
+TX-XC501,tx_dir,,Monaville Volunteer Fire Department,09,exact name,
+TX-XK702,tx_dir,,City of Laredo Fire,09,manual,"registry: Laredo Metro Fire Department, the city's career department (402 career, 16 stations)"
+TX-XP406,tx_dir,,Wheeler Volunteer Fire Department,09,exact name,
+TX-XV213,tx_dir,,Volente Fire Department,09,manual,registry: Volente Volunteer Fire Department
+TX-XV307,tx_dir,,Jollyville Volunteer Fire Department,09,exact name,
+TX-XV308,tx_dir,,City of Leander Fire,09,manual,registry: Leander Fire Department
+TX-XV401,tx_dir,,City of Cedar Park Fire,09,manual,registry: Cedar Park Fire Department
+TX-XV406,tx_dir,,Weir Volunteer Fire Department,09,exact name,
+TX-XV414,tx_dir,,Sam Bass Fire Department,09,exact name,
+TX-XV510,tx_dir,,City of Round Rock Fire,09,manual,"the city's own department, not Round Rock Volunteer FD"
+TX-XW404,tx_dir,,Stockdale Volunteer Fire Department,09,exact name,
+TX-XY207,tx_dir,,Greenwood-Slidell Volunteer Fire Department,09,exact name,
+TX-XY303,tx_dir,,Wise County Emergency Services District #1,09,exact name,
+TX-ZC501,tx_dir,,Zapata County Fire Department,09,exact name,
+TX-KA926,tx_houston,1200,Houston Fire Department (HFD),07,department code,City of Houston fiscal year runs July to June

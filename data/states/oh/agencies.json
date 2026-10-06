@@ -1,11 +1,22 @@
 {
  "state": "OH",
- "sources": [],
+ "sources": [
+  {
+   "source": "oh_cincinnati",
+   "name": "City of Cincinnati Vendor Payments",
+   "tier": "1",
+   "url": "https://data.cincinnati-oh.gov/d/qrj9-83t8",
+   "years": "2021-2027",
+   "fiscal_year": "City of Cincinnati FY, Jul-Jun",
+   "fetched": "2026-10-06",
+   "note": "Cincinnati Fire Department only (department codes 224, 271, 272); purchases other city departments make for Fire (fleet, IT) are not included; FY2027 partial (payments through 2026-10-02)"
+  }
+ ],
  "coverage_counts": {
-  "1": 0,
+  "1": 1,
   "2": 0,
   "3": 0,
-  "4": 1148
+  "4": 1147
  },
  "agencies": [
   {
@@ -9697,11 +9708,12 @@
    "county": "Hamilton",
    "city": "Cincinnati",
    "usfa_fdid": "31015",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_cincinnati",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "07",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
