@@ -905,12 +905,21 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
   let negSeen = false;                               // set when a negative amount is rendered
   let negNoted = false;                              // the page already explains negative amounts
-  // Whole dollars: round to cents first, then halves away from zero
+  // Short form of whole dollars: $642, $1.5k, $829k, $82.6M, $1.2B
+  function compact(d) {
+    if (d < 1000) return nf.format(d);
+    if (d < 9950) return (d / 1e3).toFixed(1).replace(/\.0$/, '') + 'k';
+    if (d < 999500) return Math.round(d / 1e3) + 'k';
+    if (d < 999950000) return (d / 1e6).toFixed(1) + 'M';
+    return (d / 1e9).toFixed(1) + 'B';
+  }
+  // Whole dollars (round to cents first, then halves away from zero), shown short with the exact amount on hover
   function money(v) {
     const d = Math.round(Math.round(Math.abs(v) * 100) / 100);
     if (d === 0) return '$0';
     if (v < 0) negSeen = true;
-    return (v < 0 ? '-$' : '$') + nf.format(d);
+    const sign = v < 0 ? '-$' : '$';
+    return d < 1000 ? sign + nf.format(d) : '<span title="' + sign + nf.format(d) + '">' + sign + compact(d) + '</span>';
   }
   function cents(v) {
     const c = Math.round(Math.abs(v) * 100);
