@@ -1,0 +1,115 @@
+vendor,product,match
+3Di Inc,,^3 ?DI( SYSTEMS| SOFTWARE)?$
+5AlarmData,,\b5 ?ALARM ?DATA\b
+911 Systems,,^911 SYSTEMS$
+Accelerant,,^ACCELERANT( SOFTWARE| SOLUTIONS| TECHNOLOGIES)?$
+Advanced Fire Data,,\bADVANCED FIRE DATA\b
+Advanced Problem Solving,,\bADVANCED PROBLEM SOLVING\b
+AegisOne HQ,,\bAEGIS ?ONE\b
+Alpine Software,,\bALPINE SOFTWARE\b
+AlwaysOnScene,,\bALWAYS ?ON ?SCENE\b
+APX Data USA,,\bAPX DATA\b
+Arborlook Insights,,\bARBOR ?LOOK\b
+Ardolex Technologies,BoxAlarm,\bARDOLEX\b|\bBOXALARM\b
+ARK Fire RMS,,\bARK FIRE\b
+Astral8,,\bASTRAL ?8\b
+Blue Devil Data LLC,,\bBLUE DEVIL DATA\b
+CADReport RMS,,\bCAD ?REPORT\b
+CCE Platform,,\bCCE PLATFORM\b
+CentralSquare,,\bCENTRALSQUARE\b|\bCENTRAL SQUARE TECHNOLOGIES\b
+Civoly,,\bCIVOLY\b
+CLEMIS,,\bCLEMIS\b
+CommandEstablished,,\bCOMMAND ?ESTABLISHED\b
+Cordial System Logistics LLC,Grey Goose Graphics,\bCORDIAL SYSTEMS? LOGISTICS\b|\bGREY GOOSE GRAPHICS\b
+CSI Technology,,\bCSI TECHNOLOGY\b
+Darkhorse Emergency,,\bDARK ?HORSE (EMERGENCY|ANALYTICS)\b
+Datum Consulting Group,NexEMS,\bDATUM CONSULTING\b|\bNEXEMS\b
+Digital Dialect,Code360,\bDIGITAL DIALECT\b|\bCODE ?360\b
+Digital EMS,,\bDIGITAL EMS\b
+Digitech,TripTix CDX,^DIGITECH( COMPUTER)?$|\bTRIP ?TIX\b
+DiRo Media LLC,FireNaV,\bDIRO MEDIA\b|\bFIRENAV\b
+"Documed Systems Intl., Inc.",,\bDOCUMED\b
+Echo Data Analytics,,\bECHO DATA ANALYTICS\b
+Echo Management Solutions,,\bECHO MANAGEMENT SOLUTIONS\b
+EM Systems,,^EM SYSTEMS$
+EMAssistant,,\bEM ?ASSISTANT\b
+Emergency Networking,,\bEMERGENCY NETWORKING\b
+Emergency Ops,,^EMERGENCY OPS$
+Emergency Service Perspectives,OmniaOne,\bEMERGENCY SERVICES? PERSPECTIVES\b|\bOMNIA ?ONE\b
+Emergency Solutions,ResponseMaster,\bRESPONSE ?MASTER\b
+Emergent,,^EMERGENT( SOFTWARE| TECHNOLOGIES)?$
+Enforsys,,\bENFORSYS\b
+EPR Systems,,\bEPR SYSTEMS\b
+ESO,,^ESO( SOLUTIONS\b| COM\b|$)
+Falcone Enterprises,Fire Fast Track,\bFALCONE ENTERPRISES\b|\bFIRE ?FAST ?TRACK\b
+FD Connect,,\bFD ?CONNECT\b
+Feathershark,,\bFEATHER ?SHARK\b
+Fire Command System,,\bFIRE COMMAND SYSTEMS?\b
+"Fire File, LLC",,^FIRE ?FILE$
+Fire Recovery USA,,\bFIRE RECOVERY USA\b
+Fire Rescue Systems,,^FIRE RESCUE SYSTEMS$
+Fire Station Reporting,,\bFIRE STATION REPORTING\b
+"Fire Station Software, LLC",,\bFIRE STATION SOFTWARE\b
+Fire Training Log,,\bFIRE TRAINING LOG\b
+FireDesk,,\bFIRE ?DESK\b
+Fireground Analytics,,\bFIREGROUND ANALYTICS\b
+Firehouse 360,,\bFIREHOUSE ?360\b
+Firehouse247,,\bFIREHOUSE ?24 ?7\b
+FireMic,,\bFIRE ?MIC\b
+FireOps7,,\bFIRE ?OPS ?7\b
+FirePrograms,,\bFIREPROGRAMS\b|\bFIRE PROGRAMS SOFTWARE\b
+Fireproof Tech,,\bFIREPROOF TECH\b
+FireTracker,,\bFIRE ?TRACKER\b
+First Line Metrics,,\bFIRST ?LINE METRICS\b
+FirstDue,,^FIRST ?DUE( SOFTWARE| SIZE ?UP)?$|\bLOCALITY MEDIA\b
+FirstWatch,,^FIRSTWATCH$|\bFIRST ?WATCH SOLUTIONS\b
+FMS (Fire Management Systems),,\bFIRE MANAGEMENT SYSTEMS\b
+GuardianCAD,,\bGUARDIAN ?CAD\b
+HGW LLC,,^HGW$
+ImageTrend,,\bIMAGE ?TREND\b
+International Public Safety Data Institute,,\bINTERNATIONAL PUBLIC SAFETY DATA\b|\bIPSDI\b
+JDX Group,,\bJDX\b
+Ladder Suite LLC,,\bLADDER ?SUITE\b
+LadderOps.tech,,\bLADDER ?OPS\b
+Ladiga Studios,,\bLADIGA\b
+Larimore Associates,,\bLARIMORE ASSOCIATES\b
+"Legit Logic Labs, LLC",,\bLEGIT LOGIC\b
+Levrum Data Technologies,,\bLEVRUM\b
+Management Solutions for Emergency Services,Ember Fire App,\bMANAGEMENT SOLUTIONS FOR EMERGENCY SERVICES\b|\bEMBER FIRE\b
+MetroPCR,,\bMETRO ?PCR\b
+Mosaic Technologies Inc,,^MOSAIC TECHNOLOGIES$
+One Step Information Systems,,\bONE ?STEP INFORMATION\b
+Open Scaffold Labs,,\bOPEN SCAFFOLD\b
+Origin Code Systems LLC,Chief's Desk,\bCHIEFS ?DESK\b|\bORIGIN CODE SYSTEMS\b
+Piran Command,,\bPIRAN\b
+ProPhoenix,,\bPRO ?PHOENIX\b
+PSOps,,\bPS ?OPS\b
+Pulsiam,,\bPULSIAM\b
+Quigley's Web and App Design,,\bQUIGLEYS WEB\b
+Ready Software LLC,StationReady,\bREADY SOFTWARE\b|\bSTATION ?READY\b
+RespondersAide,,\bRESPONDERS ?AIDE\b
+ResponseIQ.ai,,\bRESPONSE ?IQ\b
+Responserack,,\bRESPONSE ?RACK\b
+Rivendell Consulting,FireOpsHub,\bRIVENDELL CONSULTING\b|\bFIRE ?OPS ?HUB\b
+RM Ventures LLC,Responder HQ,\bRM VENTURES\b|\bRESPONDER ?HQ\b
+RunReady.app,,\bRUN ?READY\b
+Rural Fire RMS,,\bRURAL FIRE RMS\b
+"Sansio, Inc.",,\bSANSIO\b
+SceneSafe,,\bSCENE ?SAFE\b
+Signal30,FireOps1,\bSIGNAL ?30\b|\bFIRE ?OPS ?1\b
+Solutionment,,\bSOLUTIONMENT\b
+Starwest Tech,Zoi,\bSTARWEST TECH
+Station Automation Solutions LLC,StationClipboard,\bSTATION AUTOMATION SOLUTIONS\b|\bSTATION ?CLIPBOARD\b
+"Station Boss, LLC",,\bSTATION ?BOSS\b
+stationOS,,\bSTATIONOS\b
+StationSmarts,,\bSTATION ?SMARTS\b
+Stationwise Inc.,,\bSTATION ?WISE\b
+StationWorks.io,,\bSTATIONWORKS\b
+Taylor Made Designs,,\bTAYLOR ?MADE DESIGNS?\b
+Tyler Technologies,Tyler Enterprise CAD,\bTYLER TECH(NOLOGIES)?\b
+UFSTC (United Fire Service Technology),,\bUFSTC\b|\bUNITED FIRE SERVICE TECHNOLOGY\b
+Unified Solutions,,^UNIFIED SOLUTIONS$
+Wabo LLC,SparkOps,^WABO$|\bSPARK ?OPS\b
+Watchroom,,\bWATCH ?ROOM\b
+Water on Scene,,\bWATER ON SCENE\b
+YoYiYak,,\bYOYIYAK\b

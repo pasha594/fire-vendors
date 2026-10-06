@@ -1,0 +1,34 @@
+id,name,group,purchasing
+apparatus,Fire apparatus (sales and service),Apparatus and vehicles,yes
+ambulance,Ambulances,Apparatus and vehicles,yes
+fleet,"Fleet vehicles, fuel and parts",Apparatus and vehicles,yes
+fire-equipment,"Fire equipment distributors (hose, tools, PPE, SCBA)",Firefighter equipment,yes
+ppe,Turnouts and PPE,Firefighter equipment,yes
+scba,SCBA and breathing air,Firefighter equipment,yes
+wildland,Wildland equipment,Firefighter equipment,yes
+ems-equipment,"EMS equipment (monitors, stretchers, CPR devices)",EMS,yes
+ems-supplies,Medical supplies and oxygen,EMS,yes
+ems-billing,Ambulance billing,EMS,yes
+radios,Radios and communications equipment,Communications and technology,yes
+dispatch,Dispatch services,Communications and technology,yes
+rms,"Records, ePCR and CAD software",Communications and technology,yes
+staffing-software,Scheduling and staffing software,Communications and technology,yes
+training-software,"Training, policy and compliance software",Communications and technology,yes
+software,Other software,Communications and technology,yes
+it,IT hardware and services,Communications and technology,yes
+telecom,Phone and internet,Communications and technology,yes
+construction,Station construction and design,Facilities,yes
+facilities,Facility maintenance and supplies,Facilities,yes
+utilities,Utilities,Facilities,yes
+uniforms,Uniforms and station wear,Services and supplies,yes
+training,"Training, conferences, travel and dues",Services and supplies,yes
+medical-exams,Medical exams and wellness,Services and supplies,yes
+professional,"Professional services (legal, audit, HR, consulting)",Services and supplies,yes
+insurance,"Insurance (liability, property, workers' comp)",Services and supplies,yes
+general,General supplies and retail,Services and supplies,yes
+unclassified,Unclassified,Unclassified,yes
+payroll,"Payroll, benefits and taxes",Not purchasing,no
+finance,"Debt, banking and card payments",Not purchasing,no
+government,Payments to other governments,Not purchasing,no
+placeholder,No vendor named,Not purchasing,no
+individuals,Individuals (names withheld),Not purchasing,no

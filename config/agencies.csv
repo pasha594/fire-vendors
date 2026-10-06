@@ -1,0 +1,46 @@
+tu_id,name,usfa_fdid,county,include,notes
+1363,Beaver County Special Serv. District 2 (fire),01003,Beaver,yes,
+1411,Beaver Fire District 1,01001,Beaver,yes,
+1394,Central Box Elder Fire Special Service District,,Box Elder,yes,
+1549,Dammeron Valley Fire Special Service District,53020,Washington,yes,
+1587,Diamond Valley Fire Special Service District,53021,Washington,yes,
+775,Emery County Fire Protection SSD,,Emery,yes,
+1694,Flaming Gorge Fire & EMS District,,Daggett,yes,
+1386,Garden City Fire Protection District,33001,Rich,yes,
+1488,Grand County Service Area Castle Valley Fire Protection District,19003,Grand,yes,
+1181,Hurricane Valley Fire Special Service District,53004,Washington,yes,
+1073,Juab County Spec Serv Fire Protection District,,Juab,yes,
+1433,Laketown Fire District,33002,Rich,yes,
+955,Lone Peak Public Safety District,49001,Utah,yes,Public safety district; vendor spend may include police
+1418,Mammoth Creek Fire District,17013,Garfield,yes,
+1079,Millard County Fire District,,Millard,yes,
+1081,Moab Valley Fire Protection District,19002,Grand,yes,
+1395,Mountain Green Fire Protection District,29003,Morgan,yes,
+1562,North Central Fire Special Service District,,Washington,yes,
+791,North Davis Fire District,11003,Davis,yes,
+1421,North Summit Fire Protection District,43001,Summit,yes,
+987,North Tooele Fire Protection Service District,45011,Tooele,yes,
+743,North View Fire District,57004,Weber,yes,
+799,Park City Fire Service District,43006,Summit,yes,
+1520,Randolph Fire District,33004,Rich,yes,
+1693,Riverton Fire Service Area,,Salt Lake,yes,
+1141,Rockville Springdale Fire Protection District,,Washington,yes,
+1569,Sanpete County Fire Special Service District,,Sanpete,yes,
+907,South Davis Metro Fire Agency,11020,Davis,yes,
+1378,South Davis Metro Fire Service Area,,Davis,yes,Taxing entity that funds South Davis Metro Fire Agency; payments to the agency are intergovernmental
+1524,South Summit Fire Protection District,43007,Summit,yes,
+1577,Thompson Fire Protection District,,Grand,yes,
+809,Uintah Fire Suppression Special Service District,47003,Uintah,yes,
+679,Unified Fire Authority,35006,Salt Lake,yes,
+673,Unified Fire Service Area,,Salt Lake,yes,Taxing entity that funds Unified Fire Authority; payments to UFA are intergovernmental
+1746,WPR Road and Fire District,,Morgan,yes,Serves the Wasatch Peaks Ranch community; vendor spend may include roads
+815,Wasatch County Fire Protection SSD,51002,Wasatch,yes,
+761,Weber Fire District,57014,Weber,yes,
+1538,Woodruff Fire District,33006,Rich,yes,
+1586,Cache County EMS Authority,,,no,EMS only
+1696,Emery Emergency Medical Special Service District,,,no,EMS only
+1636,Grand County Emergency Medical Services Special Service District,,,no,EMS only
+1403,North Sanpete Ambulance Service,,,no,EMS only
+947,Valley Emergency Communications Center,,,no,Dispatch
+653,Weber Area Dispatch 911 and Emergency Services District,,,no,Dispatch
+1742,Local Building Authority of Moab Valley Fire Protection District,,,no,Financing entity
