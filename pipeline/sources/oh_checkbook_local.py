@@ -44,7 +44,12 @@ districts; an EMS-only district is not a fire agency, owner decision 2026-10-06)
 villages only the lines whose fund or department is named for fire (FIRE_NAME, minus NOT_FIRE_NAME: shared
 police-and-fire names, fire-loss insurance escrow, hydrants). A township's general-fund "Public Safety" lines are
 never included, even under program code 220 (fire protection in the township chart of accounts), because the
-name does not say fire. Only participants linked in config/states/oh/agency_sources.csv reach the data.
+name does not say fire; nor are EMS-only funds or departments. When a participant's fire-named department also
+carries lines of a police fund, its department code is shared with police and only its fire funds count
+(dept_trusted). Only participants linked in config/states/oh/agency_sources.csv reach the data: a participant
+is linked when it runs the fire department named in the registry (place name and county) and its fire lines are
+that department's spending; townships that pay another department by contract, and participants whose
+fire-named lines are only a grant, capital or debt fund, are not linked (docs/sources/oh.md lists them).
 
 Fiscal year: Ohio local governments use the calendar year (fy_start 01); fiscal_year is the transaction date's
 year. Years 2021 on.

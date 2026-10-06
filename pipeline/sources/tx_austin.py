@@ -22,12 +22,12 @@ Attribution: department code 83, "Fire", linked to TX-WP801 in agency_sources.cs
 
 Duplicates and reversals: lines identical in every column except the Socrata row id are kept once. Checks of
 every status are kept (Outstanding = issued, not yet cashed; Escheat = uncashed and sent to the state as
-unclaimed property; the City's expense stands either way). Payees on mileage, overtime and expense-refund
-objects and on customer (non-vendor) lines are always withheld.
+unclaimed property; the City's expense stands either way). Payee names are published as the source publishes
+them, employees and customer (non-vendor) payees included (owner decision, 2026-10-06); common.withhold_person
+only cuts email addresses and bank account text.
 """
 import collections
 import json
-import re
 import sys
 
 import common
@@ -39,7 +39,6 @@ DATASET = "8c6z-qnmj"
 DEPARTMENT = "83"
 FIRST_FY = 2021
 PAGE = 50000
-FORCE_OBJECT = re.compile(r"MILEAGE|REIMB|REFUND|OVERTIME|EMPLOYEE|CLAIM|DAMAGES|JUDGE?MENT|SETTLEMENT", re.I)
 
 
 def fetch():
@@ -62,25 +61,6 @@ def fetch():
                                                           {"$select": select, "$order": ":id", "$limit": 100}))
 
 
-# --- Payee names (same rule as tx_dir.payee) ------------------------------------------------------------
-
-_BUSINESS = None
-
-
-def payee(name, person_flag=False):
-    """common.withhold_person, except that a name config/states/tx/vendor_map_additions.csv lists as a business
-    (rows reviewed by hand, never a person) is kept. withhold_person already trusts config/vendor_map.csv for its
-    looks_like_person test; its is_person and looks_like_person tests also catch company names such as
-    'WW GRAINGER' or 'Brycer, LP'. Payees a source flags (person_flag) and redaction patterns stay withheld."""
-    global _BUSINESS
-    if _BUSINESS is None:
-        _BUSINESS = {r["name_key"] for r in common.read_config(ST, "vendor_map_additions.csv")
-                     if r["category"] != "individuals"}
-    name = " ".join((name or "").split())
-    out = common.withhold_person(name, person_flag)
-    if out == common.WITHHELD and not person_flag and common.norm(name) in _BUSINESS:
-        return name
-    return out
 
 
 def normalize():
@@ -102,10 +82,9 @@ def normalize():
         doc = "-".join(r.get(f, "") for f in ("rfed_doc_cd", "rfed_doc_dept_cd", "rfed_doc_id"))
         per_doc[doc] += 1
         obj = r.get("obj_nm", "")
-        forced = bool(FORCE_OBJECT.search(obj)) or r.get("vend_cust_ind", "V") != "V"
         rows.append({
             "agency_id": aid, "fiscal_year": int(r["fy_dc"]), "posting_date": r.get("chk_eft_iss_dt", "")[:10],
-            "payee_name": payee(r.get("lgl_nm", ""), person_flag=forced),
+            "payee_name": common.withhold_person(r.get("lgl_nm", "")),
             "description": r.get("actg_ln_dscr") or r.get("comm_dscr", ""),
             "account": " / ".join(x for x in (r.get("fund_nm", ""), r.get("div_nm", ""), r.get("gp_nm", ""),
                                               f"{r.get('obj_cd', '')} {obj}".strip()) if x),

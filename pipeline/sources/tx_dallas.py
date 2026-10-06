@@ -20,12 +20,11 @@ normalize  data/states/tx/transactions.csv.gz   one row per DFD payment line
 Attribution: department code DFD, "Dallas Fire-Rescue", linked to TX-DH807 in agency_sources.csv.
 
 Duplicates and reversals: lines identical in every column except the Socrata row id are kept once (none in
-the 2026-10-06 pull). Negative lines are kept. Payees on claims, damages, refund and reimbursement objects are
-always withheld.
+the 2026-10-06 pull). Negative lines are kept. Payee names are published as the source publishes them
+(owner decision, 2026-10-06); common.withhold_person only cuts email addresses and bank account text.
 """
 import collections
 import json
-import re
 import sys
 
 import common
@@ -37,7 +36,6 @@ DATASET = "x5ih-idh7"
 DEPARTMENT = "DFD"
 FIRST_FY = 2021
 PAGE = 50000
-FORCE_OBJECT = re.compile(r"REFUND|REIMB|JUDGE?MENT|DAMAGES|CLAIM|EMPLOYEE|WITNESS|JUROR|SETTLEMENT", re.I)
 
 
 def fetch():
@@ -60,25 +58,6 @@ def fetch():
                                                           {"$select": select, "$order": ":id", "$limit": 100}))
 
 
-# --- Payee names (same rule as tx_dir.payee) ------------------------------------------------------------
-
-_BUSINESS = None
-
-
-def payee(name, person_flag=False):
-    """common.withhold_person, except that a name config/states/tx/vendor_map_additions.csv lists as a business
-    (rows reviewed by hand, never a person) is kept. withhold_person already trusts config/vendor_map.csv for its
-    looks_like_person test; its is_person and looks_like_person tests also catch company names such as
-    'WW GRAINGER' or 'Brycer, LP'. Payees a source flags (person_flag) and redaction patterns stay withheld."""
-    global _BUSINESS
-    if _BUSINESS is None:
-        _BUSINESS = {r["name_key"] for r in common.read_config(ST, "vendor_map_additions.csv")
-                     if r["category"] != "individuals"}
-    name = " ".join((name or "").split())
-    out = common.withhold_person(name, person_flag)
-    if out == common.WITHHELD and not person_flag and common.norm(name) in _BUSINESS:
-        return name
-    return out
 
 
 def normalize():
@@ -100,7 +79,7 @@ def normalize():
         obj = r.get("object", "")
         rows.append({
             "agency_id": aid, "fiscal_year": int(r["fy"]), "posting_date": r.get("rundate", "")[:10],
-            "payee_name": payee(r.get("vendor", ""), person_flag=bool(FORCE_OBJECT.search(obj))),
+            "payee_name": common.withhold_person(r.get("vendor", "")),
             "description": " / ".join(x for x in (r.get("commoditydscr", ""), r.get("activity", "")) if x and x != "NONE"),
             "account": " / ".join(x for x in (r.get("fundtype", ""), r.get("activity", ""), f"{r.get('obj', '')} {obj}".strip()) if x),
             "category_published": r.get("objectgroup", ""), "amount": f"{float(r['chksubtot']):.2f}",

@@ -13,8 +13,8 @@ Fiscal year is the Texas state fiscal year, September to August (the year it end
 fetch      raw/<date>/tx/tx_dir/archive_fy2021_2025.json.gz  rows of w64c-ndf7, fiscal_year >= 2021
            raw/<date>/tx/tx_dir/current_fy2026.json.gz       rows of a743-wj72
            both filtered server-side (SoQL) to customer names that look fire-related (FIRE_WHERE); the full
-           datasets hold about 3.7 million FY2021-2025 rows and 2.2 million FY2026 rows. Person-name columns
-           are not requested (see *_COLUMNS).
+           datasets hold about 3.7 million FY2021-2025 rows and 2.2 million FY2026 rows. Contact-person columns
+           (not payees) are not requested (see *_COLUMNS).
            raw/<date>/tx/tx_dir/<dataset>_meta.json.gz       Socrata metadata (columns, update time)
            raw/<date>/tx/tx_dir/sample.json.gz               100 unfiltered FY2026 rows
 normalize  data/states/tx/line_items.csv.gz    one row per sales line of a linked customer
@@ -50,8 +50,9 @@ CURRENT = "a743-wj72"
 FIRST_FY = 2021
 PAGE = 50000
 
-# Columns kept in the raw files. Person-name columns (customer contact, vendor contact, DIR contract manager,
-# ITSAC staffing contractor) and street addresses are left out server-side so raw files hold no private names.
+# Columns kept in the raw files. Contact-person columns (customer contact, vendor contact, DIR contract manager,
+# ITSAC staffing contractor) and street addresses are not payees and are left out server-side. Payee names
+# (reseller, else DIR vendor) are published as DIR publishes them (owner decision, 2026-10-06).
 ARCHIVE_COLUMNS = [
     "fiscal_year", "customer_name", "customer_type", "customer_city", "customer_zip", "vendor_name", "vendor_hub_type",
     "vendor_city", "vendor_state", "reseller_name", "reseller_hub_type", "reseller_city", "reseller_state",
@@ -101,25 +102,6 @@ def fetch():
     common.save_raw(ST, SOURCE, "sample.json", sample)
 
 
-# --- Payee names --------------------------------------------------------------------------------------------
-
-_BUSINESS = None
-
-
-def payee(name, person_flag=False):
-    """common.withhold_person, except that a name config/states/tx/vendor_map_additions.csv lists as a business
-    (rows reviewed by hand, never a person) is kept. withhold_person already trusts config/vendor_map.csv for its
-    looks_like_person test; its is_person and looks_like_person tests also catch company names such as
-    'WW GRAINGER' or 'Brycer, LP'. Payees a source flags (person_flag) and redaction patterns stay withheld."""
-    global _BUSINESS
-    if _BUSINESS is None:
-        _BUSINESS = {r["name_key"] for r in common.read_config(ST, "vendor_map_additions.csv")
-                     if r["category"] != "individuals"}
-    name = " ".join((name or "").split())
-    out = common.withhold_person(name, person_flag)
-    if out == common.WITHHELD and not person_flag and common.norm(name) in _BUSINESS:
-        return name
-    return out
 
 
 # --- Normalize ----------------------------------------------------------------------------------------------
@@ -190,7 +172,7 @@ def normalize():
             stats["re-reported dollars dropped"] += float(ln["amount"] or 0)
             continue
         aid = links[ln["customer"]]
-        seller = payee(ln["reseller"] or ln["vendor"])
+        seller = common.withhold_person(ln["reseller"] or ln["vendor"])
         rid = f"{ln['dataset']}:{ln['record']}"
         desc = " / ".join(x for x in (ln["description"], f"DIR vendor {ln['vendor']}" if ln["reseller"] else "") if x)
         items.append({

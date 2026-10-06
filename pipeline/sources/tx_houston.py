@@ -22,9 +22,10 @@ normalize  data/states/tx/transactions.csv.gz   one row per HFD payment line
 Attribution: Department ID 1200, "Houston Fire Department (HFD)", linked to TX-KA926 in agency_sources.csv.
 
 Duplicates and reversals: lines identical in every column are kept once (the export repeats some purchase-order
-lines). Negative lines (early payment discounts, credits, vendor offsets) are kept, so amounts are net. Payees
-on employee, garnishment, deceased-employee and refunds-payable accounts are always withheld. Vendor name "*"
-is the City's own mask for a withheld vendor and is kept as published.
+lines). Negative lines (early payment discounts, credits, vendor offsets) are kept, so amounts are net. Payee
+names are published as the source publishes them, employees included (owner decision, 2026-10-06);
+common.withhold_person only cuts email addresses and bank account text. Vendor name "*" is the City's own mask
+for a withheld vendor and is kept as published.
 """
 import collections
 import csv
@@ -45,11 +46,6 @@ SOURCE = "tx_houston"
 PAGE = "https://data.houstontx.gov/dataset/checkbook"
 DEPARTMENT = "1200"
 FIRST_FY = 2021
-# Payees always withheld: employee AP, garnishments, deceased employees' wages, revenue refunds payable. (GL 426030
-# "Ambulance Fees" is not forced: its payees are mostly the EMS billing vendor, and patient names on it are
-# caught by withhold_person.)
-FORCE_GL = {"211020", "211050", "220550", "247450"}
-FORCE_TEXT = re.compile(r"EMPLOYEE|DECEASED|REFUNDS PAYABLE|GARNISH|PAYROLL", re.I)
 
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -107,25 +103,6 @@ def fetch():
     common.save_raw(ST, SOURCE, "manifest.json", json.dumps(manifest, indent=1).encode())
 
 
-# --- Payee names (same rule as tx_dir.payee) ------------------------------------------------------------
-
-_BUSINESS = None
-
-
-def payee(name, person_flag=False):
-    """common.withhold_person, except that a name config/states/tx/vendor_map_additions.csv lists as a business
-    (rows reviewed by hand, never a person) is kept. withhold_person already trusts config/vendor_map.csv for its
-    looks_like_person test; its is_person and looks_like_person tests also catch company names such as
-    'WW GRAINGER' or 'Brycer, LP'. Payees a source flags (person_flag) and redaction patterns stay withheld."""
-    global _BUSINESS
-    if _BUSINESS is None:
-        _BUSINESS = {r["name_key"] for r in common.read_config(ST, "vendor_map_additions.csv")
-                     if r["category"] != "individuals"}
-    name = " ".join((name or "").split())
-    out = common.withhold_person(name, person_flag)
-    if out == common.WITHHELD and not person_flag and common.norm(name) in _BUSINESS:
-        return name
-    return out
 
 
 def iso(d):
@@ -154,11 +131,10 @@ def normalize():
                 continue
             seen.add(k)
             gl, gl_desc = r["GL Account Number"], r["GL Account Description"]
-            forced = gl in FORCE_GL or (not gl.startswith("5") and bool(FORCE_TEXT.search(gl_desc)))
             po = "/".join(x for x in (r["Purchase Order Number"], r["Purchase Order Item"]) if x and x.strip("0"))
             rows.append({
                 "agency_id": aid, "fiscal_year": fy_file, "posting_date": iso(r["Clearing Date"]),
-                "payee_name": payee(r["Vendor Name"], person_flag=forced),
+                "payee_name": common.withhold_person(r["Vendor Name"]),
                 "description": " / ".join(x for x in (r["Type of procurement"], r["WBS Description"],
                                                        f"PO {po}" if po else "",
                                                        f"contract {r['Contract Number']}" if r["Contract Number"] else "") if x),
