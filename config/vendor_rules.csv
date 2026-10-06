@@ -1,18 +1,18 @@
 category,pattern,vendor,note
 rms,^ZOLL DATA\b,Zoll Data Systems,"Zoll Data is ePCR and billing software, separate from Zoll Medical devices"
-fire-equipment,^LN CURTIS\b|^CURTIS BLUE LINE$,L.N. Curtis & Sons,LN Curtis with suffixes; Curtis Blue Line is its law-enforcement division
-apparatus,^SIDDONS( MARTIN\b.*)?$,Siddons-Martin Emergency Group,Siddons-Martin short forms
-fire-equipment,^MES( (SERVICES?|LAWMAN|WARREN|SERVICE SEA ?WESTERN))?$|^MUNICIPAL EMERGE?R?NCY (SERVICES?|SVCS)\b,Municipal Emergency Services,MES branches and misspellings (map already sends MES SEAWESTERN to MES)
+fire-equipment,^LN CURTIS\b|^CURTIS BLUE ?LINE$|\bLN CURTIS AND SONES?\b,L.N. Curtis & Sons,LN Curtis with suffixes and correction lines that name it; Curtis Blue Line is its law-enforcement division
+apparatus,^SIDDONS( MARTIN\b.*)?$|\bSIDDONS MARTIN\b,Siddons-Martin Emergency Group,Siddons-Martin short forms and names that include it (Superior Equipment - Siddons-Martin)
+fire-equipment,^(V\d+ )?MES( (SERVICES?|LAWMAN|WARREN|SERVICE SEA ?WESTERN|NORTHWEST( DEPOSITORY ACCOUNT)?|MUNICIPAL EMERGENCY SERVICES))?$|^(V\d+ )?MUNICIPAL EMER\w*NCY (SERVICES?|SVCS)\b,Municipal Emergency Services,MES branches and misspellings (map already sends MES SEAWESTERN to MES)
 apparatus,^LARSEN (FIRE )?APPAR\w*$,Larsen Fire Apparatus Service,Larsen apparatus misspellings
-fire-equipment,^WEI(DN|ND)ER AND ASSOC\w*$,Weidner Fire,Weidner & Associates spellings
-ems-equipment,^ZOLL MEDICAL\b,Zoll Medical,Zoll Medical with suffixes (not Zoll Data)
+fire-equipment,^WEI(DN|ND)ER (AND ASSOC\w*|ASSOCIATES|SERVICES?|FIRE\b.*)$,Weidner Fire,"Weidner spellings, including Newton's 'WEIDNER FIRE/FIRE/item'"
+ems-equipment,^(V\d+ )?ZOLL MEDICAL\b,Zoll Medical,Zoll Medical with suffixes (not Zoll Data)
 ems-equipment,^STRYKER\b|^STYKER$,Stryker,Stryker financing arm and a typo
 ems-supplies,^BOUND ?TREE\b,Bound Tree Medical,Bound Tree with program suffix
 rms,^ESO COM$,ESO Solutions,eso.com
 software,^NARC ?BOX\b,EMS LogiK,NarcBox is EMS LogiK's product
 apparatus,^ROSENBAUER\b,Rosenbauer,Rosenbauer units
-apparatus,^GRAHAM FIRE( S?PPARATUS\b.*)?$,Graham Fire Apparatus,Graham Fire short form and misspelling
-fire-equipment,^APPARAT\w* EQUIPMENT (AND (AMP )?)?SERVICES?$,Apparatus Equipment & Service,AES spellings
+apparatus,^GRAHAM FIRE( S?A?PPARATUS\b.*)?$,Graham Fire Apparatus,Graham Fire short form and misspelling
+fire-equipment,^APPARAT\w* EQUIP(MENT)? (AND (AMP )?)?SERVICES?$,Apparatus Equipment & Service,AES spellings
 apparatus,^EVS EMERGENCY VEHICLE (SYSTEMS?|SERVICES)$,Emergency Vehicle Systems,EVS spellings
 fire-equipment,^HEIMAN$,Heiman Fire Equipment,Heiman short form
 fire-equipment,^TREASURE FIRE$,Treasure Fire Equipment,Treasure Fire short form
@@ -30,7 +30,7 @@ ems-supplies,^STAT ?PACKS\b|^PURCHASE \d\d \d\d STATPACKS\b,Statpacks,Statpacks 
 software,^HANDTEVY\b|^PEDIATRIC EMERG(ENCY STANDARDS)?\b,Handtevy,Handtevy is Pediatric Emergency Standards Inc
 software,^I ?SPY( FIRE)?$,iSpyFire,iSpyFire spellings
 software,^FIRST ARRIVING$,First Arriving,First Arriving
-radios,^MOUNT OLYMPUS PRO AUDIO MOPA$,MOPA,"raw name is Mount Olympus Pro Audio, LLC (MOPA, LLC)"
+radios,^MOUNT OLYMPUS PRO AUDIO MOPA$,Mount Olympus Pro Audio,"raw name is Mount Olympus Pro Audio, LLC (MOPA, LLC)"
 radios,^L3 HARRIS( PSPC)?$,L3Harris,L3 Harris spaced
 radios,^STRATEGIC COMMUNICATIONS?( SOLUTIONS)?$,Strategic Communications Solutions,singular and short spellings
 telecom,^SOUTH CENTRAL( CO\w*UN\w*CATIONS)?$,South Central Communications,misspellings and short form (payer also uses South Central Communications)
@@ -309,3 +309,9 @@ ems-equipment,^PHYSIO ?CONTROL\b,Stryker,Physio-Control is part of Stryker
 ems-equipment,^(PURCHASE \d\d \d\d )?FERNO\b,Ferno,Ferno spellings
 utilities,^DOMINION ENERGY\b,Enbridge Gas,Dominion Energy Utah became Enbridge Gas Utah
 general,^MURDOCHS?\b,Murdoch's Ranch & Home Supply,Murdoch's spellings
+fire-equipment,^SEA ?WESTERN\b,Sea-Western,Sea-Western spellings and suffixes
+apparatus,^FIRETECH APPARATUS REPAIRS?\b,FireTech Apparatus Repair,FireTech spellings
+fleet,\bFUEL NETWORK\b,Utah Fuel Network,State fuel network under any department name
+telecom,^STRATA NETWORKS\b,Strata Networks,Strata Networks with a service suffix
+professional,^PEN AND WEB COMMUNICATIONS\b,Pen & Web Communications,Payee text adds a contact name
+general,^CORPORATE TRADITIONS\b,Corporate Traditions,Awards and gifts; payee text that names the recipient is withheld

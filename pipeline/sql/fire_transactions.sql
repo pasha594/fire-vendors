@@ -5,8 +5,12 @@
 -- Scope: every expense line of the fire agencies in config/agencies.csv, plus every city, town
 -- and county line coded fire (UCOA function 2009xx in account_number, or "fire" in org1/org2,
 -- not fireworks). Payroll, benefits and refunds are left out (refunds can name patients).
--- Re-uploaded copies of a transaction (same entity, id, date, vendor, account and amount in a
--- later batch) are dropped by keeping the first batch.
+-- Police department lines of a public safety district (Lone Peak) are left out.
+-- Re-uploaded copies of a transaction (same entity, id, date, vendor and amount in a later batch,
+-- even when the later batch changed the account) are dropped by keeping the first batch.
+-- pipeline/build.py applies both rules again, and also drops copies that a later batch uploaded
+-- with renumbered ids (see reupload_copies), so files saved with an older version of this query
+-- give the same result.
 SELECT
   entity_name, govt_lvl, fiscal_year, posting_date, id, batch_id,
   vendor_name, dba_name, description, contract_name, contract_number,
@@ -47,6 +51,8 @@ WHERE type = 'EX'
   AND NOT REGEXP_CONTAINS(LOWER(CONCAT(IFNULL(cat1, ''), ' ', IFNULL(cat2, ''))),
         r'salar|wage|payroll|personnel|employee benefit|employer paid|compensation|retirement')
   AND NOT REGEXP_CONTAINS(LOWER(CONCAT(IFNULL(cat1, ''), ' ', IFNULL(cat2, ''), ' ', IFNULL(description, ''))), r'refund')
+  AND NOT (REGEXP_CONTAINS(LOWER(CONCAT(IFNULL(org1, ''), ' ', IFNULL(org2, ''))), r'\bpolice\b')
+           AND NOT REGEXP_CONTAINS(LOWER(CONCAT(IFNULL(org1, ''), ' ', IFNULL(org2, ''), ' ', IFNULL(org3, ''))), r'fire|ems|wildland'))
 QUALIFY batch_id = MIN(batch_id) OVER (
-  PARTITION BY entity_name, id, posting_date, vendor_name, account_number,
+  PARTITION BY entity_name, id, posting_date, vendor_name,
                CAST(ROUND(amount * 100) AS INT64))

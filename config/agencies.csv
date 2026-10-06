@@ -1,46 +1,251 @@
-tu_id,name,usfa_fdid,county,include,notes
-1363,Beaver County Special Serv. District 2 (fire),01003,Beaver,yes,
-1411,Beaver Fire District 1,01001,Beaver,yes,
-1394,Central Box Elder Fire Special Service District,,Box Elder,yes,
-1549,Dammeron Valley Fire Special Service District,53020,Washington,yes,
-1587,Diamond Valley Fire Special Service District,53021,Washington,yes,
-775,Emery County Fire Protection SSD,,Emery,yes,
-1694,Flaming Gorge Fire & EMS District,,Daggett,yes,
-1386,Garden City Fire Protection District,33001,Rich,yes,
-1488,Grand County Service Area Castle Valley Fire Protection District,19003,Grand,yes,
-1181,Hurricane Valley Fire Special Service District,53004,Washington,yes,
-1073,Juab County Spec Serv Fire Protection District,,Juab,yes,
-1433,Laketown Fire District,33002,Rich,yes,
-955,Lone Peak Public Safety District,49001,Utah,yes,Public safety district; vendor spend may include police
-1418,Mammoth Creek Fire District,17013,Garfield,yes,
-1079,Millard County Fire District,,Millard,yes,
-1081,Moab Valley Fire Protection District,19002,Grand,yes,
-1395,Mountain Green Fire Protection District,29003,Morgan,yes,
-1562,North Central Fire Special Service District,,Washington,yes,
-791,North Davis Fire District,11003,Davis,yes,
-1421,North Summit Fire Protection District,43001,Summit,yes,
-987,North Tooele Fire Protection Service District,45011,Tooele,yes,
-743,North View Fire District,57004,Weber,yes,
-799,Park City Fire Service District,43006,Summit,yes,
-1520,Randolph Fire District,33004,Rich,yes,
-1693,Riverton Fire Service Area,,Salt Lake,yes,
-1141,Rockville Springdale Fire Protection District,,Washington,yes,
-1569,Sanpete County Fire Special Service District,,Sanpete,yes,
-907,South Davis Metro Fire Agency,11020,Davis,yes,
-1378,South Davis Metro Fire Service Area,,Davis,yes,Taxing entity that funds South Davis Metro Fire Agency; payments to the agency are intergovernmental
-1524,South Summit Fire Protection District,43007,Summit,yes,
-1577,Thompson Fire Protection District,,Grand,yes,
-809,Uintah Fire Suppression Special Service District,47003,Uintah,yes,
-679,Unified Fire Authority,35006,Salt Lake,yes,
-673,Unified Fire Service Area,,Salt Lake,yes,Taxing entity that funds Unified Fire Authority; payments to UFA are intergovernmental
-1746,WPR Road and Fire District,,Morgan,yes,Serves the Wasatch Peaks Ranch community; vendor spend may include roads
-815,Wasatch County Fire Protection SSD,51002,Wasatch,yes,
-761,Weber Fire District,57014,Weber,yes,
-1538,Woodruff Fire District,33006,Rich,yes,
-1586,Cache County EMS Authority,,,no,EMS only
-1696,Emery Emergency Medical Special Service District,,,no,EMS only
-1636,Grand County Emergency Medical Services Special Service District,,,no,EMS only
-1403,North Sanpete Ambulance Service,,,no,EMS only
-947,Valley Emergency Communications Center,,,no,Dispatch
-653,Weber Area Dispatch 911 and Emergency Services District,,,no,Dispatch
-1742,Local Building Authority of Moab Valley Fire Protection District,,,no,Financing entity
+id,name,govt_lvl,kind,county,tu_id,usfa_fdid,include,notes
+359,American Fork City,City,City fire department,Utah,359,49002,yes,Own fire and ambulance department; lines include Fire Station 52 construction and bond payments. Cedar Hills pays it for fire service.
+1221,Antimony Town,Town,Town fire department,Garfield,1221,,yes,Small volunteer department (about $63k FY2021-2026); largest vendor Weidner Fire.
+1017,Apple Valley Town,Town,Town fire department,Washington,1017,53023,yes,"Own volunteer department; equipment, apparatus and station costs."
+361,Aurora City,City,City fire department,Sevier,361,41002,yes,Own volunteer department.
+297,Beaver County,County,County fire,Beaver,297,,yes,"County fire warden (wildland): pays the state wildfire fund ($292k) and buys equipment (Stotz Equipment, L.N. Curtis). No lines for FY2026."
+1363,Beaver County Special Serv. District 2 (fire),Local and Special Service District,Fire district or service area,Beaver,1363,01003,yes,
+1411,Beaver Fire District 1,Local and Special Service District,Fire district or service area,Beaver,1411,01001,yes,
+1225,Big Water Town,Town,Town fire department,Kane,1225,25006,yes,"Own volunteer department; vehicles, equipment and loan payments."
+365,Blanding City,City,City fire department,San Juan,365,37001,yes,Own volunteer department.
+367,Bluffdale City,City,City fire department,Salt Lake,367,35012,yes,Own fire department; from FY2025 it also pays Saratoga Springs about $3M a year.
+449,Boulder Town,Town,Town fire department,Garfield,449,17002,yes,Small volunteer department (about $82k FY2021-2026); many payees are individuals.
+299,Box Elder County,County,County fire,Box Elder,299,,yes,"County fire program (wildland mitigation, preparedness, initial attack) with its own staff and purchasing."
+371,Brian Head Town,Town,Town fire department,Iron,371,21001,yes,"Own department; only 12 lines, mostly a $180k equipment purchase and a $145k vehicle."
+373,Brigham City,City,City fire department,Box Elder,373,03003,yes,Own fire department; Perry pays it for fire service.
+375,Bryce Canyon City,Town,Town fire department,Garfield,375,17003,yes,Own department.
+301,Cache County,County,County fire,Cache,301,05002,yes,"Runs county fire and ambulance service and buys apparatus (Rosenbauer, Siddons-Martin); also passes $3.4M to cities as contributions. USFA name: Cache County Fire District."
+303,Carbon County,County,County fire,Carbon,303,,yes,"Pays state dispatch ($2.3M) and city fire departments; buys wildland equipment from its mitigation fund (Outback Fire Apparatus, L.N. Curtis)."
+1590,Castle Dale City,City,City fire department,Emery,1590,15001,yes,Own volunteer department.
+377,Cedar City,City,City fire department,Iron,377,21002,yes,Own fire department; Iron County pays it for county fire service.
+1231,Cedar Fort Town,Town,Town fire department,Utah,1231,,yes,Own volunteer department; Fairfield pays it for fire service.
+1394,Central Box Elder Fire Special Service District,Local and Special Service District,Fire district or service area,Box Elder,1394,,yes,
+1237,Clarkston Town,Town,Town fire department,Cache,1237,,yes,Own volunteer department.
+385,Clinton City,City,City fire department,Davis,385,11004,yes,Own fire department.
+1157,Corinne City,Town,Town fire department,Box Elder,1157,03004,yes,Own volunteer department; no fire lines after FY2024.
+1549,Dammeron Valley Fire Special Service District,Local and Special Service District,Fire district or service area,Washington,1549,53020,yes,
+391,Delta City,City,City fire department,Millard,391,27001,yes,Own volunteer department.
+1587,Diamond Valley Fire Special Service District,Local and Special Service District,Fire district or service area,Washington,1587,53021,yes,
+393,Draper City,City,City fire department,Salt Lake,393,,yes,"Own fire department; only 449 lines in the extract, mostly supplies with no payee name and station rent."
+395,Duchesne City,City,City fire department,Duchesne,395,13002,yes,Own volunteer department.
+309,Duchesne County,County,County fire,Duchesne,309,,yes,"County fire program: grants to town fire departments (Altamont, Duchesne, Roosevelt) plus its own purchases (fuel-reduction work, station construction, equipment)."
+1617,Dutch John Town,Town,Town fire department,Daggett,1617,,yes,Own volunteer department.
+399,East Carbon City,City,City fire department,Carbon,399,07002,yes,Own volunteer department.
+401,Elk Ridge City,City,City fire department,Utah,401,49015,yes,Own volunteer department.
+1247,Elmo Town,Town,Town fire department,Emery,1247,,yes,"Fire station project in FY2021-2022 (BoDec, Jones & DeMille Engineering); no lines after FY2022."
+1029,Elsinore Town,Town,Town fire department,Sevier,1029,41003,yes,Own volunteer department.
+775,Emery County Fire Protection SSD,Local and Special Service District,Fire district or service area,Emery,775,,yes,
+1249,Emery Town,Town,Town fire department,Emery,1249,,yes,Own volunteer department.
+407,Enterprise City,City,City fire department,Washington,407,53002,yes,Own department.
+409,Ephraim City,City,City fire department,Sanpete,409,39002,yes,Own department; also pays Sanpete County Fire District #2 fees ($675k).
+411,Escalante City,Town,Town fire department,Garfield,411,17005,yes,Own volunteer department.
+413,Fairview City,City,City fire department,Sanpete,413,39003,yes,Own department; also pays Sanpete County Fire District #2 ($284k).
+415,Farmington City,City,City fire department,Davis,415,11006,yes,Own fire department; includes station construction from impact fees. Fruit Heights pays it for fire service.
+419,Ferron City,City,City fire department,Emery,419,15006,yes,Own volunteer department.
+1255,Fielding Town,Town,Town fire department,Box Elder,1255,03007,yes,Own volunteer fire and ambulance department.
+421,Fillmore City,City,City fire department,Millard,421,27002,yes,Own volunteer department.
+1694,Flaming Gorge Fire & EMS District,Local and Special Service District,Fire district or service area,Daggett,1694,,yes,
+1065,Fountain Green City,City,City fire department,Sanpete,1065,,yes,Own volunteer department.
+1386,Garden City Fire Protection District,Local and Special Service District,Fire district or service area,Rich,1386,33001,yes,
+313,Garfield County,County,County fire,Garfield,313,17011,yes,"Mostly pays town fire departments and the state; buys some equipment (Weidner, Elite Extrication, L.N. Curtis). Recreation and transfer lines in the same fund are not fire."
+429,Garland City,City,City fire department,Box Elder,429,03008,yes,Own volunteer department.
+1019,Genola Town,City,City fire department,Utah,1019,49004,yes,Own volunteer department; Rosenbauer apparatus purchase.
+1257,Glendale Town,Town,Town fire department,Kane,1257,25002,yes,Own volunteer department; many lines have no payee name.
+1037,Goshen Town,Town,Town fire department,Utah,1037,49005,yes,Own volunteer department.
+315,Grand County,County,County fire,Grand,315,,yes,"Pays Thompson fire station costs (propane, repairs, fire truck loan), about $70k FY2021-2026. Thompson Fire Protection District is listed separately."
+1488,Grand County Service Area Castle Valley Fire Protection District,Local and Special Service District,Fire district or service area,Grand,1488,19003,yes,
+431,Grantsville City,City,City fire department,Tooele,431,,yes,Own fire department; includes station bond and lease payments.
+433,Green River City,City,City fire department,Emery,433,15007,yes,Own volunteer department.
+435,Gunnison City,City,City fire department,Sanpete,435,39006,yes,Own department (USFA name: Gunnison Valley Fire Department); also pays Sanpete County Fire District. Mayfield and Fayette pay it.
+441,Helper City,City,City fire department,Carbon,441,07003,yes,Own volunteer department.
+1265,Henrieville Town,Town,Town fire department,Garfield,1265,,yes,Small volunteer department (about $37k FY2021-2026).
+447,Hildale City,City,City fire department,Washington,447,,yes,"Shares a fire department with Colorado City, AZ: pays Colorado City Fire District and buys vehicles and equipment with state EMS grants. Some fire-coded lines are parks, Safe Routes to School and industrial-park projects; use only the fire department orgs."
+1049,Hinckley Town,Town,Town fire department,Millard,1049,27003,yes,Own volunteer department.
+1267,Holden Town,Town,Town fire department,Millard,1267,27004,yes,Own volunteer department.
+455,Huntington City,City,City fire department,Emery,455,15008,yes,Own volunteer department.
+1181,Hurricane Valley Fire Special Service District,Local and Special Service District,Fire district or service area,Washington,1181,53004,yes,
+461,Hyrum City,City,City fire department,Cache,461,05006,yes,Own department; also pays Cache County and Logan. Millville pays it.
+317,Iron County,County,County fire,Iron,317,,yes,"Pays Cedar City for county fire service ($4.2M) and buys apparatus, radios and station work (Siddons-Martin, Precision Development, Motorola)."
+463,Ivins City,City,City fire department,Washington,463,,yes,Served by Santa Clara-Ivins Fire & Rescue (run with Santa Clara); Ivins' own fire lines are station roof and design work in FY2025-2026 (about $190k).
+1073,Juab County Spec Serv Fire Protection District,Local and Special Service District,Fire district or service area,Juab,1073,,yes,
+1279,Junction Town,Town,Town fire department,Piute,1279,31002,yes,Own volunteer and wildland department.
+467,Kanab City,City,City fire department,Kane,467,25004,yes,Own department.
+321,Kane County,County,County fire,Kane,321,25003,yes,County wildland program: state wildfire fund ($263k) plus its own purchases; no lines for FY2026.
+1283,Kanosh Town,Town,Town fire department,Millard,1283,27005,yes,Own volunteer department.
+469,Kaysville City,City,City fire department,Davis,469,11009,yes,Own fire department.
+1287,Koosharem Town,Town,Town fire department,Sevier,1287,41006,yes,Own volunteer department.
+1433,Laketown Fire District,Local and Special Service District,Fire district or service area,Rich,1433,33002,yes,
+473,Layton City,City,City fire department,Davis,473,11010,yes,Own fire department.
+475,Lehi City,City,City fire department,Utah,475,49007,yes,Own fire department; includes fire station construction.
+479,Lewiston City,City,City fire department,Cache,479,05007,yes,Own volunteer department.
+483,Logan City,City,City fire department,Cache,483,05008,yes,Own fire department; North Logan and Providence pay it. Capital spending has offsetting contra entries with no payee.
+955,Lone Peak Public Safety District,Interlocal,Interlocal fire agency,Utah,955,49001,yes,"Public safety district. Police department lines are left out of vendor payments; annual expenses, revenue and people paid still include police."
+1297,Lynndyl Town,Town,Town fire department,Millard,1297,27007,yes,Own volunteer department; fire station project FY2021-2023.
+1418,Mammoth Creek Fire District,Local and Special Service District,Fire district or service area,Garfield,1418,17013,yes,
+1147,Manila Town,Town,Town fire department,Daggett,1147,09002,yes,Own volunteer department through FY2024; no fire lines after that.
+485,Manti City,City,City fire department,Sanpete,485,39007,yes,Own department; also pays Sanpete County Fire District 2 ($448k).
+1051,Mantua Town,City,City fire department,Box Elder,1051,03011,yes,Own volunteer department.
+487,Mapleton City,City,City fire department,Utah,487,49009,yes,Own fire and ambulance department.
+1299,Marysvale Town,Town,Town fire department,Piute,1299,,yes,Fire station construction in FY2024-2025 (about $2.8M); small equipment purchases otherwise.
+1301,Meadow Town,Town,Town fire department,Millard,1301,27008,yes,Own volunteer department.
+1159,Mendon City,Town,Town fire department,Cache,1159,05009,yes,Own volunteer department.
+1079,Millard County Fire District,Local and Special Service District,Fire district or service area,Millard,1079,,yes,
+1081,Moab Valley Fire Protection District,Local and Special Service District,Fire district or service area,Grand,1081,19002,yes,
+503,Monroe City,City,City fire department,Sevier,503,41007,yes,Own volunteer department.
+505,Monticello City,City,City fire department,San Juan,505,37004,yes,Own volunteer department.
+325,Morgan County,County,County fire,Morgan,325,29002,yes,County fire department and wildland program.
+509,Moroni City,City,City fire department,Sanpete,509,,yes,Own volunteer department; also pays Sanpete County Fire District ($119k).
+511,Mount Pleasant City,City,City fire department,Sanpete,511,39010,yes,Own volunteer department.
+1395,Mountain Green Fire Protection District,Local and Special Service District,Fire district or service area,Morgan,1395,29003,yes,
+513,Murray City,City,City fire department,Salt Lake,513,35003,yes,Own fire department.
+1137,Myton City,City,City fire department,Duchesne,1137,,yes,Own volunteer department.
+1307,Newton Town,Town,Town fire department,Cache,1307,05011,yes,Small volunteer department (about $39k FY2021-2026).
+1562,North Central Fire Special Service District,Local and Special Service District,Fire district or service area,Washington,1562,,yes,
+791,North Davis Fire District,Local and Special Service District,Fire district or service area,Davis,791,11003,yes,
+1421,North Summit Fire Protection District,Local and Special Service District,Fire district or service area,Summit,1421,43001,yes,
+987,North Tooele Fire Protection Service District,Local and Special Service District,Fire district or service area,Tooele,987,45011,yes,
+743,North View Fire District,Local and Special Service District,Fire district or service area,Weber,743,57004,yes,
+1041,Oak City,Town,Town fire department,Millard,1041,27010,yes,Own volunteer department.
+529,Ogden City,City,City fire department,Weber,529,57005,yes,Own fire department.
+1143,Orangeville City,City,City fire department,Emery,1143,,yes,Own volunteer department.
+1311,Orderville Town,Town,Town fire department,Kane,1311,25005,yes,Own volunteer department.
+531,Orem City,City,City fire department,Utah,531,49010,yes,Own fire department; Lindon and Vineyard pay it for service. Includes training center and station construction.
+533,Panguitch City,City,City fire department,Garfield,533,17009,yes,Own volunteer department; Siddons-Martin apparatus in FY2023.
+1053,Paradise Town,Town,Town fire department,Cache,1053,05014,yes,Own volunteer department.
+1043,Paragonah Town,Town,Town fire department,Iron,1043,21005,yes,Own volunteer department.
+799,Park City Fire Service District,Local and Special Service District,Fire district or service area,Summit,799,43006,yes,
+537,Parowan City,City,City fire department,Iron,537,21006,yes,Own volunteer department.
+539,Payson City,City,City fire department,Utah,539,49011,yes,Own fire department.
+543,Plain City,City,City fire department,Weber,543,57007,yes,Own volunteer department.
+545,Pleasant Grove City,City,City fire department,Utah,545,49012,yes,Own fire department.
+1313,Plymouth Town,Town,Town fire department,Box Elder,1313,03013,yes,Own volunteer department.
+1315,Portage Town,Town,Town fire department,Box Elder,1315,03014,yes,Own volunteer department.
+549,Price City,City,City fire department,Carbon,549,07005,yes,Own fire department.
+553,Provo City,City,City fire department,Utah,553,49013,yes,"Own fire department, including airport fire lines."
+1520,Randolph Fire District,Local and Special Service District,Fire district or service area,Rich,1520,33004,yes,
+555,Richfield City,City,City fire department,Sevier,555,41009,yes,Own department; Sevier County pays it for county fire service.
+559,Riverdale City,City,City fire department,Weber,559,57009,yes,Own fire department.
+1693,Riverton Fire Service Area,Local and Special Service District,Fire district or service area,Salt Lake,1693,,yes,
+1141,Rockville Springdale Fire Protection District,Local and Special Service District,Fire district or service area,Washington,1141,,yes,Dissolved in 2019 and merged into Hurricane Valley Fire Special Service District; no payments reported for FY2021 or later.
+563,Roosevelt City,City,City fire department,Duchesne,563,13005,yes,Own volunteer department.
+565,Roy City,City,City fire department,Weber,565,57010,yes,Own fire department.
+1323,Rush Valley Town,Town,Town fire department,Tooele,1323,45014,yes,Own volunteer department.
+567,Salem City,City,City fire department,Utah,567,49014,yes,Own department; includes the Fire/EMS building (about $13M).
+569,Salina City,City,City fire department,Sevier,569,41010,yes,Own volunteer department; Siddons-Martin apparatus in FY2021.
+571,Salt Lake City,City,City fire department,Salt Lake,571,35005,yes,Own fire department.
+333,San Juan County,County,County fire,San Juan,333,37006,yes,County fire department; also pays Moab Valley Fire Protection District. No lines for FY2026.
+573,Sandy City,City,City fire department,Salt Lake,573,35007,yes,Own fire department; includes station construction.
+335,Sanpete County,County,County fire,Sanpete,335,,yes,"Mostly payments to city fire departments; its own purchases (fuel-reduction work, equipment) fell to about $10k a year from FY2024. Many payees are individuals."
+1569,Sanpete County Fire Special Service District,Local and Special Service District,Fire district or service area,Sanpete,1569,,yes,
+575,Santa Clara City,City,City fire department,Washington,575,53009,yes,Runs Santa Clara-Ivins Fire & Rescue with Ivins.
+577,Santaquin City,City,City fire department,Utah,577,49016,yes,Own department.
+579,Saratoga Springs,City,City fire department,Utah,579,49025,yes,Own fire department; Bluffdale pays it from FY2025.
+1325,Scipio Town,Town,Town fire department,Millard,1325,,yes,Own volunteer department.
+337,Sevier County,County,County fire,Sevier,337,,yes,"County fire program: pays Richfield, Salina, Monroe and Koosharem for fire service ($990k) and the state wildfire fund ($112k); its own wildland and project purchases (fuel, equipment rentals, machinery repairs, tires, hardware) are about $98k over six years ($71k after reimbursements)."
+581,Smithfield City,City,City fire department,Cache,581,05018,yes,Own fire department; Hyde Park and Richmond pay it.
+1331,Snowville Town,Town,Town fire department,Box Elder,1331,,yes,Own volunteer department; no fire lines after FY2024.
+907,South Davis Metro Fire Agency,Interlocal,Interlocal fire agency,Davis,907,11020,yes,
+1378,South Davis Metro Fire Service Area,Local and Special Service District,Fire district or service area,Davis,1378,,yes,Taxing entity that funds South Davis Metro Fire Agency; payments to the agency are intergovernmental
+583,South Jordan City,City,City fire department,Salt Lake,583,35008,yes,Own fire department.
+585,South Ogden City,City,City fire department,Weber,585,57011,yes,Own fire department.
+587,South Salt Lake City,City,City fire department,Salt Lake,587,35009,yes,Own fire department.
+1524,South Summit Fire Protection District,Local and Special Service District,Fire district or service area,Summit,1524,43007,yes,
+589,South Weber City,City,City fire department,Davis,589,,yes,Own fire department.
+591,Spanish Fork City,City,City fire department,Utah,591,49017,yes,Own fire department; includes station construction.
+847,Spring City,City,City fire department,Sanpete,847,39012,yes,Own volunteer department; station work in FY2026; also pays Sanpete County Fire District 2.
+595,Springville City,City,City fire department,Utah,595,49018,yes,Own fire and ambulance department.
+597,St. George City,City,City fire department,Washington,597,53011,yes,Own fire department; includes station construction.
+1333,Sterling Town,Town,Town fire department,Sanpete,1333,,yes,Own volunteer department.
+1335,Stockton Town,Town,Town fire department,Tooele,1335,45005,yes,Own volunteer department.
+339,Summit County,County,County fire,Summit,339,,yes,"County fire warden (wildland): pays the state wildfire fund and buys fuel, equipment and repairs (about $15k a year). Fire service is by the Park City, North Summit and South Summit districts."
+601,Syracuse City,City,City fire department,Davis,601,11015,yes,Own fire department.
+1577,Thompson Fire Protection District,Local and Special Service District,Fire district or service area,Grand,1577,,yes,Listed as inactive by Transparent Utah; its last reported payments are from 2017. Grand County pays some Thompson station costs.
+605,Tooele City,City,City fire department,Tooele,605,,yes,"Own fire department; includes the fire station built under Community Development (Big D Construction, about $9.8M)."
+341,Tooele County,County,County fire,Tooele,341,45015,yes,"County fire department; also pays the Stockton, Rush Valley and Vernon fire departments."
+607,Tremonton City,City,City fire department,Box Elder,607,03017,yes,Own volunteer department. A $1.59M Staker Parson streets project is coded to fire and should be left out.
+1057,Tropic Town,Town,Town fire department,Garfield,1057,17010,yes,Own volunteer department; lines only in FY2021 and FY2026.
+809,Uintah Fire Suppression Special Service District,Local and Special Service District,Fire district or service area,Uintah,809,47003,yes,
+679,Unified Fire Authority,Interlocal,Interlocal fire agency,Salt Lake,679,35006,yes,
+673,Unified Fire Service Area,Local and Special Service District,Fire district or service area,Salt Lake,673,,yes,Taxing entity that funds Unified Fire Authority; payments to UFA are intergovernmental
+345,Utah County,County,County fire,Utah,345,49019,yes,"Sheriff's wildland fire crew and the fire marshal, which pays cities for fire service in unincorporated areas (Spanish Fork, Payson, North Fork, Salem, Mapleton). Internal Service Fund payees are internal charges."
+1347,Wales Town,Town,Town fire department,Sanpete,1347,39014,yes,Own volunteer department; fire station construction FY2021-2022.
+815,Wasatch County Fire Protection SSD,Local and Special Service District,Fire district or service area,Wasatch,815,51002,yes,
+613,Washington City,City,City fire department,Washington,613,53015,yes,Own fire department; also pays Hurricane Valley Fire District ($863k).
+349,Washington County,County,County fire,Washington,349,53026,yes,"County fire warden: state wildfire fund, payments to Hurricane Valley Fire, and its own vehicle and equipment purchases."
+615,Washington Terrace City,City,City fire department,Weber,615,57013,yes,Own department.
+351,Wayne County,County,County fire,Wayne,351,55004,yes,"County fire department with stations in Torrey, Loa, Bicknell, Lyman, Teasdale and Hanksville; lines include Torrey fire station construction and equipment. USFA name: Hanksville/Wayne County Fire Department."
+761,Weber Fire District,Local and Special Service District,Fire district or service area,Weber,761,57014,yes,
+617,Wellington City,City,City fire department,Carbon,617,07008,yes,Own volunteer department.
+619,Wellsville City,City,City fire department,Cache,619,05020,yes,Own volunteer department.
+621,Wendover City,City,City fire department,Tooele,621,,yes,Own department.
+627,West Jordan City,City,City fire department,Salt Lake,627,35010,yes,Own fire department.
+631,West Valley City,City,City fire department,Salt Lake,631,35014,yes,Own fire department.
+637,Willard City,City,City fire department,Box Elder,637,03018,yes,Own volunteer department; many payees are individuals.
+633,Woodland Hills City,City,City fire department,Utah,633,,yes,Own volunteer department.
+1538,Woodruff Fire District,Local and Special Service District,Fire district or service area,Rich,1538,33006,yes,
+1746,WPR Road and Fire District,Local and Special Service District,Fire district or service area,Morgan,1746,,yes,Serves the Wasatch Peaks Ranch community; vendor spend may include roads
+357,Alta Town,Town,Town fire department,Salt Lake,357,,no,Contract: only fire-coded payment is $79k to Unified Fire Authority (FY2021).
+1223,Bear River City,Town,Town fire department,Box Elder,1223,,no,"Contract: pays Central Box Elder Fire Special Service District ($125k), plus $39k to payee ""CBI"" from the same fire district account in FY2021; other lines total about $10k (station utilities, repairs, one bank payment)."
+1213,Bicknell Town,Town,Town fire department,Wayne,1213,55001,no,Pays Wayne County and Wayne County EMS ($17k); no vendor purchasing.
+1637,Bluff Town,Town,Town fire department,San Juan,1637,37002,no,"Only 4 fire-coded lines (FY2026, $10.5k); too little activity."
+369,Bountiful City,City,City fire department,Davis,369,,no,Contract: pays South Davis Metro Fire Service Area ($15.7M).
+1586,Cache County EMS Authority,Local and Special Service District,EMS agency,,1586,,no,EMS only
+1227,Cannonville Town,Town,Town fire department,Garfield,1227,,no,"Only 26 lines (FY2025-2026, $13.5k), mostly waste hauling; too little fire purchasing."
+379,Cedar Hills City,City,City fire department,Utah,379,,no,Contract: pays American Fork City ($5.5M); other lines are station utilities.
+381,Centerville City,City,City fire department,Davis,381,,no,Contract: South Davis Metro Fire ($6.6M; most lines have no payee name).
+1233,Charleston Town,Town,Town fire department,Wasatch,1233,,no,One line ($298).
+1235,Circleville Town,Town,Town fire department,Piute,1235,,no,"About $20k over six years: electricity, repairs and miscellaneous supplies; too little fire purchasing."
+389,Cottonwood Heights,City,City fire department,Salt Lake,389,,no,Contract: pays Unified Fire Authority ($25.3M).
+305,Daggett County,County,County fire,Daggett,305,,no,"Pays the state wildfire fund and the towns of Manila and Dutch John ($34k, FY2021-2022); other lines are station utilities; almost no vendor purchasing."
+307,Davis County,County,County fire,Davis,307,,no,Only payments to the State of Utah ($167k).
+1245,Deweyville Town,Town,Town fire department,Box Elder,1245,,no,Contract: pays Central Box Elder Fire Special Service District ($62k).
+397,Eagle Mountain City,City,City fire department,Utah,397,49022,no,"Only 14 lines (FY2026, $9.7k card purchases under the PIO); no fire department spending in the extract."
+311,Emery County,County,County fire,Emery,311,,no,Only payments to the Department of Natural Resources ($57k); fire service is Emery County Fire Protection SSD.
+1696,Emery Emergency Medical Special Service District,Local and Special Service District,EMS agency,,1696,,no,EMS only
+1251,Fairfield Town,Town,Town fire department,Utah,1251,,no,Contract: pays Cedar Fort ($60k).
+1253,Fayette Town,Town,Town fire department,Sanpete,1253,,no,Pays Sanpete County Fire District #2 and Gunnison ($45k).
+425,Fruit Heights City,City,City fire department,Davis,425,,no,"Contract: pays Farmington ($800k) and Kaysville ($220k, FY2021)."
+1636,Grand County Emergency Medical Services Special Service District,Local and Special Service District,EMS agency,,1636,,no,EMS only
+437,Harrisville City,City,City fire department,Weber,437,,no,One line ($519 to North View Fire District).
+1261,Hatch Town,Town,Town fire department,Garfield,1261,17007,no,About $25k over six years; too little fire purchasing.
+443,Herriman City,City,City fire department,Salt Lake,443,,no,"Contract: pays Unified Fire Authority and Unified Fire Service Area ($29.4M); also the Fire Station 103 replacement (AJC Architects design $296k, Kier Construction $427k, FY2024-2026)."
+445,Highland City,City,City fire department,Utah,445,,no,Contract: pays Lone Peak Public Safety District ($14.2M).
+451,Holladay City,City,City fire department,Salt Lake,451,,no,Contract: pays Unified Fire Authority ($17.3M); other lines are hydrant maintenance and paving.
+1269,Honeyville City,City,City fire department,Box Elder,1269,03009,no,Contract: pays Central Box Elder Fire Special Service District ($45k).
+459,Hyde Park City,City,City fire department,Cache,459,,no,Contract: pays Smithfield ($1.0M).
+319,Juab County,County,County fire,Juab,319,,no,Fire-coded lines are county jail telephone bills; no fire spending. Fire service is Juab County Spec Serv Fire Protection District.
+1291,Leamington Town,Town,Town fire department,Millard,1291,,no,52 lines netting about $4k over six years; too little activity.
+481,Lindon City,City,City fire department,Utah,481,,no,"Contract: pays Orem for fire, EMS and dispatch ($10.2M)."
+899,Loa Town,Town,Town fire department,Wayne,899,,no,"Pays Wayne County an EMT fee ($26k); other lines are station heating, electrical and power."
+1742,Local Building Authority of Moab Valley Fire Protection District,Non Profit - URS Contributing,Building authority,,1742,,no,Financing entity
+1039,Mayfield Town,Town,Town fire department,Sanpete,1039,,no,Pays Gunnison and Sanpete County Fire District #2 ($129k).
+491,Midvale City,City,City fire department,Salt Lake,491,35002,no,Two lines netting $0; no fire purchasing in the extract.
+495,Milford City,City,City fire department,Beaver,495,,no,Lines are park tree and maintenance work and a $9k contribution to the Milford volunteer fire department; not fire purchasing.
+323,Millard County,County,County fire,Millard,323,,no,"Only a fire radio service contract (Commercial Business Radio, $141k); fire service is Millard County Fire District."
+497,Millville City,City,City fire department,Cache,497,,no,Contract: pays Hyrum ($156k) and Cache County ($48k).
+1303,Minersville Town,Town,Town fire department,Beaver,1303,,no,"About $21k over six years: payments to the volunteer firemen's association and to individual firefighters, plus building repairs and utilities; too little fire purchasing."
+507,Morgan City,City,City fire department,Morgan,507,29001,no,Contract: pays Morgan County ($72k).
+515,Naples City,City,City fire department,Uintah,515,,no,Lines only in FY2021-2022: a uniform allowance with no payee and $13k to one vendor.
+521,North Logan City,City,City fire department,Cache,521,05013,no,Contract: pays Logan for fire service ($5.8M).
+525,"North Salt Lake, City of",City,City fire department,Davis,525,,no,Contract: pays South Davis Metro Fire Agency ($10.2M).
+1403,North Sanpete Ambulance Service,Interlocal,EMS agency,,1403,,no,EMS only
+527,Oakley City,City,City fire department,Summit,527,,no,7 lines ($6.6k) to one fire-protection service vendor.
+535,Park City,City,City fire department,Summit,535,,no,"5 lines: $200k to Alpine Forestry for a community wildfire risk assessment and mitigation project (FY2023, capital projects); fire service is Park City Fire Service District."
+541,Perry City,City,City fire department,Box Elder,541,,no,"Contract: pays Brigham City ($266k); its own first responder program spends about $14k a year (medical supplies, phones); many payees are individuals."
+327,Piute County,County,County fire,Piute,327,,no,Pays the state wildfire fund and Sevier County ($70k); no vendor purchasing.
+551,Providence City,City,City fire department,Cache,551,,no,Contract: pays Logan ($3.0M).
+329,Rich County,County,County fire,Rich,329,,no,Pays the state wildfire fund and the county's fire districts; $96k of suppression lines have no payee.
+557,Richmond City,City,City fire department,Cache,557,,no,Contract: pays Smithfield ($558k); other lines are station utilities.
+561,Riverton City,City,City fire department,Salt Lake,561,,no,Contract: pays Unified Fire Authority and Unified Fire Service Area ($18.9M).
+599,Sunset City,City,City fire department,Davis,599,,no,One line ($435).
+1341,Trenton Town,Town,Town fire department,Cache,1341,05019,no,Nets about $19k over six years; too little activity.
+1059,Uintah City,City,City fire department,Weber,1059,,no,"Paid Weber Fire District ($38k, FY2021-2022); other lines are station utilities and building work."
+947,Valley Emergency Communications Center,Interlocal,Dispatch center,,947,,no,Dispatch
+609,Vernal City,City,City fire department,Uintah,609,,no,"Fire lines are FY2021 payroll only; none after FY2021. USFA lists a joint Vernal City-Uintah County Fire Department (47004), not matched."
+611,Vineyard City,City,City fire department,Utah,611,,no,Contract: pays Orem ($10.6M).
+347,Wasatch County,County,County fire,Wasatch,347,,no,Fire-coded lines are mostly the Dollar Ridge Fire reclamation project and payments to Wasatch County Fire District (already listed).
+653,Weber Area Dispatch 911 and Emergency Services District,Local and Special Service District,Dispatch center,,653,,no,Dispatch
+353,Weber County,County,County fire,Weber,353,,no,Only payments to Weber Fire District ($175k).
+623,West Bountiful City,City,City fire department,Davis,623,,no,Contract: pays South Davis Metro Fire Agency ($4.1M).
+629,West Point City,City,City fire department,Davis,629,,no,"Only fire impact fees passed to North Davis Fire District ($126k, FY2021-2023)."
+635,Woods Cross City,City,City fire department,Davis,635,,no,Contract: pays South Davis Metro Fire Agency ($4.3M); other lines have no payee name.
