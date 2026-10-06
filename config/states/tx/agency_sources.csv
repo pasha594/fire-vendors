@@ -177,7 +177,6 @@ TX-PT405,tx_dir,,West Lake Limestone Volunteer Fire Department,09,exact name,
 TX-RK203,tx_dir,,Lohn Volunteer Fire Department,09,exact name,
 TX-RN422,tx_dir,,Robinson Volunteer Fire Department,09,exact name,
 TX-S-atascosa-county-emergency-services-district-1,tx_dir,,Atascosa County Emergency Services District 1,09,manual,not in the USFA registry; added from the DIR customer name
-TX-S-bastrop-county-emergency-services-district-number-3,tx_dir,,Bastrop County Emergency Services District Number 3,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-batson-volunteer-fire-department,tx_dir,,Batson Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-beech-grove-volunteer-fire-department,tx_dir,,"Beech Grove Volunteer Fire Department, Inc.",09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-bexar-county-emergency-services-district-no-1,tx_dir,,BEXAR COUNTY EMERGENCY SRVC DIST NO.1,09,manual,not in the USFA registry; added from the DIR customer name
@@ -207,18 +206,15 @@ TX-S-gardendale-volunteer-fire-department,tx_dir,,Gardendale Volunteer Fire Depa
 TX-S-grey-forest-area-volunteer-fire-department,tx_dir,,Grey Forest Area Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-hamshire-volunteer-fire-department,tx_dir,,Hamshire Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-hardin-county-emergency-service-district-no-5,tx_dir,,Hardin County Emergency Service District No. 5,09,manual,not in the USFA registry; added from the DIR customer name
-TX-S-harris-county-emergency-services-district-13,tx_dir,,Harris County Emergency Services District 13,09,manual,not in the USFA registry; added from the DIR customer name
+TX-KA515,tx_dir,,Harris County Emergency Services District 13,09,manual,"Harris County ESD 13 operates under the name Cypress Creek Fire Department (ESD and department merged January 2019, cypresscreekfire.com); reviewer relinked from an added agency"
 TX-S-harris-county-emergency-services-district-28,tx_dir,,Harris County Emergency Services District 28,09,manual,not in the USFA registry; added from the DIR customer name
-TX-S-harris-county-emergency-services-district-3,tx_dir,,Harris County Emergency Services District # 3,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-harris-county-emergency-services-district-48,tx_dir,,Harris County Emergency Services District 48,09,manual,not in the USFA registry; added from the DIR customer name
-TX-S-harris-county-emergency-services-district-5,tx_dir,,Harris County Emergency Services District 5,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-harris-county-emergency-services-district-7,tx_dir,,Harris County Emergency Services District 7,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-harris-county-emergency-services-district-9,tx_dir,,Harris County Emergency Services District 9,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-harris-county-emergency-services-district-no-21,tx_dir,,Harris County Emergency Services District No. 21,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-harris-county-emergency-services-district-no-46,tx_dir,,Harris County Emergency Services District No. 46,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-hartley-volunteer-fire-department,tx_dir,,Hartley Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
-TX-S-hays-county-emergency-services-district-no-8,tx_dir,,Hays County Emergency Services District No. 8,09,manual,not in the USFA registry; added from the DIR customer name
-TX-S-hays-county-emergency-services-district-no-9,tx_dir,,Hays County Emergency Services District No. 9,09,manual,not in the USFA registry; added from the DIR customer name
+TX-KG301,tx_dir,,Hays County Emergency Services District No. 8,09,manual,Hays County ESD 8 is the Buda Fire Department (Hays County ESD list); registry row Buda Volunteer Fire Department; reviewer relinked from an added agency
 TX-S-heart-of-pines-volunteer-fire-department,tx_dir,,Heart of The Pines Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-henderson-county-emergency-service-district-8,tx_dir,,Henderson County Emergency Service District 8,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-hill-county-emergency-services-district-1,tx_dir,,Hill County Emergency Services District #1,09,manual,not in the USFA registry; added from the DIR customer name
@@ -231,7 +227,6 @@ TX-S-lake-conroe-fire-department,tx_dir,,Lake Conroe Fire Department,09,manual,n
 TX-S-liberty-hill-volunteer-fire-department,tx_dir,,Liberty Hill Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-loraine-volunteer-fire-department,tx_dir,,Loraine Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-mcgregor-fire-department,tx_dir,,McGregor Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
-TX-S-medina-county-emergency-service-district-no-4,tx_dir,,Medina County Emergency Service District No. 4,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-mobeetie-fire-department,tx_dir,,Mobeetie Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-montgomery-county-emergency-services-district-no-14,tx_dir,,Montgomery County Emergency Services District No. 14,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-montgomery-county-emergency-services-district-no-6,tx_dir,,Montgomery County Emergency Services District No. 6,09,manual,not in the USFA registry; added from the DIR customer name
@@ -257,7 +252,7 @@ TX-S-sparta-valley-volunteer-fire-department,tx_dir,,Sparta Valley Volunteer Fir
 TX-S-spring-creek-fire-department,tx_dir,,Spring Creek Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-tarrant-county-emergency-services-district-1,tx_dir,,Tarrant County Emergency Services District 1,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-texas-a-and-m-forest-service,tx_dir,,Texas A&M Forest Service,09,manual,"not in the USFA registry; added from the DIR customer name; Texas A&M Forest Service is the state's wildland fire agency (all its DIR purchases, not only fire)"
-TX-S-travis-county-emergency-services-district-no-8,tx_dir,,Travis County Emergency Services District No. 8,09,manual,not in the USFA registry; added from the DIR customer name
+TX-WP411,tx_dir,,Travis County Emergency Services District No. 8,09,manual,"Travis County ESD 8 is Pedernales Fire Department (801 Bee Creek Rd, Spicewood 78669; DIR zip 78669); reviewer relinked from an added agency"
 TX-S-walker-county-emergency-service-district,tx_dir,,Walker County Emergency Service District,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-williamson-county-esd-10,tx_dir,,Williamson County ESD #10,09,manual,not in the USFA registry; added from the DIR customer name
 TX-SA306,tx_dir,,Magnolia Volunteer Fire Department,09,exact name,
