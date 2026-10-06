@@ -30,7 +30,7 @@ TX-BC605,tx_dir,,City of College Station Fire,09,manual,registry: College Statio
 TX-BK101,tx_dir,,Blanket Volunteer Fire Department,09,exact name,
 TX-BN304,tx_dir,,Snook Volunteer Fire Department,09,exact name,
 TX-BP301,tx_dir,,Bertram Volunteer Fire Department,09,exact name,
-TX-BP403,tx_dir,,City of Burnet Fire,09,manual,registry: Burnet Volunteer Fire Department
+TX-BP601,tx_dir,,City of Burnet Fire,09,manual,"registry: City of Burnet Fire Department (the city's career department), not Burnet Volunteer Fire Department; reviewer corrected the link"
 TX-BP408,tx_dir,,City of Marble Falls Fire,09,manual,registry: Marble Falls Fire Rescue
 TX-BR205,tx_dir,,Martindale Volunteer Fire Department,09,exact name,
 TX-BR504,tx_dir,,Luling Fire Department,09,manual,registry: Luling Volunteer Fire Department
@@ -182,7 +182,7 @@ TX-S-beech-grove-volunteer-fire-department,tx_dir,,"Beech Grove Volunteer Fire D
 TX-S-bexar-county-emergency-services-district-no-1,tx_dir,,BEXAR COUNTY EMERGENCY SRVC DIST NO.1,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-bexar-county-fire-department,tx_dir,,Bexar County Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-blanco-volunteer-fire-department,tx_dir,,Blanco Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
-TX-S-brazos-county-district-2-volunteer-fire-department,tx_dir,,Brazos County District 2 Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-BC201,tx_dir,,Brazos County District 2 Volunteer Fire Department,09,manual,registry: Brazos County Volunteer Fire Department District 2 (same words reordered); reviewer relinked from an added agency
 TX-S-bremond-volunteer-fire-department,tx_dir,,Bremond Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-burkeville-volunteer-fire-department,tx_dir,,Burkeville Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-burnet-county-emergency-service-district,tx_dir,,Burnet County Emergency Service District,09,manual,not in the USFA registry; added from the DIR customer name
@@ -244,7 +244,7 @@ TX-S-pawnee-volunteer-fire-department,tx_dir,,Pawnee Volunteer Fire Dept,09,manu
 TX-S-plum-grove-volunteer-fire-department,tx_dir,,Plum Grove Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-reeves-county-emergency-service-district,tx_dir,,Reeves County Emergency Service District,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-rendon-fire-department,tx_dir,,Rendon Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
-TX-S-sabine-volunteer-fire-department,tx_dir,,Sabine Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
+TX-HP605,tx_dir,,Sabine Volunteer Fire Department,09,manual,"registry: Sabine Fire and Rescue, the only Sabine department in Gregg County (DIR city Kilgore, Gregg County); reviewer relinked from an added agency"
 TX-S-shephard-volunteer-fire-department,tx_dir,,Shephard Volunteer Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-socorro-fire-department,tx_dir,,Socorro Fire Department,09,manual,not in the USFA registry; added from the DIR customer name
 TX-S-south-montgomery-county-emergency-services-district,tx_dir,,South Montgomery County Emergency Services District,09,manual,not in the USFA registry; added from the DIR customer name

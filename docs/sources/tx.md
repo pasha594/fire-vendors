@@ -9,7 +9,7 @@ Output format: `docs/multistate/data-contract.md`. All sources were reached and 
 | Source id | Source | Decision | Tier | Years | Rows | Dollars | Agencies |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `usfa`, `openfema` | USFA registry and OpenFEMA grants (federal layer) | Done earlier | 4 | grants FY2005-2026 | 1,530 agencies; 641 matched awards | $130.2M grants | 1,530 |
-| `tx_dir` | Texas DIR cooperative contract sales | Built | 2 | FY2021-2026 | 28,828 item lines | $15.76M | 324 |
+| `tx_dir` | Texas DIR cooperative contract sales | Built | 2 | FY2021-2026 | 28,491 item lines | $15.63M | 318 |
 | `tx_spd` | Comptroller Special Purpose District Public Information Database | Skipped: no spending fields | - | - | sample only | - | - |
 | `tx_houston` | City of Houston checkbook, Houston Fire Department | Built | 1 | FY2021-2027 | 105,471 lines | $296.5M | 1 |
 | `tx_dallas` | City of Dallas vendor payments, Dallas Fire-Rescue | Built | 1 | FY2026-2027 | 2,343 lines | $54.0M | 1 |
@@ -20,16 +20,23 @@ Output format: `docs/multistate/data-contract.md`. All sources were reached and 
 | `tx_cpa` | Comptroller State Expenditures by County (Texas A&M Forest Service) | Built | 3 | FY2021-2024 | 50 totals rows | $396.1M | 1 |
 | - | Comptroller "Where the Money Goes" (state payee payments) | Skipped: interactive only | - | - | - | - | - |
 
-Result in `data/states/tx/agencies.json`: 1,614 agencies (1,530 registry + 84 added from sources). Coverage: tier 1 (payee rows) 3
-(Houston, Dallas, Austin fire departments), tier 2 (item lines) 322, tier 3 0 (the one agency with totals, Texas A&M Forest Service,
-also has DIR item lines), tier 4 1,289. No agency without rows is given $0.
+Result in `data/states/tx/agencies.json`: 1,604 agencies (1,530 registry + 74 added from sources). Coverage: tier 1 (payee rows) 3
+(Houston, Dallas, Austin fire departments), tier 2 (item lines) 316, tier 3 0 (the one agency with totals, Texas A&M Forest Service,
+also has DIR item lines), tier 4 1,285. No agency without rows is given $0.
+
+Owner decisions of 2026-10-06 applied in this note and the adapters: (1) payee names are shown as published, private persons
+included; only email addresses and bank account text are cut (`config/payee_name_redactions.csv`); (2) identical DIR lines inside one
+monthly report are kept as real repeat purchases, and only lines re-reported in a later month are dropped; (3) ESDs that provide only
+EMS (ambulance districts) are excluded; (4) Texas A&M Forest Service stays in the main data with kind "State fire agency".
 
 Fiscal years differ by source and are kept as each source defines them: DIR and the Comptroller use the Texas state FY (September to
 August); Dallas and Austin use October to September; Houston uses July to June. `agency_sources.csv` records each link's `fy_start`, so an
 agency with DIR and city rows (Houston, Austin) has two fiscal-year starts.
 
-Tests: `python3 tests/multistate/check_tx.py` recomputes every total from the raw files and passes;
-`python3 tests/multistate/check_federal.py TX` still passes.
+Tests: `python3 tests/multistate/check_tx.py` (no import of the adapters) recomputes from the raw files every total per source, agency
+and fiscal year, every (agency, year, payee, amount) line and the row counts, and also checks DIR attribution (every raw customer name
+linked or on a listed exclusion), redaction patterns, contract columns, dates, record ids, vendor map coverage and coverage tiers; it
+passes. `python3 tests/multistate/check_federal.py TX` still passes. Running every adapter's normalize twice gives byte-identical files.
 
 ## Federal layer (done before this run)
 
@@ -43,8 +50,8 @@ $130.2M, 362 agencies) and 684 names are left unmatched in `grant_recipients_unm
 - **URL**: FY2026 on <https://data.texas.gov/d/a743-wj72> ("Official - VSR Data for Cooperative & Tele Contracts FY2026");
   FY2010-2025 <https://data.texas.gov/d/w64c-ndf7> ("ARCHIVE DIR Cooperative Contract Sales Data Fiscal 2010 To 2025").
 - **Format and access**: Socrata, SODA API (`/resource/<id>.json` with `$select`, `$where`, `$order=:id`, `$limit`, `$offset`), no key.
-  Fire rows are filtered server-side; person-name columns (customer contact, vendor contact, DIR contract manager, ITSAC staffing
-  contractor) and street addresses are not requested.
+  Fire rows are filtered server-side; contact-person columns (customer contact, vendor contact, DIR contract manager, ITSAC
+  staffing contractor) and street addresses are not payees and are not requested.
 - **Fields**: fiscal year, customer name and type, vendor (DIR contract holder), reseller, contract number, type and subtype, RFO
   description, brand, quantity, unit price, purchase amount (quantity x unit price), invoice and PO numbers, order date; the FY2026 set
   adds contract category (Cooperative or Telecomm), product type and subtype, invoice date; the archive adds customer city and zip,
@@ -63,29 +70,45 @@ $130.2M, 362 agencies) and 684 names are left unmatched in `grant_recipients_unm
   and, in FY2026, city fire departments listed apart from their city: "City of Houston Fire", "City of Carrollton Fire", "City of
   Laredo Fire". Cities buying for themselves ("City of Houston") are never linked. The server-side filter keeps customer names matching
   FIRE, ESD, E.S.D, EMERGENCY SERV, EMERGENCY SRVC, RESCUE, VFD, " FD" or FOREST SERVICE (352 names).
-- **Attribution** (`config/states/tx/agency_sources.csv`, source `tx_dir`, reviewed by hand): 332 DIR names link to 324 agencies.
-  136 match a registry name after spelling out abbreviations (`exact name`); 196 are `manual` with a note: variants such as "Volunteer"
+- **Attribution** (`config/states/tx/agency_sources.csv`, source `tx_dir`, reviewed by hand): 327 DIR names link to 318 agencies.
+  136 match a registry name after spelling out abbreviations (`exact name`); 191 are `manual` with a note: variants such as "Volunteer"
   added or dropped, "City of X Fire" for the city's department, an ESD whose number the registry name carries
   ("Oak Hill Fire Department-Travis County ESD 3"), or a DIR customer zip equal to the registry's HQ zip ("Travis County Emergency Services
   District" with no number, zip 78734, is ESD 6/Lake Travis Fire Rescue; "City of Fair Volunteer Fire Department", zip 77095, is a
-  misspelling of Cy-Fair). 84 clear fire agencies the registry lacks were added to `agencies_added.csv` (35 ESDs, 35 volunteer fire
-  departments, 12 local and 1 county fire department, and Texas A&M Forest Service as "State fire agency"). Some added ESDs likely
-  govern a registry department listed under its operating name (Harris County ESD 9 shares DIR zip 77095 with Cy-Fair Fire Department;
-  Harris County ESD 7 is in Spring, home of Spring Volunteer Fire Department); they are kept apart because the names differ, so the directory can list such a pair twice, but no dollar is counted twice.
-- **Not linked** (20 names, $1.69M): pension systems (Texas Emergency Services Retirement System $837K, Dallas Police & Fire Pension,
-  Houston Firefighters Relief & Retirement Fund), the Texas Commission on Fire Protection (regulator, $516K), TEEX's Emergency Services
-  Training Institute, out-of-state customers (Oklahoma, Colorado), Harris County ESD 1 and ESD 11 (EMS-only ambulance districts),
+  misspelling of Cy-Fair). 74 clear fire agencies the registry lacks were added to `agencies_added.csv` (27 ESDs, 33 volunteer fire
+  departments, 12 local and 1 county fire department, and Texas A&M Forest Service as "State fire agency"). Review (2026-10-06)
+  corrected "City of Burnet Fire" from Burnet Volunteer Fire Department to the registry's City of Burnet Fire Department (TX-BP601),
+  linked two added names to the registry rows they match ("Brazos County District 2 Volunteer Fire Department" = Brazos County
+  Volunteer Fire Department District 2, TX-BC201; "Sabine Volunteer Fire Department", Kilgore = Sabine Fire and Rescue, Gregg County,
+  TX-HP605), and linked three ESDs that are the same body as a registry department to that department instead of adding them: Harris County ESD 13
+  (operating name Cypress Creek Fire Department since the 2019 merger; TX-KA515), Travis County ESD 8 (Pedernales Fire Department,
+  Spicewood 78669; TX-WP411) and Hays County ESD 8 (Buda Fire Department per the Hays County ESD list; TX-KG301). Other added ESDs
+  fund or run a registry department known by another name (Harris County ESD 9 and Cy-Fair Fire Department; ESD 7 and Spring
+  Volunteer Fire Department; ESD 28 and Ponderosa Fire Department; ESD 46 and Atascocita Fire Department; Montgomery County ESD 6 and
+  Porter, ESD 8 and South Montgomery County); whether each is the same body was not confirmed, so they are kept apart and the
+  directory can list such a pair twice, but no dollar is counted twice. Each added ESD was checked (web search on
+  2026-10-06) to provide fire service; Henderson County ESD 8 ($152), Nueces County ESD 3 ($229), Jefferson County ESD 4 ($4.9K),
+  Northeast Gaines County ESD (-$89) and the unnumbered "Burnet County Emergency Service District" ($5.7K, Burnet County has fire ESDs
+  and one EMS ESD, No. 10) could not be confirmed and are kept as named fire-or-EMS districts.
+- **Not linked** (25 names, $1.82M; the list is asserted in `tests/multistate/check_tx.py`): pension systems (Texas Emergency
+  Services Retirement System $837K, Dallas Police & Fire Pension, Houston Firefighters Relief & Retirement Fund), the Texas Commission
+  on Fire Protection (regulator, $516K), TEEX's Emergency Services Training Institute, out-of-state customers (Oklahoma, Colorado),
+  EMS-only ambulance districts (owner decision 3): Harris County ESD 1 and ESD 11, Harris County ESD 3 ($21K; "HC ESD 3 - EMS", fire
+  service there is ESD 21), Harris County ESD 5 ($54K; Crosby EMS, Crosby VFD is funded by ESD 80), Hays County ESD 9 ($52K; EMS,
+  formerly by contract with San Marcos-Hays County EMS), Bastrop County ESD 3 ($461; EMS district formed in 2024) and Medina County
+  ESD 4 ($3.8K; "created solely to fund and oversee local EMS ambulance service" in Devine and Natalia),
   fire marshal offices, names that fit several registry departments with no city to decide (Pleasant Grove VFD, Tri-County VFD,
   Reno VFD, Mid-County Fire/Rescue, Northwest County VFD), and names that do not clearly identify a fire department (Pontotoc Ranch
   Fire Association, Pedernales Emergency Services). Every other customer name in the raw files is linked in `agency_sources.csv`.
-- **Rows written**: 28,828 lines, $15.76M (FY2021 $1.26M, FY2022 $2.00M, FY2023 $1.77M, FY2024 $2.06M, FY2025 $1.74M, FY2026 $6.93M).
-  FY2026 is larger because it adds telecom contracts (wireless and phone bills: 23,847 lines, $4.08M). Largest buyers: Texas A&M Forest
-  Service $2.53M, Cy-Fair Fire Department $2.05M, Lake Travis Fire Rescue $1.15M. Each line is in `line_items.csv.gz` (vendor = reseller
+- **Rows written**: 28,491 lines, $15.63M (FY2021 $1.24M, FY2022 $2.00M, FY2023 $1.76M, FY2024 $2.06M, FY2025 $1.70M, FY2026 $6.87M).
+  FY2026 is larger because it adds telecom contracts (contract category "Telecomm": 23,088 lines, $4.05M). Largest buyers: Texas A&M
+  Forest Service $2.53M, Cy-Fair Fire Department $2.05M, Lake Travis Fire Rescue $1.15M. Each line is in `line_items.csv.gz` (vendor = reseller
   when one is named, else the DIR contract holder; brand, product type, quantity, unit price) and rolled into `transactions.csv.gz`
   (payee = the same seller; category_published = contract type or category).
 - **Duplicates and reversals**: no DIR vendor-month report is duplicated as a whole. 8 lines ($1,552.62) repeat a line from an earlier
-  reporting month with every other field equal; they are re-reports and dropped. Identical lines inside one monthly report are kept
-  (540 extra archive rows, $196K, and 17,033 extra FY2026 rows, $830K, mostly telecom): they carry distinct DIR record numbers and are items DIR publishes without a
+  reporting month with every other field equal (same invoice and PO numbers); they are re-reports and dropped. Identical lines inside
+  one monthly report are kept as real repeat purchases (owner decision 2; 528 extra archive rows, $195K, and 16,856 extra FY2026 rows,
+  $822K, mostly telecom): they carry distinct DIR record numbers and are items DIR publishes without a
   line number, such as three toner cartridges at one price on one invoice or six $20 lines on one wireless bill. Credits are negative
   amounts (76 lines, -$241K) and are kept; most offset an equal sale.
 - **Data quality**: IT and telecom only, so DIR spend is a small slice of a fire agency's purchasing. DIR customer names are entered by
@@ -108,6 +131,8 @@ $130.2M, 362 agencies) and 684 names are left unmatched in `grant_recipients_unm
   (maintenance and operations, interest and sinking, total, effective, rollback). No revenue, expenditure or spending fields. Other
   files: county links (22,595 rows), uploaded audit and budget documents by file name (11,075), individual debt obligations (991),
   non-compliant entities (85), related parties (board members and contacts with personal names, 38 MB; not downloaded).
+- **Updates, duplicates**: districts report once a year (report years 2018-2026 present); duplicate entity-year rows were not checked
+  (only the 100-row sample is kept). No spending lines, so reversals do not apply.
 - **Decision**: skipped. It gives tax rates and debt, not annual spend, so it cannot supply tier-3 totals. It could later help identify
   ESDs (taxpayer ids, cities) or point to uploaded audit PDFs. Sample: `raw/2026-10-06/tx/tx_spd/sample.csv.gz` (100 ESD rows of the
   entity file).
@@ -121,7 +146,11 @@ $130.2M, 362 agencies) and 684 names are left unmatched in `grant_recipients_unm
 - **Access**: download links read from the dataset page (robots.txt disallows `/api/`, so the CKAN API is not used; it also disallows
   `*.gz`, which is not fetched). Downloads redirect to a presigned S3 URL written with an explicit `:443` port; Python's urllib follows
   the redirect with a Host header that breaks the signature (403 SignatureDoesNotMatch), so the adapter resolves the redirect itself and
-  drops the port.
+  drops the port. robots.txt also sets `Crawl-delay: 10` for every user agent: the 2026-10-06 fetch spaced its 8 requests to
+  data.houstontx.gov by the 1-second `common.get` throttle plus each 12-62 MB S3 download in between; review added a 10-second wait
+  before each request to that host to `tx_houston.py` for future fetches.
+- **Update frequency**: the dataset page shows "Last Updated September 17, 2026"; the current-year file is refreshed during the year
+  (FY2027 holds July to mid-September 2026). No stated schedule.
 - **Fields**: payment document number, fund, department id and name, WBS (project), GL account number and description, vendor name,
   vendor invoice, fiscal year, clearing date, amount, type of procurement, PO number and item, contract number. No line description.
 - **Years and size** (full files; SHA-256 of each in `manifest.json.gz`):
@@ -144,9 +173,10 @@ $130.2M, 362 agencies) and 684 names are left unmatched in `grant_recipients_unm
 - **Duplicates and reversals**: 24 lines identical in every column ($438,798) dropped, for example one invoice's PO lines listed twice in
   the same payment document. 1,457 negative lines (-$11.7M: early payment discounts, credits, vendor offsets on the reconciliation
   account) are kept, so amounts are net.
-- **Names**: payees on employee AP, garnishment, deceased-employee wage and refunds-payable accounts are always withheld (deceased
-  employees' wages go to "GENERAL ONE-TIME VENDOR", $4.3M). The City masks some vendors as `*` (vehicle and equipment leases, $5.46M);
-  kept as published. In all, $4.45M of HFD lines show "Individual (name withheld)".
+- **Names**: published as the City publishes them (owner decision 1), individuals included; `common.withhold_person` cuts only email
+  addresses and bank account text (none in the HFD lines). The City itself pays deceased employees' unclaimed wages (GL 220550, 88
+  lines, $4.27M) through "GENERAL ONE-TIME VENDOR" ($4.7M in all) and masks some vendors as `*` (vehicle and equipment leases, $5.46M);
+  both are kept as published.
 - **Data quality**: lines can be charged to inventory (GL "COH General Inventory Account") rather than an expense account; capital
   projects for fire stations appear under HFD when coded to HFD.
 
@@ -163,8 +193,8 @@ $130.2M, 362 agencies) and 684 names are left unmatched in `grant_recipients_unm
 - **Rows written**: 2,343 lines: FY2026 $53.9M (Capital Outlay $35.0M, mostly apparatus), FY2027 to date $0.13M. Raw: `dfd.json.gz`
   (server-side filter), metadata, 100-row sample.
 - **Duplicates and reversals**: no lines identical apart from the Socrata row id. 14 negative lines (-$763K) kept.
-- **Names**: the City withholds some payments "for vendor anonymity", so totals are below the budget. Payees on claims, damages,
-  refund and reimbursement objects are always withheld.
+- **Names**: published as the City publishes them (owner decision 1), payees on claims, refund and reimbursement objects included.
+  The City itself leaves out some payments "for vendor anonymity", so totals are below the budget.
 
 ### Austin (`tx_austin`): built, tier 1
 
@@ -181,15 +211,20 @@ $130.2M, 362 agencies) and 684 names are left unmatched in `grant_recipients_unm
   under department 83 that year (Contractuals $4.6M against $16-40M before). Raw: `fire.json.gz`, metadata, 100-row sample.
 - **Duplicates and reversals**: no identical lines; no negative lines. Check statuses Paid (12,129), Outstanding (136, issued not yet
   cashed) and Escheat (10, uncashed and sent to the state) are all kept, since the City's expense stands.
-- **Names**: payees on mileage, reimbursed overtime, expense refund, claim and damages objects, and customer (non-vendor) lines, are
-  always withheld; $1.42M of lines show "Individual (name withheld)" (mostly artists and consultants paid as individuals).
+- **Names**: published as the City publishes them (owner decision 1); individuals paid as vendors (artists, consultants, mileage and
+  expense refunds) appear by name.
+- **Data quality**: one line per accounting line, so one check can be several rows; capital projects for fire stations appear under
+  department 83 only when charged there; FY2027 holds only its first days.
 
 ### San Antonio: skipped
 
 The City's "Open Checkbook" (<https://www.sa.gov/Directory/Departments/Finance/Transparency/Payments>) is an OpenGov report
 (sanantoniotx.opengov.com) that shows payments "aggregated by month by provided service type"; it has no department field and no
-documented bulk download or API, and data.sanantonio.gov (CKAN) has no payment dataset. The fire department's own DIR purchases are
-covered ("City of San Antonio Fire", $152K in FY2026). No sample: no downloadable file.
+documented bulk download or API, and data.sanantonio.gov (CKAN) has no payment dataset. Terms and robots.txt (checked 2026-10-06):
+sanantoniotx.opengov.com serves an empty robots.txt; www.sa.gov disallows many `/Directory/Departments/...` pages but not the
+Transparency pages; data.sanantonio.gov disallows `/api/` and `/datastore/` and asks for a 10-second crawl delay. No years, fields or
+row counts could be read beyond the report's monthly service-type totals. The fire department's own DIR purchases are covered ("City of
+San Antonio Fire", $152K in FY2026). No sample: no downloadable file.
 
 ### Fort Worth (`tx_fortworth`): skipped
 
@@ -198,6 +233,8 @@ covered ("City of San Antonio Fire", $152K in FY2026). No sample: no downloadabl
   `26444dcff69ab07e6de8cd8c438870305f914b443081edbd2e713f0f945d7ef0`). robots.txt does not restrict `/files/`.
 - **Fields**: payment id, date, status, amount, method, voucher id, supplier name, invoice number and date, fund, account, project.
   No department.
+- **Data quality, duplicates**: not examined beyond the sample, since the source is skipped; the files carry a payment status column
+  (voided payments would need handling). No separate terms of use are posted for the files.
 - **Decision**: skipped. Fire lines can be picked out only through fire-named capital projects ("Fire Station 37", "Fire Apparatus 2024
   Tax Notes": about $15M in FY2025) and one account ("Fire Inventory", $1.1M); the department's operating purchases cannot be told apart
   from other General Fund spending, so the rows would understate Fort Worth Fire badly while looking like tier 1. Its DIR purchases are
@@ -224,44 +261,47 @@ departments are covered through DIR.
 - **Rows written**: 50 totals rows (fiscal year x category, summed over counties): FY2021 $68.3M, FY2022 $98.3M, FY2023 $76.3M, FY2024
   $153.3M (the 2024 Panhandle fires). Categories: salaries, benefits, intergovernmental payments (grants to local fire departments),
   supplies, capital outlay, other expenditures. These are whole-agency totals (forestry and fire), not fire purchasing.
+- **Updates**: one dataset per state fiscal year, published after the year closes (FY2025 was not out on 2026-10-06).
 - **Duplicates**: one dataset per year; normalize stops if a year repeats or a dataset has no rows for agency 576.
 
 ### Comptroller "Where the Money Goes": skipped
 
 State agency payments by payee are published only in an interactive QlikView application (bivisual.cpa.texas.gov) with no bulk download
-or documented API; scraping it was not attempted. This would be the source for Texas A&M Forest Service payee rows if the Comptroller
+or documented API (bivisual.cpa.texas.gov has no robots.txt; it returns 404); scraping it was not attempted. This would be the source for Texas A&M Forest Service payee rows if the Comptroller
 publishes a bulk file.
 
 ## Payee names
 
-Every payee and item vendor goes through `common.withhold_person`, with `person_flag` forced on employee, refund, claims and
-reimbursement accounts (per adapter, above). `common.withhold_person` also withholds company names: its `looks_like_person` test catches
-two-word names ("WW GRAINGER", "AIR CLEANING", "Xerox Corporation", since CORPORATION is not a business word) and its `is_person` test
-catches "Name, LP" forms ("Brycer, LP", "SWCA, Incorporated", "NATIONWIDE SUPPLIES, LP"). Each adapter therefore keeps a name that
-`config/states/tx/vendor_map_additions.csv` lists as a business (hand-reviewed rows, never a person), the same trust `withhold_person`
-already gives `config/vendor_map.csv`; flagged payees and redactions stay withheld. Before this, about $7M of company spend showed as
-"Individual (name withheld)". `tests/multistate/check_tx.py` asserts no published name passes the person tests unless withheld or
-listed as a business. Two payees that are companies named after a person (an "LLC" and a "PhD P.C.", $1.9M) pass `withhold_person` as
-businesses and are published as the shared rule allows.
+Owner decision 1 (2026-10-06): payee names are shown as published, private persons included. Every payee and item vendor goes
+through `common.withhold_person` directly, which now only replaces payee text matching `config/payee_name_redactions.csv` (email
+addresses, bank transfer text with account numbers) by "Payee name withheld"; no Texas payee matches, and no description, account or
+category text does either. The earlier local `payee()` wrappers (which trusted `vendor_map_additions.csv`) and the forced
+`person_flag` rules on employee, refund, claims and reimbursement accounts were removed from all four adapters. Names are not
+classified as persons or companies. `tests/multistate/check_tx.py` checks every published payee against the raw name (whitespace
+collapsed) and asserts that no redaction pattern matches any published text.
 
 ## Vendor map additions
 
 `config/states/tx/vendor_map_additions.csv`: 210 payee keys (82 high, 99 medium, 29 low confidence), reusing `config/vendor_map.csv`
 canonical names when the company is the same (Grainger, AT&T, Verizon, Stryker, SHI International, CDW Government, Esri, Staples, Home
 Depot, Rush Truck Centers, Municipal Emergency Services, Jones & Bartlett Learning). Payees already in `vendor_map.csv` under the same
-key are not repeated. Of Texas purchasing dollars ($495.2M after withheld individuals, masked vendors and non-purchasing categories), the
-additions cover 78.5% and keys already in `vendor_map.csv` another 18.3%: 96.8% together. Unmapped: $15.5M of purchasing across about 730 smaller payees.
+key are not repeated; `spend` and `agencies` are recomputed from the data after review. Texas purchasing dollars (positive net spend of
+payees not mapped to a non-purchasing category) are $502.3M; the additions cover 77.4% and keys already in `vendor_map.csv` another
+18.0%: 95.4% together (`check_tx.py` asserts at least 90%). Unmapped: $23.0M across 1,577 smaller payees, the largest being Houston's
+masked `*` vendor ($5.46M) and payees named after a person or a person's firm (now shown by name).
 
 ## Open questions
 
-- Harris County ESD 1 and ESD 11 were not linked because they are EMS-only ambulance districts; other Texas ESDs may also fund EMS only.
-  The PRD rule counts every ESD as a fire agency; a reviewer should confirm the two exclusions and the 35 added ESDs.
-- Added ESDs that may govern a registry department under another name (Harris County ESD 9 and Cy-Fair Fire Department, ESD 7 and
-  Spring Volunteer Fire Department, Montgomery County ESD 8, Hays County ESD 8 and 9) appear as separate agencies. Merging them needs a hand-made ESD to
-  department table.
-- Identical DIR lines inside one monthly report are kept as distinct items (see section 1). Dropping them instead would remove $196K of
-  FY2021-2025 and $830K of FY2026 (mostly per-device wireless charges) and would understate telecom.
-- Dallas publishes only the current and previous fiscal year in its open data set; FY2021-2025 for Dallas Fire-Rescue would need a
-  public information request or an archived copy.
-- Texas A&M Forest Service: included as a state fire agency with DIR item lines and Comptroller totals; the PRD question (main table or
-  separate view) is still open.
+- Resolved by the owner on 2026-10-06 and applied: names shown as published (decision 1); identical DIR lines inside one monthly report
+  kept (decision 2); EMS-only ESDs excluded (decision 3; seven DIR names, above); Texas A&M Forest Service in the main data as "State
+  fire agency" (decision 4).
+- ESD service checks rest on web sources read on 2026-10-06 (district and county pages, local news); five small added ESDs could not be
+  confirmed (section 1). An ESD-to-department table would let the directory merge ESDs with the departments they fund.
+- Dallas publishes only the current and previous fiscal year in its open data set (confirmed 2026-10-06 by a grouped SoQL query: FY2026
+  92,904 lines and FY2027 886 lines, nothing earlier); FY2021-2025 for Dallas Fire-Rescue would need a public information request or an
+  archived copy.
+- DIR `fiscal_year` is the Texas state FY (September to August) even for cities with another fiscal year, so Houston and Austin fire
+  departments carry two `fy_start` values in `agencies.json`.
+- Totals cross-checked on 2026-10-06 with separate grouped SoQL queries: Dallas DFD FY2026 $53,891,181.76 and FY2027 $131,708.13, Austin
+  department 83 FY2021-2027 (each year to the cent) and the Comptroller FY2024 Texas A&M Forest Service total $153,278,599.18 all equal
+  the normalized files.
