@@ -179,11 +179,11 @@ def tableau_table(body):
     return [dict(zip(cols, x)) for x in t["tuples"]]
 
 
-def fire_line(kind, r):
+def fire_line(kind, r, by_department=True):
     if kind == "special_districts":
         return True
-    return any(FIRE_WORD.search(r[f]) and not NOT_FIRE_WORDS.search(r[f]) for f in ("FundDescription",
-                                                                                    "DeptDescription"))
+    fields = ("FundDescription", "DeptDescription") if by_department else ("FundDescription",)
+    return any(FIRE_WORD.search(r[f]) and not NOT_FIRE_WORDS.search(r[f]) for f in fields)
 
 
 def expected_checkbook_local(agency_county):
@@ -234,10 +234,13 @@ def expected_checkbook_local(agency_county):
                     got[r["TransDate"][:4]] += D(r["Amt"]).quantize(CENTS)
             assert all(abs(want[y] - got[y]) <= CENTS for y in set(want) | set(got)), \
                 f"{eid}: rows differ from the summary totals for {filters}"
+        # a fire department that also books police fund lines is a shared code: then only fire funds count
+        by_department = not any(FIRE_WORD.search(r["DeptDescription"]) and re.search(r"police", r["FundDescription"], re.I)
+                                and not FIRE_WORD.search(r["FundDescription"]) for r in by_id.values())
         seen, kept = set(), []
         for rid in sorted(by_id, key=int):
             r = by_id[rid]
-            if int(r["TransDate"][:4]) < FIRST_FY or not fire_line(kind, r):
+            if int(r["TransDate"][:4]) < FIRST_FY or not fire_line(kind, r, by_department):
                 continue
             key = (r["TransactionId"], r["TransDate"], r["Payee"], r["FundCode"], r["DeptCode"], r["ObjCode"], r["Amt"])
             if key in seen:
@@ -271,6 +274,10 @@ def expected_checkbook_local(agency_county):
             month_rep[r["TransDate"][:7]] += len(g) >= 3 and len(set(g)) >= 2
         broken = {m for m, n in month_n.items() if 2 * month_rep[m] > n}
         BROKEN.update((p["Name"], m) for m in broken)
+        # a linked participant's fire lines are a department's spending, not a stray grant or capital line:
+        # at least 25 lines a year in the years it has any
+        years = {r["TransDate"][:4] for r in kept}
+        assert kept and len(kept) >= 25 * len(years), f"{eid} {p['Name']}: only {len(kept)} fire lines in {len(years)} years"
         for r in kept:
             if r["TransDate"][:7] in broken:
                 continue

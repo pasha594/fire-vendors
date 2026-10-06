@@ -109,6 +109,7 @@ NOT_FIRE_NAME = re.compile(r"POLICE|HYDRANT|FIRE ?LOSS|FIREWORK|INSURANCE|ESCROW
 # with at least two other lines paid to other payees (Jackson Township (Stark), 2026: every line of a day shows
 # the same $0.5-4.7 million). Its lines are dropped.
 BROKEN_SHARE = decimal.Decimal("0.5")
+POLICE_FUND = re.compile(r"POLICE", re.I)
 DOUBLED_MIN = 10  # lines in a month before the month can be judged as uploaded twice
 # Special districts that are fire agencies (whole checkbook), and the ones whose name suggests fire or EMS but
 # which are not fire agencies, by participant name.
@@ -554,10 +555,18 @@ def label(r, part):
     return f"{r[part + 'Description']} - {r[part + 'Code']}"
 
 
-def is_fire_line(kind, r):
+def is_fire_line(kind, r, dept_trusted=True):
     if kind == "special_districts":
         return True
-    return fire_line_name(r["FundDescription"]) or fire_line_name(r["DeptDescription"])
+    return fire_line_name(r["FundDescription"]) or (dept_trusted and fire_line_name(r["DeptDescription"]))
+
+
+def dept_trusted(by_id):
+    """False when the participant's fire-named department also carries lines of a police fund (a fund named for
+    police and not for fire): its department code then covers police as well (City of New Franklin books police,
+    street lighting and drug fund lines under department 1 "FIRE"), so only its fire funds are taken."""
+    return not any(FIRE_NAME.search(r["DeptDescription"]) and POLICE_FUND.search(r["FundDescription"])
+                   and not FIRE_NAME.search(r["FundDescription"]) for r in by_id.values())
 
 
 def money(v):
@@ -636,9 +645,12 @@ def undouble(entity, rows, stats):
 def entity_rows(eid, entity, by_id, stats):
     """The entity's published lines: fire lines from FIRST_FY, re-uploads once, broken-upload months dropped."""
     seen, rows = set(), []
+    trusted = dept_trusted(by_id)
+    if not trusted:
+        print(f"  {entity['name']}: its fire department also carries police fund lines; fire funds only")
     for rid in sorted(by_id, key=int):
         r = by_id[rid]
-        if int(r["TransDate"][:4]) < FIRST_FY or not is_fire_line(entity["kind"], r):
+        if int(r["TransDate"][:4]) < FIRST_FY or not is_fire_line(entity["kind"], r, trusted):
             stats["outside"] += 1
             continue
         key = (r["TransactionId"], r["TransDate"], r["Payee"], r["FundCode"], r["DeptCode"], r["ObjCode"], r["Amt"])
