@@ -10,7 +10,7 @@ Run of 2026-10-06 (raw folder `raw/2026-10-06/id/`). PRD: `docs/prd/multistate-e
 | `usfa`, `openfema` | Federal layer (USFA registry, OpenFEMA grants) | 4 | built earlier (`federal.py`) | 198 registry departments, 54 with grants | 120 matched awards | $28.9M matched | grants 2005-2025 |
 | `id_lgr` | Transparent Idaho, Local Government Registry: fire district totals | 3 | **built** | 156 | 577 district-years | $577.5M actual expenditures | FY2021-FY2024 |
 | `id_cities` | Transparent Idaho, city financial data | (3) | skipped: whole-city totals only, no fire department line | 0 | - | - | - |
-| `id_state` | Transparent Idaho, state transactions: Idaho Department of Lands fire program | 1 | **built** | 1 (state fire agency) | 47,142 payment lines | $329.6M net | state FY2021-FY2027 (FY2027 partial) |
+| `id_state` | Transparent Idaho, state transactions: Idaho Department of Lands fire program | 1 | **built** | 1 (state fire agency) | 47,026 payment lines | $329.5M net | state FY2021-FY2027 (FY2027 partial) |
 | `id_lgr_compliance`, `id_contracts` | Registry compliance report; SCO open data portal (statewide contracts) | - | skipped (no fire agency spend); samples kept | 0 | - | - | - |
 
 `data/states/id/agencies.json` coverage after this run: tier 1: 1, tier 2: 0, tier 3: 156, tier 4: 101 (258 agencies:
@@ -18,6 +18,17 @@ Run of 2026-10-06 (raw folder `raw/2026-10-06/id/`). PRD: `docs/prd/multistate-e
 has a $0 row.
 
 Checks: `python3 tests/multistate/check_id.py` and `python3 tests/multistate/check_federal.py ID` both pass.
+`check_id.py` imports neither adapter: it re-reads the raw files, checks the `id_state` raw lines against the
+control file's server-side line counts and dollars per account category, applies its own reload rule, and compares
+every kept payment line with `transactions.csv.gz` (unique_id, fiscal year, date, amount, account title and payee as
+published); it recomputes each district-year total of `id_lgr`, checks the contract's column lists, the coverage
+tiers, the redaction patterns and the vendor map coverage.
+
+**Owner decisions of 2026-10-06 applied (review):** payee names are shown as published, private persons included
+(`id_state` calls `common.withhold_person` directly; its local withholding rules were removed and 10,722 lines,
+$14.7M, that they withheld now show the published name); ESDs that provide only EMS are excluded (Idaho's ambulance
+districts are a separate registry type and are not linked, see `id_lgr`); state fire agencies stay in the main data
+(IDL's fire program, see `id_state`). Decisions 2 (Texas DIR) and 5 (Ohio) do not apply to Idaho.
 
 ## Access to Transparent Idaho (applies to `id_lgr`, `id_cities`, `id_state`)
 
@@ -100,17 +111,26 @@ unmatched (`grant_recipients_unmatched.csv`). This run did not change it; `check
   give no row.
 - **Duplicates and reversals:** a district serving several counties is listed under each county; normalize asserts
   the copies agree and keeps one per EntityID and year. No reversals (one figure per entity and year).
-- **Data quality:** self-reported, unaudited for small districts. One outlier kept as published: Cambridge FPD
-  FY2021 $1,411,410 against $84K-$189K in other years (likely a filing error). 163 fire districts here against 161 in
-  the compliance report.
+- **Data quality:** self-reported, unaudited for small districts. Outliers kept as published: Cambridge FPD FY2021
+  $1,411,410 against $84K-$189K in other years (its FY2021 actual revenue, $1,508,334, is as high, so a one-time
+  capital project is as likely as a filing error); Nampa Fire Protection District FY2021 $3.4M against about $20M in
+  FY2022-FY2024. Two Valley County entities, Yellow Pine Fire Protection District (EntityID 288, est. 1990) and
+  Yellow Pine Rural Fire District (289, est. 1995), both filed FY2021 actuals ($20,744 and $19,183) and are kept as
+  two agencies; the compliance report lists only one "Yellow Pine Fire", so they may be one district registered
+  twice (open question). 163 fire districts here against 161 in the compliance report. Three districts (Potlatch
+  Rural, Troy Rural, Shoshone County Fire District No. 2) never filed an actual and one (Ketchum Fire District) filed
+  $0: they have no rows and stay at tier 4.
 - **Sample:** `raw/2026-10-06/id/id_lgr/sample.json.gz` (first 100 FY2024 records).
 - **Decision:** built (`pipeline/sources/id_lgr.py`).
 
 ## `id_cities`: city financial data (skipped)
 
 - **URL:** <https://transparent.idaho.gov/city>; news: [Spokane Public Radio, 2024-10-22](https://www.spokanepublicradio.org/regional-news/2024-10-22/financial-data-on-each-of-idahos-198-cities-now-available-on-transparent-idaho).
-- **Access:** JSON API `getCityFinancials?FiscalYear=<yyyy>` (all 198 cities in one answer), `getAllCities`,
-  `getCityInfoById?EntityID=`.
+- **Format and access:** JSON from the site's API, `getCityFinancials?FiscalYear=<yyyy>` (all 198 cities in one
+  answer), `getAllCities`, `getCityInfoById?EntityID=`; terms of use and robots.txt as in "Access to Transparent
+  Idaho" above.
+- **Years and update frequency:** FY2021-FY2025 (the API's fiscal years; the newest year has budgets only); annual
+  filings due December 1.
 - **Fields:** EntityID, EntityName, FiscalYear, RevenueBudget, ExpenseBudget, RevenueActual, ExpenseActual,
   ReportDocs (budget, audit or actuals PDFs). FY2024: 198 cities, 145 with an actual ($2.61B in all).
 - **Transaction-level?** No. The API gives whole-city totals only; there is no department, function or vendor
@@ -118,6 +138,8 @@ unmatched (`grant_recipients_unmatched.csv`). This run did not change it; `check
   `/api/embedtoken`), whose only download is the "export data" menu of each visual in a browser: not a bulk download
   or documented API. The filed PDFs are budgets and audits, one per city and year.
 - **How fire would be identified:** it cannot be: a city total mixes every department.
+- **Data quality, duplicates:** one self-reported record per city and year (no duplicates or reversals to remove);
+  53 of 198 cities had not filed an FY2024 actual.
 - **Sample:** `raw/2026-10-06/id/id_cities/city_financials_fy2024.json.gz` (198 records) and `sample.json.gz` (100).
 - **Decision:** skipped. A city's own spending is never fire spend, and no fire department line is published.
   City fire departments (Boise, Meridian, Nampa, Idaho Falls, Pocatello, Coeur d'Alene, Twin Falls and the rest)
@@ -153,34 +175,37 @@ unmatched (`grant_recipients_unmatched.csv`). This run did not change it; `check
 - **How fire is identified:** the agency function code (07H), which is IDL's fire program in every year.
 - **Attribution:** the registry's "Idaho Department of Lands Fire Department" (`ID-X-IDAHO-DEPARTMENT-OF-LANDS-FIRE-
   DEPARTMENT-COEUR-D-ALENE`, no FDID; the registry gives it kind "Local fire department", which `federal.py`
-  generates and this run cannot change). IDL is a state fire agency: the PRD leaves open whether state fire agencies
-  go in the main table.
-- **Rows:** 47,142 payment lines, $329.6M net: FY2021 $24.9M, FY2022 $62.2M, FY2023 $34.5M, FY2024 $33.7M, FY2025
+  generates and this run cannot change). IDL is a state fire agency and stays in the main data (owner decision
+  4); the owner asked for kind "State fire agency", but the row's kind comes from `federal.py`, and an
+  `agencies_added.csv` row would list IDL twice, so the kind needs a change in `federal.py` (reported).
+- **Rows:** 47,026 payment lines, $329,541,703 net: FY2021 $24.9M, FY2022 $62.2M, FY2023 $34.5M, FY2024 $33.7M, FY2025
   $70.4M, FY2026 $78.1M, FY2027 (partial) $25.8M. By function title: deficiency warrants $182.9M, Forest and Range
-  Protection (historical) $97.4M, Forest and Range Fire Protection $25.1M, Fire Management (historical) $24.2M.
-  5,277 distinct payees. `description` is empty (the source has no line description); `category_published` is the
+  Protection (historical) $97.4M, Forest and Range Fire Protection $25.0M, Fire Management (historical) $24.2M. 7,748
+  distinct payee names. `description` is empty (the source has no line description); `category_published` is the
   summary account title; `account` joins fund, function, account category and account.
 - **Duplicates and reversals:** the source holds reloaded copies. (a) The same line, same `unique_id`, every column
   equal but the extract date, loaded again by a later extract: 108 lines, $4.61M, from the extracts of 2024-12-07 and
   2025-11-15 (for example a $3,451,591 payment to the US Department of Agriculture and a dozen fire district and
   protective association payments of 2025-10-31, each twice). (b) Purchase-card lines loaded again under new
   `unique_id`s in later loads, with no reversal: about 460 lines, $0.27M, mostly the loads of 2024-08-21 and
-  2024-08-22, which consist almost entirely of such copies. Rule: among lines identical in every column but
-  `unique_id`, `date_of_load` and `zz_extract_date`, keep every copy of the earliest load batch (load date, extract
-  date) and drop copies from later batches; identical lines within one batch (two equal hotel rooms, two equal
-  trucks; 142 lines) are kept. In all 567 lines ($4.88M) are dropped. A `unique_id` can also be reused by a different
-  line (a transfer and its reversal), so `source_record_id` is `unique_id`, or `unique_id-<n>` when the id repeats
-  (32 lines). Reversals and credits are kept as negative lines (2,980 lines, -$14.6M), so amounts are net. Accounting
-  entries that are not payments are dropped: encumbrances (14 lines, $3.34M), year-end accrual "GAAP Expenses" (36,
-  $0.08M), loss on disposal (4, $0.14M), transfers (27, $0.04M).
-- **Payees:** `common.withhold_person` plus local rules (`id_state.payee`): payees on the employee travel accounts
-  ("Employee In State / Out Of State / Out Of Country Travel Costs", mostly reimbursements) are withheld unless the
-  name carries a business word; names `withhold_person` misses are withheld when they carry no business word ("First
-  Middle Last", couples such as "<first> L AND <first> <last>", owners' full names of 3 to 7 plain words, "XYZ DBA
-  <person>", card-processor forms such as "SQ *<first> <last>"); a name the person tests withhold is published when it
-  carries a business word (`id_state.BUSINESS`) or a reviewed row of `config/vendor_map.csv` or
-  `config/states/id/vendor_map_additions.csv` names it as a business. 10,722 lines ($14.7M) are withheld, most of
-  them sole proprietors hired with their equipment on fires, and employees' travel. "REDACTED" ($11.7M, 26 lines,
+  2024-08-22, which consist almost entirely of such copies. (c) Blocks of purchase-card lines inserted twice inside
+  one load batch (found in review): 116 lines, $75,206, in 8 batches from 2024-08-19 to 2025-07-07. The copies'
+  `unique_id`s run in a parallel series at a near-constant offset (all 26 copies of the 2025-07-07 batch at +14,313 or
+  +14,764) and include the same airline ticket numbers ("UNITED 0162410148953") and marketplace order numbers twice,
+  so they are not repeat purchases. Rule: among lines identical in every column but `unique_id`, `date_of_load` and
+  `zz_extract_date`, keep the copies of the earliest load batch (load date, extract date) and drop copies from later
+  batches (567 lines, $4.88M); inside that batch keep only the lowest `unique_id` when the batch inserts 4 or more
+  such copies (116 lines). Identical lines inside a batch with fewer copies are kept as possible repeat purchases (26
+  lines, $138,820; for example two $97,378.20 vehicles from one dealer on one day, and two $31,500 payments to one
+  contractor). In all 683 lines ($4.96M) are dropped. A `unique_id` can also be reused by a different line (a transfer
+  and its reversal), so `source_record_id` is `unique_id`, or `unique_id-<n>` when the id repeats (32 lines).
+  Reversals and credits are kept as negative lines (2,976 lines, -$14.6M), so amounts are net. Accounting entries that
+  are not payments are dropped: encumbrances (14 lines, $3.34M), year-end accrual "GAAP Expenses" (36, $0.08M), loss
+  on disposal (4, $0.14M), transfers (27, $0.04M).
+- **Payees:** shown as published, private persons included (owner decision of 2026-10-06): `common.withhold_person`
+  only cuts payee text matching `config/payee_name_redactions.csv` (e-mail addresses, bank account text); no
+  `id_state` payee matches it. Many payees are private persons: sole proprietors hired with their equipment on fires
+  (the largest $2.0M), couples paid as landowners, and employees reimbursed for travel. "REDACTED" ($11.7M, 26 lines,
   account "Misc Payments As Agent") is the State's own mask and is kept as published; 1,878 lines have no vendor.
 - **Data quality:** amounts are cash basis. Vendor names are free text with store numbers and card-processor
   prefixes ("PCARD - …", "SQ *…"), so one company appears under several names; `vendor_map_additions.csv` folds the
@@ -191,16 +216,19 @@ unmatched (`grant_recipients_unmatched.csv`). This run did not change it; `check
 
 ## Vendor categories (`config/states/id/vendor_map_additions.csv`)
 
-336 proposed rows. With the 131 payee names `config/vendor_map.csv` already maps, they cover 90.4% of `id_state`'s
-purchasing dollars ($130.5M of $144.4M, counting every unmapped payee as purchasing; 91.4% if the unmapped long tail
-of small fire districts and cities is counted as payments to governments). IDL's fire program buys mostly wildland suppression services: aircraft, contract crews and engines,
-water tenders, heavy equipment hired from logging and excavation firms, camp catering and sanitation, medics. The
-shared categories were written for structural departments, so these rows use `wildland` for suppression resources
-(confidence low or medium), `general` for catering and rentals, `facilities` for camp sanitation and `professional`
-for medical standby. Payments to other governments and fire agencies (US Forest Service, BLM, cities, fire
-districts, timber protective associations, other states) are `government`. **Open question:** add a "wildland
-suppression services and aviation" category before merging. Low-confidence rows were inferred from the account the
-payment was coded to and need review.
+464 proposed rows (63 high, 199 medium, 202 low confidence). With the 111 payee names `config/vendor_map.csv`
+already maps, they cover 90.5% of `id_state`'s purchasing dollars ($143.1M of $158.1M, counting every unmapped payee
+as purchasing; the additions alone 86.1%). In review, after the owner decision to show names, the "Individual name
+withheld" row was dropped, spend and agencies were recomputed, and 129 rows were added for the largest payees that
+were withheld before (mostly sole proprietors paid from "Professional Services", given `wildland` with low
+confidence from the account, like the builder's account-based rows). IDL's fire program buys mostly wildland
+suppression services: aircraft, contract crews and engines, water tenders, heavy equipment hired from logging and
+excavation firms, camp catering and sanitation, medics. The shared categories were written for structural
+departments, so these rows use `wildland` for suppression resources (confidence low or medium), `general` for
+catering and rentals, `facilities` for camp sanitation and `professional` for medical standby. Payments to other
+governments and fire agencies (US Forest Service, BLM, cities, fire districts, timber protective associations, other
+states) are `government`. **Open question:** add a "wildland suppression services and aviation" category before
+merging. Low-confidence rows were inferred from the account the payment was coded to and need review.
 
 ## Other candidates
 
@@ -213,7 +241,9 @@ payment was coded to and need review.
   payments, and not tied to a fire agency. robots.txt disallows `/api/`; the file was read from its dataset page
   link (its presigned S3 redirect carries an explicit `:443` port that breaks the signature in urllib, handled as in
   `tx_houston.py`). Sample (without the contact name, e-mail and phone columns):
-  `raw/2026-10-06/id/id_contracts/sample.csv.gz`. Skipped.
+  `raw/2026-10-06/id/id_contracts/sample.csv.gz`. Full file (not kept): <https://idahoprod.ogopendata.com/dataset/4bef0e9f-4ff3-4c06-88ca-d8cb5ef6f370/resource/09267ead-bc1b-476d-831c-a627b750b148/download/statewide-agreements.xlsx>,
+  1,740,081 bytes, 15,743 rows, SHA-256 `5cc678288b4677276b50e814497ef2cc5540e9d734acfc0eda64d0a460296de9` (read
+  2026-10-06 in review). Skipped.
 - **Filed budgets and audits** (`entity-documents.s3-us-gov-west-1.amazonaws.com`): the PDFs behind `id_lgr` and
   `id_cities`; many are scans (Eagle FPD's FY2024 audit and budget have no text layer). Expenditure by category would
   need PDF table extraction or OCR per entity. Skipped; a later phase could use them for category detail.
@@ -238,11 +268,15 @@ payment was coded to and need review.
   with the SCO before publishing Idaho data (see Access).
 - The crawler-form User-Agent for `transparent.idaho.gov` (its CloudFront serves the app shell to library agents
   although robots.txt allows all): acceptable, or should the project ask the SCO to allow its plain agent?
-- State fire agency in the main table? IDL's fire program is tier 1 on the registry row "Idaho Department of Lands
-  Fire Department"; its registry kind says "Local fire department".
+- IDL's fire program is in the main data (owner decision 4) on the registry row "Idaho Department of Lands Fire
+  Department", whose kind `federal.py` sets to "Local fire department" from the registry's organization type; the
+  owner wants kind "State fire agency", which needs a change in `federal.py` or `common.assemble_agencies` (adapters
+  cannot set the kind of a registry row). The registry also gives Bovill Fire Protection District kind "State
+  government".
 - Should `id_state` also carry the State Fire Marshal, or IDL's forestry function 03H?
 - Fire district fiscal year start (October or January) is unknown per district; `fy_start` is empty.
 - A wildland suppression services / aviation category (see Vendor categories).
-- Raw `lines_fy*.json.gz` files keep the vendor names as the State publishes them, including private persons (sole
-  proprietors, couples paid as landowners); only the normalized files withhold them, as with the other states' raw
-  files.
+- Yellow Pine: one district registered twice in the Local Government Registry, or two? (see `id_lgr` data quality)
+- Same-batch reload rule of `id_state` (4 or more identical copies in one load batch make a reloaded block): 26
+  identical lines ($138,820) in smaller groups are kept as possible repeat purchases; the owner may prefer to drop
+  every identical copy.

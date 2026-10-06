@@ -42,18 +42,24 @@ normalize  data/states/id/transactions.csv.gz   one row per line in a payment ca
 Attribution: all lines go to the registry's "Idaho Department of Lands Fire Department" (no FDID) through
 config/states/id/agency_sources.csv. IDL is a state fire agency (PRD open question: main table or separate view).
 
-Duplicates and reversals: the source holds reloaded copies. (a) The same line (same unique_id, every column
-equal) loaded again by a later extract: 108 lines, $4.6 million, from the extracts of 2024-12-07 and 2025-11-15
-(for example a $3,451,591 payment to the US Department of Agriculture twice). (b) Purchase-card lines loaded again
-under new unique_ids in later loads, with no reversal: about 460 lines, $0.27 million, mostly the loads of
-2024-08-21 and 2024-08-22, which consist almost entirely of such copies. Rule (reloads): among lines identical in
-every column but unique_id, date_of_load and zz_extract_date, keep every copy of the earliest load batch
-(date_of_load, zz_extract_date) and drop copies from later batches; identical lines within one batch (two equal
-hotel rooms, two equal trucks) are kept. fetch asserts each year's paging matches the row count, normalize that no
-line appears twice in the raw files. unique_id can also be reused by a different line (FY2021: a transfer and its
-reversal), so source_record_id is unique_id, or unique_id-<n> when the id repeats (record_ids). Negative lines
-(credits, reversals, refunds) are kept, so amounts are net. Lines in EXCLUDED_CATEGORIES are accounting entries,
-not payments (encumbrances, accrual adjustments, transfers), and are dropped with their totals printed.
+Duplicates and reversals: the source holds reloaded copies. (a) The same line (same unique_id, every column equal)
+loaded again by a later extract: 108 lines, $4.6 million, from the extracts of 2024-12-07 and 2025-11-15 (for
+example a $3,451,591 payment to the US Department of Agriculture twice). (b) Purchase-card lines loaded again under
+new unique_ids in later loads, with no reversal: about 460 lines, $0.27 million, mostly the loads of 2024-08-21 and
+2024-08-22, which consist almost entirely of such copies. (c) Blocks of purchase-card lines inserted twice inside
+one load batch: 116 lines, $75,206, in 8 batches (2024-08-19 to 2025-07-07); the copies' unique_ids run in a
+parallel series at a near-constant offset (all 26 copies of 2025-07-07 at +14,313 or +14,764) and include the same
+airline ticket and marketplace order numbers twice. Rule (reloads): among lines identical in every column but
+unique_id, date_of_load and zz_extract_date, keep the copies of the earliest load batch (date_of_load,
+zz_extract_date) and drop copies from later batches (567 lines, $4.88 million); inside that batch keep only the
+lowest unique_id when the batch inserts BLOCK_COPIES (4) or more such copies (116 lines). Identical lines inside a
+batch with fewer copies are kept as possible repeat purchases (26 lines, $138,820, among them two $97,378.20
+vehicles from one dealer on one day). In all 683 lines ($4.96 million) are dropped. fetch asserts each year's paging
+matches the row count, normalize that no line appears twice in the raw files. unique_id can also be reused by a
+different line (FY2021: a transfer and its reversal), so source_record_id is unique_id, or unique_id-<n> when the id
+repeats (record_ids). Negative lines (credits, reversals, refunds) are kept, so amounts are net. Lines in
+EXCLUDED_CATEGORIES are accounting entries, not payments (encumbrances, accrual adjustments, transfers), and are
+dropped with their totals printed.
 
 Payees: shown as published, private persons included (owner decision of 2026-10-06): every vendor goes through
 common.withhold_person, which only replaces payee text matching config/payee_name_redactions.csv (e-mail addresses,
