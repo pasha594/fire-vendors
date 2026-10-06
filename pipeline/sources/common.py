@@ -4,8 +4,9 @@ Python standard library only. Every adapter has two steps:
   fetch      download into raw/<date>/<st>/<source>/ (gzipped, written once, never edited)
   normalize  read the newest raw folder and write data/states/<st>/ (format: docs/multistate/data-contract.md)
 
-The person-name rules are copied from pipeline/build.py (is_person, looks_like_person, BUSINESS_WORDS) so the
-adapters keep working while build.py is being rewritten. Keep them in step when the two are merged.
+Payee names are published as the source publishes them (owner decision, 2026-10-06); withhold_person only cuts
+email addresses and bank account text. is_person and looks_like_person (copied from pipeline/build.py) remain
+for checks and reports, not for withholding.
 """
 import collections
 import csv
@@ -165,15 +166,12 @@ def _load_name_rules():
 
 
 def withhold_person(payee, person_flag=False):
-    """Payee name as it may be published: private persons become WITHHELD; payee text matching
-    config/payee_name_redactions.csv is cut. person_flag lets a source's own marker (for example a
-    'confidential' or 'individual' field) force withholding."""
-    redactions, known = _load_name_rules()
+    """Payee name as it may be published. Owner decision of 2026-10-06: payee names are shown as published,
+    private persons included. Only payee text matching config/payee_name_redactions.csv (email addresses,
+    bank transfer text with account numbers) is withheld. person_flag is accepted and ignored, so adapters
+    written for the earlier rule need no change."""
+    redactions, _ = _load_name_rules()
     payee = " ".join((payee or "").split())
-    if person_flag or is_person(payee):
-        return WITHHELD
-    if norm(payee) not in known and looks_like_person(payee):
-        return WITHHELD
     if any(rx.search(payee) for rx in redactions):
         return "Payee name withheld"
     return payee

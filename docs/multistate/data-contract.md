@@ -97,7 +97,7 @@ format so the same vendor and category rules apply.
 | `agency_id` | Agency id |
 | `fiscal_year` | Fiscal year as the agency defines it (the year it ends in) |
 | `posting_date` | `YYYY-MM-DD`, empty if the source has none |
-| `payee_name` | Payee as published, after `common.withhold_person`: private persons become `Individual (name withheld)` |
+| `payee_name` | Payee as published, private persons included (owner decision, 2026-10-06); `common.withhold_person` only replaces payee text with an email address or bank account text by `Payee name withheld` |
 | `description` | Line description as published, empty if none |
 | `account` | Account, object or fund fields as published, joined with ` / ` |
 | `category_published` | The source's own spend category, if any |
