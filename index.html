@@ -41,7 +41,7 @@ p { margin: 6px 0; }
 
 /* Header */
 .site { border-bottom: 1px solid var(--rule); }
-.hdr { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; padding-top: 10px; padding-bottom: 10px; }
+.hdr { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; padding-top: 7px; padding-bottom: 7px; }
 .site-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 .site-title a { color: var(--fg); text-decoration: none; }
 .asof { margin: 0; font-size: .85rem; color: var(--muted); }
@@ -62,46 +62,52 @@ input[type=checkbox] { margin: 0; accent-color: var(--accent); }
 .chk { display: flex; gap: 6px; align-items: flex-start; }
 .chk input { margin-top: 3px; flex: none; }
 
-/* Layout: filter panel on the left, table area on the right */
-main { padding-bottom: 40px; }
-.layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 0 24px; align-items: start; }
+/* Layout. Phones and short windows: the page scrolls as usual. Windows at least 1000px wide and 560px
+   tall, or 700px wide and 660px tall (where the filter bar wraps to more rows; see "Fixed layout" below):
+   the page fills the window and never scrolls. The header, filter bar and table controls stay in place,
+   and only the region with the table (#scroller) scrolls. */
+:root { --gut: max(16px, calc((100vw - 1408px) / 2)); }     /* side gutter, lines up with .wrap */
+.page, .scroller { padding: 0 var(--gut) 40px; }
 .ftoggle { display: none; }
-.fpanel {
-  position: sticky; top: 0; max-height: 100vh; overflow-y: auto;
-  padding: 14px 16px 20px 0; border-right: 1px solid var(--rule); font-size: .875rem;
-}
-.area { min-width: 0; padding-top: 14px; }
+.fwrap { border-bottom: 1px solid var(--rule); }
+.top { width: 100%; padding-top: 8px; }   /* full width: auto margins would shrink it in the flex column */
 
-/* Filter panel */
-.fpanel h2 { font-size: 1rem; font-weight: 600; margin: 0 0 10px; }
-.field { margin: 0 0 10px; }
-.field > label, .field > legend { display: block; font-weight: 600; font-size: .8125rem; margin: 0 0 3px; padding: 0; }
-fieldset.field { border: 0; padding: 0; min-width: 0; }
-.field select, .field input[type=text] { width: 100%; }
-.range { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 8px; align-items: center; }
+/* Filter bar */
+.fbar { font-size: .875rem; }
+.flabel, .field > label { font-weight: 600; font-size: .8125rem; }
+.field { margin: 0; }
+.range { display: flex; align-items: center; gap: 6px; }
 .range label { font-size: .8125rem; color: var(--muted); }
-.fsec { border-top: 1px solid var(--rule); padding-top: 10px; margin-top: 12px; }
 .fcount { margin: 0; color: var(--muted); font-size: .8125rem; }
 .fmsg { margin: 3px 0 0; font-size: .8125rem; color: var(--muted); }
 .fmsg:empty { display: none; }
-.fpanel .btn { margin-top: 12px; }
-.fpanel .fshow { display: none; }
-/* Category: checkboxes by group, in a box with its own scroll. The legend and Clear float, so they share a line. */
-.cats > legend { float: left; margin: 0 0 4px; line-height: 22px; }
-.cats .ncat { font-weight: 400; color: var(--muted); }
-.fpanel .cats .catclr { float: right; margin: 0 0 4px; padding: 0 8px; font-size: .75rem; line-height: 20px; }
+.fshow { display: none; }
+/* Category: a button that opens the checkboxes by group */
+.catf { position: relative; }
+.dd {
+  font: inherit; font-size: .875rem; color: var(--fg); background: var(--bg); text-align: left; white-space: nowrap;
+  border: 1px solid var(--rule-strong); border-radius: 3px; padding: 4px 8px; cursor: pointer;
+}
+.dd:hover, .dd[aria-expanded="true"] { background: var(--shade); }
+.dd .car { margin-left: 8px; color: var(--muted); font-size: .75rem; }
+.catpop { background: var(--bg); border: 1px solid var(--rule-strong); border-radius: 3px; }
+.catpop[hidden] { display: none; }
+.cathead { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 10px; border-bottom: 1px solid var(--rule); }
+.ncat { font-weight: 400; color: var(--muted); }
+.catclr { padding: 0 8px; font-size: .75rem; line-height: 20px; }
 .catclr:disabled { color: var(--muted); border-color: var(--rule); cursor: default; background: var(--bg); }
-.catbox { clear: both; max-height: 300px; overflow-y: auto; border: 1px solid var(--rule-strong); border-radius: 3px; padding: 2px 8px 6px; }
-.cgrp { border: 0; margin: 0; padding: 0; min-width: 0; }
+.catbox { padding: 0 10px 8px; }
+.catcols { column-gap: 24px; }
+.cgrp { border: 0; margin: 0; padding: 0; min-width: 0; break-inside: avoid; }
 .cgrp > legend { padding: 6px 0 1px; font-size: .75rem; font-weight: 600; color: var(--muted); }
 .catbox .chk { padding: 2px 0; font-size: .8125rem; line-height: 1.3; cursor: pointer; }
 .catbox .chk input { margin-top: 2px; }
-.catbox > .chk { margin-top: 6px; }
+.catcols > .chk { padding-top: 8px; }
 
 /* Group by */
 .gbar { display: flex; align-items: center; gap: 10px; }
 .gbar-l { font-weight: 600; font-size: .875rem; white-space: nowrap; }
-.seg { display: flex; min-width: 0; overflow-x: auto; padding: 3px; margin: -3px; }
+.seg { display: flex; min-width: 0; overflow-x: auto; overflow-y: hidden; padding: 3px; margin: -3px; }
 .seg button {
   flex: none; font: inherit; font-size: .875rem; color: var(--fg); background: var(--bg);
   border: 1px solid var(--rule-strong); border-radius: 0; padding: 4px 12px; margin: 0 0 0 -1px;
@@ -114,7 +120,7 @@ fieldset.field { border: 0; padding: 0; min-width: 0; }
 .seg button:focus-visible { position: relative; z-index: 1; outline-offset: 1px; }
 
 /* Active filters */
-.chipbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 12px; font-size: .8125rem; min-height: 28px; }
+.chipbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 8px; font-size: .8125rem; min-height: 28px; }
 .chips-l { color: var(--muted); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .chip { display: inline-flex; align-items: center; border: 1px solid var(--rule-strong); border-radius: 3px; padding-left: 8px; line-height: 24px; }
@@ -125,7 +131,7 @@ fieldset.field { border: 0; padding: 0; min-width: 0; }
 .chip button:hover { color: var(--fg); background: var(--shade); }
 .badnote { flex-basis: 100%; margin: 0; color: var(--muted); }
 
-.summary { margin: 12px 0 0; }
+.summary { margin: 6px 0 0; }
 
 /* Context for the selected category, vendor or agency (above the table), and more for it (below) */
 #context { border: 1px solid var(--rule); margin-top: 12px; }
@@ -151,7 +157,7 @@ dl.facts dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
 ul.plain { margin: 4px 0; padding-left: 18px; font-size: .875rem; columns: 2 18em; }
 
 /* Table toolbar */
-.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 16px 0 6px; font-size: .875rem; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 8px 0; font-size: .875rem; }
 .tsearch { display: flex; align-items: center; gap: 6px; }
 .tsearch label { font-weight: 600; }
 .tsearch input { width: 18em; }
@@ -162,7 +168,7 @@ ul.plain { margin: 4px 0; padding-left: 18px; font-size: .875rem; columns: 2 18e
 .tbl { margin-top: 10px; }
 .thead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; margin-bottom: 4px; }
 .thead h3 { font-size: .875rem; font-weight: 600; margin: 0; }
-.tw { overflow-x: auto; }
+.tw { overflow-x: auto; overflow-y: hidden; }
 table { border-collapse: collapse; font-size: .875rem; }
 .tbl.wide table { width: 100%; }
 th, td { padding: 5px 10px; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: top; overflow-wrap: break-word; }
@@ -206,32 +212,94 @@ button.sort:hover { text-decoration: underline; }
 .prose h2 { font-size: 1.05rem; font-weight: 600; margin: 26px 0 6px; }
 .prose li { margin: 3px 0; }
 
-footer { border-top: 1px solid var(--rule); padding: 12px 0 24px; font-size: .8125rem; color: var(--muted); }
-
-@media (min-width: 900px) and (max-width: 1199px) {
-  .layout { grid-template-columns: 200px minmax(0, 1fr); gap: 0 16px; }
+/* Filter bar: one row of labelled controls that wraps */
+@media (min-width: 700px) {
+  .fbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; padding: 7px 0 8px; }
+  .fbar .field, .fbar .range { display: flex; align-items: center; gap: 6px; }
+  .flabel, .fbar .field > label { white-space: nowrap; }
+  #f-vendor { width: 13em; }
+  #f-agency { width: 14em; }
+  .catf .dd { min-width: 12.5em; display: flex; justify-content: space-between; align-items: center; }   /* same width for All and "2 selected" */
+  .chipbar [data-clear] { display: none; }        /* the filter bar's Clear all filters is right above */
+  /* Chips wrap beside the label, not under it; the label lines up with the first line of chips */
+  .chipbar { align-items: flex-start; }
+  .chips-l { line-height: 26px; }
+  .chips { flex: 1 1 0; min-width: 0; }
+  .vendf { position: relative; }
+  /* The vendor message shows under the box, over the content below, until the next click or change */
+  .vendf .fmsg {
+    position: absolute; left: 0; top: calc(100% + 3px); z-index: 20; margin: 0; padding: 3px 8px; white-space: nowrap;
+    color: var(--fg); background: var(--bg); border: 1px solid var(--rule-strong); border-radius: 3px;
+  }
+  /* Category popover: the header row stays, the list scrolls when the window is too short for it */
+  .catpop {
+    position: absolute; top: calc(100% + 4px); left: 0; z-index: 20; display: flex; flex-direction: column;
+    width: 36em; max-width: calc(100vw - 32px); max-height: 70vh; box-shadow: 0 6px 18px rgba(0, 0, 0, .18);
+  }
+  .catpop[hidden] { display: none; }
+  .cathead { flex: none; }
+  .catbox { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  .catcols { columns: 2 15em; }
+}
+@media (min-width: 700px) and (max-width: 1199px) {
   th, td { padding: 5px 7px; }
   #tbl-main tbody th { min-width: 11em; }
 }
-@media (max-width: 899px) {
-  .layout { display: block; }
+
+/* Fixed layout: the page does not scroll. The table region scrolls in both directions, so its header
+   row can stay at the top while the first column stays at the left. Everything in the region except the
+   main table keeps the region's width and stays in place when the table is scrolled sideways. */
+@media (min-width: 1000px) and (min-height: 560px), (min-width: 700px) and (min-height: 660px) {
+  html { overflow: hidden; }
+  body { height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+  .site, .fwrap, .top { flex: none; }
+  main, .explore, .area { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .explore[hidden] { display: none; }
+  .page, .scroller { flex: 1 1 auto; min-height: 0; padding-bottom: 24px; }
+  .page { overflow-y: auto; scrollbar-gutter: stable; }
+  .page[hidden] { display: none; }
+  /* A classic scrollbar keeps its own gutter, so 100cqi below is the width beside it, not under it */
+  .scroller { overflow: auto; scrollbar-gutter: stable; container-type: inline-size; border-top: 1px solid var(--rule); }
+  .sc-in { width: fit-content; min-width: 100%; }
+  /* Sticky insets count from the region's content edge, inside its padding (the gutter) */
+  .sc-in > *, #tbl-main > *, .tmain > * { position: sticky; left: 0; width: 100cqi; }
+  .sc-in > #tbl-main, #tbl-main > .tmain, .tmain > .tw { position: static; width: auto; }
+  #tbl-main .tw { overflow: visible; }
+  /* Separate borders, so the borders of the sticky cells move with them */
+  #tbl-main table { border-collapse: separate; border-spacing: 0; }
+  #tbl-main tbody tr:last-child > * { border-bottom: 0; }
+  #tbl-main thead th { position: sticky; top: 0; z-index: 2; }
+  #tbl-main .tw thead tr > :first-child { z-index: 3; }
+  /* Covers the gutter left of the first column, where the table passes when scrolled sideways */
+  #tbl-main .tw tr > :first-child::before {
+    content: ""; position: absolute; top: 0; bottom: -1px; right: 100%; width: var(--gut); background: var(--bg); pointer-events: none;
+  }
+}
+
+/* Phones: the filters fold away behind a Filters button and stack */
+@media (max-width: 699px) {
+  .fwrap { border-bottom: 0; }
   .ftoggle { display: inline-block; margin-top: 12px; min-height: 40px; }
-  .fpanel .fshow { display: block; width: 100%; min-height: 40px; }
-  .fpanel .cats .catclr { min-height: 36px; padding: 0 12px; }
-  .cats > legend { line-height: 36px; }
+  .fbar { display: none; border: 1px solid var(--rule); padding: 10px 12px; margin-top: 8px; }
+  .fbar.open { display: block; }
+  .fbar .field, .fbar .npf { margin: 0 0 12px; }
+  .flabel, .fbar .field > label { display: block; margin: 0 0 3px; }
+  .fbar select, .fbar input[type=text], .dd { width: 100%; min-height: 40px; }
+  .range select { flex: 1 1 0; min-width: 0; }
+  .dd { display: flex; justify-content: space-between; align-items: center; }
+  .catpop { margin-top: 6px; }
+  .catclr { min-height: 36px; padding: 0 12px; }
   .catbox .chk { padding: 7px 0; }
   .catbox .chk input { margin-top: 1px; width: 18px; height: 18px; }
+  #f-clear { min-height: 40px; }
+  .fcount { margin: 10px 0 0; }
+  .fshow { display: block; width: 100%; min-height: 40px; margin-top: 12px; }
+  .top { padding-top: 12px; }
   .seg button { min-height: 40px; }
   .chip button { min-height: 36px; min-width: 36px; }
   button.sort { display: block; width: 100%; }
   thead th:has(> button.sort) { padding: 0; }
   thead th > button.sort { padding: 9px 10px; }
-  .fpanel {
-    display: none; position: static; max-height: none; overflow: visible;
-    border: 1px solid var(--rule); padding: 10px 12px; margin-top: 8px;
-  }
-  .fpanel.open { display: block; }
-  .area { padding-top: 12px; }
   .tsearch { flex: 1 1 100%; }
   .tsearch input { flex: 1; width: auto; min-width: 0; }
   .tcount { margin-left: 0; }
@@ -261,43 +329,50 @@ footer { border-top: 1px solid var(--rule); padding: 12px 0 24px; font-size: .81
   </div>
 </header>
 
-<main id="main" class="wrap" tabindex="-1">
-  <div id="page"><p>Loading data...</p></div>
-  <div id="explore" hidden>
+<main id="main" tabindex="-1">
+  <div id="page" class="page" tabindex="-1"><p>Loading data...</p></div>
+  <div id="explore" class="explore" hidden>
     <h1 class="vh" id="page-h">Payments by category</h1>
-    <div class="layout">
-      <button type="button" class="btn ftoggle" id="ftoggle" aria-expanded="false" aria-controls="fpanel">Filters</button>
-      <aside class="fpanel" id="fpanel" aria-labelledby="fp-h">
-        <h2 id="fp-h">Filters</h2>
-        <fieldset class="field">
-          <legend>Fiscal years</legend>
-          <div class="range">
-            <label for="f-from">From</label><select id="f-from"></select>
-            <label for="f-to">To</label><select id="f-to"></select>
+    <div class="fwrap">
+      <div class="wrap">
+        <button type="button" class="btn ftoggle" id="ftoggle" aria-expanded="false" aria-controls="fpanel">Filters</button>
+        <section class="fbar" id="fpanel" aria-labelledby="fp-h">
+          <h2 class="vh" id="fp-h">Filters</h2>
+          <div class="field" role="group" aria-labelledby="f-yrs-l">
+            <span class="flabel" id="f-yrs-l">Fiscal years</span>
+            <span class="range">
+              <label for="f-from" class="vh">From</label><select id="f-from"></select>
+              <label for="f-to">to</label><select id="f-to"></select>
+            </span>
           </div>
-        </fieldset>
-        <fieldset class="field cats" id="f-cat">
-          <legend>Category <span class="ncat" id="f-cat-n"></span></legend>
-          <button type="button" class="btn catclr" id="f-cat-clear" aria-label="Clear categories" disabled>Clear</button>
-          <div class="catbox" id="f-cat-box"></div>
-        </fieldset>
-        <div class="field">
-          <label for="f-vendor">Vendor</label>
-          <input type="text" id="f-vendor" list="vendor-list" autocomplete="off" spellcheck="false" placeholder="Pick a vendor" aria-describedby="f-vendor-msg">
-          <datalist id="vendor-list"></datalist>
-          <p class="fmsg" id="f-vendor-msg" aria-live="polite"></p>
-        </div>
-        <div class="field"><label for="f-agency">Agency</label><select id="f-agency"></select></div>
-        <div class="fsec">
+          <div class="field catf" id="f-cat-wrap">
+            <button type="button" class="dd" id="f-cat-btn" aria-expanded="false" aria-controls="f-cat-pop"><span id="f-cat-txt">Category: All</span><span class="car" aria-hidden="true">▼</span></button>
+            <div class="catpop" id="f-cat-pop" role="group" aria-labelledby="f-cat-l" tabindex="-1" hidden>
+              <div class="cathead">
+                <span class="flabel" id="f-cat-l">Category <span class="ncat" id="f-cat-n"></span></span>
+                <button type="button" class="btn catclr" id="f-cat-clear" aria-label="Clear categories" disabled>Clear</button>
+              </div>
+              <div class="catbox" id="f-cat-box"></div>
+            </div>
+          </div>
+          <div class="field vendf">
+            <label for="f-vendor">Vendor</label>
+            <input type="text" id="f-vendor" list="vendor-list" autocomplete="off" spellcheck="false" placeholder="Pick a vendor" aria-describedby="f-vendor-msg">
+            <datalist id="vendor-list"></datalist>
+            <p class="fmsg" id="f-vendor-msg" aria-live="polite"></p>
+          </div>
+          <div class="field"><label for="f-agency">Agency</label><select id="f-agency"></select></div>
           <div class="field"><label for="f-county">County</label><select id="f-county"></select></div>
           <div class="field"><label for="f-size">Annual expenses</label><select id="f-size" aria-describedby="f-size-desc"></select><span id="f-size-desc" class="vh">Total expenses in the latest fully reported fiscal year</span></div>
           <p class="fcount" id="f-count"></p><span class="vh" id="f-live" aria-live="polite"></span>
-        </div>
-        <div class="fsec chk"><input type="checkbox" id="f-np"><label for="f-np">Include non-purchasing payments</label></div>
-        <button type="button" class="btn" id="f-clear">Clear all filters</button>
-        <button type="button" class="btn fshow" id="fshow">Show rows</button>
-      </aside>
-      <div class="area" id="area">
+          <div class="chk npf"><input type="checkbox" id="f-np"><label for="f-np">Include non-purchasing payments</label></div>
+          <button type="button" class="btn" id="f-clear">Clear all filters</button>
+          <button type="button" class="btn fshow" id="fshow">Show rows</button>
+        </section>
+      </div>
+    </div>
+    <div class="area" id="area">
+      <div class="wrap top">
         <div class="gbar">
           <span class="gbar-l" id="gb-l">Group by</span>
           <div class="seg" role="group" aria-labelledby="gb-l">
@@ -310,20 +385,18 @@ footer { border-top: 1px solid var(--rule); padding: 12px 0 24px; font-size: .81
         </div>
         <div class="chipbar" id="chips"></div>
         <p class="summary" id="summary" tabindex="-1"></p>
-        <div id="context"></div>
-        <section class="tbl wide" id="tbl-main" aria-labelledby="page-h"></section>
-        <div id="more"></div>
+        <div class="toolbar" id="tbar"></div>
+      </div>
+      <div class="scroller" id="scroller" tabindex="-1">
+        <div class="sc-in">
+          <div id="context"></div>
+          <section class="tbl wide" id="tbl-main" aria-labelledby="page-h"></section>
+          <div id="more"></div>
+        </div>
       </div>
     </div>
   </div>
 </main>
-
-<footer>
-  <div class="wrap">
-    Public data from Transparent Utah, the USFA National Fire Department Registry and OpenFEMA.
-    Code and data: <a href="https://github.com/pasha594/utah-fire-procurement">github.com/pasha594/utah-fire-procurement</a>.
-  </div>
-</footer>
 
 <script>
 'use strict';
@@ -859,7 +932,7 @@ const Core = (function () {
 if (typeof module !== 'undefined' && module.exports) module.exports = Core;
 
 /* ==========================================================================
-   UI: one table with a filter panel, group-by buttons and active filters.
+   UI: one table with a filter bar, group-by buttons and active filters.
    Browser only.
    ========================================================================== */
 if (typeof window !== 'undefined' && typeof document !== 'undefined') (function () {
@@ -956,7 +1029,14 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   const fullRange = s => s.from === ix.years[0] && s.to === ix.years[ix.years.length - 1];
   // Selected categories in a few words: the name of one, or "3 categories" (html: escaped)
   const catsText = (ids, html) => (ids.length === 1 ? (html ? esc : String)(ix.cat.get(ids[0]).name) : int(ids.length) + ' categories');
-  const narrow = () => !!(window.matchMedia && window.matchMedia('(max-width: 899px)').matches);
+  const mq = q => (window.matchMedia ? window.matchMedia(q) : { matches: false });
+  const narrowMq = mq('(max-width: 699px)');                         // phones: filters fold away (see the CSS)
+  // The page does not scroll, the table region does (same query as the CSS "Fixed layout" block)
+  const fixedMq = mq('(min-width: 1000px) and (min-height: 560px), (min-width: 700px) and (min-height: 660px)');
+  const narrow = () => narrowMq.matches;
+  const fixed = () => fixedMq.matches;
+  // What scrolls: the table region (or the About page) in the fixed layout, otherwise the page
+  const scrollBox = () => (fixed() ? (view === 'explore' ? $('scroller') : $('page')) : document.scrollingElement || document.documentElement);
 
   /* ---- URLs and navigation ---- */
   function parseHash() {
@@ -986,7 +1066,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     clearTimeout(urlTimer);
     const all = Object.keys(TSTATE).filter(k => TSTATE[k].all && TABLES[k]);
     const h = view === 'explore' && S ? stateHash(S) : location.hash;
-    try { history.replaceState({ y: window.scrollY, all }, '', h); rendered = h; } catch (e) { /* rate limited */ }
+    const b = scrollBox();
+    try { history.replaceState({ y: b.scrollTop, x: b.scrollLeft, all }, '', h); rendered = h; } catch (e) { /* rate limited */ }
   }
 
   /* ---- Tables ----
@@ -1120,6 +1201,17 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         w.removeAttribute('aria-labelledby');
       }
     }
+    // Fixed layout: a row that gets focus is scrolled into view below the sticky header row, not under it
+    const sc = $('scroller'), head = sc.querySelector('#tbl-main thead');
+    sc.style.scrollPaddingTop = fixed() && head ? head.offsetHeight + 'px' : '';
+  }
+  // Fixed layout: when the region is scrolled past the start of the main table, scroll back to it, so
+  // a table that was just sorted or searched shows its first rows under the header row.
+  function toTableTop() {
+    const sc = $('scroller'), tb = S && $('tb-main-' + S.g);
+    if (!fixed() || view !== 'explore' || !tb) return;
+    const at = tb.getBoundingClientRect().top - sc.getBoundingClientRect().top - sc.clientTop + sc.scrollTop;
+    if (sc.scrollTop > at) sc.scrollTop = at;
   }
   function rerender(id, focusSel) {
     const el = $('tb-' + id);
@@ -1349,10 +1441,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     return t;
   }
 
+  // The toolbar goes above the table region (it stays in view); the table, its notes and the hint go in it.
   function renderMain(m) {
     const t = mainTable(m);
     TABLES[t.id] = t;
-    let h = '<div class="toolbar">';
+    let h = '';
     if (t.filter) {
       h += '<div class="tsearch" role="search"><label for="tq">' + esc(SEARCH[S.g]) + '</label>' +
         '<input type="search" id="tq" autocomplete="off" spellcheck="false" placeholder="' + esc(t.searchHint) + '" value="' + esc(S.q) + '"></div>';
@@ -1361,9 +1454,10 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       h += '<div class="chk"><input type="checkbox" id="tyears"' + (S.years ? ' checked' : '') + '><label for="tyears">Show amounts by year</label></div>';
     }
     h += '<span class="tcount" id="tcount">' + countText(t) + '</span><span class="vh" id="tstatus" aria-live="polite"></span>';
-    h += '<button type="button" class="btn" id="tcsv" data-csv="' + t.id + '">Download CSV</button></div>';
-    if (t.hint) h += '<p class="hint">' + esc(t.hint) + '</p>';
-    h += '<div id="tb-' + t.id + '">' + tableBody(t) + '</div>' + t.notes;
+    h += '<button type="button" class="btn" id="tcsv" data-csv="' + t.id + '">Download CSV</button>';
+    $('tbar').innerHTML = h;
+    h = t.hint ? '<p class="hint">' + esc(t.hint) + '</p>' : '';
+    h += '<div id="tb-' + t.id + '" class="tmain">' + tableBody(t) + '</div>' + t.notes;
     $('tbl-main').innerHTML = h;
     $('tbl-main').classList.toggle('by-year', !!t.byYear);
     $('fshow').textContent = 'Show ' + countText(t);
@@ -1655,7 +1749,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     return fs.length;
   }
 
-  /* ---- Filter panel ---- */
+  /* ---- Filter bar ---- */
   const opt = (v, label) => '<option value="' + esc(v) + '">' + esc(label) + '</option>';
   function fillControls() {
     const yrs = ix.years.map(y => opt(y, fy(y))).join('');
@@ -1687,7 +1781,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       // A group that is a single category of the same name (Unclassified) needs no heading
       h += cs.length === 1 && cs[0].name === gr ? chk(cs[0]) : '<fieldset class="cgrp"><legend>' + esc(gr) + '</legend>' + cs.map(chk).join('') + '</fieldset>';
     }
-    box.innerHTML = h;
+    box.innerHTML = '<div class="catcols">' + h + '</div>';   // columns inside the box, so the box scrolls down, not sideways
     // Focus was on a checkbox that is gone (a non-purchasing category unchecked): move to the one before it
     for (let i = at; i >= 0; i--) { const el = $('fc-' + before[i]); if (el) { el.focus(); break; } }
   }
@@ -1698,6 +1792,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const sel = new Set(S.cat || []);
     for (const el of $('f-cat-box').querySelectorAll('input')) el.checked = sel.has(el.value);
     $('f-cat-n').innerHTML = sel.size ? '(' + int(sel.size) + '<span class="vh"> selected</span>)' : '';
+    $('f-cat-txt').textContent = 'Category: ' + (sel.size ? int(sel.size) + ' selected' : 'All');
     $('f-cat-clear').disabled = !sel.size;
     $('f-vendor').value = S.vendor ? vendorOf(S.vendor).name : '';
     $('f-vendor-msg').textContent = '';
@@ -1758,6 +1853,33 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const size = sizeOf(id);
     return withS({ agency: null, county: '', size: size ? size.id : '' });
   }
+  // Category checkboxes, opened from the Category button. On a phone they open in place, in the panel.
+  const catOpen = () => !$('f-cat-pop').hidden;
+  function placeCat() {
+    const pop = $('f-cat-pop');
+    pop.style.left = '';
+    pop.style.maxHeight = '';
+    if (narrow() || pop.hidden) return;
+    // Below the button, as tall as the window allows, and inside the window on the right
+    const b = $('f-cat-btn').getBoundingClientRect();
+    pop.style.maxHeight = Math.max(180, window.innerHeight - b.bottom - 16) + 'px';
+    const r = pop.getBoundingClientRect();
+    const over = r.right - (document.documentElement.clientWidth - 16);
+    if (over > 0) pop.style.left = -Math.min(over, r.left - 16) + 'px';
+  }
+  function catPanel(open, focusButton) {
+    const pop = $('f-cat-pop'), btn = $('f-cat-btn');
+    if (open === catOpen()) return;
+    pop.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+    if (open) {
+      placeCat();
+      const first = pop.querySelector('input:checked') || pop.querySelector('input');
+      if (first) first.focus();
+    } else if (focusButton) {
+      btn.focus();
+    }
+  }
   function bindControls() {
     $('fpanel').addEventListener('change', e => {
       const el = e.target;
@@ -1795,7 +1917,42 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       if (first) first.focus();
       go(withS({ cat: null }));
     });
+    // Category button: opens the checkboxes below it. Ticking boxes keeps it open; Escape, a click
+    // outside it or moving focus out of it closes it. On a phone the list is part of the filter panel,
+    // not a popover: closing it would move everything below it under the finger, so it stays open
+    // until the Category button, Escape or Show rows closes it.
+    $('f-cat-btn').addEventListener('click', () => catPanel(!catOpen()));
+    $('f-cat-wrap').addEventListener('keydown', e => {
+      if (e.key !== 'Escape' || !catOpen()) return;
+      e.preventDefault();
+      catPanel(false, true);
+    });
+    $('f-cat-wrap').addEventListener('focusout', e => {
+      if (narrow()) return;
+      if (catOpen() && e.relatedTarget && !$('f-cat-wrap').contains(e.relatedTarget)) catPanel(false);
+    });
+    // A click on the table region that closes the popover only closes it: the popover covers most of
+    // the table, and a click anywhere on a row would otherwise also open that row.
+    let swallowClick = false;
+    document.addEventListener('pointerdown', e => {
+      const t = e.target;
+      swallowClick = false;
+      if (catOpen() && !narrow() && !$('f-cat-wrap').contains(t)) {
+        catPanel(false);
+        swallowClick = $('scroller').contains(t);
+      }
+      if (!(t.closest && t.closest('.vendf'))) $('f-vendor-msg').textContent = '';
+    });
+    document.addEventListener('click', e => {
+      if (!swallowClick) return;
+      swallowClick = false;
+      if (!e.detail) return;                  // a click from the keyboard (Enter or Space) is never swallowed
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }, true);
+    document.addEventListener('keydown', () => { swallowClick = false; }, true);
     const panel = open => {
+      if (!open) catPanel(false);
       $('fpanel').classList.toggle('open', open);
       $('ftoggle').setAttribute('aria-expanded', String(open));
     };
@@ -1819,6 +1976,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       TSTATE[t.id].all = false;
       TSTATE[t.id].limit = 0;
       rerender(t.id, false);
+      toTableTop();
       $('tcount').textContent = countText(t);
       $('fshow').textContent = 'Show ' + countText(t);
       // URL without a new history entry, at most every 300 ms (browsers limit replaceState calls)
@@ -1856,6 +2014,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         TSTATE[t.id].sort = cur[0] === c ? [colKey(col), cur[1] === 'asc' ? 'desc' : 'asc']
           : [colKey(col), col.num ? 'desc' : 'asc'];
         rerender(t.id, 'button[data-c="' + c + '"]');
+        if (S && t.id === 'main-' + S.g) toTableTop();          // sorted from the sticky header: show the first rows
       } else if (d.all) {                                       // show all rows
         if (!TABLES[d.all]) return;
         TSTATE[d.all].all = true;
@@ -1999,19 +2158,33 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   }
 
   /* ---- Router ---- */
-  // Focus after a change: the summary when it is on screen, otherwise the first row in view
-  // (after Back or Forward restores a position further down the table)
+  // Focus after a change: the summary, unless Back or Forward restored a position further down the
+  // table; then the first row in view. In the fixed layout the summary is always on screen, so what
+  // counts is whether the table region is scrolled past the start of the table.
   function focusMain() {
     const sum = $('summary');
-    const r = sum.getBoundingClientRect();
-    if (r.top >= 0 && r.top < window.innerHeight) { sum.focus({ preventScroll: true }); return; }
     const tb = $('tb-main-' + S.g);
-    if (!tb) { sum.focus({ preventScroll: true }); return; }
+    const sc = fixed() ? $('scroller') : null;
+    let top = 0, bottom = window.innerHeight;
+    if (sc) {
+      top = sc.getBoundingClientRect().top + sc.clientTop;
+      bottom = top + sc.clientHeight;
+    }
+    const r = sum.getBoundingClientRect();
+    const sumOn = r.top >= 0 && r.top < window.innerHeight;
+    if (!tb || (sumOn && (!sc || tb.getBoundingClientRect().top >= top - 1))) { sum.focus({ preventScroll: true }); return; }
+    // Rows under the sticky header row are hidden (its cells stick; the thead box itself does not move)
+    const hc = sc && tb.querySelector('thead th');
+    const from = hc ? Math.max(top, hc.getBoundingClientRect().bottom - 1) : top;
     for (const b of tb.querySelectorAll('button.drill')) {
       const q = b.getBoundingClientRect();
-      if (q.top > window.innerHeight) break;
-      if (q.top >= 0) { b.focus({ preventScroll: true }); return; }
+      if (q.top > bottom) break;
+      if (q.top >= from) { b.focus({ preventScroll: true }); return; }
     }
+    // No row button in view: the table itself when it is in view (rows without buttons), otherwise
+    // the summary when it is on screen (the region is scrolled to the sections below the table)
+    const t = tb.getBoundingClientRect();
+    if (sumOn && (t.bottom <= from || t.top >= bottom)) { sum.focus({ preventScroll: true }); return; }
     tb.tabIndex = -1;
     tb.focus({ preventScroll: true });
   }
@@ -2055,16 +2228,24 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     rendered = location.hash;
     const about = $('about-link');
     if (view === 'about') about.setAttribute('aria-current', 'page'); else about.removeAttribute('aria-current');
+    if (view !== 'explore') catPanel(false);
 
-    // Scroll: Back and Forward return to the saved position; other changes keep the table in view
+    // Scroll: Back and Forward return to the saved position; other changes show the new table from its
+    // start (the table region in the fixed layout; otherwise the page, when it is scrolled past the table)
+    const box = scrollBox();
     if (!own && prevView !== null) {
       const st = history.state;
-      window.scrollTo(0, st && typeof st.y === 'number' ? st.y : 0);
+      box.scrollTop = st && typeof st.y === 'number' ? st.y : 0;
+      box.scrollLeft = st && typeof st.x === 'number' ? st.x : 0;
     } else if (own && view === 'explore') {
-      const top = $('area').getBoundingClientRect().top;
-      if (top < 0) window.scrollBy(0, top - 8);
+      if (fixed()) { box.scrollTop = 0; box.scrollLeft = 0; }
+      else {
+        const top = $('area').getBoundingClientRect().top;
+        if (top < 0) window.scrollBy(0, top - 8);
+      }
     } else if (own && view !== prevView) {
-      window.scrollTo(0, 0);
+      box.scrollTop = 0;
+      box.scrollLeft = 0;
     }
     // Focus: stay on the control that made the change when it is still there; otherwise the summary
     if (view !== 'explore') {
@@ -2074,19 +2255,43 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       if (prevView !== 'explore') focusMain();
       else if (again && document.activeElement !== again && $('area').contains(again)) again.focus({ preventScroll: true });
       else if (inArea && !document.contains(active)) focusMain();
-      else if (own && (!active || active === document.body || active === $('main'))) focusMain();   // e.g. a click on a row cell
+      else if (own && (!active || active === document.body || active === $('main') || active === $('scroller'))) focusMain();   // e.g. a click on a row cell
       else if (!own && inArea) focusMain();
     }
   }
 
-  // Remember the scroll position of each history entry
+  // Remember the scroll position of each history entry (of the page, or of the table region)
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  window.addEventListener('scroll', () => {
+  document.addEventListener('scroll', e => {
+    const b = scrollBox();
+    if (e.target !== b && !(e.target === document && b === (document.scrollingElement || document.documentElement))) return;
     clearTimeout(scrollTimer);
     scrollTimer = setTimeout(saveEntry, 200);
-  }, { passive: true });
+  }, { passive: true, capture: true });
   let resizeTimer = null;
-  window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => fitRegions($('main')), 200); });
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { fitRegions($('main')); placeCat(); }, 200);
+  });
+  // Fixed layout: the page itself does not scroll, so the scroll keys do nothing while focus is outside
+  // the region (on the page, or on the summary after a change). They scroll the region instead.
+  const SCROLL_KEYS = { PageDown: 1, PageUp: -1, ' ': 1, ArrowDown: 1, ArrowUp: -1, Home: -1, End: 1 };
+  document.addEventListener('keydown', e => {
+    if (!fixed() || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.isComposing) return;
+    const dir = SCROLL_KEYS[e.key];
+    if (!dir) return;
+    const a = document.activeElement;
+    if (a && a !== document.body && a !== $('main') && a !== $('summary')) return;
+    const sc = scrollBox();
+    if (sc === document.scrollingElement || sc === document.documentElement) return;
+    const page = Math.max(40, sc.clientHeight - 40);
+    let top;
+    if (e.key === 'Home' || e.key === 'End') top = dir * sc.scrollHeight;
+    else if (e.key.startsWith('Arrow')) top = dir * 40;
+    else top = (e.key === ' ' && e.shiftKey ? -1 : dir) * page;
+    e.preventDefault();
+    sc.scrollBy({ top });
+  });
   $('skip').addEventListener('click', e => {
     e.preventDefault();
     const target = view === 'explore' ? $('summary') : $('page').querySelector('h1');
