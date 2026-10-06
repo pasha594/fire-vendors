@@ -9,7 +9,9 @@ csv and json, applies each source's published rule and compares
 - oh_checkbook_local: every linked participant's raw Tableau responses (underlying rows) with the summary totals
   the same dashboard gave for the same filters; fire districts' whole checkbooks, and for townships, cities and
   villages the lines whose fund or department is named for fire; calendar years 2021 on; one line per row Id,
-  re-uploads (same transaction id, date, payee, fund, department, object and amount under a new row Id) once;
+  re-uploads (same transaction id, date, payee, fund, department, object and amount under a new row Id) once,
+  months uploaded k times (every group of identical lines a multiple of k) once, and months whose upload carries
+  batch totals instead of line amounts left out;
 - lines and dollars per agency, source and fiscal year with data/states/oh/transactions.csv.gz;
 - every published line, field by field, with its raw line (agency, fiscal year, date, payee, account, amount).
 Also checks: the contract's column names and order; attribution (Cincinnati: every linked code is a fire
@@ -423,6 +425,8 @@ def main():
     by_source = collections.Counter()
     for (a, s, fy), (n, _) in got.items():
         by_source[s] += n
+    print(f"{ST}: oh_checkbook_local: months uploaded twice {sorted(DOUBLED)}; broken uploads left out "
+          f"{sorted(BROKEN)}")
     print(f"{ST}: ok ({len(tx)} transaction lines, ${dollars:,.2f}, {len(with_rows)} agencies at tier 1 "
           f"({', '.join(f'{s}: {n}' for s, n in sorted(by_source.items()))}); vendor_map_additions covers "
           f"{share:.1%} of ${purchasing:,.0f} purchasing dollars)")

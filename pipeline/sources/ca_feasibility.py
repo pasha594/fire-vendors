@@ -1,6 +1,6 @@
 """Samples behind docs/sources/ca.md for the California sources that were reached but not built.
 
-    python3 pipeline/sources/ca_feasibility.py fetch [ca_sandiego ca_sacramento ca_lacounty]
+    python3 pipeline/sources/ca_feasibility.py fetch [ca_sandiego ca_sacramento ca_lacounty ca_modesto]
 
 Not an adapter: it writes only raw/<date>/ca/<source>/ files and no table in data/states/ca/.
 
@@ -33,6 +33,13 @@ ca_lacounty        County of Los Angeles Auditor-Controller "LA County Open Expe
     raw/<date>/ca/ca_lacounty/sample.json.gz           first 100 rows by OBJECTID
     raw/<date>/ca/ca_lacounty/fire_control.json.gz     rows and dollars per fiscal year of departments or funds
                                                        whose name has FIRE
+
+ca_modesto         City of Modesto open data (Socrata), "FIN - Weekly AP Transactions"
+                   (https://data.modestogov.com/d/5qnw-bnyf): one row per week with one number per payment kind
+                   (vendors, employees, refunds, uploads, ACH, P-cards; the unit is not documented); no payee and no
+                   department, so it cannot give vendor rows. robots.txt: Crawl-delay 1, SODA API not disallowed.
+    raw/<date>/ca/ca_modesto/meta.json.gz              Socrata metadata
+    raw/<date>/ca/ca_modesto/sample.json.gz            first 100 rows
 """
 import json
 import sys
@@ -45,6 +52,7 @@ SD_CSV = "https://seshat.datasd.org/operating_actuals/actuals_operating_datasd.c
 SD_DICT = "https://seshat.datasd.org/operating_actuals/operating_actuals_dictionary_datasd.csv"
 SAC = "https://services5.arcgis.com/54falWtcpty3V47Z/arcgis/rest/services"
 LAC = "https://services.arcgis.com/RmCCgQtiZLDCtblq/arcgis/rest/services/Open_Expenditures/FeatureServer/0"
+MODESTO = "https://data.modestogov.com"
 
 
 def stats(*fields):
@@ -86,7 +94,13 @@ def lacounty():
         "outStatistics": stats(("sum", "Amount")), "f": "json"}), date=DATE)
 
 
-SOURCES = {"ca_sandiego": sandiego, "ca_sacramento": sacramento, "ca_lacounty": lacounty}
+def modesto():
+    common.save_raw(ST, "ca_modesto", "meta.json", common.get(f"{MODESTO}/api/views/5qnw-bnyf.json"), date=DATE)
+    common.save_raw(ST, "ca_modesto", "sample.json", common.get(f"{MODESTO}/resource/5qnw-bnyf.json",
+                                                                {"$order": ":id", "$limit": 100}), date=DATE)
+
+
+SOURCES = {"ca_sandiego": sandiego, "ca_sacramento": sacramento, "ca_lacounty": lacounty, "ca_modesto": modesto}
 
 
 def fetch(names):

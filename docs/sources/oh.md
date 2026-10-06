@@ -255,13 +255,11 @@ city payments dataset; Cleveland's and Columbus's open data hubs have no payment
   "Medical Services", 51 lines) names no vendor: 21 lines of $1,000 or more ($385,586, mostly $351,253 on two
   checks in July 2020, partly from the Fire Grants fund) and 30 small checks of $32.50 to $767 ($8,074), which
   look like EMS billing refunds to patients. The text "MISCELLANEOUS" names nobody, so it is published as the
-  source has it and classed `placeholder` (not purchasing); if the City ever puts refund payees' names there,
-  they would need `person_flag`. 33 payee names are withheld (229 lines, $155,645): names shaped like a
-  person, every payee of account "Uniform And Other Allowance" ($5,000 payments to individual employees or
-  retirees), and names `common.withhold_person` misses ("Last First M.", a "III" suffix, "First M Last TAG"). One
-  company stays withheld because `common.is_person` matches it ("OHD, LLLP"). Business names that
-  `common.looks_like_person` over-matches (UC Health, T-Mobile USA, DB3 Solutions, Birkley Consulting and 7
-  others) are published because a row of `vendor_map_additions.csv` claims them.
+  source has it and classed `placeholder` (not purchasing). Payee names are published as the City publishes
+  them, private persons included (owner decision, 2026-10-06): the adapter calls `common.withhold_person`
+  directly, which only replaces payee text with an email address or bank account text; no Cincinnati payee
+  matches, so none is withheld. The earlier local rules (person-shaped names, the "Uniform And Other Allowance"
+  payees, names the shared rules missed) were removed.
 - **Normalized:** `data/states/oh/transactions.csv.gz`: one row per payment line; `fiscal_year` is the City's;
   `posting_date` is record_date; `account` is "dept_desc / fund_code fund_desc / exp_acct_cat
   exp_acct_cat_desc"; `category_published` is exp_acct_cat_desc; `source_record_id` is trans_id-trans_line_no.
