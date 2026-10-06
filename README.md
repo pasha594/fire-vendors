@@ -38,7 +38,8 @@ python3 pipeline/build.py    # rebuilds data/data.json from the newest raw folde
 ```
 
 Both scripts use the Python standard library only. Raw files are kept as downloaded (gzipped) and
-never edited; everything in `data/` is rebuilt from `raw/` and `config/`.
+never edited; everything in `data/` is rebuilt from `raw/` and `config/`. The raw files keep payee
+names exactly as Transparent Utah publishes them, including private persons; the page withholds those names.
 
 ## Config files
 
