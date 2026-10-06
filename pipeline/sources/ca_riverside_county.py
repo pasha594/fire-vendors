@@ -95,7 +95,7 @@ def normalize():
         assert r["department"] in links and int(r["fiscal_year"]) >= FIRST_FY and r.get("vendor_name"), r
     lines, dropped, repeats = ca_common.collapse_reloads([line_key(r) for r in raw],
                                                          lambda k: k[COLUMNS.index("invoice_id")])
-    payees, seq, rows = ca_common.Payees(), collections.Counter(), []
+    seq, rows = collections.Counter(), []
     for key in lines:
         r = dict(zip(COLUMNS, key))
         base = r.get("invoice_id") or r.get("payment_id") or "noinvoice"
@@ -103,7 +103,7 @@ def normalize():
         rows.append({
             "agency_id": links[r["department"]], "fiscal_year": str(int(r["fiscal_year"])),
             "posting_date": (r.get("date") or "")[:10],
-            "payee_name": payees.publish(r["vendor_name"]),
+            "payee_name": common.withhold_person(r["vendor_name"]),
             "description": " ".join((r.get("description") or "").split()),
             "account": " / ".join(x for x in [r.get("business_unit"), r.get("fund"), r.get("account")] if x),
             "category_published": r.get("expense_category") or "",
@@ -123,7 +123,7 @@ def normalize():
                 f"for contract staffing; FY{years[-1]} partial (lines through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
-    withheld = sum(r["payee_name"] == common.WITHHELD for r in rows)
+    withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
     print(f"{ST}: {SOURCE}: {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {dropped} "
           f"lines dropped as reloaded invoices; {repeats} identical lines kept as separate charges; {withheld} lines "
           "with the payee withheld")

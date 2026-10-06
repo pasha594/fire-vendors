@@ -24,9 +24,9 @@ normalize  data/states/ca/transactions.csv.gz   one row per invoice distribution
 Attribution: department_name FIRE (department number 38), linked to CA-19105 in agency_sources.csv. Purchases
 other City departments make for the Fire Department (General Services fleet and fuel, ITA) are not included.
 
-Payees: "PRIVACY-..." placeholders, and every line on a revenue-refund expenditure type (ambulance charges, fire
-department services, plan checking fees, miscellaneous revenues, deposits, accounts payable refunds, warrants)
-or flagged as a settlement or judgment, are published as withheld.
+Payees: shown as published (owner decision of 2026-10-06), including the City's own "PRIVACY-FIRE" placeholder and
+the persons named on revenue refunds (ambulance charges, fire department services, plan checking fees);
+common.withhold_person cuts only email and bank account text.
 
 Duplicates and reversals: lines identical in every kept column other than the Socrata row id are kept once.
 Cancelled checks appear as their own negative lines (payment_status CANCELLED) and are kept, so a cancelled
@@ -37,7 +37,6 @@ and distribution line, with "-cancelled" on a cancellation (plus a running numbe
 import collections
 import decimal
 import json
-import re
 import sys
 
 import common
@@ -58,8 +57,6 @@ COLUMNS = ["fiscal_year", "department_name", "department_number", "vendor_name",
            "po_date", "po_line_number", "description", "detailed_item_description", "unit_price", "unit_of_measure",
            "quantity", "sales_tax", "discount", "item_code", "item_code_name", "procurement_organization",
            "supplier_city", "zip"]
-REFUND_TYPES = re.compile(r"FIRST AID & AMBULANCE|FIRE DEPT SERVICES|PLAN CHECKING|MISCELLANEOUS REVENUES|"
-                          r"DEPOSITS PAYABLE|ACCOUNTS PAYABLE|WARRANTS PAYABLE|REVENUE|ASSESSMENTS|REIMB FROM", re.I)
 
 
 def fetch():
@@ -104,7 +101,7 @@ def normalize():
         assert r["department_name"] in links and int(r["fiscal_year"]) >= FIRST_FY, f"row outside the filter: {r}"
         unique.setdefault(line_key(r), r)
     dropped = len(raw) - len(unique)
-    payees, ids, rows = ca_common.Payees(), collections.Counter(), []
+    ids, rows = collections.Counter(), []
     for key in sorted(unique):
         r = unique[key]
         if r.get("dollar_amount") in (None, ""):
@@ -115,11 +112,10 @@ def normalize():
         ids[rid] += 1
         if ids[rid] > 1:
             rid += f"#{ids[rid]}"
-        flag = bool(REFUND_TYPES.search(r.get("expenditure_type") or "")) or bool(r.get("settlement_judgment"))
         rows.append({
             "agency_id": links[r["department_name"]], "fiscal_year": str(int(r["fiscal_year"])),
             "posting_date": (r.get("transaction_date") or "")[:10],
-            "payee_name": payees.publish(r.get("vendor_name"), person_flag=flag),
+            "payee_name": common.withhold_person(r.get("vendor_name")),
             "description": describe(r),
             "account": " / ".join(x for x in [r.get("program"), r.get("fund_name"),
                                                f"{r.get('account_code', '')} {r.get('account_name', '')}".strip()] if x),
@@ -140,7 +136,7 @@ def normalize():
                 f"departments make for Fire are not included; FY{years[-1]} partial (payments through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
-    withheld = sum(r["payee_name"] == common.WITHHELD for r in rows)
+    withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
     print(f"{ST}: {SOURCE}: {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {dropped} exact duplicate "
           f"lines dropped; {withheld} lines with the payee withheld")
 

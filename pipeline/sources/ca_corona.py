@@ -19,9 +19,8 @@ normalize  data/states/ca/transactions.csv.gz   one row per payment line
 
 Attribution: department code 30 (FIRE), linked to CA-33025 (Corona Fire Department) in agency_sources.csv.
 
-Payees: lines on the PERSONNEL SERVICES expense category (pension, benefit and payroll-related payments) and
-lines whose description says refund or reimbursement are published as withheld unless the payee is a business
-by the usual rules.
+Payees: shown as published (owner decision of 2026-10-06), private persons included (pension, benefit, refund
+and reimbursement payments name the person paid); common.withhold_person cuts only email and bank account text.
 
 Duplicates and reversals: the source has no line number, and identical lines are ordinary in it (one copier
 invoice bills several machines at the same price; a hotel folio bills several rooms at the same rate). In the
@@ -34,7 +33,6 @@ sorted order of the invoice's lines.
 import collections
 import decimal
 import json
-import re
 import sys
 
 import common
@@ -50,7 +48,6 @@ WHERE = f"department_code = '{DEPARTMENT}' AND fiscal_year >= '{FIRST_FY}'"
 COLUMNS = ["fiscal_year", "fiscal_year_period", "fund_name", "department_code", "department", "department_activity",
            "vendor_id", "vendor", "vendor_city", "vendor_st", "vendor_zip", "payment_id", "payment_date",
            "invoice_id", "expense_category", "description", "amount"]
-PERSONAL = re.compile(r"\b(REFUND|REIMB|REIMBURSE|REIMBURSEMENT|TUITION|PER DIEM|MILEAGE)\b", re.I)
 
 
 def fetch():
@@ -88,20 +85,15 @@ def normalize():
         assert r["department_code"] in links and int(r["fiscal_year"]) >= FIRST_FY, f"row outside the filter: {r}"
     lines, dropped, repeats = ca_common.collapse_reloads(
         [line_key(r) for r in raw], lambda k: (k[COLUMNS.index("payment_id")], k[COLUMNS.index("invoice_id")]))
-    payees, seq, rows = ca_common.Payees(), collections.Counter(), []
+    seq, rows = collections.Counter(), []
     for key in lines:
         r = dict(zip(COLUMNS, key))
         base = f"{r.get('payment_id', '')}-{r.get('invoice_id', '')}"
         seq[base] += 1
-        flag = bool(PERSONAL.search(r.get("description") or ""))
-        name = payees.publish(r["vendor"])
-        if flag and name == r["vendor"] and not common.BUSINESS_WORDS.search(name) \
-                and common.norm(name) not in payees.claimed:
-            name = common.WITHHELD
         rows.append({
             "agency_id": links[r["department_code"]], "fiscal_year": r["fiscal_year"],
             "posting_date": (r.get("payment_date") or "")[:10],
-            "payee_name": name,
+            "payee_name": common.withhold_person(r["vendor"]),
             "description": " ".join((r.get("description") or "").split()),
             "account": " / ".join(x for x in [r.get("department_activity"), r.get("fund_name")] if x),
             "category_published": r.get("expense_category") or "",
@@ -120,7 +112,7 @@ def normalize():
                 f"FY{years[-1]} partial (payments through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
-    withheld = sum(r["payee_name"] == common.WITHHELD for r in rows)
+    withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
     print(f"{ST}: {SOURCE}: {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {dropped} "
           f"lines dropped as reloaded invoices; {repeats} identical lines kept as separate charges; {withheld} lines "
           "with the payee withheld")

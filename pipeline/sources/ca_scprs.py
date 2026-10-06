@@ -131,7 +131,7 @@ def normalize():
     assert all(r[c["Department Name"]] == DEPARTMENT for r in raw)
     po = lambda r: (r[c["Purchase Order Number"]], r[c["Fiscal Year"]])
     lines, dropped, repeats = ca_common.collapse_reloads(raw, po)
-    payees, seq, items, txns, zero = ca_common.Payees(), collections.Counter(), [], [], 0
+    seq, items, txns, zero = collections.Counter(), [], [], 0
     for r in lines:
         fy = r[c["Fiscal Year"]]
         assert re.fullmatch(r"20\d\d-20\d\d", fy), fy
@@ -141,7 +141,7 @@ def normalize():
         if money(r[c["Total Price"]]) == 0:
             zero += 1  # $0 lines are amendment text ("Removes and replaces Exhibit B ..."), not purchases
             continue
-        vendor = payees.publish(r[c["Supplier Name"]])
+        vendor = common.withhold_person(r[c["Supplier Name"]])
         date = day(r[c["Purchase Date"]], int(fy[5:])) or day(r[c["Creation Date"]], int(fy[5:]))
         description = " ".join((r[c["Item Description"]] or r[c["Item Name"]]).split())
         product = next((r[c[k]] for k in ("Commodity Title", "Class Title", "Family Title", "Segment Title") if r[c[k]]), "")

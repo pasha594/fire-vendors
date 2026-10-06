@@ -91,7 +91,7 @@ def normalize():
         assert r["department_code"] in links and int(r["fiscal_year"]) >= FIRST_FY, f"row outside the filter: {r}"
         unique.setdefault(line_key(r), r)
     dropped = len(raw) - len(unique)
-    payees, seq, rows, pending_only = ca_common.Payees(), collections.Counter(), [], 0
+    seq, rows, pending_only = collections.Counter(), [], 0
     for key in sorted(unique):
         r = unique[key]
         paid = decimal.Decimal(r.get("vouchers_paid") or "0")
@@ -102,7 +102,7 @@ def normalize():
         rows.append({
             "agency_id": links[r["department_code"]], "fiscal_year": r["fiscal_year"],
             "posting_date": "",
-            "payee_name": payees.publish(r["vendor"]),
+            "payee_name": common.withhold_person(r["vendor"]),
             "description": r.get("contract_title") or "",
             "account": " / ".join(x for x in [r.get("program"), f"{r['character_code']} {r['character']}",
                                                f"{r['object_code']} {r['object']}",
@@ -124,7 +124,7 @@ def normalize():
                 f"for Fire are not included; FY{years[-1]} partial (data loaded {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
-    withheld = sum(r["payee_name"] == common.WITHHELD for r in rows)
+    withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
     print(f"{ST}: {SOURCE}: {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {dropped} exact duplicate "
           f"lines dropped; {pending_only} lines with nothing paid left out; {withheld} lines with the payee withheld")
 

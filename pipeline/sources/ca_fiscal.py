@@ -138,7 +138,7 @@ def normalize():
             groups[key] += decimal.Decimal(r[ix["monetary_amount"]] or "0")
         assert n == entry["rows"], f"{entry['file']}: {n} rows, manifest says {entry['rows']}"
         lines += n
-    payees, seq, rows, zero = ca_common.Payees(), collections.Counter(), [], 0
+    seq, rows, zero = collections.Counter(), [], 0
     for key in sorted(groups):
         fy, vch, vendor, date, acct, acat, adesc, fund, fdesc, prog, sub = key
         amount = groups[key].quantize(ca_common.CENTS)
@@ -148,7 +148,7 @@ def normalize():
         seq[vch] += 1
         rows.append({
             "agency_id": agency, "fiscal_year": str(fy), "posting_date": date[:10],
-            "payee_name": payees.publish(vendor), "description": "",
+            "payee_name": common.withhold_person(vendor), "description": "",
             "account": " / ".join(x for x in [prog, sub, f"{fund} {fdesc}", f"{acct} {adesc}"] if x.strip()),
             "category_published": f"{acat}: {adesc}", "amount": str(amount),
             "source_record_id": f"{vch}/{seq[vch]}",
@@ -167,7 +167,7 @@ def normalize():
                 f"FY{years[-1]} partial (postings through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
-    withheld = sum(r["payee_name"] == common.WITHHELD for r in rows)
+    withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
     print(f"{ST}: {SOURCE}: {lines} source lines -> {len(rows)} rows (${total:,.2f}), FY{years[0]}-FY{years[-1]}; "
           f"{dropped} exact duplicate lines dropped; {zero} rows summing to $0 dropped; {withheld} rows withheld")
 
