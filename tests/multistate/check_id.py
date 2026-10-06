@@ -2,20 +2,30 @@
 
     python3 tests/multistate/check_id.py
 
-Independent of the adapters' code paths: raw files are parsed here with their own filters and duplicate rules;
-shared with the adapters are config/states/id/agency_sources.csv (the hand-reviewed attribution) and, for the
-person-name check, the business-word rule of id_state.payee (BUSINESS, a rule, not a computation). Checks:
-  - id_lgr: one total per agency and fiscal year equal to the district's filed actual expenditures, every
-    county copy of a multi-county district equal, no row for a null or zero actual
-  - id_state: fetched lines per year equal the control file's non-Personnel line count; after dropping reloaded
-    copies (a line identical but for unique_id and load dates that arrives in a later load batch), payment-category
-    dollars and lines per fiscal year equal the transactions rows
-  - every agency_id in the tables, agency_sources.csv and grants exists in agencies.json
-  - no duplicate source_record_id within a source; no empty one
-  - no payee looks like a private person unless withheld (names that config/vendor_map.csv or
-    config/states/id/vendor_map_additions.csv list as businesses, or that carry a business word of id_state.BUSINESS
-    or common.BUSINESS_WORDS, are allowed); "First Middle Last" names count as persons too
-  - every table source is registered in sources.csv; coverage tiers agree with the rows present
+Independent of the adapters' code: it imports neither id_state nor id_lgr. Raw files are parsed here with their
+own filters and duplicate rules; shared with the adapters are only the hand-reviewed config files
+(config/states/id/agency_sources.csv, agencies_added.csv) and common's file readers and norm(). Checks:
+  - columns and their order exactly as docs/multistate/data-contract.md (tables, sources.csv, agency_sources.csv,
+    vendor_map_additions.csv); dates YYYY-MM-DD inside the fiscal year; amounts with two decimals
+  - id_lgr: every Fire District (registry entity type 6) has an agency_sources.csv row; one totals row per agency and
+    fiscal year equal to the district's filed actual expenditures; every county copy of a multi-county district
+    equal; no row for a null or zero actual
+  - id_state: fetched lines per year equal the control file's non-Personnel line count, and raw dollars per year and
+    account category equal the control file's server-side sums; reloaded copies removed (a line identical but for
+    unique_id and load dates arriving in a later load batch, or inside one batch that inserts 4 or more lines
+    twice); then, line by line, every kept payment line is in transactions.csv.gz under its own unique_id (or
+    unique_id-<n>) with the same fiscal year, date, amount, account title and payee
+  - payee names as published (owner decision 2026-10-06): payee_name is the raw vendor with whitespace collapsed,
+    or "Payee name withheld" exactly when it matches config/payee_name_redactions.csv; no column holds text those
+    patterns match; no "Individual (name withheld)" left from the old rule
+  - every agency_id in the tables, agency_sources.csv and grants exists in agencies.json; id_state rows go only to
+    the Idaho Department of Lands fire row
+  - no duplicate or empty source_record_id within a source
+  - every table source is registered in sources.csv with every column filled; coverage tiers agree with the rows
+    present; no agency gets a $0 totals row
+  - vendor_map_additions.csv: valid categories, unique keys not already in config/vendor_map.csv, keys among the
+    published payees, spend and agencies equal to the transactions, and with config/vendor_map.csv it covers at least
+    90% of purchasing dollars (unmapped payees counted as purchasing)
 """
 import collections
 import csv
@@ -25,16 +35,23 @@ import pathlib
 import re
 import sys
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "pipeline" / "sources"))
-import common  # noqa: E402
-import id_state  # noqa: E402  (BUSINESS, PREFIX and FULL_NAME only)
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "pipeline" / "sources"))
+import common  # noqa: E402  (file readers and norm only)
 
 ST = "ID"
+IDL = "ID-X-IDAHO-DEPARTMENT-OF-LANDS-FIRE-DEPARTMENT-COEUR-D-ALENE"
 NOT_PAYMENTS = {"Encumbrances", "GAAP Expenses", "Loss", "Operating Transfers Out", "Other Financing Uses", "Personnel"}
+LOAD_COLS = ("unique_id", "date_of_load", "zz_extract_date")
+BLOCK = 4  # identical copies inside one load batch that make it a reloaded block
 
 
 def cents(x):
     return round(float(x) * 100)
+
+
+def gz_json(path):
+    return json.loads(gzip.decompress(pathlib.Path(path).read_bytes()))
 
 
 def links(source):
@@ -42,59 +59,136 @@ def links(source):
             if r["source"] == source}
 
 
+def contract_columns():
+    """Column lists from docs/multistate/data-contract.md: the three tables and three config files."""
+    text = (ROOT / "docs" / "multistate" / "data-contract.md").read_text(encoding="utf-8")
+    out = {}
+    for name, heading in (("transactions.csv.gz", "## `data/states/<st>/transactions.csv.gz`"),
+                          ("line_items.csv.gz", "## `data/states/<st>/line_items.csv.gz`"),
+                          ("totals.csv", "## `data/states/<st>/totals.csv`"),
+                          ("sources.csv", "## `config/states/<st>/sources.csv`"),
+                          ("agency_sources.csv", "## `config/states/<st>/agency_sources.csv`")):
+        section = text.split(heading, 1)[1].split("\n## ", 1)[0]
+        cols = []
+        for line in section.splitlines():
+            m = re.match(r"^\| (`[^|]+`) \|", line)
+            if m:
+                cols += [c.strip().strip("`") for c in m.group(1).split(",")]
+        out[name] = cols
+    vm = text.split("## `config/states/<st>/vendor_map_additions.csv`", 1)[1].split("\n## ", 1)[0]
+    m = re.search(r"\(`([^)]*)`\) plus `(\w+)` and `(\w+)`", vm)
+    out["vendor_map_additions.csv"] = [c.strip(" `") for c in m.group(1).split(",")] + [m.group(2), m.group(3)]
+    return out
+
+
+def header(path):
+    path = pathlib.Path(path)
+    body = gzip.decompress(path.read_bytes()) if path.suffix == ".gz" else path.read_bytes()
+    return body.split(b"\n", 1)[0].decode("utf-8")
+
+
 def expect_lgr():
     """{(agency, fy): cents} from raw/<date>/id/id_lgr/fire_districts_fy*.json.gz."""
     raw, link = common.latest_raw(ST, "id_lgr"), links("id_lgr")
+    fire = {str(e["EntityID"]) for e in gz_json(raw / "entity_lists.json.gz")["6"]}
+    assert fire <= set(link), f"id_lgr: fire districts without agency_sources.csv row: {sorted(fire - set(link))[:5]}"
     seen, out = {}, collections.Counter()
     for path in sorted(raw.glob("fire_districts_fy*.json.gz")):
         fy = re.search(r"fy(\d{4})", path.name).group(1)
-        for county, recs in json.loads(gzip.decompress(path.read_bytes())).items():
+        for county, recs in gz_json(path).items():
             for r in recs:
                 key = (str(r["EntityID"]), fy)
+                assert key[0] in fire, f"id_lgr: entity {key[0]} answered for type 6 but not in the type-6 list"
                 if key in seen:
                     assert seen[key] == r["Actual_Expenditures"], f"county copies disagree for {key}"
                     continue
                 seen[key] = r["Actual_Expenditures"]
     for (eid, fy), actual in seen.items():
-        assert eid in link, f"id_lgr: entity {eid} has no agency_sources.csv row"
         if actual:
             out[(link[eid], fy)] += round(actual * 100)
     return out
 
 
-def expect_state():
-    """{(agency, fy): [cents, lines]} from raw/<date>/id/id_state/lines_fy*.json.gz, checked against control."""
+def raw_state_lines():
+    """Every fetched id_state line (dicts), checked against the control file's counts and dollars."""
     raw = common.latest_raw(ST, "id_state")
-    agency = links("id_state")["320-07H"]
-    control = json.loads(gzip.decompress((raw / "control.json.gz").read_bytes()))
+    control = gz_json(raw / "control.json.gz")
     lines = []
     for path in sorted(raw.glob("lines_fy*.json.gz")):
         fy = re.search(r"fy(\d{4})", path.name).group(1)
-        d = json.loads(gzip.decompress(path.read_bytes()))
-        col = {c: i for i, c in enumerate(d["columns"])}
+        d = gz_json(path)
+        rows = [dict(zip(d["columns"], r)) for r in d["rows"]]
         expected = sum(v["lines"] for k, v in control[fy].items() if k != "Personnel")
-        assert len(d["rows"]) == expected, f"id_state FY{fy}: {len(d['rows'])} lines, control {expected}"
-        assert len({json.dumps(r) for r in d["rows"]}) == len(d["rows"]), f"id_state FY{fy}: a line repeats"
-        lines += [dict(zip(d["columns"], r)) for r in d["rows"]]
-    # Reloaded copies: same line but for unique_id and load dates, arriving in a later load batch than the first copy.
-    batches = collections.defaultdict(set)
+        assert len(rows) == expected, f"id_state FY{fy}: {len(rows)} lines, control {expected}"
+        assert len({json.dumps(r) for r in d["rows"]}) == len(rows), f"id_state FY{fy}: a line repeats"
+        by_cat = collections.Counter()
+        for r in rows:
+            assert r["agency_code_function_code"] == "320-07H" and r["account_type"] == "Expense", r["unique_id"]
+            assert str(r["fiscal_year"]) == fy, f"id_state: FY{fy} file holds a FY{r['fiscal_year']} line"
+            by_cat[r["account_category_0"]] += round((r["amount"] or 0) * 100)
+        for cat, v in control[fy].items():
+            if cat != "Personnel":
+                assert by_cat[cat] == round(v["amount"] * 100), f"id_state FY{fy} {cat}: raw {by_cat[cat]} vs control"
+        assert set(by_cat) <= set(control[fy]), f"id_state FY{fy}: category not in control"
+        lines += rows
+    return lines
+
+
+def kept_state_lines(lines):
+    """Lines left after removing reloaded copies (rule in the module docstring)."""
+    content = lambda r: json.dumps({k: v for k, v in r.items() if k not in LOAD_COLS}, sort_keys=True)
+    batch = lambda r: (r["date_of_load"] or "", r["zz_extract_date"] or "")
+    copies = collections.defaultdict(list)
     for r in lines:
-        key = json.dumps({k: v for k, v in r.items() if k not in ("unique_id", "date_of_load", "zz_extract_date")}, sort_keys=True)
-        batches[key].add((r["date_of_load"] or "", r["zz_extract_date"] or ""))
-    out, dropped = collections.defaultdict(lambda: [0, 0]), 0
-    for r in lines:
-        assert r["agency_code_function_code"] == "320-07H" and r["account_type"] == "Expense"
-        key = json.dumps({k: v for k, v in r.items() if k not in ("unique_id", "date_of_load", "zz_extract_date")}, sort_keys=True)
-        if (r["date_of_load"] or "", r["zz_extract_date"] or "") != min(batches[key]):
-            dropped += 1
-            continue
+        copies[content(r)].append(r)
+    keep, block_extra = [], collections.defaultdict(list)
+    for group in copies.values():
+        first = min(batch(r) for r in group)
+        same = sorted((r for r in group if batch(r) == first), key=lambda r: int(r["unique_id"]))
+        keep.append(same[0])
+        if len(same) > 1:
+            block_extra[first].append(same[1:])
+    for b, extra in block_extra.items():
+        if sum(len(e) for e in extra) < BLOCK:
+            for e in extra:
+                keep += e
+    dropped = len(lines) - len(keep)
+    assert dropped < 0.02 * len(lines), f"id_state: {dropped} reloaded copies, more than 2% of lines"
+    return keep, dropped
+
+
+def redactions():
+    return [re.compile(r["pattern"], re.I)
+            for r in csv.DictReader(open(ROOT / "config" / "payee_name_redactions.csv", encoding="utf-8"))]
+
+
+def published(vendor, rx):
+    name = " ".join((vendor or "").split())
+    return "Payee name withheld" if any(p.search(name) for p in rx) else name
+
+
+def check_state_lines(tx, rx):
+    """Line-by-line comparison of the id_state rows with the kept raw payment lines."""
+    lines = raw_state_lines()
+    keep, dropped = kept_state_lines(lines)
+    want = collections.Counter()
+    for r in keep:
         if r["account_category_0"] in NOT_PAYMENTS:
             continue
-        k = (agency, r["fiscal_year"])
-        out[k][0] += round((r["amount"] or 0) * 100)
-        out[k][1] += 1
-    assert dropped < 0.02 * len(lines), f"id_state: {dropped} reloaded copies, more than 2% of lines"
-    return out
+        want[(str(r["unique_id"]), str(r["fiscal_year"]), r["effective_date"] or "", f"{r['amount'] or 0:.2f}",
+              r["summary_account"] or "", published(r["vendor"], rx))] += 1
+    have = collections.Counter()
+    for r in tx:
+        if r["source"] != "id_state":
+            continue
+        assert r["agency_id"] == IDL, f"id_state row for {r['agency_id']}"
+        uid = re.fullmatch(r"(\d+)(-\d+)?", r["source_record_id"])
+        assert uid, f"id_state: source_record_id {r['source_record_id']} is not a raw unique_id"
+        have[(uid.group(1), r["fiscal_year"], r["posting_date"], r["amount"], r["category_published"],
+              r["payee_name"])] += 1
+    diff = (want - have) + (have - want)
+    assert not diff, f"id_state: {sum(diff.values())} lines differ from raw, e.g. {list(diff)[:3]}"
+    return len(lines), dropped
 
 
 def main():
@@ -103,8 +197,24 @@ def main():
     tot = common.read_data_csv(d / "totals.csv") if (d / "totals.csv").exists() else []
     li = common.read_data_csv(d / "line_items.csv.gz") if (d / "line_items.csv.gz").exists() else []
     agencies = json.loads((d / "agencies.json").read_text(encoding="utf-8"))
+    rx = redactions()
 
-    # 1. Totals per source, agency and fiscal year
+    # 0. Contract columns, dates and amounts
+    cols = contract_columns()
+    for name in ("transactions.csv.gz", "line_items.csv.gz", "totals.csv"):
+        if (d / name).exists():
+            assert header(d / name) == ",".join(cols[name]), f"{name}: header differs from the data contract"
+    for name in ("sources.csv", "agency_sources.csv", "vendor_map_additions.csv"):
+        assert header(common.config_dir(ST) / name) == ",".join(cols[name]), f"{name}: header differs from contract"
+    for r in tx + tot:
+        assert re.fullmatch(r"-?\d+\.\d\d", r["amount"]), f"amount {r['amount']!r}"
+        assert re.fullmatch(r"20\d\d", r["fiscal_year"]), f"fiscal_year {r['fiscal_year']!r}"
+    for r in tx:
+        p, fy = r["posting_date"], int(r["fiscal_year"])
+        assert re.fullmatch(r"\d{4}-\d\d-\d\d", p), f"posting_date {p!r}"
+        assert f"{fy - 1}-07-01" <= p <= f"{fy}-06-30", f"{r['source_record_id']}: {p} outside state FY{fy}"
+
+    # 1. Totals per source, agency and fiscal year; no $0 rows
     got = collections.Counter()
     for r in tot:
         assert r["source"] == "id_lgr", f"unexpected totals source {r['source']}"
@@ -113,16 +223,11 @@ def main():
     want = expect_lgr()
     assert got == want, f"id_lgr totals differ: {sorted(set(got.items()) ^ set(want.items()))[:5]}"
     keys = collections.Counter((r["agency_id"], r["fiscal_year"]) for r in tot)
-    assert max(keys.values()) == 1, "id_lgr: two totals rows for one agency and year"
+    assert not keys or max(keys.values()) == 1, "id_lgr: two totals rows for one agency and year"
 
-    got = collections.defaultdict(lambda: [0, 0])
     for r in tx:
         assert r["source"] == "id_state", f"unexpected transactions source {r['source']}"
-        k = (r["agency_id"], r["fiscal_year"])
-        got[k][0] += cents(r["amount"])
-        got[k][1] += 1
-    want = expect_state()
-    assert dict(got) == dict(want), f"id_state differs: {sorted(set(map(str, got.items())) ^ set(map(str, want.items())))[:5]}"
+    n_raw, dropped = check_state_lines(tx, rx)
 
     # 2. Agency ids
     ids = {a["id"] for a in agencies["agencies"]}
@@ -134,9 +239,11 @@ def main():
     missing = {r["agency_id"] for r in common.read_data_csv(d / "grants.csv")} - ids
     assert not missing, f"grants.csv: unknown agency ids {sorted(missing)[:5]}"
     registry = {r["id"] for r in common.read_config(ST, "agencies.csv")}
-    added = [r["id"] for r in common.read_config(ST, "agencies_added.csv")]
-    assert all(i.startswith("ID-S-") for i in added) and not set(added) & registry, "agencies_added.csv ids"
-    assert len(set(added)) == len(added), "agencies_added.csv: duplicate id"
+    added = common.read_config(ST, "agencies_added.csv")
+    assert all(r["id"].startswith("ID-S-") and r["kind"] for r in added), "agencies_added.csv: id or kind"
+    assert not {r["id"] for r in added} & registry, "agencies_added.csv repeats a registry id"
+    assert len({r["id"] for r in added}) == len(added), "agencies_added.csv: duplicate id"
+    assert IDL in registry, "Idaho Department of Lands fire row missing from the registry"
 
     # 3. Unique source_record_id per source
     c = collections.Counter((r["source"], r["source_record_id"]) for r in tx)
@@ -144,36 +251,19 @@ def main():
     assert not dup, f"transactions: duplicate source_record_id {dup[:5]}"
     assert all(r["source_record_id"] for r in tx), "transactions: empty source_record_id"
 
-    # 4. No private persons' names
-    vm_rows = list(csv.DictReader(open(common.ROOT / "config" / "vendor_map.csv", encoding="utf-8")))
-    add_rows = common.read_config(ST, "vendor_map_additions.csv")
-    claimed = {r["name_key"] for r in vm_rows + add_rows if r["category"] != "individuals"}
-    withheld = {common.WITHHELD, "Payee name withheld", ""}
-    bad = []
-    for p in collections.Counter(r["payee_name"] for r in tx):
-        if p in withheld:
-            continue
-        base = id_state.PREFIX.sub("", p)
-        if (common.norm(p) in claimed or common.norm(base) in claimed or id_state.BUSINESS.search(base)
-                or common.BUSINESS_WORDS.search(base)):
-            continue
-        if common.is_person(base) or common.looks_like_person(base) or id_state.FULL_NAME.match(base):
-            bad.append(p)
-    assert not bad, f"{len(bad)} payee names look like persons, e.g. {bad[:3]}"
-    for r in add_rows:
-        assert common.norm(r["vendor"]) and r["name_key"] == r["name_key"].strip(), r
-    cats = {r["id"]: r for r in csv.DictReader(open(common.ROOT / "config" / "categories.csv", encoding="utf-8"))}
-    assert all(r["category"] in cats for r in add_rows), "vendor_map_additions.csv: unknown category"
-    assert len({r["name_key"] for r in add_rows}) == len(add_rows), "vendor_map_additions.csv: duplicate name_key"
-    assert not {r["name_key"] for r in add_rows} & {r["name_key"] for r in vm_rows}, \
-        "vendor_map_additions.csv repeats a vendor_map.csv key"
-    published = {common.norm(r["payee_name"]) for r in tx}
-    assert all(r["name_key"] in published for r in add_rows), "vendor_map_additions.csv: key not among published payees"
+    # 4. Payee names as published; only e-mail and bank account text cut
+    for r in tx:
+        assert r["payee_name"] != common.WITHHELD, "payee withheld under the old person rule"
+        for col in ("payee_name", "description", "account", "category_published"):
+            assert not any(p.search(r[col]) for p in rx), f"{col} holds redactable text: {r[col]!r}"
 
     # 5. Sources and coverage tiers
     sources = {r["source"]: r for r in common.read_config(ST, "sources.csv")}
     used = {r["source"] for r in tx} | {r["source"] for r in li} | {r["source"] for r in tot}
     assert used <= set(sources), f"sources missing from sources.csv: {used - set(sources)}"
+    for s, r in sources.items():
+        assert all(r[k] for k in cols["sources.csv"]), f"sources.csv {s}: empty column"
+        assert r["fetched"] == common.latest_raw(ST, s).parent.parent.name, f"sources.csv {s}: fetched date"
     best = collections.defaultdict(lambda: 4)
     for r in tx:
         best[r["agency_id"]] = min(best[r["agency_id"]], int(sources[r["source"]]["tier"]))
@@ -186,12 +276,36 @@ def main():
     counts = collections.Counter(a["coverage"] for a in agencies["agencies"])
     assert agencies["coverage_counts"] == {str(t): counts.get(t, 0) for t in (1, 2, 3, 4)}
 
+    # 6. vendor_map_additions.csv
+    vm_rows = list(csv.DictReader(open(ROOT / "config" / "vendor_map.csv", encoding="utf-8")))
+    add_rows = common.read_config(ST, "vendor_map_additions.csv")
+    cats = {r["id"]: r for r in csv.DictReader(open(ROOT / "config" / "categories.csv", encoding="utf-8"))}
+    assert all(r["category"] in cats and r["category"] != "individuals" for r in add_rows), "additions: category"
+    assert all(r["confidence"] in ("high", "medium", "low") and r["vendor"] for r in add_rows), "additions: row"
+    assert len({r["name_key"] for r in add_rows}) == len(add_rows), "vendor_map_additions.csv: duplicate name_key"
+    assert not {r["name_key"] for r in add_rows} & {r["name_key"] for r in vm_rows}, \
+        "vendor_map_additions.csv repeats a vendor_map.csv key"
+    spend, ags = collections.Counter(), collections.defaultdict(set)
+    for r in tx:
+        spend[common.norm(r["payee_name"])] += cents(r["amount"])
+        ags[common.norm(r["payee_name"])].add(r["agency_id"])
+    for r in add_rows:
+        assert r["name_key"] in spend, f"vendor_map_additions.csv: {r['name_key']!r} not among published payees"
+        assert cents(r["spend"]) == spend[r["name_key"]] and int(r["agencies"]) == len(ags[r["name_key"]]), \
+            f"vendor_map_additions.csv: stale spend or agencies for {r['name_key']!r}"
+    cat = {r["name_key"]: r["category"] for r in vm_rows}
+    cat.update({r["name_key"]: r["category"] for r in add_rows})
+    purch = sum(v for k, v in spend.items() if k not in cat or cats[cat[k]]["purchasing"] == "yes")
+    mapped = sum(v for k, v in spend.items() if k in cat and cats[cat[k]]["purchasing"] == "yes")
+    assert mapped >= 0.9 * purch, f"vendor maps cover {mapped / purch:.1%} of purchasing dollars, under 90%"
+
     by_source = collections.Counter()
     for r in tx + tot:
         by_source[r["source"]] += float(r["amount"])
-    print(f"{ST}: ok ({len(tx)} payment lines, {len(tot)} totals rows; "
-          + ", ".join(f"{s} ${v:,.0f}" for s, v in sorted(by_source.items()))
-          + f"; tiers {dict(sorted(agencies['coverage_counts'].items()))})")
+    print(f"{ST}: ok ({len(tx)} payment lines from {n_raw} raw lines, {dropped} reloaded copies dropped; "
+          f"{len(tot)} totals rows; " + ", ".join(f"{s} ${v:,.0f}" for s, v in sorted(by_source.items()))
+          + f"; vendor maps cover {mapped / purch:.1%} of purchasing; "
+          + f"tiers {dict(sorted(agencies['coverage_counts'].items()))})")
 
 
 if __name__ == "__main__":
