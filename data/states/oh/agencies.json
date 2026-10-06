@@ -9,7 +9,7 @@
    "years": "2021-2026",
    "fiscal_year": "Calendar year (Ohio local governments)",
    "fetched": "2026-10-06",
-   "note": "74 participating fire agencies. Fire districts: whole checkbook. Townships, cities and villages: only lines whose fund or department is named for fire; fire spending they book under general 'Public Safety' lines is not included. Participation is voluntary and uploads lag by entity (latest payment 2026-09-30); FY2026 partial"
+   "note": "132 participating fire agencies. Fire districts: whole checkbook. Townships, cities and villages: only lines whose fund or department is named for fire; fire spending they book under general 'Public Safety' lines is not included. Participation is voluntary and uploads lag by entity (latest payment 2026-09-30); FY2026 partial"
   },
   {
    "source": "oh_cincinnati",
@@ -23,10 +23,10 @@
   }
  ],
  "coverage_counts": {
-  "1": 74,
+  "1": 132,
   "2": 0,
   "3": 0,
-  "4": 1075
+  "4": 1019
  },
  "agencies": [
   {
@@ -316,12 +316,13 @@
    "county": "Allen",
    "city": "Lima",
    "usfa_fdid": "02107",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "openfema",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -622,11 +623,12 @@
    "county": "Ashland",
    "city": "Loudonville",
    "usfa_fdid": "03009",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -1436,11 +1438,12 @@
    "county": "Athens",
    "city": "Jacksonville",
    "usfa_fdid": "05015",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -1761,11 +1764,12 @@
    "county": "Auglaize",
    "city": "New Knoxville",
    "usfa_fdid": "06009",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -1808,11 +1812,12 @@
    "county": "Auglaize",
    "city": "Wapakoneta",
    "usfa_fdid": "06017",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -2458,11 +2463,12 @@
    "county": "Brown",
    "city": "Mount Orab",
    "usfa_fdid": "08013",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -2734,11 +2740,12 @@
    "county": "Butler",
    "city": "Oxford",
    "usfa_fdid": "09031",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -2757,11 +2764,12 @@
    "county": "Butler",
    "city": "Hamilton",
    "usfa_fdid": "09035",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -2780,11 +2788,12 @@
    "county": "Butler",
    "city": "Seven Mile",
    "usfa_fdid": "09037",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -2803,11 +2812,12 @@
    "county": "Butler",
    "city": "Trenton",
    "usfa_fdid": "09039",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -3289,11 +3299,12 @@
    "county": "Champaign",
    "city": "Mechanicsburg",
    "usfa_fdid": "11003",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -3429,11 +3440,12 @@
    "county": "Clark",
    "city": "New Carlisle",
    "usfa_fdid": "12019",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -3498,11 +3510,12 @@
    "county": "Clark",
    "city": "Springfield",
    "usfa_fdid": "12103",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -4313,11 +4326,12 @@
    "county": "Columbiana",
    "city": "Columbiana",
    "usfa_fdid": "15005",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -4360,11 +4374,12 @@
    "county": "Columbiana",
    "city": "East Palestine",
    "usfa_fdid": "15011",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -4547,12 +4562,13 @@
    "county": "Columbiana",
    "city": "Salineville",
    "usfa_fdid": "15035",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "openfema",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -4571,12 +4587,13 @@
    "county": "Columbiana",
    "city": "Wellsville",
    "usfa_fdid": "15047",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "openfema",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -5733,12 +5750,11 @@
    "county": "Cuyahoga",
    "city": "Lyndhurst",
    "usfa_fdid": "18053",
-   "coverage": 1,
+   "coverage": 4,
    "sources": [
-    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": "01",
+   "fy_start": null,
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -6778,11 +6794,12 @@
    "county": "Defiance",
    "city": "Hicksville",
    "usfa_fdid": "20003",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7012,11 +7029,12 @@
    "county": "Delaware",
    "city": "Delaware",
    "usfa_fdid": "21103",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7267,12 +7285,13 @@
    "county": "Erie",
    "city": "Sandusky",
    "usfa_fdid": "22001",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "openfema",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7385,11 +7404,12 @@
    "county": "Erie",
    "city": "Vermilion",
    "usfa_fdid": "22017",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7525,11 +7545,12 @@
    "county": "Erie",
    "city": "Vermilion",
    "usfa_fdid": "22200",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7619,12 +7640,13 @@
    "county": "Fairfield",
    "city": "Millersport",
    "usfa_fdid": "23015",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "openfema",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -8015,11 +8037,12 @@
    "county": "Franklin",
    "city": "Grandview Heights",
    "usfa_fdid": "25017",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -8108,11 +8131,12 @@
    "county": "Franklin",
    "city": "Columbus",
    "usfa_fdid": "25105",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -8644,11 +8668,12 @@
    "county": "Gallia",
    "city": "Gallipolis",
    "usfa_fdid": "27009",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9040,11 +9065,12 @@
    "county": "Geauga",
    "city": "Chesterland",
    "usfa_fdid": "28207",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9253,11 +9279,12 @@
    "county": "Greene",
    "city": "Cedarville",
    "usfa_fdid": "29107",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -9417,11 +9444,12 @@
    "county": "Guernsey",
    "city": "Byesville",
    "usfa_fdid": "30001",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -10147,11 +10175,12 @@
    "county": "Hamilton",
    "city": "Cincinnati",
    "usfa_fdid": "31083",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -11902,11 +11931,12 @@
    "county": "Huron",
    "city": "Bellevue",
    "usfa_fdid": "39001",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -11973,11 +12003,12 @@
    "county": "Huron",
    "city": "New London",
    "usfa_fdid": "39013",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -12137,11 +12168,12 @@
    "county": "Jackson",
    "city": "Jackson",
    "usfa_fdid": "40003",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -13097,11 +13129,12 @@
    "county": "Lake",
    "city": "Kirtland",
    "usfa_fdid": "43007",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -13937,11 +13970,12 @@
    "county": "Licking",
    "city": "Croton",
    "usfa_fdid": "45121",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14404,11 +14438,12 @@
    "county": "Lorain",
    "city": "Amherst",
    "usfa_fdid": "47001",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14895,11 +14930,12 @@
    "county": "Lucas",
    "city": "Berkey",
    "usfa_fdid": "48001",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -15082,11 +15118,12 @@
    "county": "Lucas",
    "city": "Monclova",
    "usfa_fdid": "48105",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -16434,11 +16471,12 @@
    "county": "Meigs",
    "city": "Racine",
    "usfa_fdid": "53213",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -17338,11 +17376,12 @@
    "county": "Montgomery",
    "city": "Brookville",
    "usfa_fdid": "57003",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -17430,11 +17469,12 @@
    "county": "Montgomery",
    "city": "Germantown",
    "usfa_fdid": "57021",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -17686,11 +17726,12 @@
    "county": "Montgomery",
    "city": "Dayton",
    "usfa_fdid": "57111",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -17943,11 +17984,12 @@
    "county": "Morrow",
    "city": "Mount Gilead",
    "usfa_fdid": "59011",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -18107,11 +18149,12 @@
    "county": "Muskingum",
    "city": "South Zanesville",
    "usfa_fdid": "60019",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -18736,11 +18779,12 @@
    "county": "Paulding",
    "city": "Payne",
    "usfa_fdid": "63019",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -18924,11 +18968,12 @@
    "county": "Perry",
    "city": "New Straitsville",
    "usfa_fdid": "64013",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -20210,11 +20255,12 @@
    "county": "Putnam",
    "city": "Ottawa",
    "usfa_fdid": "69023",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -21514,11 +21560,12 @@
    "county": "Seneca",
    "city": "Bettsville",
    "usfa_fdid": "74005",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -21769,11 +21816,12 @@
    "county": "Shelby",
    "city": "Jackson Center",
    "usfa_fdid": "75007",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -21979,13 +22027,12 @@
    "county": "Stark",
    "city": "Alliance",
    "usfa_fdid": "76001",
-   "coverage": 1,
+   "coverage": 4,
    "sources": [
-    "oh_checkbook_local",
     "openfema",
     "usfa"
    ],
-   "fy_start": "01",
+   "fy_start": null,
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -22121,12 +22168,11 @@
    "county": "Stark",
    "city": "Massillon",
    "usfa_fdid": "76027",
-   "coverage": 1,
+   "coverage": 4,
    "sources": [
-    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": "01",
+   "fy_start": null,
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -22169,11 +22215,12 @@
    "county": "Stark",
    "city": "North Canton",
    "usfa_fdid": "76037",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -22805,11 +22852,12 @@
    "county": "Summit",
    "city": "Munroe Falls",
    "usfa_fdid": "77031",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -23184,11 +23232,12 @@
    "county": "Summit",
    "city": "Hudson",
    "usfa_fdid": "77200",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -23812,11 +23861,12 @@
    "county": "Trumbull",
    "city": "Cortland",
    "usfa_fdid": "78200",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -24813,11 +24863,12 @@
    "county": "Warren",
    "city": "Franklin",
    "usfa_fdid": "83007",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -25071,11 +25122,12 @@
    "county": "Warren",
    "city": "Waynesville",
    "usfa_fdid": "83121",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -25913,12 +25965,13 @@
    "county": "Williams",
    "city": "Edgerton",
    "usfa_fdid": "86007",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "openfema",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -26145,11 +26198,12 @@
    "county": "Wood",
    "city": "Bradner",
    "usfa_fdid": "87007",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -26354,11 +26408,12 @@
    "county": "Wood",
    "city": "Risingsun",
    "usfa_fdid": "87039",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -26400,12 +26455,13 @@
    "county": "Wood",
    "city": "Millbury",
    "usfa_fdid": "87047",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "openfema",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -26820,6 +26876,38 @@
    "coverage": 4,
    "sources": [],
    "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "OH-S-craig-beach-volunteer-fire-department",
+   "state": "OH",
+   "name": "Craig Beach Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Mahoning",
+   "city": "Craig Beach",
+   "usfa_fdid": null,
+   "coverage": 1,
+   "sources": [
+    "oh_checkbook_local"
+   ],
+   "fy_start": "01",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "OH-S-proctorville-community-volunteer-fire-department",
+   "state": "OH",
+   "name": "Proctorville Community Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Lawrence",
+   "city": "Proctorville",
+   "usfa_fdid": null,
+   "coverage": 1,
+   "sources": [
+    "oh_checkbook_local"
+   ],
+   "fy_start": "01",
    "usfa": null,
    "grants": 0
   }

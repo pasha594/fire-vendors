@@ -11,18 +11,24 @@ redaction rule) and common's file helpers and norm(). Checks:
      amount) lines is equal too; for ca_fiscal (rows summed per voucher) dollars per fiscal year and payee are equal
   2. payee names are shown as published (owner decision of 2026-10-06): every published payee is a raw payee
      name (whitespace collapsed), or "Payee name withheld" where the raw name matches a redaction pattern; the
-     old person marker never appears; no published payee matches a redaction pattern. Names that look like private
-     persons (common.is_person / looks_like_person) and email addresses in descriptions are counted and reported
+     old person marker never appears; no published payee matches a redaction pattern; no payee, description or
+     account carries an email address. Names that look like private persons (common.is_person / looks_like_person)
+     are only counted and reported (shown, owner decision)
   3. every agency_id in the tables and agency_sources.csv exists in agencies.json; coverage tiers agree with the
-     rows present; no agency without rows has a tier above 4; no zero-dollar totals rows
+     rows present; no agency without rows has a tier above 4; no zero-dollar totals rows; no agencies_added.csv row
+     duplicates a registry fire district of the same county by name; SCO city fire lines go only to fire departments
   4. no duplicate and no empty source_record_id per source; tier-2 line items equal their transactions rows
-  5. every source in a table is registered in sources.csv with the years present in the data
+  5. every source in a table is registered in sources.csv with the years present in the data and the raw folder date
   6. vendor_map_additions.csv: spend and agency counts equal the transactions, categories are valid ids, no key
      repeats config/vendor_map.csv, and the mapped payees cover at least 90% of purchasing dollars
   7. raw files: each under 50 MB, California under 150 MB, every source folder has a sample of at most 100 rows
+  8. contract conformance: table and config columns in the order docs/multistate/data-contract.md gives; dates
+     YYYY-MM-DD; amounts with two decimals; payment dates inside the fiscal year they are filed under (July-June,
+     named for the year it ends), SCPRS purchase-order dates excepted
 """
 import collections
 import csv
+import difflib
 import gzip
 import io
 import json
@@ -197,6 +203,40 @@ def expect_sco(source, name_field, year_field):
     return {k: v for k, v in out.items() if v}
 
 
+def contract_columns():
+    """Column lists from docs/multistate/data-contract.md: the three tables and two config files."""
+    text = (common.ROOT / "docs" / "multistate" / "data-contract.md").read_text(encoding="utf-8")
+    out = {}
+    for name, heading in (("transactions.csv.gz", "## `data/states/<st>/transactions.csv.gz`"),
+                          ("line_items.csv.gz", "## `data/states/<st>/line_items.csv.gz`"),
+                          ("totals.csv", "## `data/states/<st>/totals.csv`"),
+                          ("sources.csv", "## `config/states/<st>/sources.csv`"),
+                          ("agency_sources.csv", "## `config/states/<st>/agency_sources.csv`")):
+        section = text.split(heading, 1)[1].split("\n## ", 1)[0]
+        cols = []
+        for line in section.splitlines():
+            m = re.match(r"^\| (`[^|]+`) \|", line)
+            if m:
+                cols += [c.strip().strip("`") for c in m.group(1).split(",")]
+        out[name] = cols
+    return out
+
+
+def header(path):
+    body = gzip.decompress(path.read_bytes()) if path.suffix == ".gz" else path.read_bytes()
+    return body.split(b"\n", 1)[0].decode("utf-8").split(",")
+
+
+NAME_STOP = {"FIRE", "PROTECTION", "DISTRICT", "DIST", "DEPARTMENT", "DEPT", "FPD", "OF", "THE", "AND", "VOLUNTEER",
+             "RURAL", "AUTHORITY", "NO", "FD", "VFD"}
+# Added agencies whose name resembles a registry fire district in the same county, reviewed: not the same body.
+ADDED_REVIEWED = {"CA-S-ukiah-valley-fire-protection-district": "member district of the Ukiah Valley Fire Authority (CA-23080)"}
+
+
+def name_key(name):
+    return " ".join(sorted(t for t in re.findall(r"[A-Z0-9]+", name.upper()) if t not in NAME_STOP))
+
+
 # --- checks ---------------------------------------------------------------------------------------------------
 
 def main():
@@ -255,15 +295,17 @@ def main():
     assert {r["source"] for r in tot} == {"ca_sco_districts", "ca_sco_cities"}
     assert {r["source"] for r in li} == {"ca_scprs"}
 
-    # 2. payee names as published
-    email = re.compile(r"[\w.+-]+@[A-Za-z][\w-]*\.[A-Za-z]{2,}")
+    # 2. payee names as published; no email address in a payee, description or account (strict address form: the
+    #    redaction pattern also matches part numbers such as "6@1762.00" in descriptions)
+    email = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\b")
     emails = 0
     for r in tx + li:
         name = r.get("payee_name", r.get("vendor"))
         assert name != OLD_MARKER, f"payee withheld by the old person rule: {r}"
         if name != CUT:
             assert not any(rx.search(name) for rx in REDACT), f"redaction pattern in a published payee: {r}"
-        emails += any(email.search(r.get(f) or "") for f in ("description", "account"))
+        emails += any(email.search(r.get(f) or "") for f in ("payee_name", "vendor", "description", "account"))
+    assert emails == 0, f"{emails} lines carry an email address"
     person_like = collections.Counter(r["source"] for r in tx if common.is_person(r["payee_name"])
                                       or common.looks_like_person(r["payee_name"]))
     cut = collections.Counter(r["source"] for r in tx if r["payee_name"] == CUT)
@@ -291,6 +333,21 @@ def main():
     assert agencies["coverage_counts"] == {str(t): counts[t] for t in (1, 2, 3, 4)}
     kinds = {a["id"]: a["kind"] for a in agencies["agencies"]}
     assert kinds["CA-00555"] in ("State government", "State fire agency"), "CAL FIRE (CA-00555) is not a state row"
+    # agencies_added.csv: source-named agencies only, never a second row for a registry fire district of the county
+    registry = common.read_config(ST, "agencies.csv")
+    for a in common.read_config(ST, "agencies_added.csv"):
+        assert a["id"].startswith("CA-S-"), a
+        if a["id"] in ADDED_REVIEWED:
+            continue
+        for r in registry:
+            if r["county"].upper() == a["county"].upper() and r["kind"] == "Fire district":
+                ratio = difflib.SequenceMatcher(None, name_key(a["name"]), name_key(r["name"])).ratio()
+                assert ratio < 0.9, f"{a['id']} {a['name']} looks like registry row {r['id']} {r['name']}"
+    # a city's SCO fire line goes only to a fire department (or a public safety department that runs one)
+    names = {a["id"]: a["name"] for a in agencies["agencies"]}
+    for r in common.read_config(ST, "agency_sources.csv"):
+        if r["source"] == "ca_sco_cities":
+            assert re.search(r"FIRE|PUBLIC SAFETY|EMERGENCY SERVICES", names[r["agency_id"]].upper()), r
 
     # 4. record ids
     for table, rows in [("transactions", tx), ("line_items", li)]:
@@ -308,6 +365,31 @@ def main():
             assert source in sources, f"{source} not in sources.csv"
             ys = sorted({int(r[field]) for r in rows if r["source"] == source})
             assert sources[source]["years"] == f"{ys[0]}-{ys[-1]}", f"{source}: years {sources[source]['years']} vs {ys}"
+    for source, s in sources.items():
+        assert s["fetched"] == common.latest_raw(ST, source).parent.parent.name, f"{source}: fetched {s['fetched']}"
+        assert s["tier"] in ("1", "2", "3") and all(s[c] for c in ("name", "url", "years", "fiscal_year", "note")), s
+
+    # 8. contract conformance: columns and order as docs/multistate/data-contract.md; dates YYYY-MM-DD; amounts with
+    #    two decimals (whole dollars allowed in totals); fiscal year = the year the July-June fiscal year ends
+    cols = contract_columns()
+    for name in ("transactions.csv.gz", "line_items.csv.gz", "totals.csv"):
+        assert header(d / name) == cols[name], f"{name}: columns {header(d / name)} vs contract {cols[name]}"
+    for name in ("sources.csv", "agency_sources.csv"):
+        assert header(common.config_dir(ST) / name) == cols[name], f"{name}: columns differ from the contract"
+    iso = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+    for r in tx + li:
+        assert re.fullmatch(r"-?\d+\.\d{2}", r["amount"]) and re.fullmatch(r"20\d\d", r["fiscal_year"]), r
+        day = r.get("posting_date", r.get("date"))
+        if day:
+            assert iso.match(day), r
+            # every source but SCPRS dates a payment inside its fiscal year; SCPRS dates are PO dates, which can
+            # precede the fiscal year the PO is registered in
+            if r["source"] != "ca_scprs":
+                assert str(int(day[:4]) + (int(day[5:7]) >= 7)) == r["fiscal_year"], f"date outside fiscal year: {r}"
+        else:
+            assert r["source"] in ("ca_sf", "ca_scprs"), f"no date: {r}"
+    for r in tot:
+        assert re.fullmatch(r"-?\d+\.\d{2}", r["amount"]) and re.fullmatch(r"20\d\d", r["fiscal_year"]), r
 
     # 6. vendor_map_additions.csv
     cats = {c["id"]: c["purchasing"] == "yes" for c in csv.DictReader(open(common.ROOT / "config/categories.csv"))}

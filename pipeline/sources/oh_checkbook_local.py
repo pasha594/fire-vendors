@@ -555,9 +555,12 @@ def entity_requests(path):
     return d["entity"], rows, sums
 
 
+NULL = "%null%"  # Tableau's marker for an empty cell
+
+
 def label(r, part):
-    """The dashboard's own label for a fund, department or object: 'Fire District - 2111'."""
-    return f"{r[part + 'Description']} - {r[part + 'Code']}"
+    """The dashboard's own label for a fund, department or object: 'Fire District - 2111' ('' when empty)."""
+    return " - ".join(v for v in (r[part + "Description"], r[part + "Code"]) if v and v != NULL)
 
 
 def is_fire_line(kind, r, dept_trusted=True):
@@ -688,9 +691,10 @@ def normalize():
         for r in entity_rows(eid, entity, by_id, stats):
             out.append({
                 "agency_id": link["agency_id"], "fiscal_year": r["TransDate"][:4], "posting_date": r["TransDate"][:10],
-                "payee_name": common.withhold_person(r["Payee"]), "description": "",
-                "account": " / ".join([label(r, "Fund"), label(r, "Dept"), label(r, "Obj")]),
-                "category_published": r["ObjDescription"], "amount": str(money(r["Amt"])),
+                "payee_name": common.withhold_person("" if r["Payee"] == NULL else r["Payee"]), "description": "",
+                "account": " / ".join(x for x in (label(r, "Fund"), label(r, "Dept"), label(r, "Obj")) if x),
+                "category_published": "" if r["ObjDescription"] == NULL else r["ObjDescription"],
+                "amount": str(money(r["Amt"])),
                 "source_record_id": f"{eid}-{r['Id']}"})
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, out)
     years = sorted({int(r["fiscal_year"]) for r in out})

@@ -296,11 +296,14 @@ def expected_checkbook_local(agency_county):
             out[k][1] += amount
             r = dict(r)
             r["_want"] = {"agency_id": link["agency_id"], "fiscal_year": fy, "posting_date": r["TransDate"][:10],
-                          "description": "", "payee_name": redacted(r["Payee"]), "amount": str(amount),
-                          "account": f"{r['FundDescription']} - {r['FundCode']} / {r['DeptDescription']} - "
-                                     f"{r['DeptCode']} / {r['ObjDescription']} - {r['ObjCode']}",
-                          "category_published": r["ObjDescription"]}
-            r["_payee"] = r["Payee"]
+                          "description": "", "amount": str(amount),
+                          "payee_name": redacted("" if r["Payee"] == "%null%" else r["Payee"]),
+                          "account": " / ".join(x for x in (
+                              " - ".join(v for v in (r[d], r[c]) if v not in ("", "%null%"))
+                              for d, c in (("FundDescription", "FundCode"), ("DeptDescription", "DeptCode"),
+                                           ("ObjDescription", "ObjCode"))) if x),
+                          "category_published": "" if r["ObjDescription"] == "%null%" else r["ObjDescription"]}
+            r["_payee"] = "" if r["Payee"] == "%null%" else r["Payee"]
             lines[f"{eid}-{r['Id']}"] = r
     return out, lines
 
