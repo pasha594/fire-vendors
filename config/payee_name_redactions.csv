@@ -1,0 +1,3 @@
+pattern,note
+[\w.+-]+@[\w-]+\.[\w.]+,Payee text with an email address
+REF ?#,Bank payment text that can include the account holder name

@@ -3,6 +3,9 @@
 Sources:
   transparent_utah  vendor totals, entity details and expense categories per agency
                     (the public query service behind transparent.utah.gov)
+  tu_revenue        revenue totals by category per agency
+  tu_top_payments   the 100 largest single payments per agency and fiscal year
+  tu_compensation   wages and benefits by job title per agency (names replaced by a number)
   usfa              National Fire Department Registry, Utah CSV
   openfema          Firefighter grant awards (AFG, SAFER, FP&S) to Utah recipients
 
@@ -32,6 +35,7 @@ FEMA_GRANTS = "https://www.fema.gov/api/open/v1/NonDisasterAssistanceFirefighter
 
 HEADERS = {"User-Agent": "utah-fire-procurement/0.1 (github.com/pasha594/utah-fire-procurement)"}
 DELAY = 1.0  # seconds between requests
+YEARS = range(2021, 2027)  # fiscal years for the per-year calls
 
 
 def get(url, tries=4):
@@ -79,6 +83,46 @@ def fetch_transparent_utah():
              tu("getEntityExpensesCats", {"entity_id": tid, "fiscal_year": 2024}))
 
 
+def fetch_revenue():
+    """Revenue totals by category; one call returns every fiscal year."""
+    for a in agencies():
+        tid = int(a["tu_id"])
+        save(f"transparent_utah/revenue_categories/{tid}.json",
+             tu("getEntityRevenueCats", {"entity_id": tid, "fiscal_year": 2024}))
+
+
+def fetch_top_payments():
+    """The 100 largest single payments per agency and fiscal year (payee and amount, no description)."""
+    for a in agencies():
+        tid = int(a["tu_id"])
+        print(f"  {tid} {a['name']}")
+        for year in YEARS:
+            try:
+                body = tu("getHighestPayments", {"entity_name": str(tid), "fiscal_year": str(year)})
+            except Exception as e:  # missing years are left out; build.py treats them as no data
+                print(f"  skipped {tid} FY{year}: {e}", file=sys.stderr)
+                continue
+            save(f"transparent_utah/top_payments/{tid}/{year}.json", body)
+
+
+def fetch_compensation():
+    """Wages and benefits by job title. Employee names are replaced with a number that is unique within
+    the file, so people can be counted without storing who they are."""
+    for a in agencies():
+        tid = int(a["tu_id"])
+        print(f"  {tid} {a['name']}")
+        for year in YEARS:
+            try:
+                rows = json.loads(tu("getEntityCompensation", {"entity_name": str(tid), "fiscal_year": str(year)}))
+            except Exception as e:
+                print(f"  skipped {tid} FY{year}: {e}", file=sys.stderr)
+                continue
+            ids = {}
+            for r in rows:
+                r["employee"] = ids.setdefault(r.pop("employee_name", None), len(ids) + 1)
+            save(f"transparent_utah/compensation/{tid}/{year}.json", json.dumps(rows).encode())
+
+
 def fetch_usfa():
     states = json.loads(get(USFA_STATES))
     code = next(s["code"] for s in states if s["shortDesc"] == "UT")
@@ -98,7 +142,8 @@ def fetch_openfema():
     print(f"  {len(rows)} awards")
 
 
-SOURCES = {"transparent_utah": fetch_transparent_utah, "usfa": fetch_usfa, "openfema": fetch_openfema}
+SOURCES = {"transparent_utah": fetch_transparent_utah, "tu_revenue": fetch_revenue, "tu_top_payments": fetch_top_payments,
+           "tu_compensation": fetch_compensation, "usfa": fetch_usfa, "openfema": fetch_openfema}
 
 if __name__ == "__main__":
     for name in sys.argv[1:] or SOURCES:

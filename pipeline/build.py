@@ -5,15 +5,18 @@
 
 Rules for vendors, in order:
   1. config/vendor_map.csv     normalized name -> canonical vendor name and category
-  2. config/keyword_rules.csv  first regex that matches the normalized name sets the category
+  2. config/vendor_rules.csv   regex -> known vendor (folds rare spellings into a mapped vendor)
+  3. config/keyword_rules.csv  first regex that matches the normalized name sets the category
                                (and the vendor name, when the rule has one)
-  3. otherwise                 "unclassified"
-Payees that look like a person ("Last, First") are grouped as "Individuals (names withheld)".
+  4. otherwise                 "unclassified"
+Payees that look like a person are grouped as "Individuals (names withheld)", and payee text matching
+config/payee_name_redactions.csv is not shown.
 """
 import collections
 import csv
 import datetime
 import gzip
+import html
 import json
 import pathlib
 import re
@@ -75,6 +78,35 @@ def slug(s):
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
 
 
+def staff_by_year(tu, tid):
+    """People paid, wages and benefits per fiscal year from the compensation files.
+    A person is one employee number in a year's file; their title is the title on their largest pay line."""
+    out = {}
+    for year in YEARS:
+        path = tu / "compensation" / str(tid) / f"{year}.json.gz"
+        if not path.exists():
+            continue
+        pay = collections.defaultdict(float)
+        top_line = {}
+        wages = benefits = 0.0
+        for r in json.loads(read_gz(path)):
+            amount = r["net_amount"] or 0
+            if "benefit" in (r.get("cat1") or "").lower():
+                benefits += amount
+            else:
+                wages += amount
+            pay[r["employee"]] += amount
+            if amount > top_line.get(r["employee"], (0, ""))[0]:
+                top_line[r["employee"]] = (amount, (r.get("title") or "").strip() or "No title")
+        paid = [e for e, total in pay.items() if total > 0]
+        if not paid:
+            continue
+        titles = collections.Counter(top_line[e][1] for e in paid if e in top_line)
+        out[str(year)] = {"people": len(paid), "wages": round(wages), "benefits": round(benefits),
+                          "titles": dict(titles.most_common())}
+    return out
+
+
 def latest_raw():
     dirs = sorted(p for p in (ROOT / "raw").iterdir() if p.is_dir() and re.fullmatch(r"\d{4}-\d{2}-\d{2}", p.name))
     return dirs[-1]
@@ -86,7 +118,8 @@ def main(worklist_path=None):
     categories = read_csv("categories.csv")
     cat_ids = {c["id"] for c in categories}
     rules = [(r["category"], re.compile(r["pattern"]), (r.get("vendor") or "").strip())
-             for r in read_csv("keyword_rules.csv")]
+             for r in read_csv("vendor_rules.csv") + read_csv("keyword_rules.csv")]
+    redactions = [re.compile(r["pattern"], re.I) for r in read_csv("payee_name_redactions.csv")]
     for c, _, _ in rules:
         assert c in cat_ids, f"keyword_rules.csv: unknown category {c}"
     vendor_map = {}
@@ -112,6 +145,11 @@ def main(worklist_path=None):
             if x["fiscal_year"] in YEARS:
                 budget[x["fiscal_year"]] += x["net_amount"] or 0
         u = usfa.get(a["usfa_fdid"]) if a["usfa_fdid"] else None
+        revenue = collections.defaultdict(lambda: collections.defaultdict(float))
+        path = tu / "revenue_categories" / f"{tid}.json.gz"
+        for x in json.loads(read_gz(path)) if path.exists() else []:
+            if x["fiscal_year"] in YEARS:
+                revenue[str(x["fiscal_year"])][x["agg1"]] += x["net_amount"] or 0
         agencies.append({
             "id": tid,
             "name": a["name"],
@@ -128,6 +166,9 @@ def main(worklist_path=None):
                 "paid_per_call": int(u["Active Firefighters - Paid per Call"] or 0),
             } if u else None,
             "budget": {str(y): round(budget[y]) for y in YEARS if y in budget},
+            "revenue": {y: {c: round(v) for c, v in sorted(cats.items())} for y, cats in sorted(revenue.items())},
+            "staff": staff_by_year(tu, tid),
+            "fy_start": {"01": "January", "07": "July"}.get((details.get("fiscal_year_begins") or "")[5:7]),
             "notes": a["notes"] or None,
         })
     agency_ids = {a["id"] for a in agencies}
@@ -140,7 +181,7 @@ def main(worklist_path=None):
             continue
         for x in json.loads(read_gz(path)):
             if x["fiscal_year"] in YEARS and x["net_amount"]:
-                raw_rows.append((tid, x["vendor_name"] or "", x["fiscal_year"], float(x["net_amount"])))
+                raw_rows.append((tid, html.unescape(x["vendor_name"] or ""), x["fiscal_year"], float(x["net_amount"])))
 
     key_spend = collections.defaultdict(float)
     key_names = collections.defaultdict(collections.Counter)
@@ -157,6 +198,8 @@ def main(worklist_path=None):
         if k in vendor_map:
             return vendor_map[k][0], vendor_map[k][1], "map"
         display = key_names[k].most_common(1)[0][0].strip()
+        if any(rx.search(display) for rx in redactions):
+            display = re.sub(r"\S+@\S+", "", display).strip(" ()-,") or "Payee name withheld"
         for cat, rx, vendor in rules:
             if rx.search(k):
                 return vendor or display, cat, "rule"
@@ -201,10 +244,33 @@ def main(worklist_path=None):
         vi = key_vendor[norm(name)]
         if name not in alias_index:
             alias_index[name] = len(aliases)
-            aliases.append(name)
+            shown = name
+            if any(rx.search(name) for rx in redactions):
+                shown = vendors[vi]["name"] + " (payee text withheld)"
+            aliases.append(shown)
             vendors[vi]["aliases"].append(alias_index[name])
         rows[(tid, vi, year, alias_index[name])] += amount
     rows = [[t, v, y, round(a, 2), al] for (t, v, y, al), a in sorted(rows.items()) if round(a, 2) != 0]
+
+    # Single payments: each agency's 100 largest payments per fiscal year. Kept when the payee maps to a
+    # purchasing vendor and the payment is $1,000 or more.
+    purchasing = {c["id"] for c in categories if c["purchasing"] == "yes"}
+    payments, unmatched = [], 0
+    for tid in sorted(agency_ids):
+        for year in YEARS:
+            path = tu / "top_payments" / str(tid) / f"{year}.json.gz"
+            for x in json.loads(read_gz(path)) if path.exists() else []:
+                name, amount = html.unescape(x["vendor_name"] or ""), float(x["amount"] or 0)
+                k = norm(name)
+                if is_person(name) or k in person_keys:
+                    continue
+                if k not in key_vendor:
+                    unmatched += 1
+                    continue
+                vi = key_vendor[k]
+                if vendors[vi]["category"] in purchasing and amount >= 1000:
+                    payments.append([tid, year, x["ven_rank"], vi, round(amount, 2), alias_index.get(name, -1)])
+    payments.sort(key=lambda p: (p[0], p[1], p[2]))
 
     # FEMA firefighter grants matched to agencies through config/grant_recipients.csv
     recipient_map = {r["fema_recipient"]: int(r["tu_id"]) for r in read_csv("grant_recipients.csv")}
@@ -217,7 +283,6 @@ def main(worklist_path=None):
     grants.sort(key=lambda g: (-g["year"], g["award"]))
 
     # Coverage numbers for the About section
-    purchasing = {c["id"] for c in categories if c["purchasing"] == "yes"}
     vcat = [v["category"] for v in vendors]
     buy = sum(r[3] for r in rows if vcat[r[1]] in purchasing)
     classified = sum(r[3] for r in rows if vcat[r[1]] in purchasing and vcat[r[1]] != "unclassified")
@@ -228,15 +293,18 @@ def main(worklist_path=None):
         "partial_years": PARTIAL_YEARS,
         "raw_path": f"raw/{raw.name}",
         "transparent_utah": TU_SITE,
-        "counts": {"agencies": len(agencies), "vendors": len(vendors), "rows": len(rows), "grants": len(grants)},
+        "counts": {"agencies": len(agencies), "vendors": len(vendors), "rows": len(rows), "grants": len(grants),
+                   "payments": len(payments)},
+        "payments_rule": "Each agency's 100 largest payments per fiscal year, purchasing vendors, $1,000 or more",
         "purchasing_total": round(buy),
         "purchasing_classified_share": round(classified / buy, 4) if buy else None,
     }
     out = {"meta": meta, "categories": categories, "agencies": agencies, "vendors": vendors,
-           "aliases": aliases, "rows": rows, "grants": grants}
+           "aliases": aliases, "rows": rows, "payments": payments, "grants": grants}
     (ROOT / "data").mkdir(exist_ok=True)
     (ROOT / "data" / "data.json").write_text(json.dumps(out, separators=(",", ":"), ensure_ascii=False))
-    print(f"data/data.json: {len(agencies)} agencies, {len(vendors)} vendors, {len(rows)} rows, {len(grants)} grants;"
+    print(f"data/data.json: {len(agencies)} agencies, {len(vendors)} vendors, {len(rows)} rows, {len(grants)} grants,"
+          f" {len(payments)} single payments ({unmatched} top payments with an unmatched payee);"
           f" purchasing ${buy:,.0f}, classified {meta['purchasing_classified_share']:.1%}")
 
     if worklist_path:

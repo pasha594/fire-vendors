@@ -1,0 +1,309 @@
+category,pattern,vendor,note
+fire-equipment,^LN CURTIS\b|^CURTIS BLUE LINE$,L.N. Curtis & Sons,LN Curtis with suffixes; Curtis Blue Line is its law-enforcement division
+apparatus,^SIDDONS( MARTIN\b.*)?$,Siddons-Martin Emergency Group,Siddons-Martin short forms
+fire-equipment,^MES( (SERVICES?|LAWMAN|WARREN|SERVICE SEA ?WESTERN))?$|^MUNICIPAL EMERGE?R?NCY (SERVICES?|SVCS)\b,Municipal Emergency Services,MES branches and misspellings (map already sends MES SEAWESTERN to MES)
+apparatus,^LARSEN (FIRE )?APPAR\w*$,Larsen Fire Apparatus Service,Larsen apparatus misspellings
+fire-equipment,^WEI(DN|ND)ER AND ASSOC\w*$,Weidner Fire,Weidner & Associates spellings
+ems-equipment,^ZOLL MEDICAL\b,Zoll Medical,Zoll Medical with suffixes (not Zoll Data)
+ems-equipment,^STRYKER\b|^STYKER$,Stryker,Stryker financing arm and a typo
+ems-supplies,^BOUND ?TREE\b,Bound Tree Medical,Bound Tree with program suffix
+rms,^ESO COM$,ESO Solutions,eso.com
+software,^NARC ?BOX\b,EMS LogiK,NarcBox is EMS LogiK's product
+apparatus,^ROSENBAUER\b,Rosenbauer,Rosenbauer units
+apparatus,^GRAHAM FIRE( S?PPARATUS\b.*)?$,Graham Fire Apparatus,Graham Fire short form and misspelling
+fire-equipment,^APPARAT\w* EQUIPMENT (AND (AMP )?)?SERVICES?$,Apparatus Equipment & Service,AES spellings
+apparatus,^EVS EMERGENCY VEHICLE (SYSTEMS?|SERVICES)$,Emergency Vehicle Systems,EVS spellings
+fire-equipment,^HEIMAN$,Heiman Fire Equipment,Heiman short form
+fire-equipment,^TREASURE FIRE$,Treasure Fire Equipment,Treasure Fire short form
+apparatus,^TRUCKSITE$,Truck Site,Truck Site one word
+apparatus,^IIA LIFTING SERVICES\b,IIA Lifting Services,IIA with invoice suffix
+fire-equipment,^KNOX BOX$,Knox Company,Knox Box
+fire-equipment,^RESCUEDIRECT COM$,Rescue Direct,rescuedirect.com
+fire-equipment,^PAYPAL CMC RESCUE$,CMC Rescue,CMC Rescue paid through PayPal
+uniforms,^SKAGGS PUBLIC SAFETY$,Skaggs Public Safety Uniforms,Skaggs short form
+ppe,^PAUL CONWAY SHIELDS$,Conway Shield,Paul Conway Shields
+ppe,^SAMBROWNSHIELDS COM$,Sam Brown Shields,sambrownshields.com
+ems-equipment,^LIFEMED$,LifeMed Safety,LifeMed short form
+unclassified,^LIVE ?ACTION( ?SAFETY)?$,Live Action Safety,one-word and short spellings
+ems-supplies,^STAT ?PACKS\b|^PURCHASE \d\d \d\d STATPACKS\b,Statpacks,Statpacks card charges
+software,^HANDTEVY\b|^PEDIATRIC EMERG(ENCY STANDARDS)?\b,Handtevy,Handtevy is Pediatric Emergency Standards Inc
+software,^I ?SPY( FIRE)?$,iSpyFire,iSpyFire spellings
+software,^FIRST ARRIVING$,First Arriving,First Arriving
+radios,^MOUNT OLYMPUS PRO AUDIO MOPA$,MOPA,"raw name is Mount Olympus Pro Audio, LLC (MOPA, LLC)"
+radios,^L3 HARRIS( PSPC)?$,L3Harris,L3 Harris spaced
+radios,^STRATEGIC COMMUNICATIONS?( SOLUTIONS)?$,Strategic Communications Solutions,singular and short spellings
+telecom,^SOUTH CENTRAL( CO\w*UN\w*CATIONS)?$,South Central Communications,misspellings and short form (payer also uses South Central Communications)
+uniforms,^SYMBOLARTS ARTS$,SymbolArts,SymbolArts doubled
+fleet,^WEX (FLEET|FUEL)\b,WEX,WEX fleet card variants
+fleet,^AUTO ?ZONE\b,AutoZone,AutoZone store numbers
+fleet,^O ?REILLY AUTO\w*\b|^ORIELLY$,O'Reilly Auto Parts,O'Reilly spellings
+fleet,^NAPA( AUTO PARTS\b.*| STORE)?$,NAPA Auto Parts,NAPA stores
+fleet,^CARQUEST\b,Carquest Auto Parts,Carquest stores
+facilities,^(PURCHASE \d\d \d\d )?HOME DEPOT\b,Home Depot,Home Depot store numbers
+facilities,^LOWES HOME CENTERS?$,Lowe's,Lowe's Home Centers
+facilities,^SOUTH FORK HARDWARE\b,South Fork Hardware,South Fork Hardware stores
+general,^(PURCHASE \d\d \d\d )?WAL ?MART\b|^WM SUPERCENTER\b,Walmart,"Walmart stores, walmart.com, Walmart Community card"
+general,^SAMS CLUB\b,Sam's Club,Sam's Club store numbers
+general,^(PURCHASE (\d\d \d\d )?)?COSTCO\b,Costco,Costco warehouses and card
+general,^(PURCHASE \d\d \d\d |REFUND \d\d \d\d |B2B )?AMAZON\b|^AMZN MKTP\b,Amazon,Amazon order-coded charges
+general,^SMITHS (\d+|FUEL|FOOD AND DRUG)$|^SMITHS? CUSTOMER CHARGES\b,Smith's Food & Drug,"Smith's store numbers, fuel, Kroger charge account"
+general,^SMITHS AND EDWARDS$,Smith & Edwards,Smith & Edwards
+fleet,^(PURCHASE \d\d \d\d )?MAVERIK\b,Maverik,Maverik store numbers
+fleet,"^CHEVRON \d{5,}\b",Chevron,Chevron store numbers only (named local Chevron stations left alone)
+fleet,^MOORES CHEVRON$,Moore's Chevron & Towing,Moore's Chevron short form
+fleet,^SHELL SERVICE STATION$,Shell,Shell station
+fleet,^FLYING ?J( PILOT)?$|^PILOT WEST WENDOVER$,Pilot Flying J,Pilot Flying J spellings
+fleet,^LOVES (TRAVEL( CENTER| STOP)?|TRUCK STOP|COUNTRY)$,Love's Travel Stops,Love's
+fleet,^HOLIDAY OIL\b,Holiday Oil,Holiday Oil stations
+fleet,^SAPP BROTHERS\b,Sapp Bros,Sapp Brothers
+fleet,^7 ELEVEN \d+$,7-Eleven,7-Eleven store number
+general,^OFFICE DEPOT \d+$|^OFFICE ?MAX\b,Office Depot,Office Depot and OfficeMax (same company)
+general,^STAPLES (BUSINESS )?ADVANTAGE$,Staples,Staples Advantage
+general,^U ?LINE\b|^RECLASSIFY ULINE\b,Uline,Uline
+general,^WW GRAINGER$,Grainger,W.W. Grainger
+general,^(PURCHASE \d\d \d\d )?TRACTOR SUPPLY\b,Tractor Supply,Tractor Supply stores
+facilities,^PURCHASE \d\d \d\d HARBOR FREIGHT\b|^HARBOR FRIEGHT$,Harbor Freight Tools,Harbor Freight card charge and misspelling
+facilities,^PURCHASE \d\d \d\d STANDARD PLUMBING$,Standard Plumbing Supply,Standard Plumbing card charge
+general,^DOLLAR GENERAL BEAVERUT$,Dollar General,Dollar General store
+general,^(PURCHASE \d\d \d\d )?FAMILY DOLLAR BEA,Family Dollar,Family Dollar store
+general,^WWW KOHLS COM\b|^KOHLS \d+\b,Kohl's,kohls.com and store number
+general,^ROSS STORES\b,Ross Dress for Less,Ross store
+general,^SPORTS?MANS( WARE\w*\b.*)?$,Sportsman's Warehouse,Sportsman's Warehouse store
+general,^BIG 5 SPORTING GOOD$,Big 5 Sporting Goods,Big 5
+general,^CAL RANCH STO\b,C-A-L Ranch,C-A-L Ranch store
+general,^IFA COUNTRY STORES$|^INTERMOUNTAIN FARMERS ASSOCIATION$,Intermountain Farmers Association,IFA stores
+general,^KENTS MARKET\b,Kent's Market,Kent's Market stores
+general,^EBAY O\b,eBay,eBay order
+general,^FEDEX OFFICE$,FedEx,FedEx Office
+general,^UPS STORE \d+$,The UPS Store,UPS Store number
+general,^(PURCHASE \d\d \d\d )?USPS PO\b|^UNITED STATES? POSTMASTER$|^US POSTAL SERVICE BOX$|^POST ?MASTER$,US Postal Service,USPS post offices
+it,^CDW ?G(OVT)?$,CDW Government,CDW-G
+it,^DELL( COM)?$|^DMI DELL\b,Dell Technologies,Dell
+it,^CANON USA$|^CANNON (SOLUTIONS AMERICA|FINANCIAL SERVICES)$,Canon,Canon and Cannon misspellings
+telecom,^VERI?ZON WIRELESS\b,Verizon,Verizon Wireless spellings
+telecom,^AT ?(AND )?T (AND (AMP )?T )?(MOA?BI+LITY|MOBILE|WIRELESS|SERVICES|STORE|UNIVERSAL)\b|^ATT PAYMENT\b,AT&T,AT&T spellings
+telecom,^ALL WEST( COMMUNICAT\w*)?$,All West Communications,All West spellings
+fleet,^KEN GARF+\b,Ken Garff,Ken Garff stores
+fleet,^LARRY ?H ?MILLER\b,Larry H. Miller,Larry H. Miller stores
+fleet,^KARL MALONE\b,Karl Malone,Karl Malone stores
+fleet,^YOUNG FORD\b|^YOUNG AUTO$,Young Automotive Group,Young Ford stores (vendor_map already sends YOUNG FORD here); Young Auto at a payer that uses Young Automotive
+fleet,^YOUNG POWERSPORTS\b,Young Powersports,Young Powersports stores
+fleet,^PERFORMANCE FORD\b,Performance Ford,Performance Ford
+fleet,^SALT LAKE VALLEY CRYSLER$,Salt Lake Valley Chrysler Dodge Jeep Ram,misspelling
+fleet,^KENN?WORTH SALES\b,Kenworth Sales Company,Kenworth Sales branches and misspelling
+fleet,^RUSH TRUCK\b,Rush Truck Centers,Rush Truck
+fleet,^LES SCHWAB\b,Les Schwab,Les Schwab stores
+fleet,^BIG O TIRES\b,Big O Tires,Big O store number
+fleet,^PURCELL TI(RE|ER)\b,Purcell Tire,Purcell Tire spellings
+fleet,^COMMERCIAL TIRE\b,Commercial Tire,Commercial Tire branches
+fleet,^GOODYEAR( TIRE AND SERVICE\b.*)?$,Goodyear,Goodyear
+fleet,^SOUTHERN TIRE MART\b,Southern Tire Mart,Southern Tire Mart store
+fleet,^MOORES TIRE AND (AMP )?SERVICE\b,Moore's Tire & Service,Moore's Tire
+fleet,^JB TIRE$,JB Tire Service,JB Tire
+fleet,^FLEET ?PRIDE\b,FleetPride,FleetPride
+fleet,^TINKS( SUPERIOR\b.*)?$,Tink's Superior Auto Parts,Tink's
+fleet,^ACC?ESS TRUCK PARTS$,Access Truck Parts,misspelling
+fleet,^TOM RANDALL DISTRIBUTING\b,Tom Randall Distributing,vendor-number suffix
+fleet,^SAM T EVANS\b,Sam T. Evans,Sam T. Evans Truck Tops
+fleet,^WASATCH TRAILER SALES\b,Wasatch Trailer Sales,suffix
+fleet,^SAFELITE\b,Safelite AutoGlass,Safelite
+fleet,^QUICK ?QUACK\b,Quick Quack Car Wash,Quick Quack
+fleet,^ROMAINE ELECTRIC\b,Romaine Electric,Romaine Electric
+fleet,^ENTERPRISE CAR RENTAL$,Enterprise Rent-A-Car,Enterprise
+fleet,^DEPT OF (ADMINISTRATIVE SERVICES|GOVERNMENT OPER\w*)\b.*\bFUEL NETW?\w*$|^STATE OF UTAH DEPT OF FUEL$,Utah Fuel Network,State fuel network spellings
+fleet,^ADAMS AVE PARKWAY$,Adams Avenue Parkway,Adams Ave Parkway
+training,^(PROVO |PURCHASE \d\d \d\d )?MARR?IOTT?\b,Marriott,"Marriott hotels (not Courtyard, Fairfield, Residence Inn, SpringHill)"
+training,^(PURCHASE \d\d \d\d )?SPRINGHILL SUIT,SpringHill Suites,SpringHill Suites
+training,^BEST WESTERN\b,Best Western,Best Western hotels
+training,^HILTON (HOTELS?|TUSCON\b),Hilton,Hilton hotels (not Garden Inn)
+training,^HILTON GARDEN INN\b,Hilton Garden Inn,Hilton Garden Inn locations
+training,^(PURCHASE \d\d \d\d )?HOLIDAY INN EXP,Holiday Inn Express,Holiday Inn Express
+training,^HOLIDAY INN HOTEL\b,Holiday Inn,Holiday Inn
+training,^HAMPTON INNS?\b,Hampton Inn,Hampton Inn
+training,^HYATT\b,Hyatt,Hyatt
+training,^QUALITY INN\b,Quality Inn,Quality Inn
+training,^\d+ LA QUINTA\b,La Quinta,La Quinta
+training,^STAYBRIDGE SUITES\b,Staybridge Suites,Staybridge Suites
+training,^PURCHASE \d\d \d\d COMFORT INN\b,Comfort Inn,Comfort Inn
+general,^CAFE ?RIO\b,Cafe Rio,Cafe Rio
+general,^(PURCHASE \d\d \d\d )?(TST )?COSTA VIDA\b,Costa Vida,Costa Vida
+general,^CHICK ?FIL ?A\b,Chick-fil-A,Chick-fil-A
+general,^CHILIS\b,Chili's,Chili's
+general,^(PURCHASE \d\d \d\d )?DENNY ?S \d+\b,Denny's,Denny's
+general,^(PURCHASE \d\d \d\d )?PANDA EXPRESS\b,Panda Express,Panda Express
+general,^SUBWAY \d+$,Subway,Subway
+general,^STARBUCKS STORE\b,Starbucks,Starbucks
+general,^KNEADERS\b,Kneaders,Kneaders
+general,^BETOS$,Beto's Mexican Food,Beto's
+unclassified,^HUG HESS? CAFE$,Hug-Hes,Hug-Hes Cafe
+general,^PURCHASE \d\d \d\d TEXAS ROADHOUSE$,Texas Roadhouse,Texas Roadhouse
+software,^ADOBE ACRO,Adobe,Adobe Acrobat (not Adobe Icebox)
+software,^GOOGLE (SUITE|WORKSPA\w*)\b|^PURCHASE \d\d \d\d GOOGLE GOOGLE\b,Google,Google Workspace and Google One
+software,^INTUIT\b|^QUICKBOOKS\b,Intuit,Intuit and QuickBooks
+software,^GRAMMERLY$,Grammarly,misspelling
+software,^BLUEBEAM\b,Bluebeam,Bluebeam
+software,^ZOOM US\b,Zoom,Zoom
+training-software,^COOKIE JAR DEV\w*$,Cookie Jar Development,misspelling
+software,^STREAMLINE SOFTWARE$,Streamline,Streamline
+professional,^(BK )?DELUXE?\b|^DELUXIE$,Deluxe,Deluxe checks and forms
+general,^POSITIVE PROMOT(ION)?\b,Positive Promotions,Positive Promotions
+professional,^CREATIVE SIGNS AND GRAPHICS\b,Creative Signs & Graphics,Creative Signs
+professional,^STEAM ROLLER COPIES$,Steamroller Copies,spaced
+uniforms,^BADGEANDWALLET\b,Badge and Wallet,badgeandwallet.com
+uniforms,^A ?1 UNIFORMS\b,A-1 Uniforms,A-1 Uniforms Workwear
+uniforms,^5 11$,5.11 Tactical,5.11
+uniforms,^RED HANGER\b,Red Hanger Cleaners,Red Hanger
+facilities,^PACES CULLIGAN\b|^CULLIGAN$,Culligan,Culligan and the Pace's Culligan dealer
+facilities,^MOUNTAIN ALARM\b|\bMOUNTAINALARM COM$,Mountain Alarm,Mountain Alarm
+facilities,^OVERHEAD DOOR OF\b,Overhead Door,"Overhead Door of <place> dealers, like the mapped Overhead Door of Bountiful"
+facilities,^PAUL DAVIS RESTORATION\b,Paul Davis Restoration,Paul Davis
+facilities,^VALLEY GLASS\b,Valley Glass,Valley Glass branches
+facilities,^DRAIN TECH\b,Drain Tech,Drain Tech
+facilities,^BELL JANITORIAL\b,Bell Janitorial Supply,Bell Janitorial
+facilities,^ANY ?HOUR SERVICES?$,Any Hour Services,Any Hour
+facilities,^MOST VALUABLE PLUMBING\b,Most Valuable Plumbing & Heating,Most Valuable Plumbing
+facilities,^MOUNTAIN ?LANDS? SUPPLY$,Mountainland Supply,Mountainland Supply spellings
+facilities,^MOUNTAINLAND POWER EQUIPMENT\b,Mountainland Power Equipment,suffix
+facilities,^MENDENHALL COMMERCIAL LAUNDRY\b,Mendenhall Commercial Laundry Equipment,Mendenhall
+facilities,^CONSOLIDATED ELECTRICAL DIST\w*$,Consolidated Electrical Distributors,CED
+facilities,^STATE ?FIRE DC SPECIAL\w*$,State Fire DC Specialties,State Fire DC spellings
+facilities,^PRECISS?ION POWER$,Precision Power,misspelling
+general,^HOSE AND RUBBER$,Hose & Rubber Supply,Hose & Rubber
+unclassified,^(PURCHASE \d\d \d\d )?HUGHES (AND )?SONS\b,Hughes and Sons,Hughes and Sons
+general,^ERIKS NA$,ERIKS North America,ERIKS
+construction,^SCHOLZEN$,Scholzen Products,Scholzen
+general,^LIBERTY MOUNTAIN SPORTS$,Liberty Mountain,Liberty Mountain
+professional,^ALERT ALL CORPS?$,Alert-All,Alert-All
+facilities,^AAA FIRE( SAFETY)?$,AAA Fire Safety & Alarm,AAA Fire Safety short forms (payer also uses AAA Fire Safety & Alarm)
+utilities,^AMERIGAS\b,AmeriGas,AmeriGas
+ems-supplies,^AIRGAS\b,Airgas,Airgas
+utilities,^REPUBLIC SERVICES\b,Republic Services,Republic Services
+utilities,^(ROCKY|ROCY) ?(MOUNTAIN|MOUNATIN|MT|MTN) (PACIFIC )?POWER\b|^ROCKYMTN PACIFIC POWER\b,Rocky Mountain Power,Rocky Mountain Power spellings
+utilities,^DOMIN\w* ENERG\w*\b|^ENBRIDGE GAS\b,Enbridge Gas,Dominion Energy (now Enbridge Gas) spellings
+unclassified,^WASATCH PEAKS RANCH$,Wasatch Peaks Ranch Club,Wasatch Peaks Ranch
+medical-exams,^VASA FITNESS\b,VASA Fitness,VASA
+ems-supplies,^CVS PHARMACY\b,CVS,CVS
+training,^AMERICAN HEART\b|^(AHA )?SHOP ?CPR$,American Heart Association,AHA and its ShopCPR store
+medical-exams,^IHC( CALL CENTER)?$|^INTERMOUNTAIN HEALTH (CARE|CORPORATE CLIENT|PHYSICIAN BILLING|SERVICES)$|^MCKAY DEE HOSPITAL$,Intermountain Health,Intermountain Health spellings (vendor_map already maps McKay-Dee Hospital Center here)
+medical-exams,^INTERMOUNTAIN REHAB AGENCY\b,Intermountain Rehab Agency,suffix
+training,^(PURCHASE \d\d \d\d )?JONES (AND (AMP )?)?BARTLE?T+\b|^JB ?LEARNING$,Jones & Bartlett Learning,Jones & Bartlett spellings
+training,^(PURCHASE \d\d \d\d )?NATIONAL REGIST(RY)?\b|^NREMT$,National Registry of EMTs,NREMT
+training,^NATIONAL FIRE PROTECT\w* ASSOC\b|^NFPA NATL\b,NFPA,NFPA spellings
+training,^IAFC$|^INTERNATIONAL ASS\w* (OF )?FIRE CHIEFS?$,International Association of Fire Chiefs,IAFC
+training,^INTERNATIONAL ASS\w* (OF )?AR?S[OE]N\b,International Association of Arson Investigators,IAAI spellings
+training,^IAAI UTAH CHAPTER$|^UTAHIAAI$,Utah Chapter IAAI,Utah IAAI chapter
+training,^NATIONAL ASSC FIRE INVESTIGATO|^NAFI$|^NATIONAL ASSOCIATION OF FIRE INVESTIGATORS$,National Association of Fire Investigators,NAFI
+training,^INTERNATIO\w* CODE COUNCIL$,International Code Council,misspelling
+training,^IBSCINC$,IBSC,IBSC
+training,^FIRENUGGETS$,Fire Nuggets,Fire Nuggets
+training,^DIVE RESCUE$,Dive Rescue International,Dive Rescue
+training,\bGET TRAINED UTAH$,Get Trained Utah,card charges
+training,^(PURCHASE \d\d \d\d )?(PAYPAL |IN )?REMSDAU\b|^(PURCHASE \d\d \d\d )?(IN )?RURAL (EMS|EMERGENCY MEDICAL SERVICES) DIR|^PURCHASE \d\d \d\d PAYPAL REMSDAU\b,Rural EMS Directors of Utah Association,REMSDAU spellings
+training,^FIRE MARSHALL?S ASSOCIATION OF UTAH$|^UTAH FIRE MARSHALS ASSOC\w*$|^PAYPAL FMAU$,Fire Marshals Association of Utah,FMAU spellings
+training,^UTAH (ST|STATE) FIRE ?(FIGHTERS|MANS|MENS)\b,Utah State Firefighters Association,USFA spellings
+training,^UTAH STATE FIRE CHIEFS?\b,Utah State Fire Chiefs Association,Utah State Fire Chiefs spellings
+training,^DAVIS COUNTY FIRE OFFICERS ASN$,Davis County Fire Officers Association,DCFOA
+training,^WEBER COUNTY FIRE OFFICERS ASSOC$,Weber County Fire Officers Association,WCFOA
+training,^UTAH GOV FINANCE OFFICERS ASSN$|^UGFOA$,Utah Government Finance Officers Association,UGFOA
+training,^WEBER STATE (UNIVERSITY|MARKET|COPY)\b,Weber State University,Weber State units
+training,^UVU\b,Utah Valley University,UVU units (vendor_map already maps UVU here)
+payroll,^PEHP FLEX$,PEHP,PEHP Flex
+payroll,^HEALTH EQUITY\b,HealthEquity,HealthEquity
+payroll,^AFLAC GROUP$,Aflac,Aflac
+payroll,^MISSION SQUARE\b,MissionSquare Retirement,MissionSquare
+payroll,^NATIONAL BENEFIT SERVICES\b,National Benefit Services,NBS
+payroll,^(TRANSFER TO )?PAYLOGIC$,Paylogics,Paylogics
+payroll,^EMPLOY EASE\b,Employ/Ease,Employ/Ease
+professional,^EMPLOYERS COUNCIL SERVICES$,Employers Council,Employers Council
+payroll,^IRS (DEPARTMENT OF TREASURY|USATAXPYMT|BEAVER FIRE\b),Internal Revenue Service,IRS
+payroll,^UT(AH)? STATE RETIREMENT\b,Utah Retirement Systems,URS
+payroll,^UT(AH)? ST(ATE)? TAX COMM\w*\b,Utah State Tax Commission,Tax Commission spellings
+payroll,^(UTAH )?(DEPT|DEPARTMENT) OF WORKFORCE SERVICES?$|^WORK ?FORCE SERVI?C?ES?$|^WORKFORCE SERVIC UTAH\b,Utah Department of Workforce Services,DWS spellings
+insurance,^UT(AH)? LOCAL GOVERNMENTS? TRUST\b|^WORKERS COMP UGLT$,Utah Local Governments Trust,ULGT spellings
+insurance,^WCF( INS)?$|^WCE MUTUAL$,WCF Insurance,WCF and a WCE typo
+professional,^GILMORE (AND )?BELL\b,Gilmore & Bell,Gilmore & Bell
+professional,^CLYDE SNOW AND SESSIONS\b,Clyde Snow & Sessions,Clyde Snow
+professional,^SNOW NELSON$,Snow & Nelson,Snow & Nelson
+professional,^PRATER WILLIAM L$,William L. Prater,"PRATER, WILLIAM L., LLC"
+finance,^KEYBANK\b,KeyBank,KeyBank
+finance,^WELLS FARGO (BANK|CREDIT CARD)$,Wells Fargo,Wells Fargo
+finance,^CAPITAL ONE (BANK FOOD|CREDIT CARD)$,Capital One,Capital One
+finance,^(BK |ACCOUNT ANALYSIS FEE )?ZIONS? BANK\b|^ACCOUNT ANALYSIS FEE ZIONS$,Zions Bank,Zions Bank (vendor_map already sends Zions Bank Public Finance here)
+ems-billing,^FIRST PROFESSIONAL SERVICE$,First Professional Services,singular
+ems-billing,^GOLD ?CROSS$,Gold Cross Services,Gold Cross
+government,^(PURCHASE \d\d \d\d )?UDOH (BUREAU ?EM|BEMRG)|^UTAH BUREAU OF EMS\b|^STATE OF UTAH BEMS$|^UTAH DEPARTMENT OF (HEALTH|PUBLIC SAFETY) BUREAU OF (EMS|EMERGENCY MEDICAL SERVICES)\b,Utah Bureau of Emergency Medical Services,"Bureau of EMS spellings (under DHHS, later DPS)"
+government,^(DEPT|DEPARTMENT) OF HEA\w*[TY]H AND HUMAN (SVCS|SERVICES)\b|^(DEPARTMENT OF HEATH|DEPARTMENT OF HEALTH PERMITS|UT DEPT OF HEALTH|UTAH HEALTH DEPARTMENT|UTAH DEPARTMENT OF HEALTH DHHS)$|^STATE OF UTAH DEPARTMENT OF HEALTH (AND HUMAN SERVICES|FISCAL OPERATIONS)$,Utah Department of Health and Human Services,DHHS spellings
+government,^(DEPT|DEPARTMENT) OF PUBLIC SAF\w*( ATTN)?( TRUST FUND)?$,Utah Department of Public Safety,DPS spellings
+government,^(UTAH |STATE OF UTAH )?DEPT OF COMMERCE$,Utah Department of Commerce,Commerce
+government,^(DEPARTMENT|UTAH DIVISION) OF FLEET OPERATIONS$,Utah Division of Fleet Operations,Fleet Operations
+government,^(LT GOV\w*|OFFICE OF (LIEUTENANT|LT) GOVERNOR|STATE OF UTAH LT GOVE\w*)( OFFICE)?$,Utah Lieutenant Governor's Office,Lt Governor spellings
+government,^UT(AH)? ?COMMUNICATIONS AUTHORITY$,Utah Communications Authority,UCA spellings
+government,^CLIA LABORATORY( PROG\w*)?$,CLIA Laboratory Program,misspelling and short form
+dispatch,^WEBER (AREA )?DISPATCH\b,Weber Area Dispatch 911,Weber dispatch spellings
+government,^WEBER FIRE DISTRIC$,Weber Fire District,truncated
+government,^DAVIS COUNTY( UT| AUDITOR)?$,Davis County,Davis County (vendor_map maps county treasurer/clerk-auditor rows to the county)
+professional,^4IMPRINT\b,4imprint,4imprint USA
+fleet,^ALIGN?MENT SPECIALISTS$,Alignment Specialists,misspelling
+payroll,^AMERITAS$,Ameritas,Ameritas
+it,^APPLE$,Apple,Apple
+government,^BEAVER COUNTY$,Beaver County,Beaver County
+training,^BRIDGERLAND TECH\b,Bridgerland Technical College,Bridgerland Tech
+fleet,^BURT BROTHERS TIRES? (AND )?SERVICE$,Burt Brothers Tire & Service,Burt Brothers
+general,^COLONAL FLAG$|^COLONIAL (FLAG AND )?SPECIALTY$,Colonial Flag,Colonial Flag & Specialty Co
+it,^CONVERGE ONE$,ConvergeOne,spaced
+general,^CRACKER BARRELL$,Cracker Barrel,misspelling
+staffing-software,^CREW SENSE$,Crewsense,spaced
+training,^DELTA AIR LINES$,Delta Air Lines,Delta
+fire-equipment,^DUO SAFETY$,Duo-Safety Ladder,Duo-Safety
+ems-equipment,^FERNO$|^PURCHASE \d\d \d\d FERNO\b,Ferno,Ferno
+utilities,^FERRE?LL? GAS$,Ferrellgas,Ferrellgas spaced
+general,^FORE?MOST (PERMOTIONS|PROMOTIONS?)$,Foremost Promotions,misspellings
+software,^GO DADDY$,GoDaddy,spaced
+telecom,^GOTO CONNECT$,GoTo,GoTo Connect
+general,^GOLD WEST INDUSTRIAL SUPPLY$,Golden West Industrial Supply,misspelling (payer also uses Golden West)
+fleet,^GREASE MONKEY \d+$,Grease Monkey,store number
+professional,^BK CK \d+ HBME\b,HBME,check to HBME
+general,^HOBBY ?LOBBY\b,Hobby Lobby,Hobby Lobby stores
+telecom,^INFO WEST$,InfoWest,spaced
+medical-exams,^INVICTUS COUNSELING SUPPORT SERVICES$,Invictus Counseling Support Services,plural
+fleet,^J BAR$,J-Bar Auto,J-Bar (payer also uses J-Bar Auto)
+general,^JIMMY JOHNS \d+$,Jimmy John's,store number
+government,^JUAB COUNTY (TREASURER|BUILDINGS AND GROUNDS)$,Juab County,county offices
+general,^KRISPY KREAM$,Krispy Kreme,misspelling
+unclassified,^LASERLINE$,Laserline Holdings,Laserline
+general,^LITTLE CEASARS$,Little Caesars,misspelling
+ems-equipment,^MASIMO$,Masimo,Masimo
+general,^MCDONALDS \w*\d,McDonald's,store number
+general,^MCGEES STAMP\b,McGee's Stamp & Trophy,McGee's
+general,^MICHEALS STORES$,Michaels,misspelling
+general,^MINKY COTURE$,Minky Couture,misspelling
+general,^MO BETTAHS$,Mobettahs,spaced
+finance,^MACU$,Mountain America Credit Union,MACU
+government,^NORTH VIEW FIRE( AGENCY)?$,North View Fire District,North View Fire
+general,^PITNEY BOWES PURCHASE POWER$,Pitney Bowes Purchase Power,full name
+facilities,^RC WILLEY FINANCIAL SERVICES$,RC Willey,RC Willey card
+payroll,^REGENCE( BCBS)?$,Regence BlueCross BlueShield,Regence
+fleet,^RELADYNE$,RelaDyne,RelaDyne
+professional,^SMUIN RICH MARSING$,"Smuin, Rich & Marsing",Smuin Rich Marsing
+finance,^SOUTH SUMMIT (FIRE DISTRICT|FIRE PROTECTION DISTRICT CHECKING|PROTECTION)$|^SSFPD$,South Summit Fire Protection District,SSFPD spellings (vendor_map already maps SOUTH SUMMIT FIRE)
+fleet,^STACEY REPAIR$,Stacey's Repair,Stacey's Repair
+professional,^STANDARD EXAMINER (\d+|V\d+)$,Standard-Examiner,suffixes
+payroll,^SUNLIFE FINANCIAL$,Sun Life,Sun Life Financial
+training,^SUPER 8 MOTELS$,Super 8,Super 8
+it,^TECHNOLO\w* NET$,Technology Net,misspelling
+ems-supplies,^TELEFLEX MEDICAL$,Teleflex,Teleflex Medical
+ems-supplies,^THOMAS EMS ?\d+$|^IN MED PACKS$,Thomas EMS,Thomas EMS and Med Packs (vendor_map already maps MED PACKS here)
+professional,^(MOAB )?TIMES INDEPEND[AE]NT$,Times-Independent,Moab Times-Independent
+government,^UTAH LABOR COMMISSION$,Utah Labor Commission,Labor Commission
+fleet,^UTAH TANK AND TRAILERS?$,Utah Tank & Trailer,Utah Tank & Trailer
+finance,^VISA ?(CREDIT|PAYMENT)?$,Visa,Visa card payments
+fire-equipment,^(WS )?DARLEY( AND)?$,W.S. Darley & Co.,Darley
+government,^WASHINGTON COUNTY CLERK( AUDITOR)?$,Washington County,county clerk
+utilities,^WEBER COUNTY TRANSFER STATION\b,Weber County Solid Waste,transfer station
+general,^WENDYS RESTAURANT$,Wendy's,Wendy's
+unclassified,^DALLAS GREEN FARM AND HOME$,Dallas Green,Dallas Green Farm & Home (payer also uses Dallas Green)
+general,^EVCO$,EVCO House of Hose,EVCO
+payroll,^US DEPARTMENT OF (THE )?TREASURY$,U.S. Department of the Treasury,Treasury
+ems-equipment,^PHYSIO ?CONTROL\b,Stryker,Physio-Control is part of Stryker
+ems-equipment,^(PURCHASE \d\d \d\d )?FERNO\b,Ferno,Ferno spellings
+utilities,^DOMINION ENERGY\b,Enbridge Gas,Dominion Energy Utah became Enbridge Gas Utah
