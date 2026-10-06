@@ -9,7 +9,7 @@
 <meta name="description" content="Net payments from Utah fire districts and interlocal fire agencies to vendors, by category, FY2021 to FY2026. Source: Transparent Utah.">
 <style>
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   --bg: #ffffff;
   --fg: #1b1b1b;
   --muted: #595959;
@@ -19,19 +19,6 @@
   --hover: #eaf0f7;
   --accent: #1d4f91;
   --accent-fg: #ffffff;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #161616;
-    --fg: #e6e6e6;
-    --muted: #a8a8a8;
-    --rule: #343434;
-    --rule-strong: #727272;
-    --shade: #212121;
-    --hover: #1e2631;
-    --accent: #93b7e6;
-    --accent-fg: #111111;
-  }
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -99,6 +86,17 @@ fieldset.field { border: 0; padding: 0; min-width: 0; }
 .fmsg:empty { display: none; }
 .fpanel .btn { margin-top: 12px; }
 .fpanel .fshow { display: none; }
+/* Category: checkboxes by group, in a box with its own scroll. The legend and Clear float, so they share a line. */
+.cats > legend { float: left; margin: 0 0 4px; line-height: 22px; }
+.cats .ncat { font-weight: 400; color: var(--muted); }
+.fpanel .cats .catclr { float: right; margin: 0 0 4px; padding: 0 8px; font-size: .75rem; line-height: 20px; }
+.catclr:disabled { color: var(--muted); border-color: var(--rule); cursor: default; background: var(--bg); }
+.catbox { clear: both; max-height: 300px; overflow-y: auto; border: 1px solid var(--rule-strong); border-radius: 3px; padding: 2px 8px 6px; }
+.cgrp { border: 0; margin: 0; padding: 0; min-width: 0; }
+.cgrp > legend { padding: 6px 0 1px; font-size: .75rem; font-weight: 600; color: var(--muted); }
+.catbox .chk { padding: 2px 0; font-size: .8125rem; line-height: 1.3; cursor: pointer; }
+.catbox .chk input { margin-top: 2px; }
+.catbox > .chk { margin-top: 6px; }
 
 /* Group by */
 .gbar { display: flex; align-items: center; gap: 10px; }
@@ -219,6 +217,10 @@ footer { border-top: 1px solid var(--rule); padding: 12px 0 24px; font-size: .81
   .layout { display: block; }
   .ftoggle { display: inline-block; margin-top: 12px; min-height: 40px; }
   .fpanel .fshow { display: block; width: 100%; min-height: 40px; }
+  .fpanel .cats .catclr { min-height: 36px; padding: 0 12px; }
+  .cats > legend { line-height: 36px; }
+  .catbox .chk { padding: 7px 0; }
+  .catbox .chk input { margin-top: 1px; width: 18px; height: 18px; }
   .seg button { min-height: 40px; }
   .chip button { min-height: 36px; min-width: 36px; }
   button.sort { display: block; width: 100%; }
@@ -274,7 +276,11 @@ footer { border-top: 1px solid var(--rule); padding: 12px 0 24px; font-size: .81
             <label for="f-to">To</label><select id="f-to"></select>
           </div>
         </fieldset>
-        <div class="field"><label for="f-cat">Category</label><select id="f-cat"></select></div>
+        <fieldset class="field cats" id="f-cat">
+          <legend>Category <span class="ncat" id="f-cat-n"></span></legend>
+          <button type="button" class="btn catclr" id="f-cat-clear" aria-label="Clear categories" disabled>Clear</button>
+          <div class="catbox" id="f-cat-box"></div>
+        </fieldset>
         <div class="field">
           <label for="f-vendor">Vendor</label>
           <input type="text" id="f-vendor" list="vendor-list" autocomplete="off" spellcheck="false" placeholder="Pick a vendor" aria-describedby="f-vendor-msg">
@@ -283,8 +289,6 @@ footer { border-top: 1px solid var(--rule); padding: 12px 0 24px; font-size: .81
         </div>
         <div class="field"><label for="f-agency">Agency</label><select id="f-agency"></select></div>
         <div class="fsec">
-          <div class="field"><label for="f-type">Agency type</label><select id="f-type"></select></div>
-          <div class="field"><label for="f-staff">Staffing</label><select id="f-staff"></select></div>
           <div class="field"><label for="f-county">County</label><select id="f-county"></select></div>
           <div class="field"><label for="f-size">Annual expenses</label><select id="f-size" aria-describedby="f-size-desc"></select><span id="f-size-desc" class="vh">Total expenses in the latest fully reported fiscal year</span></div>
           <p class="fcount" id="f-count"></p><span class="vh" id="f-live" aria-live="polite"></span>
@@ -329,18 +333,6 @@ footer { border-top: 1px solid var(--rule); padding: 12px 0 24px; font-size: .81
    runs in node (see the test script). Every number on the page comes from here.
    ========================================================================== */
 const Core = (function () {
-  const TYPES = [
-    { id: 'special', label: 'Special district' },
-    { id: 'interlocal', label: 'Interlocal agency' },
-  ];
-  // USFA registry department type, as shown in the tables
-  const STAFF = [
-    { id: 'career', label: 'Career', test: a => !!a.usfa && a.staffing === 'Career' },
-    { id: 'mostly-career', label: 'Mostly career (combination)', test: a => !!a.usfa && a.staffing === 'Mostly career' },
-    { id: 'mostly-volunteer', label: 'Mostly volunteer (combination)', test: a => !!a.usfa && a.staffing === 'Mostly volunteer' },
-    { id: 'volunteer', label: 'Volunteer', test: a => !!a.usfa && a.staffing === 'Volunteer' },
-    { id: 'none', label: 'Not in USFA registry', test: a => !a.usfa },
-  ];
   // Size by total expenses in the latest fully reported fiscal year (lo inclusive, hi exclusive)
   const SIZES = [
     { id: 'under-1m', label: 'Under $1M', lo: -Infinity, hi: 1e6 },
@@ -399,26 +391,19 @@ const Core = (function () {
     if (!ys.includes(from)) from = ys[0];
     if (!ys.includes(to)) to = ys[ys.length - 1];
     if (from > to) [from, to] = [to, from];
-    const pick = (list, v) => (list.some(x => x.id === v) ? v : '');
     return {
       from, to,
-      type: pick(TYPES, p.type),
-      staff: pick(STAFF, p.staff),
       county: ix.counties.includes(p.county) ? p.county : '',
-      size: pick(SIZES, p.size),
+      size: SIZES.some(z => z.id === p.size) ? p.size : '',
       np: p.np === '1',
     };
   }
 
-  // Agencies that pass the type, staffing, county and size filters.
+  // Agencies that pass the county and annual expenses filters.
   function peerIds(ix, g) {
-    const t = TYPES.find(x => x.id === g.type);
-    const s = STAFF.find(x => x.id === g.staff);
     const z = SIZES.find(x => x.id === g.size);
     const out = new Set();
     for (const a of ix.D.agencies) {
-      if (t && a.type !== t.label) continue;
-      if (s && !s.test(a)) continue;
       if (g.county && a.county !== g.county) continue;
       if (z) {
         const l = ix.latest.get(a.id);
@@ -429,15 +414,24 @@ const Core = (function () {
     return out;
   }
 
+  // The category of a payment row, r = [agency id, vendor index, fiscal year, net amount, alias index],
+  // and of a single payment, p = [agency id, fiscal year, rank, vendor index, amount, alias index].
+  // Both take their vendor's category for now. Everything that filters or groups by category
+  // looks the category up here.
+  const rowCat = (ix, r) => ix.vcat[r[1]];
+  const payCat = (ix, p) => ix.vcat[p[3]];
+
   // Which categories pass global filters g and row filters f: {category id: true|false}.
+  // f.cat is one category id or a list of them; a category passes when it is any of them.
   // Non-purchasing categories are left out unless g.np is set or the filter names a
   // category, group, purchasing flag or vendor explicitly.
   function catFilter(ix, g, f) {
     f = f || {};
-    const onlyPurch = !g.np && f.cat == null && f.group == null && f.purch == null && f.vendor == null;
+    const cats = f.cat == null ? null : new Set([].concat(f.cat));
+    const onlyPurch = !g.np && cats == null && f.group == null && f.purch == null && f.vendor == null;
     const ok = {};
     for (const [id, c] of ix.cat) {
-      ok[id] = (f.cat == null || id === f.cat) &&
+      ok[id] = (cats == null || cats.has(id)) &&
         (f.group == null || c.group === f.group) &&
         (f.purch == null || c.purchasing === f.purch) &&
         (!onlyPurch || c.purchasing === 'yes');
@@ -462,10 +456,17 @@ const Core = (function () {
       if (r[2] < y0 || r[2] > y1) continue;
       if (vi != null && r[1] !== vi) continue;
       if (f.agency != null ? r[0] !== f.agency : !peers.has(r[0])) continue;
-      if (!okCat[ix.vcat[r[1]]]) continue;
+      if (!okCat[rowCat(ix, r)]) continue;
       out.push(r);
     }
     return out;
+  }
+  // Categories a vendor's rows are in (all years and agencies), in category order.
+  function vendorCats(ix, vendorId) {
+    const vi = ix.vendorPos.get(vendorId);
+    const s = new Set();
+    for (const r of ix.D.rows) if (r[1] === vi) s.add(rowCat(ix, r));
+    return [...s].sort((a, b) => ix.cat.get(a).pos - ix.cat.get(b).pos);
   }
 
   function emptyAgg(key) {
@@ -525,13 +526,12 @@ const Core = (function () {
     const peers = f.agency != null ? null : peerIds(ix, g);
     let vi = null;
     if (f.vendor != null) vi = ix.vendorPos.has(f.vendor) ? ix.vendorPos.get(f.vendor) : -2;
+    const okCat = catFilter(ix, g, f);
     const out = [];
     for (const p of ix.D.payments) {
       if (p[1] < y0 || p[1] > y1) continue;
       if (vi != null && p[3] !== vi) continue;
-      if (f.cat != null && ix.vcat[p[3]] !== f.cat) continue;
-      if (f.group != null && ix.cat.get(ix.vcat[p[3]]).group !== f.group) continue;
-      if (f.purch != null && ix.cat.get(ix.vcat[p[3]]).purchasing !== f.purch) continue;
+      if (!okCat[payCat(ix, p)]) continue;
       if (f.agency != null ? p[0] !== f.agency : !peers.has(p[0])) continue;
       out.push(p);
     }
@@ -629,12 +629,12 @@ const Core = (function () {
   // Older per-page view models, no longer used by the page; kept for the node tests ----------
   function homeModel(ix, g) {
     const rows = selectRows(ix, g, {});
-    const catOf = r => ix.cat.get(ix.vcat[r[1]]);
+    const catOf = r => ix.cat.get(rowCat(ix, r));
     return {
       peers: peerIds(ix, g),
       rows,
       cats: ix.D.categories.filter(c => g.np || c.purchasing === 'yes'),
-      byCat: agg(rows, r => ix.vcat[r[1]]),
+      byCat: agg(rows, r => rowCat(ix, r)),
       byGroup: agg(rows, r => catOf(r).group),
       purch: summary(rows.filter(r => catOf(r).purchasing === 'yes')),
       all: summary(rows),
@@ -656,7 +656,7 @@ const Core = (function () {
     const rows = selectRows(ix, g, { agency: agencyId });
     return {
       peers: peerIds(ix, g), rows, sum: summary(rows),
-      byVendor: agg(rows, r => r[1]), byCat: agg(rows, r => ix.vcat[r[1]]),
+      byVendor: agg(rows, r => r[1]), byCat: agg(rows, r => rowCat(ix, r)),
     };
   }
   function vendorsModel(ix, g) {
@@ -675,10 +675,24 @@ const Core = (function () {
 
   // Interface state ------------------------------------------------------------
   // One table, grouped by g, with global filters (normGlobal) plus row filters.
-  // State lives in the URL: #/?g=vendor&cat=apparatus&agency=679&from=2022&to=2024&type=..&staff=..
-  //   &county=..&size=..&np=1&q=search&years=1. year=Y is read as from=Y&to=Y. group and purch are
-  //   kept from older links (category group; purchasing flag).
+  // State lives in the URL: #/?g=vendor&cat=apparatus,scba&agency=679&from=2022&to=2024&county=..
+  //   &size=..&np=1&q=search&years=1. cat is one or more category ids, separated by commas; in the
+  //   state it is null or a list in category order. year=Y is read as from=Y&to=Y. group and purch
+  //   are kept from older links (category group; purchasing flag). type and staff (agency type and
+  //   staffing filters, since removed) are ignored.
   const GROUPS = ['category', 'vendor', 'agency', 'year', 'none'];
+
+  // Category ids (a list, or text separated by commas) -> {ids: known ids in category order, bad: unknown ones}
+  function parseCats(ix, v) {
+    const ids = [], bad = [];
+    for (const raw of Array.isArray(v) ? v : String(v == null ? '' : v).split(',')) {
+      const id = String(raw).trim();
+      if (!id) continue;
+      if (!ix.cat.has(id)) { if (!bad.includes(id)) bad.push(id); } else if (!ids.includes(id)) ids.push(id);
+    }
+    ids.sort((a, b) => ix.cat.get(a).pos - ix.cat.get(b).pos);
+    return { ids, bad };
+  }
 
   // URL parameters (strings) -> state. Ids that do not match the data are dropped and listed in bad.
   function normState(ix, p) {
@@ -697,22 +711,27 @@ const Core = (function () {
       if (!has(k)) return;
       if (ok) s[k] = val; else bad.push(label + ' "' + p[k] + '"');
     };
-    take('cat', 'category', ix.cat.has(p.cat), p.cat);
+    const pc = parseCats(ix, p.cat);
+    s.cat = pc.ids.length ? pc.ids : null;
+    for (const id of pc.bad) bad.push('category "' + id + '"');
     take('group', 'category group', ix.groups.includes(p.group), p.group);
     take('purch', 'purchasing flag', p.purch === 'yes' || p.purch === 'no', p.purch);
     take('vendor', 'vendor', ix.vendorPos.has(p.vendor), p.vendor);
     const ag = Number(p.agency);
     take('agency', 'agency', /^\d+$/.test(String(p.agency)) && ix.agency.has(ag), ag);
-    // A vendor has one category, and a category one group and purchasing flag: drop filters that contradict them
+    // Category and vendor together are an intersection (it can be empty). The category group and
+    // purchasing flag from older links are dropped when they contradict the vendor's category, or
+    // every selected category.
     const vi = s.vendor != null ? ix.vendorPos.get(s.vendor) : null;
     const vc = vi != null ? ix.cat.get(ix.vcat[vi]) : null;
-    const name = vi != null ? ix.D.vendors[vi].name : '';
-    if (vc && s.cat != null && s.cat !== vc.id) { bad.push('category "' + p.cat + '" (' + name + ' is in ' + vc.name + ')'); s.cat = null; }
-    const fc = vc || (s.cat != null ? ix.cat.get(s.cat) : null);
-    const who = vc ? name : fc ? fc.name : '';
-    if (fc && s.group != null && s.group !== fc.group) { bad.push('category group "' + p.group + '" (' + who + ' is in ' + fc.group + ')'); s.group = null; }
-    if (fc && s.purch != null && s.purch !== fc.purchasing) {
-      bad.push('purchasing flag "' + p.purch + '" (' + who + (fc.purchasing === 'yes' ? ' is' : ' is not') + ' purchasing)');
+    const fcs = vc ? [vc] : s.cat ? s.cat.map(id => ix.cat.get(id)) : [];
+    const who = vc ? ix.D.vendors[vi].name : fcs.length === 1 ? fcs[0].name : 'the selected categories';
+    if (fcs.length && s.group != null && !fcs.some(c => c.group === s.group)) {
+      bad.push('category group "' + p.group + '" (' + who + (fcs.length === 1 ? ' is in ' + fcs[0].group : ' are not in it') + ')');
+      s.group = null;
+    }
+    if (fcs.length && s.purch != null && !fcs.some(c => c.purchasing === s.purch)) {
+      bad.push('purchasing flag "' + p.purch + '" (' + who + (fcs.length === 1 ? (fcs[0].purchasing === 'yes' ? ' is' : ' is not') : (s.purch === 'yes' ? ' are not' : ' are')) + ' purchasing)');
       s.purch = null;
     }
     if (s.purch === 'yes') { s.purch = null; s.np = false; }   // purchasing only is the default
@@ -724,10 +743,12 @@ const Core = (function () {
   // State -> URL parameters, in a fixed order, leaving out defaults.
   function stateParams(ix, s) {
     const out = [['g', s.g]];
-    for (const k of ['cat', 'group', 'purch', 'vendor', 'agency']) if (s[k] != null) out.push([k, String(s[k])]);
+    for (const k of ['cat', 'group', 'purch', 'vendor', 'agency']) {
+      if (s[k] != null) out.push([k, Array.isArray(s[k]) ? s[k].join(',') : String(s[k])]);
+    }
     if (s.from !== ix.years[0]) out.push(['from', String(s.from)]);
     if (s.to !== ix.years[ix.years.length - 1]) out.push(['to', String(s.to)]);
-    for (const k of ['type', 'staff', 'county', 'size']) if (s[k]) out.push([k, s[k]]);
+    for (const k of ['county', 'size']) if (s[k]) out.push([k, s[k]]);
     if (s.np) out.push(['np', '1']);
     if (s.q) out.push(['q', s.q]);
     if (s.years) out.push(['years', '1']);
@@ -757,11 +778,12 @@ const Core = (function () {
     for (const k of ['cat', 'group', 'purch', 'vendor', 'agency']) if (s[k] != null) f[k] = s[k];
     return f;
   }
+  // Filtered to one value of a grouping. Several categories still leave something to group by.
   // A vendor has one category, so a vendor filter also fixes the category.
   function isFiltered(s, dim) {
     if (dim === 'vendor') return s.vendor != null;
     if (dim === 'agency') return s.agency != null;
-    if (dim === 'category') return s.cat != null || s.vendor != null;
+    if (dim === 'category') return (s.cat != null && s.cat.length === 1) || s.vendor != null;
     return false;
   }
   // Grouping after filtering to one row of grouping `from`: category -> vendor, vendor -> agency,
@@ -774,14 +796,12 @@ const Core = (function () {
     for (const d of ['vendor', 'agency', 'category']) if (!isFiltered(s, d)) return d;
     return 'none';
   }
-  // State after activating the row with this value in the current grouping.
+  // State after activating the row with this value in the current grouping. A category row
+  // narrows the category filter to that one category.
   function drill(ix, s, value) {
     const n = Object.assign({}, s, { q: '', bad: [] });
     switch (s.g) {
-      case 'category':
-        n.cat = value; n.group = null; n.purch = null;
-        if (n.vendor != null && ix.vcat[ix.vendorPos.get(n.vendor)] !== value) n.vendor = null;
-        break;
+      case 'category': n.cat = [value]; n.group = null; n.purch = null; break;
       case 'vendor': n.vendor = value; break;
       case 'agency': n.agency = value; break;
       case 'year': n.from = value; n.to = value; break;
@@ -790,17 +810,17 @@ const Core = (function () {
     n.g = nextGroup(n, s.g);
     return n;
   }
-  // Categories listed in the category grouping, including ones with no payments.
+  // Categories in the filters (the selected ones, when there are any), in category order.
   function categoriesFor(ix, s) {
-    const f = rowFilter(s);
-    const ok = catFilter(ix, s, f);
-    const vc = s.vendor != null && ix.vendorPos.has(s.vendor) ? ix.vcat[ix.vendorPos.get(s.vendor)] : null;
-    return ix.D.categories.filter(c => ok[c.id] && (s.vendor == null || c.id === vc));
+    const ok = catFilter(ix, s, rowFilter(s));
+    return ix.D.categories.filter(c => ok[c.id]);
   }
   // The table for a state: items are one aggregate per category, vendor, agency or year, or
   // the payment rows themselves for g = 'none'. Category and year groupings list every value in
-  // the filters, with zero when nothing was paid; vendors are listed when they have rows. Agencies:
-  // every agency in the filters, or only those with rows when a category or vendor filter is set.
+  // the filters, with zero when nothing was paid (with a vendor filter, only categories with its
+  // rows); vendors are listed when they have rows. Agencies: every agency in the filters, or only
+  // those with rows when a category or vendor filter is set. When category, vendor or other row
+  // filters match no rows, every grouping is empty.
   function tableModel(ix, s) {
     const f = rowFilter(s);
     const peers = s.agency != null ? new Set([s.agency]) : peerIds(ix, s);
@@ -809,10 +829,10 @@ const Core = (function () {
     const onlyPurch = !s.np && f.cat == null && f.group == null && f.purch == null && f.vendor == null;
     const narrowed = f.cat != null || f.group != null || f.purch != null || f.vendor != null;
     let items;
-    if (!peers.size) items = [];
+    if (!peers.size || (narrowed && !rows.length)) items = [];
     else if (s.g === 'category') {
-      const by = agg(rows, r => ix.vcat[r[1]]);
-      items = categoriesFor(ix, s).map(c => by.get(c.id) || emptyAgg(c.id));
+      const by = agg(rows, r => rowCat(ix, r));
+      items = categoriesFor(ix, s).filter(c => s.vendor == null || by.has(c.id)).map(c => by.get(c.id) || emptyAgg(c.id));
     } else if (s.g === 'vendor') {
       items = [...agg(rows, r => r[1]).values()];
     } else if (s.g === 'agency') {
@@ -828,11 +848,11 @@ const Core = (function () {
   }
 
   return {
-    TYPES, STAFF, SIZES, buildIndex, normGlobal, peerIds, catFilter, selectRows, emptyAgg, agg, summary, grantsIn,
+    SIZES, buildIndex, normGlobal, peerIds, rowCat, payCat, catFilter, selectRows, vendorCats, emptyAgg, agg, summary, grantsIn,
     selectPayments, paymentsModel, fullYear, rangeYears, staffModel, revenueModel, peopleIn, revenueIn, fyStarts,
     searchRe, searchCategories,
     homeModel, categoryModel, vendorModel, agencyModel, vendorsModel, agenciesModel, rowsModel,
-    GROUPS, normState, stateParams, fromPath, rowFilter, nextGroup, drill, categoriesFor, tableModel,
+    GROUPS, parseCats, normState, stateParams, fromPath, rowFilter, nextGroup, drill, categoriesFor, tableModel,
   };
 })();
 
@@ -925,6 +945,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   const staffingText = a => (a.usfa ? (a.staffing || 'Unknown') : 'Not in USFA registry');
   const staffingCell = a => (a.usfa ? (a.staffing || 'Unknown') : 'Not listed');
   const fullRange = s => s.from === ix.years[0] && s.to === ix.years[ix.years.length - 1];
+  // Selected categories in a few words: the name of one, or "3 categories" (html: escaped)
+  const catsText = (ids, html) => (ids.length === 1 ? (html ? esc : String)(ix.cat.get(ids[0]).name) : int(ids.length) + ' categories');
   const narrow = () => !!(window.matchMedia && window.matchMedia('(max-width: 899px)').matches);
 
   /* ---- URLs and navigation ---- */
@@ -937,7 +959,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     for (const [k, v] of new URLSearchParams(i < 0 ? '' : raw.slice(i + 1))) params[k] = v;
     return { parts, params };
   }
-  const stateHash = s => '#/?' + new URLSearchParams(Core.stateParams(ix, s)).toString();
+  // Commas stay readable (cat=apparatus,scba); they need no escaping in a URL fragment
+  const stateHash = s => '#/?' + new URLSearchParams(Core.stateParams(ix, s)).toString().replace(/%2C/gi, ',');
   const withS = ch => Object.assign({}, S, ch);
   // Move to a new state or page: one history entry per change, so Back and Forward step through
   // them. The page is rendered at once, so the next action builds on the state now on screen.
@@ -1030,8 +1053,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const vis = t.cols.filter(c => !c.hidden);
     const nrows = t.rows.length;
     if (!nrows) {
-      const msg = t.re && t.allRows && t.allRows.length ? 'No rows match "' + S.q.trim() + '".' : (t.empty || 'No rows match the current filters.');
-      return '<p class="empty">' + esc(msg) + '</p>' + (t.tail ? t.tail() : '');
+      const msg = t.re && t.allRows && t.allRows.length ? esc('No rows match "' + S.q.trim() + '".')
+        : t.emptyHtml || esc(t.empty || 'No rows match the current filters.');
+      return '<p class="empty">' + msg + '</p>' + (t.tail ? t.tail() : '');
     }
     const spec = sortSpec(t);
     const [pc, pd] = spec[0] || [-1, 'asc'];
@@ -1124,7 +1148,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   /* ---- Main table: one per grouping ---- */
   function fileName() {
     const parts = [{ category: 'categories', vendor: 'vendors', agency: 'agencies', year: 'fiscal-years', none: 'yearly-totals' }[S.g]];
-    if (S.cat) parts.push(S.cat);
+    if (S.cat) parts.push(S.cat.length <= 3 ? S.cat.join('+') : S.cat.length + '-categories');
     if (S.group) parts.push(S.group.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
     if (S.purch === 'no') parts.push('non-purchasing');
     if (S.vendor) parts.push(S.vendor);
@@ -1166,18 +1190,31 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const nAg = { key: 'agencies', label: 'Agencies', num: true, hidden: S.agency != null, val: o => o.ag.size, html: o => int(o.ag.size) };
     // Where a row leads: the same rule as Core.drill
     const dim = { category: 'cat', vendor: 'vendor', agency: 'agency' }[g];
-    const nextG = Core.nextGroup(dim ? withS({ [dim]: dim === 'agency' ? 0 : 'x' }) : S, g);
+    const nextG = Core.nextGroup(dim ? withS({ [dim]: dim === 'agency' ? 0 : dim === 'cat' ? ['x'] : 'x' }) : S, g);
     const then = nextG === 'none' ? 'show its yearly totals' : 'group by ' + GNAME[nextG];
     const drill = name => ({
       name, label: o => 'Filter to ' + name(o), title: o => 'Filter to ' + name(o) + ', ' + then,
       ok: o => o.n > 0,
     });
+    const oneCat = !!S.cat && S.cat.length === 1;          // the category column would repeat one value
     const t = {
       id: 'main-' + g, file: fileName(), wide: true, labelId: 'page-h', allRows: m.items, rows: m.items, byYear,
       hint: 'Select a row to filter to it and ' + then + '.',
       empty: !m.peers.size ? 'No agencies match the agency filters.' : 'No payments match these filters.',
       notes: '',
     };
+    // Nothing in the selected categories: say why when the vendor is in none of them, and offer to clear them
+    if (m.peers.size && S.cat) {
+      let why = '';
+      if (S.vendor) {
+        const vcs = Core.vendorCats(ix, S.vendor);
+        if (vcs.length && !vcs.some(id => S.cat.includes(id))) {
+          why = ' ' + esc(vendorOf(S.vendor).name) + ' is in ' + vcs.map(id => esc(ix.cat.get(id).name)).join(' and ') +
+            ', not in ' + (S.cat.length === 1 ? esc(ix.cat.get(S.cat[0]).name) : 'the selected categories') + '.';
+        }
+      }
+      t.emptyHtml = esc(t.empty) + why + ' <button type="button" class="btn" data-rm="cat">Clear category filter</button>';
+    }
     const totalLabel = () => (t.re ? 'Total, matching rows' : 'Total');
     if (g === 'category') {
       const share = v => (m.sum.spend > 0 ? v / m.sum.spend : null);
@@ -1202,7 +1239,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       const nerisCol = { key: 'neris', label: 'NERIS partner', nw: true, opt: true, val: o => (isNeris(o) ? 'Yes' : null), html: o => (isNeris(o) ? 'Yes' : '') };
       t.cols = [
         { key: 'vendor', label: 'Vendor', th: true, val: o => V()[o.key].name },
-        { key: 'cat', label: 'Category', opt: true, hidden: S.cat != null || byYear, val: o => ix.cat.get(ix.vcat[o.key]).name },
+        { key: 'cat', label: 'Category', opt: true, hidden: oneCat || byYear, val: o => ix.cat.get(ix.vcat[o.key]).name },
         nAg, paid,
         { key: 'last', label: 'Last year paid', num: true, opt: true, hidden: byYear, val: o => o.last, html: o => (o.last == null ? '' : 'FY' + o.last) },
         nerisCol,
@@ -1283,7 +1320,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         { key: 'partial', label: 'Partial year', hidden: true, val: r => (ix.partial.has(r[2]) ? 'yes' : '') },
         { key: 'payee', label: 'Payee as reported', th: true, val: payee },
         { key: 'vendor', label: 'Vendor', opt: true, hidden: S.vendor != null, val: r => V()[r[1]].name },
-        { key: 'cat', label: 'Category', opt: true, hidden: S.cat != null || S.vendor != null, val: r => ix.cat.get(ix.vcat[r[1]]).name },
+        { key: 'cat', label: 'Category', opt: true, hidden: oneCat || S.vendor != null, val: r => ix.cat.get(Core.rowCat(ix, r)).name },
         { key: 'amount', label: 'Net amount', num: true, val: r => r[3], html: r => cents(r[3]) },
       ];
       t.sort = S.agency != null || S.vendor != null ? [['year', 'desc'], ['amount', 'desc']] : [['amount', 'desc'], ['agency', 'asc']];
@@ -1335,17 +1372,22 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const o = ix.D.categories.find(x => x.id !== c.id && c.note.includes(shortName(x)));
     if (!o) return s;
     const n = esc(shortName(o));
-    return s.replace(n, A(stateHash(withS({ cat: o.id, vendor: null, group: null, purch: null, q: '' })), n));
+    return s.replace(n, A(stateHash(withS({ cat: [o.id], vendor: null, group: null, purch: null, q: '' })), n));
   }
   // Above the table: one short block per category, vendor or agency filter. Longer sections go below the table.
   const ctxHead = (id, title, facts) => '<div class="ctxline"><h2 id="' + id + '">' + esc(title) + '</h2>' +
     facts.filter(Boolean).map(f => '<span class="sep" aria-hidden="true"> · </span><span>' + f + '</span>').join('') + '</div>';
+  // Selected categories: a block for each one with a note, FEMA AEL codes or not counted as purchasing;
+  // more than 3 selected: one line listing them.
+  function ctxCategories(ids) {
+    if (ids.length > 3) {
+      return '<section class="ctx" aria-labelledby="ctx-cat">' +
+        ctxHead('ctx-cat', int(ids.length) + ' categories', ids.map(id => esc(ix.cat.get(id).name))) + '</section>';
+    }
+    return ids.map(ctxCategory).join('');
+  }
   function ctxCategory(id) {
     const c = ix.cat.get(id);
-    let h = '<section class="ctx" aria-labelledby="ctx-cat">' + ctxHead('ctx-cat', 'Category: ' + c.name, [
-      c.group !== c.name ? 'Group: ' + esc(c.group) : '',
-      c.purchasing === 'no' ? 'Not counted as purchasing' : '',
-    ]);
     let n = '';
     if (c.note) n += '<p class="note">' + noteHtml(c) + '</p>';
     if (id === 'unclassified') n += '<p class="note">These vendors did not match the vendor map or any keyword rule. See ' + A('#/about', 'About') + '.</p>';
@@ -1353,8 +1395,14 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       n += '<p class="note">FEMA Authorized Equipment List: ' + A(safeUrl(c.ael_url) || LINKS.ael, esc(c.ael)) +
         (c.ael_title ? ' (' + esc(c.ael_title) + ')' : '') + '.</p>';
     }
+    if (!n && c.purchasing === 'yes') return '';
+    const hid = 'ctx-cat-' + id;
+    const h = '<section class="ctx" aria-labelledby="' + hid + '">' + ctxHead(hid, 'Category: ' + c.name, [
+      c.group !== c.name ? 'Group: ' + esc(c.group) : '',
+      c.purchasing === 'no' ? 'Not counted as purchasing' : '',
+    ]);
     // On a phone the notes start collapsed, so the table stays near the top
-    if (n && narrow()) n = details('d-catnotes', 'Category notes', n);
+    if (n && narrow()) n = details('d-catnotes-' + id, 'Category notes', n);
     return h + n + '</section>';
   }
   function ctxVendor(vid) {
@@ -1364,7 +1412,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       : v.method === 'rule' ? 'keyword rule (config/keyword_rules.csv)'
       : 'no rule matched';
     let h = '<section class="ctx" aria-labelledby="ctx-ven">' + ctxHead('ctx-ven', 'Vendor: ' + v.name, [
-      S.cat !== v.category ? 'Category: ' + esc(ix.cat.get(v.category).name) : '',
+      !(S.cat && S.cat.length === 1 && S.cat[0] === v.category) ? 'Category: ' + esc(ix.cat.get(v.category).name) : '',
       v.neris ? 'NERIS integration partner (' + A(LINKS.neris, 'FSRI list') + ')' : '',
     ]);
     if (v.aliases.length) {
@@ -1401,9 +1449,12 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     if (a.usfa) f += fact('USFA registry', esc(a.usfa.name) + ', FDID ' + esc(a.usfa.fdid));
     if (site) f += fact('Website', A(site, esc(a.website)));
     if (a.notes) f += fact('Notes', esc(a.notes), true);
-    h += details('d-facts', 'Agency details', '<dl class="facts">' + f + '</dl>' +
-      '<p><button type="button" class="btn" data-like="' + id + '">Filter to agencies like this one</button> ' +
-      '<span class="muted">Same type, staffing and annual expenses range.</span></p>');
+    // Agencies of the same size: county is left out, since few counties have two agencies of one size
+    const size = sizeOf(id);
+    const range = size && (/^(Under|Over) /.test(size.label) ? size.label.charAt(0).toLowerCase() + size.label.slice(1) : 'of ' + size.label);
+    h += details('d-facts', 'Agency details', '<dl class="facts">' + f + '</dl>' + (size
+      ? '<p><button type="button" class="btn" data-like="' + id + '">Filter to agencies with annual expenses ' + esc(range) + '</button></p>'
+      : ''));
     return h + '</section>';
   }
   // Below the table: staff, revenue, expenses and FEMA grants for the selected agency
@@ -1514,7 +1565,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     partial: { key: 'partial', label: 'Partial year', hidden: true, val: p => (ix.partial.has(p[1]) ? 'yes' : '') },
     vendor: { key: 'vendor', label: 'Vendor', th: true, val: p => V()[p[3]].name },
     agency: { key: 'agency', label: 'Agency', val: p => agName(p[0]) },
-    cat: { key: 'cat', label: 'Category', val: p => ix.cat.get(ix.vcat[p[3]]).name },
+    cat: { key: 'cat', label: 'Category', val: p => ix.cat.get(Core.payCat(ix, p)).name },
     amount: { key: 'amount', label: 'Amount', num: true, val: p => p[4], html: p => money(p[4]) },
     payee: { key: 'payee', label: 'Payee as reported', val: p => (p[5] < 0 ? null : ix.D.aliases[p[5]]) },
   };
@@ -1524,13 +1575,13 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   function morePayments() {
     // Single payments cover purchasing categories only
     const np = id => ix.cat.get(id).purchasing !== 'yes';
-    if (S.purch === 'no' || (S.cat && np(S.cat)) || (S.vendor && np(vendorOf(S.vendor).category))) return '';
+    if (S.purch === 'no' || (S.cat && S.cat.every(np)) || (S.vendor && np(vendorOf(S.vendor).category))) return '';
     const pm = Core.paymentsModel(ix, S, Core.rowFilter(S));
     if (!pm.n) return '';
     const cols = [];
     if (!S.vendor) cols.push(PCOL.vendor);
     if (S.agency == null) cols.push(PCOL.agency);
-    if (!S.cat && !S.vendor) cols.push(Object.assign({}, PCOL.cat, { opt: true }));
+    if ((!S.cat || S.cat.length > 1) && !S.vendor) cols.push(Object.assign({}, PCOL.cat, { opt: true }));
     cols.push(PCOL.year, PCOL.partial, PCOL.amount, Object.assign({}, PCOL.payee, S.vendor ? { opt: true } : { hidden: true }));
     let b = '<p>' + plural(pm.n, 'payment', 'payments') + ' of $1,000 or more, ' + esc(yearSpan(S)) + '.</p>';
     b += table({
@@ -1543,7 +1594,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   }
   function renderContext() {
     let h = '';
-    if (S.cat) h += ctxCategory(S.cat);
+    if (S.cat) h += ctxCategories(S.cat);
     if (S.vendor) h += ctxVendor(S.vendor);
     if (S.agency != null) h += ctxAgency(S.agency);
     $('context').innerHTML = h;
@@ -1559,24 +1610,26 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   function activeFilters() {
     const out = [];                                   // [state key, text]
     if (!fullRange(S)) out.push(['years', S.from === S.to ? 'Fiscal year: ' + fy(S.from) : 'Fiscal years: FY' + S.from + '–FY' + S.to]);
-    if (S.cat) out.push(['cat', 'Category: ' + ix.cat.get(S.cat).name]);
+    for (const id of S.cat || []) out.push(['cat:' + id, 'Category: ' + ix.cat.get(id).name]);   // one chip per category
     if (S.group) out.push(['group', 'Category group: ' + S.group]);
     if (S.purch === 'no') out.push(['purch', 'Non-purchasing payments only']);
     if (S.vendor) out.push(['vendor', 'Vendor: ' + vendorOf(S.vendor).name]);
     if (S.agency != null) out.push(['agency', 'Agency: ' + agName(S.agency)]);
     const na = S.agency != null ? ' (not applied)' : '';
-    const lab = (list, id) => list.find(x => x.id === id).label;
-    if (S.type) out.push(['type', 'Agency type: ' + lab(Core.TYPES, S.type) + na]);
-    if (S.staff) out.push(['staff', 'Staffing: ' + lab(Core.STAFF, S.staff) + na]);
     if (S.county) out.push(['county', 'County: ' + S.county + na]);
-    if (S.size) out.push(['size', 'Annual expenses: ' + lab(Core.SIZES, S.size) + na]);
+    if (S.size) out.push(['size', 'Annual expenses: ' + Core.SIZES.find(z => z.id === S.size).label + na]);
     if (S.np) out.push(['np', 'Non-purchasing payments included']);
     return out;
   }
+  // State without one filter. 'cat:<id>' removes one category; 'cat' all of them.
   function without(key) {
     if (key === 'years') return withS({ from: ix.years[0], to: ix.years[ix.years.length - 1] });
     if (key === 'np') return withS({ np: false });
-    if (['type', 'staff', 'county', 'size'].includes(key)) return withS({ [key]: '' });
+    if (key === 'county' || key === 'size') return withS({ [key]: '' });
+    if (key.startsWith('cat:')) {
+      const rest = (S.cat || []).filter(id => id !== key.slice(4));
+      return withS({ cat: rest.length ? rest : null });
+    }
     return withS({ [key]: null });
   }
   function renderChips(notes) {
@@ -1601,37 +1654,45 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     $('f-to').innerHTML = yrs;
     $('f-agency').innerHTML = opt('', 'All agencies') +
       ix.D.agencies.slice().sort((x, y) => coll.compare(x.name, y.name)).map(a => opt(a.id, a.name)).join('');
-    $('f-type').innerHTML = opt('', 'All') + Core.TYPES.map(t => opt(t.id, t.label)).join('');
-    $('f-staff').innerHTML = opt('', 'All') + Core.STAFF.map(t => opt(t.id, t.label)).join('');
     $('f-county').innerHTML = opt('', 'All') + ix.counties.map(c => opt(c, c)).join('');
     $('f-size').innerHTML = opt('', 'All') + Core.SIZES.map(t => opt(t.id, t.label)).join('');
     const names = V().map(v => v.name).sort(coll.compare);
     $('vendor-list').innerHTML = names.map(n => '<option value="' + esc(n) + '"></option>').join('');
     vendorByName = new Map(V().map(v => [v.name.toLowerCase(), v.id]));
   }
-  // Category options by group; non-purchasing ones only with the checkbox on (or when one is selected)
+  // Category checkboxes under their group headings; non-purchasing ones only with the checkbox on
+  // (or when selected). Rebuilt only when that list changes, so focus stays on the box just toggled.
   function fillCategories() {
-    const npCat = S.cat && ix.cat.get(S.cat).purchasing !== 'yes' ? S.cat : '';
-    const key = S.np + ':' + npCat;
+    const npSel = S.np ? [] : (S.cat || []).filter(id => ix.cat.get(id).purchasing !== 'yes');
+    const key = S.np + ':' + npSel.join(',');
     if (key === catOptsKey) return;
     catOptsKey = key;
-    let h = opt('', 'All categories');
+    const box = $('f-cat-box');
+    const before = [...box.querySelectorAll('input')].map(i => i.value);
+    const at = box.contains(document.activeElement) ? before.indexOf(document.activeElement.value) : -1;
+    const chk = c => '<label class="chk"><input type="checkbox" name="cat" id="fc-' + esc(c.id) + '" value="' + esc(c.id) + '"><span>' + esc(c.name) + '</span></label>';
+    let h = '';
     for (const gr of ix.groups) {
-      const cs = ix.D.categories.filter(c => c.group === gr && (S.np || c.purchasing === 'yes' || c.id === npCat));
-      if (cs.length) h += '<optgroup label="' + esc(gr) + '">' + cs.map(c => opt(c.id, c.name)).join('') + '</optgroup>';
+      const cs = ix.D.categories.filter(c => c.group === gr && (S.np || c.purchasing === 'yes' || npSel.includes(c.id)));
+      if (!cs.length) continue;
+      // A group that is a single category of the same name (Unclassified) needs no heading
+      h += cs.length === 1 && cs[0].name === gr ? chk(cs[0]) : '<fieldset class="cgrp"><legend>' + esc(gr) + '</legend>' + cs.map(chk).join('') + '</fieldset>';
     }
-    $('f-cat').innerHTML = h;
+    box.innerHTML = h;
+    // Focus was on a checkbox that is gone (a non-purchasing category unchecked): move to the one before it
+    for (let i = at; i >= 0; i--) { const el = $('fc-' + before[i]); if (el) { el.focus(); break; } }
   }
   function syncPanel(nActive) {
     $('f-from').value = S.from;
     $('f-to').value = S.to;
     fillCategories();
-    $('f-cat').value = S.cat || '';
+    const sel = new Set(S.cat || []);
+    for (const el of $('f-cat-box').querySelectorAll('input')) el.checked = sel.has(el.value);
+    $('f-cat-n').innerHTML = sel.size ? '(' + int(sel.size) + '<span class="vh"> selected</span>)' : '';
+    $('f-cat-clear').disabled = !sel.size;
     $('f-vendor').value = S.vendor ? vendorOf(S.vendor).name : '';
     $('f-vendor-msg').textContent = '';
     $('f-agency').value = S.agency != null ? String(S.agency) : '';
-    $('f-type').value = S.type;
-    $('f-staff').value = S.staff;
     $('f-county').value = S.county;
     $('f-size').value = S.size;
     $('f-np').checked = S.np;
@@ -1643,18 +1704,17 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     announcePeers = false;
     $('ftoggle').textContent = nActive ? 'Filters (' + nActive + ' active)' : 'Filters';
   }
-  // Filtering on the dimension the table is grouped by moves to the next grouping, as a row click does.
-  function setCat(id) {
-    const n = withS({ cat: id, group: null, purch: null });
-    if (id && n.vendor && vendorOf(n.vendor).category !== id) n.vendor = null;
-    if (id && S.g === 'category') { n.g = Core.nextGroup(n, 'category'); n.q = ''; }
-    return n;
+  // A category checkbox adds or removes that category. The grouping stays, so grouped by category
+  // the table compares the selected ones. A vendor filter is kept (the two intersect).
+  function toggleCat(id, on) {
+    const ids = (S.cat || []).filter(x => x !== id).concat(on ? [id] : []);
+    return withS({ cat: ids.length ? Core.parseCats(ix, ids).ids : null, group: null, purch: null });
   }
+  // Filtering on the dimension the table is grouped by moves to the next grouping, as a row click does.
   function setVendor(vid) {
     const n = withS({ vendor: vid });
     if (vid) {
       const c = ix.cat.get(vendorOf(vid).category);
-      if (n.cat && n.cat !== c.id) n.cat = null;
       if (n.group && n.group !== c.group) n.group = null;
       if (n.purch && n.purch !== c.purchasing) n.purch = null;
       if (S.g === 'vendor') { n.g = Core.nextGroup(n, 'vendor'); n.q = ''; }
@@ -1680,21 +1740,20 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     if (hits.length === 1) { go(setVendor(V()[hits[0]].id)); return; }
     msg.textContent = hits.length ? 'Several vendors match. Pick one from the list.' : 'No vendor matches "' + raw + '".';
   }
-  function likeState(id) {
-    const a = ix.agency.get(id);
+  // The annual expenses range an agency is in, or undefined without an expense figure
+  function sizeOf(id) {
     const lat = ix.latest.get(id);
-    const size = lat && Core.SIZES.find(z => lat.amount >= z.lo && lat.amount < z.hi);
-    return withS({
-      agency: null, county: '',
-      type: (Core.TYPES.find(t => t.label === a.type) || {}).id || '',
-      staff: (Core.STAFF.find(s => s.test(a)) || {}).id || '',
-      size: size ? size.id : '',
-    });
+    return lat ? Core.SIZES.find(z => lat.amount >= z.lo && lat.amount < z.hi) : undefined;
+  }
+  function likeState(id) {
+    const size = sizeOf(id);
+    return withS({ agency: null, county: '', size: size ? size.id : '' });
   }
   function bindControls() {
     $('fpanel').addEventListener('change', e => {
       const el = e.target;
       let n;
+      if (el.name === 'cat') { go(toggleCat(el.value, el.checked)); return; }
       switch (el.id) {
         case 'f-from': case 'f-to': {
           let from = Number($('f-from').value), to = Number($('f-to').value);
@@ -1702,10 +1761,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
           n = withS({ from, to });
           break;
         }
-        case 'f-cat': n = setCat(el.value || null); break;
         case 'f-vendor': vendorCommit(); return;
         case 'f-agency': n = setAgency(el.value ? Number(el.value) : null); break;
-        case 'f-type': case 'f-staff': case 'f-county': case 'f-size': n = withS({ [el.id.slice(2)]: el.value }); announcePeers = true; break;
+        case 'f-county': case 'f-size': n = withS({ [el.id.slice(2)]: el.value }); announcePeers = true; break;
         case 'f-np': n = withS({ np: el.checked }); break;
         default: return;
       }
@@ -1721,6 +1779,13 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     });
     vin.addEventListener('keydown', e => { if (e.key === 'Enter') vendorCommit(); });
     $('f-clear').addEventListener('click', () => go(Core.normState(ix, { g: S.g, years: S.years ? '1' : '' })));
+    // Clear categories: focus moves to the first checkbox, since this button is disabled with none selected
+    $('f-cat-clear').addEventListener('click', () => {
+      if (!S.cat) return;
+      const first = $('f-cat-box').querySelector('input');
+      if (first) first.focus();
+      go(withS({ cat: null }));
+    });
     const panel = open => {
       $('fpanel').classList.toggle('open', open);
       $('ftoggle').setAttribute('aria-expanded', String(open));
@@ -1762,7 +1827,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     });
   }
 
-  // Buttons anywhere: sort, Show all/more, CSV, drill-down, remove filter, agencies like this one
+  // Buttons anywhere: sort, Show all/more, CSV, drill-down, remove filter, agencies of the same size
   function drillTo(raw) {
     const v = S.g === 'agency' || S.g === 'year' ? Number(raw) : raw;
     openDetails.clear();                                        // a drill-down shows the new table, not sections left open
@@ -1848,7 +1913,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         ? money(sum.spend) + ' paid by ' + esc(agName(S.agency)) + ' to ' + plural(sum.ve.size, 'vendor', 'vendors')
         : money(sum.spend) + ' paid to ' + plural(sum.ve.size, 'vendor', 'vendors') + ' by ' +
           (m.peers.size === 1 ? esc(agName([...m.peers][0])) : agOf(sum.ag.size, m.peers.size));
-      s += ', ' + esc(yearSpan(S)) + (m.onlyPurch ? '; purchasing categories only.' : '.');
+      s += ', ' + esc(yearSpan(S)) + (S.cat ? ', in ' + catsText(S.cat, true) : '') + (m.onlyPurch ? '; purchasing categories only.' : '.');
     }
     $('summary').innerHTML = s;
     renderContext();
@@ -1856,7 +1921,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     renderMore();
     const h1 = S.g === 'none' ? 'Yearly totals by payee' : 'Payments by ' + GNAME[S.g];
     $('page-h').textContent = h1;
-    const named = [S.cat && ix.cat.get(S.cat).name, S.vendor && vendorOf(S.vendor).name, S.agency != null && agName(S.agency)].filter(Boolean);
+    const named = [S.cat && catsText(S.cat), S.vendor && vendorOf(S.vendor).name, S.agency != null && agName(S.agency)].filter(Boolean);
     document.title = (named.length ? named.join(', ') + ' – ' : '') + (S.g === 'category' && !named.length ? SITE : h1 + ' – ' + SITE);
     $('explore').hidden = false;
     $('page').hidden = true;
@@ -1897,8 +1962,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     }
     h += '<h2>How agencies and vendors are counted</h2>';
     h += '<p>Amounts are net: refunds and credits are subtracted. An agency counts as using a vendor when its net payment to that vendor is positive in at least one fiscal year in the selected range. Last year paid is the latest such year. An agency or vendor with only refunds or credits in the range is listed with its net amount but not counted.</p>';
-    h += '<h2>Filters</h2>';
-    h += '<p>Staffing uses the USFA registry department type: Career, Mostly career, Mostly volunteer or Volunteer. Mostly career and Mostly volunteer are combination departments. Agencies not found in the registry are listed as Not in USFA registry (Not listed in the agency table). Annual expenses uses total expenses in the latest fully reported fiscal year, from Transparent Utah; agencies without that figure are left out when a range is selected. Selecting one agency sets the agency type, staffing, county and annual expenses filters aside. FEMA grants in the agency grouping count awards with a federal fiscal year in the selected range.</p>';
+    h += '<h2>Filters and agency columns</h2>';
+    h += '<p>Category takes one or more categories; a payment is included when it is in any of them. Annual expenses uses total expenses in the latest fully reported fiscal year, from Transparent Utah; agencies without that figure are left out when a range is selected. Selecting one agency sets the county and annual expenses filters aside.</p>';
+    h += '<p>Staffing in the agency table is the USFA registry department type: Career, Mostly career, Mostly volunteer or Volunteer. Mostly career and Mostly volunteer are combination departments. Agencies not found in the registry are shown as Not listed. FEMA grants in the agency grouping count awards with a federal fiscal year in the selected range.</p>';
     h += '<h2>Limitations</h2><ul>';
     h += '<li>Amounts are net yearly totals per agency and payee name, not invoices or line items. Refunds and corrections can make a total negative.</li>';
     h += '<li>There are no item descriptions, so categories are assigned per vendor. A distributor that sells many kinds of goods sits in one category.</li>';
