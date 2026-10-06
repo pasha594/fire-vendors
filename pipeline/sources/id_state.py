@@ -204,7 +204,6 @@ PREFIX = re.compile(r"^(PCARD( PP)? - )?([A-Z0-9]{1,6} ?\* ?)?", re.I)  # purcha
 FULL_NAME = re.compile(r"^[A-Za-z][A-Za-z'\-]+ [A-Za-z][A-Za-z'\-\.]* [A-Za-z][A-Za-z'\-]+( (JR|SR|II|III|IV))?$", re.I)
 NAME_TOKENS = re.compile(r"^[A-Za-z][A-Za-z'\-\.]*( ([A-Za-z][A-Za-z'\-\.]*|&))+$")
 STOP_WORDS = re.compile(r"\b(OF|THE|FOR|AT|ON|IN|TO|BY|DBA)\b", re.I)
-PCARD = PREFIX  # kept for tests/multistate/check_id.py
 _CLAIMED = None
 
 

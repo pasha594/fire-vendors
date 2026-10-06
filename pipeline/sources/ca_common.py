@@ -93,6 +93,49 @@ LAST_FIRST_INITIAL = re.compile(r"^[A-Za-z'\-]{2,}, ?[A-Za-z]\.?$")             
 FIRST_INITIAL_LAST = re.compile(r"^[A-Za-z]\.? [A-Za-z'\-]{2,}$")                             # "J SMITH"
 HONORIFIC = re.compile(r"^(MR|MRS|MS|DR)\.? [A-Za-z'\-]{2,}( [A-Za-z'\-]{2,})?$", re.I)
 PRIVACY = re.compile(r"^PRIVACY\b|\bCONFIDENTIAL\b|^REDACTED\b|^NAME WITHHELD", re.I)
+DBA = re.compile(r"^(.*?)[\s,/]+D/?B/?A:?\s+(\S.*)$", re.I)
+# Full names the common tests miss ("RONALD ALAN BISHOP", "THOMAS J FERGUSON MD PHD", "JILL GUSTAFSON LCSW"): 3 to 5
+# words, the first a common first name, and no word that marks a business. Hand-curated list of first names.
+FIRST_NAMES = set("""
+AARON ABE ADAM ALAN ALBERT ALEX ALEXANDER ALICIA ALLEN AMANDA AMIR AMY ANA ANDREA ANDREW ANGELA ANGELICA ANN ANNA ANNE
+ANTHONY ANTONIO APRIL ARTHUR AUSTIN BARBARA BARRY BENJAMIN BETH BETTY BEVERLY BILL BILLY BOB BOBBY BOBI BONNIE BRANDON
+BRENDA BRETT BRIAN BRITTANY BRUCE BRYAN CANDACE CARL CARLOS CAROL CAROLE CAROLYN CAROLYNN CATHERINE CHAD CHARLES CHELSEA
+CHERYL CHRIS CHRISTINA CHRISTINE CHRISTOPHER CINDY CLAUDIA CLIFFORD CODY CONNIE COREY COURTNEY CRAIG CRYSTAL CURTIS
+CYNTHIA DALE DAN DANIEL DANNY DARREN DARRIN DARRELL DARRYL DAVID DAWN DEAN DEBBIE DEBORAH DEBRA DENISE DENNIS DEREK
+DIANA DIANE DON DONALD DONNA DORIAN DOROTHY DOUG DOUGLAS DUANE DUSTIN DYLAN ED EDWARD EILEEN ELAINE ELIZABETH EMILY EMMA
+ERIC ERICA ERICK ERIN EVAN EVELYN FERNANDO FRANCES FRANCISCO FRANK FRED FREDERICK FREDRICK GABRIEL GAIL GARY GEORGE
+GERALD GINA GLENN GLORIA GORDON GREG GREGORY GUY HANNAH HAROLD HARRISON HEATHER HELEN HENRY HOLLY HOWARD HUGH IAN IRIS
+JACK JACQUELINE JAI JAKE JAMES JANE JANELLE JANET JANICE JARED JASON JAY JEAN JEFF JEFFREY JENNIFER JEREMY JEROLD
+JERRY JESSE JESSICA JILL JIM JIMMY JOAN JOANNA JOANNE JOE JOEL JOHN JOHNATHAN JON JONATHAN JORDAN JOSE JOSEPH JOSEPHINE
+JOSHUA JOYCE JUAN JUDY JULIA JULIAN JULIE JUSTIN KAELUM KAREN KARL KARLA KATHERINE KATHLEEN KATHRYN KATHY KEITH KELLY
+KEN KENNETH KEVIN KIM KIMBERLY KRISTEN KRISTIN KURT KYLE LANCE LARRY LAURA LAUREN LAWRENCE LEAH LEE LEO LEONARD LEROY
+LESLIE LINDA LINDSAY LISA LLOYD LORI LORRAINE LOUIS LOUISE LUIS LUKE LYNN MANUEL MARC MARCIA MARCUS MARGARET MARIA MARIE
+MARILYN MARIO MARK MARLENE MARTHA MARTIN MARVIN MARY MATT MATTHEW MAUREEN MEGAN MELINDA MELISSA MELVIN MICHAEL MICHELE
+MICHELLE MIGUEL MIKE MIRIAM MITCHELL MOLLY MONICA NANCY NATALIE NATHAN NEAL NEIL NICHOLAS NICOLE NOREEN NORMAN OSCAR OWEN
+PAMELA PATRICIA PATRICK PAUL PAULA PEDRO PEGGY PETER PHILIP PHILLIP RACHEL RAFAEL RALPH RANDALL RANDY RAUL RAY RAYMOND
+REBECCA RENEE RHONDA RICARDO RICHARD RICK RICKY RITA ROBERT ROBERTA ROBIN RODNEY ROGER ROLAND RON RONALD ROSS ROY RUBEN
+RUSSELL RUTH RYAN SABRINA SALVADOR SAM SAMUEL SANDRA SARAH SCOTT SEAN SERGIO SETH SHANE SHANNON SHARON SHAUN SHAWN SHEILA
+SHELLENA SHIRLEY SIMON SONIA SPENCER STANLEY STEPHANIE STEPHEN STEVE STEVEN STUART SUSAN SUZANNE SYLVIA TAMMY TARA TED
+TERESA TERRY THEODORE THERESA THOMAS TIFFANY TIM TIMOTHY TINA TODD TOM TONY TRACY TRAVIS TREVOR TROY TYLER VALERIE
+VANESSA VERONICA VICTOR VICTORIA VINCENT VIRGINIA WADE WALTER WARREN WAYNE WENDY WESLEY WHITNEY WILLIAM YOLANDA ZACHARY
+""".split())
+TITLES = re.compile(r"\b(MD|M D|PHD|PH D|DDS|DMD|DVM|ESQ|CPA|RN|LCSW|LMFT|MFT|PSYD|DC|PE)\b")
+BUSINESSISH = re.compile(
+    r"&|\d|\b(LOGGING|TREE|DESIGNS?|GENERAL|BACKHOE|LANDSCAPES?|INSPECTIONS?|SONS?|NETWORKING|WILDLIFE|GAS|CABINETS|"
+    r"CONCRETE|HAULING|LOWBED|CUTTING|CLEARING|PRODUCTIONS?|STUDIO|PHOTOGRAPHY|BUILDERS?|HOMES|LAW|AGENCY|COUNSELING|"
+    r"THERAPY|CHIROPRACTIC|DENTAL|MEDICAL|CLINIC|AUTO|TRUCK|MOTORS|SERVICE|FEED|DAIRY|VINEYARDS?|ORCHARDS?|TRUST|ESTATE|"
+    r"FAMILY|PARTNERSHIP|CONSULTANT|ARBORIST|SURVEYING|EXCAVATING|CONSTRUCTION|CIBSTRUCTION|AND)\b", re.I)
+
+
+def full_name_person(name):
+    k = common.norm(name)
+    words = re.sub(r"[^A-Z ]", " ", re.sub(r"\b[A-Z]\b", " ", k)).split()
+    if not words or words[0] not in FIRST_NAMES:
+        return False
+    if TITLES.search(k):
+        return True  # "THOMAS J FERGUSON MD PHD", "STEPHEN G SANKO MD INC"
+    return (3 <= len(k.split()) <= 5 and not BUSINESSISH.search(k) and not common.BUSINESS_WORDS.search(name)
+            and not CA_BUSINESS.search(name))
 # Company words common.BUSINESS_WORDS lacks (it has CORP but not CORPORATION, for example). Words that are
 # also common surnames (FORD, STEEL, GLASS, STONE, WOOD, KING, PRICE) are deliberately left out.
 CA_BUSINESS = re.compile(
@@ -112,7 +155,7 @@ CA_BUSINESS = re.compile(
     r"TREES|FREIGHT|TRANSPORT|TRANSPORTATION|LIVESTOCK|MASONRY|FENCE|CARPET|FABRICATION|MACHINE|EQUIP|KENWORTH|"
     r"FREIGHTLINER|FEES|LODGE|PERFORMANCE|REPAIR|CUSTOMS|ARMOR|ADVANTAGE|WORKS|MIDWEST|BUILT|SALES|PAINT|MASTERS|"
     r"WORKPLACE|DECAL|TRAVEL|PAPER|BIKES|ANALYTICS|WILDERNESS|SURFACES|STEEMER|LAPTOPS|MARITIME|WIREWORKS|"
-    r"REFRIGERATION|EXPRESS|SPICERS|NEXIS|REUTERS|USD)\b"
+    r"REFRIGERATION|EXPRESS|SPICERS|NEXIS|REUTERS|USD|SANITATION|DISPOSAL)\b"
     r"|\bN\.?A\.?$", re.I)
 
 
@@ -126,21 +169,24 @@ def _rows(path):
 class Payees:
     """Payee names as they may be published.
 
-    publish(name, person_flag) is common.withhold_person with three additions:
+    publish(name, person_flag) is common.withhold_person with four additions:
+      - "<owner> DBA <business>" with a person-shaped owner is published as the business name only;
       - a source's own privacy placeholder ("PRIVACY-FIRE" in Checkbook L.A.) is shown as withheld;
       - a name the person tests flag is kept when a hand-reviewed row of config/states/ca/vendor_map_additions.csv
         (or config/vendor_map.csv) names it as a business, or when it carries a company word of CA_BUSINESS:
         looks_like_person over-matches two-word company names ("UNION DOOR", "KLASSEN CORPORATION") and
         is_person matches "CITIBANK, N.A." (BANK is not a separate word there);
       - person shapes withhold_person misses ("SMITH, J", "J SMITH", "SMITH JR", "MR SMITH") are withheld
-        unless a reviewed row claims the name.
+        unless a reviewed row claims the name; full names with a middle name or a professional title
+        ("RONALD ALAN BISHOP", "THOMAS J FERGUSON MD PHD") are withheld (full_name_person) unless a reviewed row
+        claims the name (GLENN E THOMAS is a car dealer), and any name a reviewed map assigns to the individuals
+        category is always withheld.
     """
 
     def __init__(self):
-        self.claimed = {r["name_key"] for r in _rows(common.config_dir(ST) / "vendor_map_additions.csv")
-                        if r["category"] != "individuals"}
-        self.claimed |= {r["name_key"] for r in _rows(common.ROOT / "config" / "vendor_map.csv")
-                         if r["category"] != "individuals"}
+        maps = _rows(common.config_dir(ST) / "vendor_map_additions.csv") + _rows(common.ROOT / "config" / "vendor_map.csv")
+        self.claimed = {r["name_key"] for r in maps if r["category"] != "individuals"}
+        self.individuals = {r["name_key"] for r in maps if r["category"] == "individuals"}
         self.redact = [re.compile(r["pattern"], re.I) for r in _rows(common.ROOT / "config" / "payee_name_redactions.csv")]
         self.seen = collections.Counter()
 
@@ -154,7 +200,13 @@ class Payees:
 
     def publish(self, raw, person_flag=False):
         name = " ".join((raw or "").split())
-        if person_flag or PRIVACY.search(name):
+        m = DBA.match(name)
+        if m and (common.is_person(m.group(1)) or common.looks_like_person(m.group(1))) \
+                and not common.BUSINESS_WORDS.search(m.group(1)) and not CA_BUSINESS.search(m.group(1)):
+            name = m.group(2)  # "James H. Nolt dba JHNolt Associates": publish the business, not the owner
+        key = common.norm(name)
+        if person_flag or PRIVACY.search(name) or key in self.individuals \
+                or (full_name_person(name) and key not in self.claimed):
             out = common.WITHHELD
         else:
             out = common.withhold_person(name)

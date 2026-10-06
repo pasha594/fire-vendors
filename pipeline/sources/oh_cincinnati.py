@@ -16,6 +16,10 @@ fetch      raw/<date>/oh/oh_cincinnati/meta.json.gz            Socrata metadata 
            raw/<date>/oh/oh_cincinnati/payments_NNN.csv.gz     rows of the linked fire department codes with
                                                                fiscal_year >= 2021, filtered server-side (SoQL)
            raw/<date>/oh/oh_cincinnati/sample.csv.gz           100 unfiltered rows
+           raw/<date>/oh/oh_cincinnati/vehicle_accounts.json.gz  context only, not attributed: server-side totals
+                                                               by vendor of the citywide vehicle accounts (981,
+                                                               256) from fiscal year 2021, where the City buys
+                                                               fire apparatus and ambulances (for the note)
 normalize  data/states/oh/transactions.csv.gz   one row per payment line
            config/states/oh/sources.csv         this source's row (fetched = date of the raw folder)
            data/states/oh/agencies.json         via common.assemble_agencies
@@ -25,8 +29,11 @@ fetched: 271 Fire - Response, 272 Fire - Support Services and the older 224 Depa
 FY2016). Not linked: 922 Police & Fire Fighter's Ins (insurance shared by police and fire) and 103 and 223
 Emergency Communications (the 911 center serves police and fire). normalize fails when a department whose name
 says fire is neither linked nor listed in NOT_FIRE, so a new fire code gets noticed. Purchases that other city
-departments make for Fire (Fleet Services buying apparatus, the IT department buying radios or software) carry
-those departments' codes and are not included.
+departments or citywide accounts make for Fire carry those codes and are not included: above all fire apparatus
+and ambulances, bought through the citywide vehicle account 981 "Motorized & Construction Equip" (FY2021 on:
+$16.8 million to Vogelpohl Fire Equipment and $1.9 million to Halcore Group, more than 40% of what the fire codes
+show), and Fleet Services repairs or IT purchases. The vendor alone does not make a line fire spend, so these stay
+out; the sources.csv note states the gap, with the amount computed from vehicle_accounts.json.
 
 Duplicates: (trans_id, trans_line_no) is unique in the source; exact duplicate lines would be kept once (none in
 the 2026-10-06 pull). Lines with the same vendor, amount and date on one check are separate invoice lines and
@@ -62,6 +69,11 @@ COLUMNS = ["fiscal_year", "acct_period", "dept_code", "dept_desc", "fund_code", 
 NOT_FIRE = {"922": "Police & Fire Fighter's Ins: insurance shared by police and fire"}
 # Expense accounts whose payees are individual people (employees, retirees): always withheld.
 PERSON_ACCOUNTS = {"Uniform And Other Allowance"}
+# Citywide vehicle accounts (context for the note only; never attributed) and the apparatus and ambulance makers
+# or dealers paid from 981 for the Fire Department: Vogelpohl Fire Equipment (fire apparatus dealer) and Halcore
+# Group (Horton and Leader ambulances). Reviewed by hand on 2026-10-06.
+VEHICLE_DEPTS = {"981": "Motorized & Construction Equip", "256": "Fleet Services"}
+APPARATUS_VENDORS = {"Vogelpohl Fire Equipment, Inc.", "Halcore Group, Inc."}
 SOURCE_COLUMNS = ["source", "name", "tier", "url", "years", "fiscal_year", "fetched", "note"]
 
 
@@ -115,6 +127,24 @@ def fetch():
     assert got == expected, f"fetched {got} rows but the control query counted {expected}: the dataset changed " \
                             "during the fetch; delete today's raw folder for this source and fetch again"
     common.save_raw(ST, SOURCE, "sample.csv", soql({"$order": ":id", "$limit": 100}, "csv"))
+    fetch_context()
+
+
+def fetch_context():
+    """Totals by vendor of the citywide vehicle accounts, fiscal year 2021 on: context for the note, never rows."""
+    where = "dept_code in (%s) AND fiscal_year >= %d" % (", ".join(f"'{c}'" for c in sorted(VEHICLE_DEPTS)), FIRST_FY)
+    common.save_raw(ST, SOURCE, "vehicle_accounts.json", soql({
+        "$select": "dept_code, dept_desc, vendor_name, count(*) as n, sum(amount) as amount", "$where": where,
+        "$group": "dept_code, dept_desc, vendor_name", "$order": "dept_code, vendor_name", "$limit": 50000}))
+
+
+def apparatus_outside(d):
+    """Dollars the citywide vehicle account 981 paid to fire apparatus and ambulance vendors (not attributed)."""
+    path = d / "vehicle_accounts.json.gz"
+    if not path.exists():
+        return None
+    return sum(decimal.Decimal(r["amount"]) for r in json.loads(common.read_gz(path))
+               if r["dept_code"] == "981" and r["vendor_name"] in APPARATUS_VENDORS)
 
 
 # --- Payee names -----------------------------------------------------------------------------------------------
@@ -220,13 +250,16 @@ def normalize():
 
     years = sorted({int(r["fiscal_year"]) for r in rows})
     last = max(r["posting_date"] for r in rows)
+    outside = apparatus_outside(d)
+    gap = f" (FY{years[0]}-FY{years[-1]}: ${outside / 1000000:.1f} million)" if outside else ""
     register_source({
         "source": SOURCE, "name": "City of Cincinnati Vendor Payments", "tier": "1",
         "url": f"{DOMAIN}/d/{DATASET}", "years": f"{years[0]}-{years[-1]}",
         "fiscal_year": "City of Cincinnati FY, Jul-Jun", "fetched": d.parent.parent.name,
-        "note": f"Cincinnati Fire Department only (department codes {', '.join(sorted(codes))}); purchases other "
-                f"city departments make for Fire (fleet, IT) are not included; FY{years[-1]} partial (payments "
-                f"through {last})"})
+        "note": f"Cincinnati Fire Department only (department codes {', '.join(sorted(codes))}). Not included: fire "
+                f"apparatus and ambulances, which the City buys through its citywide vehicle account 981{gap}, and "
+                f"other purchases city departments make for Fire (fleet repairs, IT); P-card spend is paid to the "
+                f"card banks, so those merchants are not shown; FY{years[-1]} partial (payments through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
     withheld = sum(r["payee_name"] == common.WITHHELD for r in rows)

@@ -30,6 +30,11 @@ districts' filings are not published as data. So there is no tier 3 source for O
 Coverage after this run (`data/states/oh/agencies.json`): tier 1: 1 agency (Cincinnati Fire Department,
 OH-31015); tier 2: 0; tier 3: 0; tier 4: 1,147. No agency was given a $0 amount.
 
+Cincinnati's $40.0 million is the fire department codes only. The City buys fire apparatus and ambulances through
+its citywide vehicle account (981 "Motorized & Construction Equip"): $18.7 million in FY2021-FY2027 to Vogelpohl
+Fire Equipment and Halcore Group, equal to 47% of the fire codes' total. Those lines carry no fire department code,
+so they are not attributed (section 5). The page note in `sources.csv` says so.
+
 ## Federal layer (done)
 
 Built by `pipeline/sources/federal.py` before this run (raw `raw/2026-10-06/oh/usfa/`, `.../openfema/`).
@@ -40,6 +45,10 @@ Built by `pipeline/sources/federal.py` before this run (raw `raw/2026-10-06/oh/u
   recipient names matched strictly to 302 agencies (783 awards, $110,580,051); 894 names unmatched
   (`config/states/oh/grant_recipients_unmatched.csv`).
 - `python3 tests/multistate/check_federal.py OH` passes after this run.
+- Gap (federal.py, not changed here): FEMA recipient "CITY OF CINCINNATI" (35 awards, $41,542,121, FY2006-FY2025)
+  is in `grant_recipients_unmatched.csv` ("no registry name matches"), so the Cincinnati Fire Department
+  (OH-31015) shows 0 grants although firefighter grants to the City are its grants. The same probably holds for
+  other "CITY OF ..." recipients whose city runs a single fire department.
 
 ## 1. Ohio Checkbook: state agencies (`oh_checkbook_state`)
 
@@ -65,7 +74,11 @@ Built by `pipeline/sources/federal.py` before this run (raw `raw/2026-10-06/oh/u
   16,586,105 lines are exact duplicates ($80.4 billion of duplicated dollars); July-December 2023 has 2. The
   FY2022 file's July-December 2022 months repeat the FY2023 file's first six months line for line (same row
   counts). Any use of these files must drop exact duplicate lines within a file and take each month from one
-  file only. FY2026 has no exact duplicate lines and 5,116 negative amounts (reversals or refunds). Two FY2026
+  file only. The duplicate line and dollar counts were computed in a one-off pass over the downloaded zips and
+  are not stored in a kept file; `manifest.json.gz` keeps the rows per month that show the pattern (January-June
+  2024 has 15.2 million rows against 3.9 to 6.6 million for January-June of 2022, 2023, 2025 and 2026, for
+  example April 2024 4,375,722 rows against 1,107,931 in April 2025; the FY2022 and FY2023 files' July-December
+  2022 months have identical row counts). FY2026 has no exact duplicate lines and 5,116 negative amounts (reversals or refunds). Two FY2026
   rows carry an Excel serial number (`44102`) as transaction month.
 - **Fields (15):** account, account_name (object of expenditure, e.g. "IT & NETWORK"), department_id and
   department_description (state agency, e.g. DNR Department of Natural Resources), payment date, payment method
@@ -83,6 +96,9 @@ Built by `pipeline/sources/federal.py` before this run (raw `raw/2026-10-06/oh/u
   `/apigateway-secure/data-portal/download-file/<dataset>?key=<file key>`, which needs the session cookie of the
   dataset page and that page as Referer, and returns a presigned S3 URL
   (`iop-analytics-data-portal-assets.s3.amazonaws.com`). Both are what a browser sends; no login.
+  Review note: a CDN rule that rejects non-browser agents can be read as a block, and passing it with a
+  browser-form agent as working around it. Nothing from these files is used or published; the owner should
+  confirm the approach before any adapter relies on DataOhio downloads (open question).
 - **Terms:** no terms of use found on DataOhio; its About page invites reuse ("Access publicly available APIs via
   DataOhio or use the data to build your own"). Checkbook disclaimer: no warranty for non-state data, which local
   entities provide voluntarily (ORC 113.74). Ohio public records law applies.
@@ -124,6 +140,12 @@ Built by `pipeline/sources/federal.py` before this run (raw `raw/2026-10-06/oh/u
   supplied.
 - **Pages read before the robots.txt check:** the home page, About/Disclaimer and About/FAQ (once each, by hand).
   No data page and no local list was requested after reading robots.txt, so no sample was saved.
+- **Fields, years, update frequency, row counts:** unknown. No data page may be requested, so none was checked.
+- **Terms:** the Disclaimer says local data is supplied voluntarily by each entity (ORC 113.74) and the Treasurer
+  does not warrant it.
+- **How fire agencies would be identified:** a joint fire district's or fire district's own checkbook would be
+  fire spend as a whole; in a township or city checkbook only its fire fund or fire department lines would be.
+- **Data quality, duplicates and reversals:** unknown (no data read).
 - **Decision: skipped** (robots.txt disallows all). Ways forward for the owner: ask the Treasurer's office or the
   Office of Budget and Management for a bulk export of local checkbook data (or for robots.txt permission), or
   check the participant lists by hand at https://checkbook.ohio.gov/Local/SpecialDistrictsList.aspx and
@@ -185,14 +207,26 @@ city payments dataset; Cleveland's and Columbus's open data hubs have no payment
 - **Terms and robots.txt:** licence "Public Domain" in the dataset metadata. robots.txt: `Crawl-delay: 1` and
   disallows only `/browse` search facets; the API is allowed. `common.get`'s 1-second throttle meets it.
 - **Size:** 1,254,334 rows ($8.48 billion) across 150 department codes; 33,762 rows for the fire codes in
-  FY2021-FY2027 (one page, 332 KB gzipped).
+  FY2021-FY2027 (one page, 332 KB gzipped). No SHA-256 of the full dataset: it is a live API refreshed weekly,
+  not a file, so a checksum would not be reproducible. The filtered rows are pinned instead by the server-side
+  count and sum per fiscal year and department (`control_totals.json.gz`) and per department for all rows
+  (`departments.json.gz`).
 - **Fire agency:** department codes 271 "Fire - Response" and 272 "Fire - Support Services" (and 224 "Department
   Of Fire", used until FY2016) are the Cincinnati Fire Department, registry FDID 31015, agency `OH-31015`
   (`config/states/oh/agency_sources.csv`, match method "department code"). Not linked: 922 "Police & Fire
   Fighter's Ins" (insurance shared by police and fire) and 103/223 "Emergency Communications" (the 911 center
   serves police and fire). Normalize fails if a new department whose name says fire appears unlinked.
-  Purchases other city departments make for Fire (Fleet Services buying apparatus, the IT department buying
-  radios) carry their own department codes and are not included; the page should say so.
+  No fire-named fund ("Fire Grants" 472, "Fire Education" 390) is used by any other department code in FY2021 on
+  (live query in the review, 2026-10-06; not kept as a raw file).
+- **Not included (apparatus and ambulances):** purchases made through other department codes or citywide
+  accounts carry those codes, so they are not attributed even when the vendor is a fire vendor. The largest is
+  the citywide vehicle capital account 981 "Motorized & Construction Equip": FY2021-FY2027 it paid Vogelpohl Fire
+  Equipment $16,843,685.58 (22 lines, fire apparatus) and Halcore Group $1,901,457.11 (8 lines, Horton and
+  Leader ambulances), $18.7 million, 47% of the fire codes' $40.0 million. Fleet Services (256) paid Fire Service,
+  Inc. $468,531, Vogelpohl $304,157 and All American Fire Equipment $82,708 (apparatus repairs). Source:
+  `vehicle_accounts.json.gz` (server-side totals by vendor for codes 981 and 256, FY2021 on; context only, added
+  in the review). The `sources.csv` note states the gap with the 981 amount, so the page does not suggest that
+  Cincinnati buys no apparatus.
 - **Rows by fiscal year:**
 
   | FY | Lines | Dollars |
@@ -207,16 +241,22 @@ city payments dataset; Cleveland's and Columbus's open data hubs have no payment
   | Total | 33,762 | $40,036,497.68 |
 
 - **Duplicates:** (trans_id, trans_line_no) is unique; no exact duplicate lines; the adapter would keep one copy
-  of an exact duplicate. 2,580 groups of lines share vendor, amount, date, account and check: these are separate
-  invoice lines paid on one check (for example several weekly Cintas rentals) and are kept. 53 groups of
-  identical amounts on different checks are recurring payments on different dates or checks, also kept. The
-  raw page total equals the server-side control totals per fiscal year and department (checked by
-  `tests/multistate/check_oh.py`).
+  of an exact duplicate. 2,580 groups (13,423 lines) share vendor, amount, date, account, department and check:
+  these are separate invoice lines of one transaction paid on one check (for example 24 identical Galls jackets
+  on one EFT, or one pest-control charge per station) and are kept; no such line appears under two transaction
+  ids, so there is no reloaded batch. 53 groups of identical vendor, amount, date and account on different
+  checks are also kept. The raw page total equals the server-side control totals per fiscal year and department
+  (checked by `tests/multistate/check_oh.py`), and a second live query in the review, filtered by department
+  name ("Fire%") instead of code, gave the same lines and dollars for every fiscal year.
 - **Reversals:** 103 negative lines (-$16,923.69), all purchasing-card credits from U.S. Bank (99) and Fifth Third
   (4); 43 of them equal a positive line of the same bank. Kept as negative amounts so they net out.
 - **Payees:** 270 vendor names. Purchasing-card statements are paid to the bank (U.S. Bank $1.78 million,
   Fifth Third $0.29 million), so the merchants behind them are not visible. "MISCELLANEOUS" ($393,660, account
-  "Medical Services") names no vendor. 33 payee names are withheld (229 lines, $155,645): names shaped like a
+  "Medical Services", 51 lines) names no vendor: 21 lines of $1,000 or more ($385,586, mostly $351,253 on two
+  checks in July 2020, partly from the Fire Grants fund) and 30 small checks of $32.50 to $767 ($8,074), which
+  look like EMS billing refunds to patients. The text "MISCELLANEOUS" names nobody, so it is published as the
+  source has it and classed `placeholder` (not purchasing); if the City ever puts refund payees' names there,
+  they would need `person_flag`. 33 payee names are withheld (229 lines, $155,645): names shaped like a
   person, every payee of account "Uniform And Other Allowance" ($5,000 payments to individual employees or
   retirees), and names `common.withhold_person` misses ("Last First M.", a "III" suffix, "First M Last TAG"). One
   company stays withheld because `common.is_person` matches it ("OHD, LLLP"). Business names that
@@ -243,7 +283,7 @@ city payments dataset; Cleveland's and Columbus's open data hubs have no payment
 
 `config/states/oh/vendor_map_additions.csv`: 95 payees with proposed canonical name and category, covering 97.9% of
 Ohio's purchasing dollars by raw payee name ($36.4 million of $37.2 million; 98.0% by published payee name, as
-`tests/multistate/check_oh.py` counts). The 90% line is reached by the top 31 purchasing payees; the rest are
+`tests/multistate/check_oh.py` counts). The 90% line is reached by the top 30 purchasing payees; the rest are
 listed so they are classified too, and 11 are business names that would otherwise be withheld. Canonical names
 reuse `config/vendor_map.csv` where it is the same company (Galls, Henry Schein, Stryker, Bound Tree Medical,
 Grainger, Motorola Solutions, Vector Solutions for TargetSolutions, Dell Technologies, CDW Government, Airgas,
@@ -257,17 +297,36 @@ Treasurer government, "MISCELLANEOUS" placeholder.
 
 ## Checks
 
-`python3 tests/multistate/check_oh.py` recomputes lines and dollars per agency, source and fiscal year from the
-raw pages (gzip and csv only), checks them against the source's own server-side control totals and against
-`data/states/oh/transactions.csv.gz`, and checks agency ids, coverage tiers, unique `source_record_id`s, that
-no published payee looks like a person unless withheld or claimed as a business by a vendor map row, that
-`vendor_map_additions.csv` covers at least 90% of purchasing dollars, and that no raw file exceeds 50 MB.
+`python3 tests/multistate/check_oh.py` never imports the Ohio adapters. From the raw pages (gzip and csv only) it
+recomputes lines and dollars per agency, source and fiscal year and compares them with the source's own
+server-side control totals and with `data/states/oh/transactions.csv.gz`; it then traces every published line to
+its raw line and compares agency, fiscal year, date, payee (as published or withheld), account, category and
+amount. It also checks: the contract's column names and order for every Ohio file; that every linked department
+code is named as a fire department in the source (not police, insurance, pension or the shared 911 center) and
+every fire-named department is linked or a known exclusion; agency ids, links, `coverage_counts` and tiers (an
+agency without rows stays at tier 4); unique `source_record_id`s and sort order; that no published payee looks
+like a person (`common.is_person`, `common.looks_like_person` and the shapes the shared rules miss, such as
+"Name III" or "Last First M.") unless withheld or claimed as a business by a vendor map row; that no email
+appears in any published text; that `vendor_map_additions.csv` spend and agency counts equal the raw sums and
+cover at least 90% of purchasing dollars; and that raw files sit under `raw/<date>/oh/<source>/`, are each under
+50 MB (150 MB for Ohio in all), and every reachable source has a sample of at most 100 rows (the state checkbook
+sample without address columns). In the review it was run against scratch copies with one fault each (a
+published "Donald Buchanan III", a Fleet Services link, a line moved to another fiscal year, a changed date or
+payee, unsorted rows, a tier 3 agency without data, a missing sample, a changed spend, swapped columns, an
+email in the account text) and failed on every one.
 `python3 tests/multistate/check_federal.py OH` still passes.
 
 ## Open questions
 
 - Ask the Ohio Treasurer or OBM for bulk local checkbook data (or permission under robots.txt)? It is the only
   route to township and fire district payee data in Ohio.
-- Show Cincinnati as a tier 1 agency with the note that fleet and IT purchases made by other city departments
-  are missing?
+- Show Cincinnati as a tier 1 agency with a note that apparatus and ambulances ($18.7 million in FY2021-FY2027
+  through the citywide vehicle account 981), fleet repairs and IT bought by other city departments are missing,
+  and that $2.1 million of P-card spend shows the card banks rather than the merchants? Or attribute the 981
+  lines to fire apparatus vendors, which the PRD's attribution rule does not allow today?
+- Should `federal.py` link FEMA awards to "CITY OF <name>" recipients when that city has one registry fire
+  department (Cincinnati: 35 awards, $41.5 million, now unmatched)?
+- Is reaching data.ohio.gov with the browser-form agent `Mozilla/5.0 (compatible; utah-fire-procurement/0.1; +URL)`,
+  the page's session cookie and Referer acceptable, or should it count as a block? Only the manifest and sample
+  depend on it.
 - Add the Census of Governments as a national tier 3 source for fire protection totals?

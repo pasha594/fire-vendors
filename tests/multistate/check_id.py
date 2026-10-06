@@ -13,7 +13,8 @@ person-name check, the business-word rule of id_state.payee (BUSINESS, a rule, n
   - every agency_id in the tables, agency_sources.csv and grants exists in agencies.json
   - no duplicate source_record_id within a source; no empty one
   - no payee looks like a private person unless withheld (names that config/vendor_map.csv or
-    config/states/id/vendor_map_additions.csv list as businesses, or that carry a business word, are allowed)
+    config/states/id/vendor_map_additions.csv list as businesses, or that carry a business word of id_state.BUSINESS
+    or common.BUSINESS_WORDS, are allowed); "First Middle Last" names count as persons too
   - every table source is registered in sources.csv; coverage tiers agree with the rows present
 """
 import collections
@@ -26,7 +27,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "pipeline" / "sources"))
 import common  # noqa: E402
-import id_state  # noqa: E402  (BUSINESS, PCARD and FULL_NAME only)
+import id_state  # noqa: E402  (BUSINESS, PREFIX and FULL_NAME only)
 
 ST = "ID"
 NOT_PAYMENTS = {"Encumbrances", "GAAP Expenses", "Loss", "Operating Transfers Out", "Other Financing Uses", "Personnel"}
@@ -152,8 +153,9 @@ def main():
     for p in collections.Counter(r["payee_name"] for r in tx):
         if p in withheld:
             continue
-        base = id_state.PCARD.sub("", p)
-        if common.norm(p) in claimed or common.norm(base) in claimed or id_state.BUSINESS.search(base):
+        base = id_state.PREFIX.sub("", p)
+        if (common.norm(p) in claimed or common.norm(base) in claimed or id_state.BUSINESS.search(base)
+                or common.BUSINESS_WORDS.search(base)):
             continue
         if common.is_person(base) or common.looks_like_person(base) or id_state.FULL_NAME.match(base):
             bad.append(p)
