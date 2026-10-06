@@ -298,7 +298,7 @@ CA-57020,ca_sco_districts,,Clarksburg Fire Protection District,07,exact name,
 CA-39020,ca_sco_districts,,Clements Fire Protection District,07,manual,registry name: Clements Rural Fire Protection District
 CA-49040,ca_sco_districts,,Cloverdale Fire Protection District,07,exact name,
 CA-33020,ca_sco_districts,,Coachella Fire Protection District,07,manual,city-dependent district that funds the city's fire service; City of Coachella's own fire line is not linked
-CA-S-coastside-fire-protection-district,ca_sco_districts,,Coastside Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-41045,ca_sco_districts,,Coastside Fire Protection District,07,manual,"registry name: Half Moon Bay Fire Protection District (same district: Coastside FPD was formed in 2007 from Half Moon Bay FPD and Point Montara FPD, CA-41060; the registry row lists Coastside's website hmbfire.org)"
 CA-53568,ca_sco_districts,,Coffee Creek Fire Protection District,07,manual,registry name: Coffee Creek Volunteer Fire Department
 CA-39075,ca_sco_districts,,Collegeville Fire Protection District,07,exact name,
 CA-41030,ca_sco_districts,,Colma Fire Protection District,07,exact name,
@@ -385,7 +385,7 @@ CA-23100,ca_sco_districts,,Hopland Fire Protection District,07,manual,registry n
 CA-47040,ca_sco_districts,,Hornbrook Fire Protection District,07,manual,registry name: Hornbrook Volunteer Fire District
 CA-50030,ca_sco_districts,,Hughson Fire Protection District,07,exact name,
 CA-12045,ca_sco_districts,,Humboldt Bay Fire,07,manual,registry name: Humboldt Bay Fire Authority
-CA-S-humboldt-fire-protection-district-no-1,ca_sco_districts,,Humboldt Fire Protection District No. 1,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-12050,ca_sco_districts,,Humboldt Fire Protection District No. 1,07,manual,registry name: Humboldt No. 1 Fire Protection District
 CA-33045,ca_sco_districts,,Idyllwild Fire Protection District,07,exact name,
 CA-14025,ca_sco_districts,,Independence Fire Protection District,07,exact name,
 CA-03015,ca_sco_districts,,Jackson Valley Fire Protection District,07,exact name,
@@ -537,7 +537,7 @@ CA-08050,ca_sco_districts,,Smith River Fire Protection District,07,exact name,
 CA-S-sonoma-county-fire-district,ca_sco_districts,,Sonoma County Fire District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
 CA-49200,ca_sco_districts,,Sonoma Valley Fire District,07,manual,"registry name: Sonoma Valley Fire & Rescue Authority, the predecessor JPA the district replaced"
 CA-23040,ca_sco_districts,,South Coast Fire Protection District,07,exact name,
-CA-S-south-lake-county-fire-protection-district,ca_sco_districts,,South Lake County Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-17040,ca_sco_districts,,South Lake County Fire Protection District,07,manual,registry name: South Lake Couny Fire Protection District (spelled so in the registry)
 CA-27155,ca_sco_districts,,South Monterey County Fire Protection District,07,exact name,
 CA-31150,ca_sco_districts,,South Placer Fire Protection District,07,manual,registry name: South Placer Fire District
 CA-39120,ca_sco_districts,,South San Joaquin County Fire Authority,07,exact name,

@@ -96,7 +96,7 @@
   "1": 6,
   "2": 0,
   "3": 584,
-  "4": 339
+  "4": 336
  },
  "agencies": [
   {
@@ -3171,11 +3171,12 @@
    "county": "Humboldt",
    "city": "Eureka",
    "usfa_fdid": "12050",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "ca_sco_districts",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "07",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -4481,11 +4482,12 @@
    "county": "Lake",
    "city": "Middletown",
    "usfa_fdid": "17040",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "ca_sco_districts",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "07",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14079,11 +14081,12 @@
    "county": "San Mateo",
    "city": "Half Moon Bay",
    "usfa_fdid": "41045",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "ca_sco_districts",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "07",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -20624,22 +20627,6 @@
    "grants": 0
   },
   {
-   "id": "CA-S-coastside-fire-protection-district",
-   "state": "CA",
-   "name": "Coastside Fire Protection District",
-   "kind": "Fire district",
-   "county": "San Mateo",
-   "city": "Half Moon Bay",
-   "usfa_fdid": null,
-   "coverage": 3,
-   "sources": [
-    "ca_sco_districts"
-   ],
-   "fy_start": "07",
-   "usfa": null,
-   "grants": 0
-  },
-  {
    "id": "CA-S-crescent-mills-fire-protection-district",
    "state": "CA",
    "name": "Crescent Mills Fire Protection District",
@@ -20902,22 +20889,6 @@
    "kind": "Fire district",
    "county": "San Bernardino",
    "city": "Hesperia",
-   "usfa_fdid": null,
-   "coverage": 3,
-   "sources": [
-    "ca_sco_districts"
-   ],
-   "fy_start": "07",
-   "usfa": null,
-   "grants": 0
-  },
-  {
-   "id": "CA-S-humboldt-fire-protection-district-no-1",
-   "state": "CA",
-   "name": "Humboldt Fire Protection District No. 1",
-   "kind": "Fire district",
-   "county": "Humboldt",
-   "city": "Eureka",
    "usfa_fdid": null,
    "coverage": 3,
    "sources": [
@@ -21414,22 +21385,6 @@
    "kind": "Fire district",
    "county": "Sonoma",
    "city": "Windsor",
-   "usfa_fdid": null,
-   "coverage": 3,
-   "sources": [
-    "ca_sco_districts"
-   ],
-   "fy_start": "07",
-   "usfa": null,
-   "grants": 0
-  },
-  {
-   "id": "CA-S-south-lake-county-fire-protection-district",
-   "state": "CA",
-   "name": "South Lake County Fire Protection District",
-   "kind": "Fire district",
-   "county": "Lake",
-   "city": "Middletown",
    "usfa_fdid": null,
    "coverage": 3,
    "sources": [

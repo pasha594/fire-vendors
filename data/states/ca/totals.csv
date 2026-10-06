@@ -1065,6 +1065,13 @@ CA-12045,2023,Services and Supplies_General,925568.00,ca_sco_districts
 CA-12045,2024,Employee Benefits_General,4371748.00,ca_sco_districts
 CA-12045,2024,Salaries and Wages_General,5792807.00,ca_sco_districts
 CA-12045,2024,Services and Supplies_General,1226716.00,ca_sco_districts
+CA-12050,2021,Capital Outlay_General,8596.00,ca_sco_districts
+CA-12050,2021,Services and Supplies_General,3560084.00,ca_sco_districts
+CA-12050,2022,Capital Outlay_General,84000.00,ca_sco_districts
+CA-12050,2022,Other Expenditures_General,369571.00,ca_sco_districts
+CA-12050,2022,Services and Supplies_General,3571791.00,ca_sco_districts
+CA-12050,2023,Services and Supplies_General,4018138.00,ca_sco_districts
+CA-12050,2024,Services and Supplies_General,4418072.00,ca_sco_districts
 CA-12055,2021,Contributions to Outside Agencies_General,4000.00,ca_sco_districts
 CA-12055,2021,Debt Service / Interest Payments on Long-Term Debt_General,274.00,ca_sco_districts
 CA-12055,2021,Debt Service / Principal Payments on Long-Term Debt_General,7768.00,ca_sco_districts
@@ -1446,6 +1453,22 @@ CA-17025,2024,Debt Service / Other Principal Payments on Long-Term Debt_General,
 CA-17025,2024,Employee Benefits_General,985867.00,ca_sco_districts
 CA-17025,2024,Salaries and Wages_General,1431173.00,ca_sco_districts
 CA-17025,2024,Services and Supplies_General,1090408.00,ca_sco_districts
+CA-17040,2021,Capital Outlay_General,721951.00,ca_sco_districts
+CA-17040,2021,Employee Benefits_General,47052.00,ca_sco_districts
+CA-17040,2021,Salaries and Wages_General,160222.00,ca_sco_districts
+CA-17040,2021,Services and Supplies_General,3093256.00,ca_sco_districts
+CA-17040,2022,Capital Outlay_General,267160.00,ca_sco_districts
+CA-17040,2022,Employee Benefits_General,42981.00,ca_sco_districts
+CA-17040,2022,Salaries and Wages_General,169683.00,ca_sco_districts
+CA-17040,2022,Services and Supplies_General,3625591.00,ca_sco_districts
+CA-17040,2023,Capital Outlay_General,163959.00,ca_sco_districts
+CA-17040,2023,Employee Benefits_General,35446.00,ca_sco_districts
+CA-17040,2023,Salaries and Wages_General,152189.00,ca_sco_districts
+CA-17040,2023,Services and Supplies_General,4810740.00,ca_sco_districts
+CA-17040,2024,Capital Outlay_General,627678.00,ca_sco_districts
+CA-17040,2024,Employee Benefits_General,34631.00,ca_sco_districts
+CA-17040,2024,Salaries and Wages_General,162100.00,ca_sco_districts
+CA-17040,2024,Services and Supplies_General,4970776.00,ca_sco_districts
 CA-17055,2021,Capital Outlay_General,741368.00,ca_sco_districts
 CA-17055,2021,Employee Benefits_General,923103.00,ca_sco_districts
 CA-17055,2021,Salaries and Wages_General,1531677.00,ca_sco_districts
@@ -4115,6 +4138,21 @@ CA-41030,2024,Employee Benefits_General,317484.00,ca_sco_districts
 CA-41030,2024,Other Expenditures_General,188430.00,ca_sco_districts
 CA-41030,2024,Salaries and Wages_General,1017983.00,ca_sco_districts
 CA-41030,2024,Services and Supplies_General,288240.00,ca_sco_districts
+CA-41045,2021,Capital Outlay_General,747169.00,ca_sco_districts
+CA-41045,2021,Employee Benefits_General,1371550.00,ca_sco_districts
+CA-41045,2021,Salaries and Wages_General,13270.00,ca_sco_districts
+CA-41045,2021,Services and Supplies_General,9933138.00,ca_sco_districts
+CA-41045,2022,Capital Outlay_General,454032.00,ca_sco_districts
+CA-41045,2022,Employee Benefits_General,1416101.00,ca_sco_districts
+CA-41045,2022,Salaries and Wages_General,14740.00,ca_sco_districts
+CA-41045,2022,Services and Supplies_General,10841532.00,ca_sco_districts
+CA-41045,2023,Capital Outlay_General,40450.00,ca_sco_districts
+CA-41045,2023,Employee Benefits_General,1477375.00,ca_sco_districts
+CA-41045,2023,Salaries and Wages_General,14405.00,ca_sco_districts
+CA-41045,2023,Services and Supplies_General,10899196.00,ca_sco_districts
+CA-41045,2024,Employee Benefits_General,1625757.00,ca_sco_districts
+CA-41045,2024,Salaries and Wages_General,14367.00,ca_sco_districts
+CA-41045,2024,Services and Supplies_General,11580196.00,ca_sco_districts
 CA-41050,2021,Capital Outlay_Capital Projects,3268382.00,ca_sco_districts
 CA-41050,2021,Capital Outlay_General,1259280.00,ca_sco_districts
 CA-41050,2021,Capital Outlay_Special Revenue,23412.00,ca_sco_districts
@@ -6139,21 +6177,6 @@ CA-S-ceres-fire-protection-district,2021,Services and Supplies_General,88967.00,
 CA-S-ceres-fire-protection-district,2022,Services and Supplies_General,87759.00,ca_sco_districts
 CA-S-ceres-fire-protection-district,2023,Services and Supplies_General,89706.00,ca_sco_districts
 CA-S-ceres-fire-protection-district,2024,Services and Supplies_General,95184.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2021,Capital Outlay_General,747169.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2021,Employee Benefits_General,1371550.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2021,Salaries and Wages_General,13270.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2021,Services and Supplies_General,9933138.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2022,Capital Outlay_General,454032.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2022,Employee Benefits_General,1416101.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2022,Salaries and Wages_General,14740.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2022,Services and Supplies_General,10841532.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2023,Capital Outlay_General,40450.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2023,Employee Benefits_General,1477375.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2023,Salaries and Wages_General,14405.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2023,Services and Supplies_General,10899196.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2024,Employee Benefits_General,1625757.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2024,Salaries and Wages_General,14367.00,ca_sco_districts
-CA-S-coastside-fire-protection-district,2024,Services and Supplies_General,11580196.00,ca_sco_districts
 CA-S-crescent-mills-fire-protection-district,2022,Employee Benefits_General,5816.00,ca_sco_districts
 CA-S-crescent-mills-fire-protection-district,2022,Salaries and Wages_General,3300.00,ca_sco_districts
 CA-S-crescent-mills-fire-protection-district,2022,Services and Supplies_General,25190.00,ca_sco_districts
@@ -6304,13 +6327,6 @@ CA-S-hesperia-fire-protection-district,2021,Employee Benefits_General,975994.00,
 CA-S-hesperia-fire-protection-district,2022,Employee Benefits_General,1007746.00,ca_sco_districts
 CA-S-hesperia-fire-protection-district,2023,Employee Benefits_General,1093205.00,ca_sco_districts
 CA-S-hesperia-fire-protection-district,2024,Employee Benefits_General,937658.00,ca_sco_districts
-CA-S-humboldt-fire-protection-district-no-1,2021,Capital Outlay_General,8596.00,ca_sco_districts
-CA-S-humboldt-fire-protection-district-no-1,2021,Services and Supplies_General,3560084.00,ca_sco_districts
-CA-S-humboldt-fire-protection-district-no-1,2022,Capital Outlay_General,84000.00,ca_sco_districts
-CA-S-humboldt-fire-protection-district-no-1,2022,Other Expenditures_General,369571.00,ca_sco_districts
-CA-S-humboldt-fire-protection-district-no-1,2022,Services and Supplies_General,3571791.00,ca_sco_districts
-CA-S-humboldt-fire-protection-district-no-1,2023,Services and Supplies_General,4018138.00,ca_sco_districts
-CA-S-humboldt-fire-protection-district-no-1,2024,Services and Supplies_General,4418072.00,ca_sco_districts
 CA-S-janesville-fire-protection-district,2021,Capital Outlay_General,14360.00,ca_sco_districts
 CA-S-janesville-fire-protection-district,2021,Debt Service / Interest Payments on Long-Term Debt_General,7356.00,ca_sco_districts
 CA-S-janesville-fire-protection-district,2021,Debt Service / Principal Payments on Long-Term Debt_General,66037.00,ca_sco_districts
@@ -6671,22 +6687,6 @@ CA-S-sonoma-county-fire-district,2024,Employee Benefits_General,7756848.00,ca_sc
 CA-S-sonoma-county-fire-district,2024,General and Administrative Expenses_Other Enterprise Fund,928888.00,ca_sco_districts
 CA-S-sonoma-county-fire-district,2024,Salaries and Wages_General,17314508.00,ca_sco_districts
 CA-S-sonoma-county-fire-district,2024,Services and Supplies_General,5837894.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2021,Capital Outlay_General,721951.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2021,Employee Benefits_General,47052.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2021,Salaries and Wages_General,160222.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2021,Services and Supplies_General,3093256.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2022,Capital Outlay_General,267160.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2022,Employee Benefits_General,42981.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2022,Salaries and Wages_General,169683.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2022,Services and Supplies_General,3625591.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2023,Capital Outlay_General,163959.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2023,Employee Benefits_General,35446.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2023,Salaries and Wages_General,152189.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2023,Services and Supplies_General,4810740.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2024,Capital Outlay_General,627678.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2024,Employee Benefits_General,34631.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2024,Salaries and Wages_General,162100.00,ca_sco_districts
-CA-S-south-lake-county-fire-protection-district,2024,Services and Supplies_General,4970776.00,ca_sco_districts
 CA-S-springlake-fire-protection-district,2021,Other Expenditures_General,542256.00,ca_sco_districts
 CA-S-springlake-fire-protection-district,2021,Services and Supplies_General,12187.00,ca_sco_districts
 CA-S-springlake-fire-protection-district,2022,Other Expenditures_General,562040.00,ca_sco_districts
