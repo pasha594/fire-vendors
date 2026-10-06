@@ -7,8 +7,9 @@ shared with the adapters are config/states/id/agency_sources.csv (the hand-revie
 person-name check, the business-word rule of id_state.payee (BUSINESS, a rule, not a computation). Checks:
   - id_lgr: one total per agency and fiscal year equal to the district's filed actual expenditures, every
     county copy of a multi-county district equal, no row for a null or zero actual
-  - id_state: fetched lines per year equal the control file's non-Personnel line count; payment-category dollars
-    and lines per fiscal year equal the transactions rows
+  - id_state: fetched lines per year equal the control file's non-Personnel line count; after dropping reloaded
+    copies (a line identical but for unique_id and load dates that arrives in a later load batch), payment-category
+    dollars and lines per fiscal year equal the transactions rows
   - every agency_id in the tables, agency_sources.csv and grants exists in agencies.json
   - no duplicate source_record_id within a source; no empty one
   - no payee looks like a private person unless withheld (names that config/vendor_map.csv or
@@ -65,7 +66,7 @@ def expect_state():
     raw = common.latest_raw(ST, "id_state")
     agency = links("id_state")["320-07H"]
     control = json.loads(gzip.decompress((raw / "control.json.gz").read_bytes()))
-    out = collections.defaultdict(lambda: [0, 0])
+    lines = []
     for path in sorted(raw.glob("lines_fy*.json.gz")):
         fy = re.search(r"fy(\d{4})", path.name).group(1)
         d = json.loads(gzip.decompress(path.read_bytes()))
@@ -73,13 +74,25 @@ def expect_state():
         expected = sum(v["lines"] for k, v in control[fy].items() if k != "Personnel")
         assert len(d["rows"]) == expected, f"id_state FY{fy}: {len(d['rows'])} lines, control {expected}"
         assert len({json.dumps(r) for r in d["rows"]}) == len(d["rows"]), f"id_state FY{fy}: a line repeats"
-        for r in d["rows"]:
-            assert r[col["agency_code_function_code"]] == "320-07H" and r[col["account_type"]] == "Expense"
-            if r[col["account_category_0"]] in NOT_PAYMENTS:
-                continue
-            k = (agency, r[col["fiscal_year"]])
-            out[k][0] += round((r[col["amount"]] or 0) * 100)
-            out[k][1] += 1
+        lines += [dict(zip(d["columns"], r)) for r in d["rows"]]
+    # Reloaded copies: same line but for unique_id and load dates, arriving in a later load batch than the first copy.
+    batches = collections.defaultdict(set)
+    for r in lines:
+        key = json.dumps({k: v for k, v in r.items() if k not in ("unique_id", "date_of_load", "zz_extract_date")}, sort_keys=True)
+        batches[key].add((r["date_of_load"] or "", r["zz_extract_date"] or ""))
+    out, dropped = collections.defaultdict(lambda: [0, 0]), 0
+    for r in lines:
+        assert r["agency_code_function_code"] == "320-07H" and r["account_type"] == "Expense"
+        key = json.dumps({k: v for k, v in r.items() if k not in ("unique_id", "date_of_load", "zz_extract_date")}, sort_keys=True)
+        if (r["date_of_load"] or "", r["zz_extract_date"] or "") != min(batches[key]):
+            dropped += 1
+            continue
+        if r["account_category_0"] in NOT_PAYMENTS:
+            continue
+        k = (agency, r["fiscal_year"])
+        out[k][0] += round((r["amount"] or 0) * 100)
+        out[k][1] += 1
+    assert dropped < 0.02 * len(lines), f"id_state: {dropped} reloaded copies, more than 2% of lines"
     return out
 
 

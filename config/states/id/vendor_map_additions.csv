@@ -1,0 +1,337 @@
+name_key,vendor,category,confidence,spend,agencies
+,No vendor named,placeholder,high,2246638.43,1
+2923 W CESSNA,2923 W Cessna LLC (lessor),facilities,low,309066.00,1
+307 TACTICAL FIRE,307 Tactical Fire,wildland,medium,83250.00,1
+310 DUST CONTROL,310 Dust Control,wildland,low,151206.00,1
+A AND A SEPTIC SERVICE,A & A Septic Service,facilities,low,164114.91,1
+AAA THUNDERBOLT FIRE SERVICE,AAA Thunderbolt Fire Service,wildland,medium,72750.00,1
+ADAPTIVE TRAINING OPTIONS,Adaptive Training Options,training,medium,50104.17,1
+ADORAMA,Adorama,it,low,47749.56,1
+ADVENTURE MEDICS,Adventure Medics,professional,low,68517.00,1
+AERO SPRAY,Aero Spray,wildland,medium,12666765.09,1
+AERONAUTICAL TECHNOLOGIES,Aeronautical Technologies,wildland,medium,9480875.86,1
+ALERTWEST,ALERTWest,software,medium,102011.39,1
+ALLEN FIRE,Allen Fire,wildland,medium,104863.47,1
+ALPINE TRANSPORT,Alpine Transport,wildland,low,195999.65,1
+ALTERED ASPECTS,Altered Aspects,wildland,low,221316.00,1
+ALYN,Alyn Corp,training,low,269601.56,1
+AMAZON BOOKS,Amazon,general,high,69010.36,1
+AMERICAN FIRE,American Fire Company,wildland,medium,89600.00,1
+AMERICAN MEDICAL RESPONSE NW,American Medical Response,professional,low,142060.21,1
+AMERICAN ON SITE SERVICES,American On Site Services,facilities,low,102479.95,1
+AMERICAN PIONEERING EXCAVATORS AND DRILL,American Pioneering Excavators and Drill,wildland,low,148500.97,1
+ANCHOR POINT FUELS AND SERVICES,Anchor Point Fuels and Services,wildland,medium,66357.70,1
+ANDYS ARBOR SITE CLEARING,Andys Arbor Site Clearing,wildland,low,247800.00,1
+ARCHER MOUNTAIN ENTERPRISES,Archer Mountain Enterprises,wildland,low,155571.42,1
+AT AND T MOBILITY II,AT&T,telecom,high,116692.06,1
+ATLANTA RURAL FIRE DISTRICT,Atlanta Rural Fire District,government,medium,315572.37,1
+ATTN ACCTS REC,No vendor named,placeholder,low,267126.38,1
+AVISTA,Avista,utilities,high,354802.54,1
+AXCESS FIRE,Axcess Fire,wildland,medium,86000.00,1
+AXSUS ENTERPRISES,Axsus Enterprises,wildland,low,87466.21,1
+BACKCOUNTRY RESPONSE,Backcountry Response,wildland,low,217130.00,1
+BALL AND BALL,Ball & Ball,wildland,low,90866.00,1
+BENNETT LUMBER RPODUCTS,Bennett Lumber Products,wildland,low,72944.00,1
+BEST PRACTICE MEDICINE,Best Practice Medicine,medical-exams,low,313022.29,1
+BIG CEDAR,Big Cedar,wildland,low,659004.75,1
+BIG SKY TEXAS RENTALS,Big Sky Texas Rentals,general,low,149849.92,1
+BLAZETAMER USA,BlazeTamer,wildland,medium,426876.00,1
+BLISS RURAL FIRE DEPARTMENT,Bliss Rural Fire Department,government,medium,852996.73,1
+BOISE CITY FIRE DEPARTMENT,Boise City Fire Department,government,medium,2255950.86,1
+BOISE MOBILE EQUIPMENT,Boise Mobile Equipment,apparatus,high,540842.00,1
+BONNER COUNTY EMS,Bonner County EMS,government,medium,111121.63,1
+BONNEVILLE COUNTY FIRE DISTRICT 1,Bonneville County Fire District 1,government,medium,1160669.27,1
+BOUNDARY VOLUNTEER AMBULANCE SERVICE,Boundary Volunteer Ambulance Service,government,medium,481430.54,1
+BROTHERS FIRE,Brothers Fire,wildland,medium,73812.00,1
+BROWNS LOGGING,Browns Logging,wildland,low,202800.00,1
+BULLDOG ON SITE SERVICES,Bulldog On Site Services,facilities,low,192584.79,1
+BUREAU OF INDIAN AFFAIRS,U.S. Bureau of Indian Affairs,government,high,509649.41,1
+BUREAU OF LAND MANAGEMENT,U.S. Bureau of Land Management,government,high,9949785.93,1
+BUREAU OF RISK MANAGEMENT,Idaho Bureau of Risk Management,government,medium,113020.10,1
+BUSCH DISTRIBUTORS,Busch Distributors,general,low,202686.31,1
+C2M2,C2M2,wildland,low,75200.00,1
+CHAPMAN CONSTRUCTION,Chapman Construction,wildland,low,73800.00,1
+CITY OF AMMON,City of Ammon,government,high,68748.22,1
+CITY OF BELLEVUE,City of Bellevue,government,high,73634.31,1
+CITY OF BLACKFOOT,City of Blackfoot,government,high,592884.35,1
+CITY OF BOISE,City of Boise,government,high,2628475.09,1
+CITY OF BURLEY,City of Burley,government,high,100491.76,1
+CITY OF COEUR D ALENE,City of Coeur d'Alene,government,high,172231.22,1
+CITY OF EMMETT UTILITIES,City of Emmett,government,high,221097.22,1
+CITY OF HAILEY,City of Hailey,government,high,413809.70,1
+CITY OF IDAHO FALLS,City of Idaho Falls,government,high,10034375.88,1
+CITY OF INKOM,City of Inkom,government,high,1394810.68,1
+CITY OF JEROME,City of Jerome,government,high,349394.92,1
+CITY OF KENDRICK,City of Kendrick,government,high,69468.46,1
+CITY OF KETCHUM,City of Ketchum,government,high,701419.81,1
+CITY OF KETCHUM FIRE DEPT,City of Ketchum Fire Dept,government,high,177854.75,1
+CITY OF NAMPA,City of Nampa,government,high,452648.28,1
+CITY OF OROFINO,City of Orofino,government,high,83008.86,1
+CITY OF POCATELLO,City of Pocatello,government,high,3688598.67,1
+CITY OF REXBURG,City of Rexburg,government,high,10669443.74,1
+CITY OF SUN VALLEY,City of Sun Valley,government,high,119207.25,1
+CITY OF TWIN FALLS,City of Twin Falls,government,high,92959.06,1
+CITY OF UCON,City of Ucon,government,high,1938510.96,1
+CLEARWATER FIRE SUPPORT,Clearwater Fire Support,wildland,medium,74175.00,1
+CLEARWATER POTLATCH TIMBER PROTECTIVE,Clearwater-Potlatch Timber Protective Association,government,medium,10927523.49,1
+CM BACKCOUNTRY RENTALS,CM Backcountry Rentals,general,low,341017.24,1
+COBALT TRUCK EQUIPMENT,Cobalt Truck Equipment,fleet,medium,80695.00,1
+COLUMBIA BASIN HELICOPTERS,Columbia Basin Helicopters,wildland,medium,742855.05,1
+COLUMBIA CORRUGATED BOX,Columbia Corrugated Box,general,medium,58339.31,1
+COPPERHEAD CONSULTING,Copperhead Consulting,professional,low,108632.10,1
+CORNWELL ENTERPRISES,Cornwell Enterprises,professional,low,127412.89,1
+CRAIG MOUNTAIN,Craig Mountain,wildland,low,374155.75,1
+CRAIG MOUNTAIN EXCAVATION,Craig Mountain Excavation,wildland,low,131800.00,1
+CREWZERS FIRE CREW TRANSPORT,Crewzers Fire Crew Transport,wildland,medium,79657.39,1
+DANIELS ELECTRONICS,Daniels Electronics,radios,medium,129664.98,1
+DAROLD STANTON LOGGING,Darold Stanton Logging,wildland,low,265660.00,1
+DEARY RURAL FIRE DISTRICT,Deary Rural Fire District,government,medium,282899.06,1
+DEL MONTE MEATS,Del Monte Meats,general,medium,108405.56,1
+DEPT OF CORRECTION,Idaho Department of Correction,government,high,250527.05,1
+DESTINATION MEDIA,Destination Media,professional,low,370808.99,1
+DIGITALPATH,DigitalPath,it,medium,47255.47,1
+DIVISION OF FINANCIAL MANAGEMENT,Idaho Division of Financial Management,government,high,146638.64,1
+DLA HUMAN RESOURCE SERVICES DLA TRAINING,Defense Logistics Agency,government,low,919761.07,1
+DOD FED MALL,DoD FedMall,general,medium,404444.70,1
+DOUGLASS TRUCK BODIES,Douglass Truck Bodies,apparatus,medium,641713.65,1
+DYNAMITE WATER,Dynamite Water,wildland,low,153418.00,1
+E AND M ENTERPRISES,E & M Enterprises,wildland,low,66756.85,1
+EAGLE FIRE PROTECTION DISTRICT,Eagle Fire Protection District,government,medium,1173393.45,1
+EAGLE HELICOPTERS,Eagle Helicopters,wildland,medium,7599031.62,1
+EDUCATIONAL SERVICES,Educational Services,training,low,44751.00,1
+ELITE FIRE SUPPORT,Elite Fire Support,wildland,medium,298705.59,1
+ELK BEND FIRE PROTECTION DISTRICT,Elk Bend Fire Protection District,government,medium,86183.17,1
+EMERGENCY SUPPORT SERVICES,Emergency Support Services,wildland,low,132686.00,1
+ENTERPRISE CAR RENTAL,Enterprise Rent-A-Car,fleet,medium,64255.63,1
+EQUIPMENT TECHNOLOGIES,Equipment Technologies,it,low,106415.00,1
+ESB MANAGEMENT,ESB Management,professional,low,63297.00,1
+ESPRIT ENTERPRISES,Esprit Enterprises,training,low,44440.00,1
+EUGENE WELDERS SUPPLY,Eugene Welders Supply,general,medium,188094.18,1
+EVERGREEN RESOURCE,Evergreen Resource,general,low,128968.70,1
+EXPEDITORS BY LINDALE,Expeditors By Lindale,wildland,low,525106.81,1
+FIRECO,Fireco,wildland,low,146600.00,1
+FIREHOUSE ICE,Firehouse Ice,general,medium,31391.25,1
+FIRST IN RESPONDER TECHNICAL ACADEMY,First In Responder Technical Academy,training,medium,56926.00,1
+FISH AND GAME DEPARTMENT OF,Idaho Department of Fish and Game,government,high,83387.89,1
+FLASHBACK FIRE,Flashback Fire,wildland,low,193796.82,1
+FLETCHER FLYING SERVICE,Fletcher Flying Service,wildland,medium,4537642.00,1
+FOR POST PEND PROCESS ONLY,No vendor named,placeholder,medium,1223.91,1
+FOREST INDUSTRIES RESOURCE AND EQUIPMENT,Forest Industries Resource & Equipment,wildland,low,81000.00,1
+FOUSTS,Fousts,wildland,low,193007.50,1
+FOX CREEK ENTERPRISES,Fox Creek Enterprises,wildland,low,130662.50,1
+FRANCO REFORESTATION,Franco Reforestation,wildland,low,165804.00,1
+FREMONT COUNTY EMS,Fremont County EMS,government,medium,296018.38,1
+FREMONT COUNTY IDAHO,Fremont County Idaho,government,medium,386042.59,1
+FRONT LINE EMS,Front Line EMS,professional,low,178848.78,1
+GENUINE PARTS,NAPA Auto Parts,fleet,medium,59473.40,1
+GERCO,Gerco,wildland,low,159951.31,1
+GLOBAL TRANZ ENTERPRISES,Global Tranz Enterprises,professional,low,141708.35,1
+GOFFS PLUMBING,Goffs Plumbing,facilities,low,236789.04,1
+GOLD SYSTEMS,Gold Systems,it,low,525706.78,1
+GOODING RURAL FIRE DIST,Gooding Rural Fire Dist,government,medium,1810095.66,1
+GOVERNMENT OF YUKON,Government of Yukon,government,high,53738.23,1
+GRAYBACK FORESTRY,Grayback Forestry,wildland,medium,4331220.01,1
+GREAT BASIN FIRE,Great Basin Fire,wildland,medium,106117.33,1
+GREATER SWAN VALLEY FIRE DEPARTMENT,Greater Swan Valley Fire Department,government,medium,865240.70,1
+GREY WILDLAND,Grey Wildland,wildland,medium,123000.00,1
+GRUB BOX,The Grub Box,general,medium,67783.40,1
+H AND E EQUIPMENT SERVICES,H & E Equipment Services,general,low,80408.86,1
+HAGERMAN FIRE PROTECTION DISTRICT,Hagerman Fire Protection District,government,medium,1163892.09,1
+HAHN RENTAL CENTER,Hahn Rental Center,general,low,67563.73,1
+HAHN SUPPLY,Hahn Supply,general,medium,122807.98,1
+HALL MOUNTAIN VOLUNTEER ASSOCIATION,Hall Mountain Volunteer Association,government,medium,128831.01,1
+HANSEN LOGGING,Hansen Logging,wildland,low,114435.60,1
+HAPPY DAY,Happy Day Corporation,general,low,922647.50,1
+HART VENTURES,Hart Ventures,wildland,low,189285.27,1
+HAUSER LAKE FIRE PROTECTION DISTRICT,Hauser Lake Fire Protection District,government,medium,203107.19,1
+HELI 1,Heli 1,wildland,medium,5164437.14,1
+HELIQWEST INTERNATIONAL,HeliQwest International,wildland,medium,2931484.16,1
+HIGH COUNTRY CONTRACTING,High Country Contracting,wildland,low,80442.43,1
+HOLIDAY INN EXPRESS LEWI,Holiday Inn Express,training,medium,28694.99,1
+IC USE ONLY 180 DIVISION OF FINANCIAL MANAGEMENT,Idaho Division of Financial Management,government,high,188131.40,1
+IC USE ONLY 190 MILITARY DIVISION,Idaho Military Division,government,high,192268.79,1
+IC USE ONLY 200 DEPARTMENT OF ADMINISTRATION,Idaho Department of Administration,government,high,372423.79,1
+IC USE ONLY 230 DEPARTMENT OF CORRECTION,Idaho Department of Correction,government,high,737784.61,1
+IC USE ONLY 260 DEPARTMENT OF FISH AND GAME,Idaho Department of Fish & Game,government,high,88616.43,1
+IDAHO HEATSEEKER,Idaho Heatseeker,wildland,low,123868.00,1
+INDIAN VALLEY RURAL FIRE DEPARTMENT,Indian Valley Rural Fire Department,government,medium,65031.66,1
+INDIVIDUAL NAME WITHHELD,Individuals (names withheld),individuals,high,14702852.17,1
+INLAND FIRST AID AND SAFETY,Inland First Aid and Safety,ems-supplies,medium,142622.96,1
+INLAND FOREST MANAGEMENT,Inland Forest Management,wildland,low,2677022.87,1
+IRON HORSE EXCAVATION,Iron Horse Excavation,wildland,low,173631.46,1
+J AND J EXCAVATION,J&J Excavation,wildland,low,339605.85,1
+JACOBS OIL,Jacobs Oil,fleet,medium,85468.88,1
+JDB3,JDB3,wildland,low,245783.00,1
+JEFFERY MILLER EXCAVATING,Jeffery Miller Excavating,wildland,low,99180.00,1
+JOE HESTER LOGGING,Joe Hester Logging,wildland,low,140348.88,1
+JOHNSON CONTROLS,Johnson Controls,facilities,high,121328.42,1
+JR WILDFIRE,JR Wildfire,wildland,medium,98438.72,1
+JULIAETTA VOLUNTEER FIRE DEPARTMENT,Juliaetta Volunteer Fire Department,government,medium,79386.68,1
+KANAK ATTACK CATERING,Kanak Attack Catering,general,medium,297209.00,1
+KEATTS RANCH,Keatts Ranch,wildland,low,284759.00,1
+KELLEY IMAGING SYSTEMS,Kelley Imaging Systems,it,medium,69069.37,1
+KETCHUM FIRE DISTRICT,Ketchum Fire District,government,medium,357501.09,1
+KG AND T SEPTIC,KG&T Septic,facilities,low,460861.61,1
+KINGS THRONES,King's Thrones,facilities,medium,208706.97,1
+KOOTENAI COATINGS AND ACCESSORIES,Kootenai Coatings and Accessories,fleet,low,191910.97,1
+KOOTENAI COUNTY FIRE AND RESCUE,Kootenai County Fire and Rescue,government,medium,1653251.26,1
+L AND S CONSTRUCTION,L & S Construction,wildland,low,165445.00,1
+LATHAN LUERAS ENTERPRISES,Lathan Lueras Enterprises,wildland,low,89661.00,1
+LEAVITT COMMUNICATIONS,Leavitt Communications,radios,medium,328601.76,1
+LES SCHWAB WAREHOUSE CENTER,Les Schwab,fleet,high,62715.18,1
+LHB,LHB,wildland,low,352500.39,1
+LINCOLN COUNTY AMBULANCE DISTRICT NPT193,Lincoln County Ambulance District NPT193,government,medium,64648.58,1
+LINCOLN COUNTY EMS,Lincoln County EMS,government,medium,585623.45,1
+LOOM LAKE FIRE AND RESCUE,Loom Lake Fire and Rescue,wildland,medium,83895.00,1
+LOPEZ LIVESTOCK,Lopez Livestock,wildland,low,49725.51,1
+LUTHERHAVEN MINISTRIES,Lutherhaven Ministries,general,low,157442.22,1
+MADISON COUNTY FIRE PROTECTION DISTRICT,Madison County Fire Protection District,government,medium,1509227.38,1
+MANITO SUPER 1 FOODS,Super 1 Foods,general,high,111115.84,1
+MARK ANDERSON LOGGING,Mark Anderson Logging,wildland,low,68900.96,1
+MARK HARRIS LOGGING,Mark Harris Logging,wildland,low,367175.50,1
+MARK SWANSON LOGGING,Mark Swanson Logging,wildland,low,128430.89,1
+MCCALL FIRE PROTECTION DISTRICT,McCall Fire Protection District,government,medium,267928.89,1
+MCDONALD ROAD CONSTRUCTION,McDonald Road Construction,wildland,low,74475.00,1
+MCLAUGHLIN LOGGING,McLaughlin Logging,wildland,low,66417.43,1
+MCMASTER CARR SUPPLY,McMaster-Carr,general,high,56042.31,1
+MICA KIDD ISLAND FIRE PROTECTION DISTRICT,Mica Kidd Island Fire Protection District,government,medium,177029.58,1
+MILITARY DIVISION,Idaho Military Division,government,high,1132915.46,1
+MILLER ENTERPRISES,Miller Enterprises,general,low,70030.00,1
+MILLER TIMBER SERVICES,Miller Timber Services,wildland,medium,12164784.23,1
+MONTANA DEPARTMENT OF TRANSPORTATION,Montana Department of Transportation,government,medium,475465.20,1
+MOORES QUALITY EARTHMOVING,Moores Quality Earthmoving,wildland,low,106600.00,1
+MOSCOW RURAL FIRE DISTRICT,Moscow Rural Fire District,government,medium,68561.75,1
+MOSQUEDA REFORESTATION,Mosqueda Reforestation,wildland,low,215645.24,1
+MOTION AND FLOW CONTROL PRODUCTS,Motion and Flow Control Products,general,medium,55408.51,1
+MOUNTAIN HOME AUTO RANCH,Mountain Home Auto Ranch,fleet,medium,3505797.39,1
+MOUNTAIN VILLAGE RESORT,Mountain Village Resort,training,low,6717.00,1
+MULLAN VOLUNTEER FIRE DEPARTMENT,Mullan Volunteer Fire Department,government,medium,67440.00,1
+NATIONAL FIRE SUPPORT,National Fire Support,wildland,medium,94150.00,1
+NATIONAL WILDLAND FIRE,National Wildland Fire,wildland,medium,63000.00,1
+NOMADIC LAND CAMPS,Nomadic Land Camps,wildland,low,80027.89,1
+NORTH BANNOCK COUNTY FIRE DISTRICT,North Bannock County Fire District,government,medium,141571.86,1
+NORTH BENCH VOLUNTEER FIRE ASSOCIATION,North Bench Volunteer Fire Association,government,medium,224918.74,1
+NORTH CASSIA RURAL FIRE DISTRICT,North Cassia Rural Fire District,government,medium,315234.64,1
+NORTH IDAHO BLUEPRINT,North Idaho Blueprint,general,medium,39309.00,1
+NORTH IDAHO FIRE,North Idaho Fire,wildland,medium,1629442.69,1
+NORTH WEST TRUCKING,North West Trucking,wildland,low,1029308.98,1
+NORTHERN COLUMBIA REFORESTATION,Northern Columbia Reforestation,wildland,low,97952.85,1
+NORTHERN LAKES FIRE PROTECTIVE DISTRICT,Northern Lakes Fire Protective District,government,medium,160215.17,1
+NORTHERN ROCKIES FIRE EQUIPMENT,Northern Rockies Fire Equipment,fire-equipment,medium,51681.90,1
+NORTHSIDE FIRE DISTRICT,Northside Fire District,government,medium,321412.56,1
+NORTHWEST MANAGEMENT,Northwest Management,professional,low,347925.00,1
+NUTRON NAMEPLATE,Nutron Nameplate,general,low,42670.80,1
+OBRAS,Obras,general,low,178579.30,1
+OES GLOBAL,OES Global,general,low,206800.98,1
+ORORATECH USA,OroraTech,software,medium,150000.00,1
+OUTBACK FIREFIGHTING,Outback Firefighting,wildland,medium,363184.51,1
+OXFORD,Oxford,wildland,low,97346.61,1
+OZARK MEDICS,Ozark Medics,professional,low,85063.46,1
+PA DEPT OF CONSERVATION AND NATURAL RESOUR,Pennsylvania Department of Conservation and Natural Resources,government,high,728117.81,1
+PARADIGM SHIFT ENTERPRISES,Paradigm Shift Enterprises,wildland,low,100133.00,1
+PARADISE VALLEY FIRE DISTRICT,Paradise Valley Fire District,government,medium,202918.86,1
+PARMA RURAL FIRE PROTECTION DISTRICT,Parma Rural Fire Protection District,government,medium,518661.07,1
+PATRICK ENVIRONMENTAL,Patrick Environmental,wildland,medium,13883388.33,1
+PCARD DOD FED MALL,DoD FedMall,general,medium,433401.36,1
+PCARD SMARTSOURCE,SmartSource Computer & Audio Visual Rentals,it,medium,38958.00,1
+PENSKE TRK LSG 070410,Penske Truck Leasing,fleet,high,65572.04,1
+PENSKE TRK LSG 070424,Penske Truck Leasing,fleet,high,323765.85,1
+PENSKE TRUCK LEASING,Penske Truck Leasing,fleet,high,311181.39,1
+PERFECTION TRAFFIC CONTROL,Perfection Traffic Control,wildland,low,73053.10,1
+PERIMETER SOLUTIONS LP,Perimeter Solutions,wildland,high,749700.00,1
+PIERSOLS FLAMECATCHERS,Piersol's Flamecatchers,wildland,medium,149099.80,1
+PINE CREEK LOGGING,Pine Creek Logging,wildland,low,474601.84,1
+PONDEROSA BRASS RAIL,Ponderosa Brass Rail,general,low,109124.15,1
+PRAIRIE POTABLE WATER SERVICES,Prairie Potable Water Services,facilities,low,129402.00,1
+PREMIERE TRUCK ACCESSORIES,Premiere Truck Accessories,fleet,medium,243765.37,1
+PRICHARD MURRAY VOLUNTEER FIRE DEPT,Prichard Murray Volunteer Fire Dept,government,medium,149272.03,1
+PYRAMID PRINTING,Pyramid Printing,general,medium,81596.78,1
+QUALITY DIVERSIFIED SERVICES,Quality Diversified Services,wildland,low,67192.55,1
+QUICK RESPONSE FIRE AND ENVIRONMENTAL,Quick Response Fire & Environmental,wildland,medium,93205.00,1
+RAGAN EQUIPMENT,Ragan Equipment,wildland,low,396305.92,1
+RAY DAY JR LOGGING,Ray Day JR Logging,wildland,low,305995.00,1
+REDACTED,Payee redacted by the State,placeholder,high,11689144.31,1
+RICHARDSON TREE CARE,Richardson Tree Care,wildland,low,131644.94,1
+RICOH USA,Ricoh,it,medium,60225.13,1
+RIVERVIEW CONSTRUCTION,Riverview Construction,wildland,low,108982.50,1
+ROCK CREEK RURAL FIRE DISTRICT,Rock Creek Rural Fire District,government,medium,2631370.78,1
+ROCK CREEK WILDFIRE,Rock Creek Wildfire,wildland,medium,124531.00,1
+ROCKY MOUNTAIN FIRE,Rocky Mountain Fire Company,wildland,medium,321269.21,1
+ROWBERRY TRUCKING,Rowberry Trucking,wildland,low,176296.00,1
+RULE 62 TRANSPORT,Rule 62 Transport,wildland,low,163441.33,1
+S AND D HUCK,S & D Huck,wildland,low,130205.15,1
+SAGLE FIRE DISTRICT,Sagle Fire District,government,medium,1496305.55,1
+SAM OWEN FIRE DISTRICT,Sam Owen Fire District,government,medium,75614.93,1
+SAND HOLLOW FIRE DISTRICT,Sand Hollow Fire District,government,medium,6257281.08,1
+SAVORY BEE,The Savory Bee,general,low,404997.59,1
+SCHOLL FIRE AND FUELS MANAGEMENT,Scholl Fire and Fuels Management,wildland,medium,225959.13,1
+SGS NORTH WEST,SGS North West,wildland,low,805408.13,1
+SHANE CAMPBELL TRUCKING,Shane Campbell Trucking,wildland,low,281853.47,1
+SHELLEY FIRTH FIRE PROTECTION DISTRICT,Shelley Firth Fire Protection District,government,medium,707328.76,1
+SHOSHONE COUNTY,Shoshone County,government,medium,146850.20,1
+SHOSHONE COUNTY FIRE DIST 3,Shoshone County Fire Dist 3,government,medium,65722.50,1
+SHOSHONE COUNTY FIRE PROTECTION DIST 2,Shoshone County Fire Protection Dist 2,government,medium,96919.10,1
+SILVER VALLEY FIRE RESCUE,Silver Valley Fire Rescue,government,low,119106.69,1
+SIMMONS SANITATION AND RECYCLING SERVICE,Simmons SANITATION& Recycling Service,facilities,low,130511.50,1
+SKYLER HURD LOGGING,Skyler Hurd Logging,wildland,low,120201.48,1
+SMARTSOURCE COMPUTER AND AU,SmartSource Computer & Audio Visual Rentals,it,medium,174122.00,1
+SMOKEY MOUNTAIN EXCAVATING,Smokey Mountain Excavating,wildland,low,102200.00,1
+SNYDER BROTHERS LOGGING,Snyder Brothers Logging,wildland,low,79938.50,1
+SOUTH BOUNDARY FIRE PROTECTION DISTRICT,South Boundary Fire Protection District,government,medium,76409.05,1
+SOUTHERN IDAHO TIMBER PROTECTIVE ASSN,Southern Idaho Timber Protective Association,government,medium,5788894.01,1
+SPENCE INDUSTRIAL WILDFIRE,Spence Industrial Wildfire,wildland,medium,114775.59,1
+SPENCER LOGGING,Spencer Logging,wildland,low,64967.00,1
+SPOKANE HOUSE OF HOSE,Spokane House of Hose,fire-equipment,medium,60922.30,1
+SPRINGHILL SUITES BOIS,SpringHill Suites,training,medium,77042.97,1
+SPUR AVIATION SERVICES,Spur Aviation Services LC,wildland,low,90223.23,1
+ST JOE OIL,ST Joe Oil,fleet,medium,69690.30,1
+STAR FIRE PROTECTION DISTRICT,Star Fire Protection District,government,medium,1031941.55,1
+STATE DEPT OF NATURAL RESOURCES,State Dept of Natural Resources,government,high,648114.82,1
+STATE OF ALASKA,State of Alaska,government,high,128864.75,1
+STATE OF COLORADO,State of Colorado,government,high,118371.99,1
+STATE OF SOUTH DAKOTA,State of South Dakota,government,high,77133.82,1
+STATE OF WYOMING,State of Wyoming,government,high,151429.60,1
+STEINBRUECKER LOGGING,Steinbruecker Logging,wildland,low,74180.00,1
+STONE MOUNTAIN FIRE PROTECTION,Stone Mountain Fire Protection,wildland,low,92721.67,1
+SUMMIT CONTRACTING,Summit Contracting,wildland,low,80389.00,1
+SUNNYSIDE RURAL FIRE DISTRICT,Sunnyside Rural Fire District,government,medium,65855.28,1
+SUPER 1 FOODS COUER,Super 1 Foods,general,high,51089.51,1
+SUPER 8 GRANGEVILLE,Super 8,training,medium,23699.95,1
+SUPER 8 MOTELS,Super 8,training,medium,36118.55,1
+SUPERIOR EVENTS,Superior Events,wildland,low,289245.99,1
+SWEDBERG CONTRACTING,Swedberg Contracting,wildland,low,85659.00,1
+TAMMYS ALLIANCE,Tammy's Alliance,general,low,752857.00,1
+TETON COUNTY FIRE PROTECTION DISTRICT,Teton County Fire Protection District,government,medium,4386454.52,1
+TIFCO INDUSTRIES,Tifco Industries,general,low,78301.62,1
+TIMBERLAKE FIRE PROTECTION DISTRICT,Timberlake Fire Protection District,government,medium,187926.68,1
+TIMBERLINE HELICOPTERS,Timberline Helicopters,wildland,low,153260.13,1
+TITAN TRUCK EQUIPMENT,Titan Truck Equipment,fleet,medium,164103.77,1
+TL RANCH,TL Ranch,wildland,low,155575.00,1
+TORCH FIRE AND SECURITY,Torch Fire and Security,wildland,low,1966372.54,1
+TRI STATE FIRE,Tri-State Fire,wildland,low,71910.40,1
+UNITED STATES DEPT OF INTERIOR,U.S. Department of the Interior,government,high,847020.12,1
+UPPER VALLEY CONTRACTING,Upper Valley Contracting,wildland,low,118196.80,1
+US BANK NATIONAL ASSOCIATION PCARD,U.S. Bank,finance,high,3474467.59,1
+US DEPARTMENT OF INTERIOR,U.S. Department of the Interior,government,high,105452.58,1
+US DEPT OF AGRICULTURE,U.S. Department of Agriculture (Forest Service),government,high,46704948.64,1
+VERIZON WIRELESS SERVICES,Verizon,telecom,high,308166.72,1
+WASTE MANAGEMENT OF IDAHO,Waste Management,utilities,high,76377.98,1
+WATERAX,Waterax,wildland,high,569043.35,1
+WATERBOYZ911,WATERBOYZ911,wildland,low,81299.00,1
+WAYBACK,Wayback,wildland,low,290187.86,1
+WEISER AREA RURAL FIRE DISTRICT,Weiser Area Rural Fire District,government,medium,328553.28,1
+WELCH BROS,Welch Bros,wildland,low,141825.00,1
+WEST PEND OREILLE FIRE DISTRICT,West Pend Oreille Fire District,government,medium,64985.54,1
+WESTERN STATES EMERGENCY EQUIPMENT,Western States Emergency Equipment,fire-equipment,medium,48870.00,1
+WESTERN TRAILERS,Western Trailers,fleet,medium,198097.46,1
+WEXBANK,WEX,fleet,high,1883313.88,1
+WHITE CLOUD COMMUNICATION,White Cloud Communications,radios,medium,81311.60,1
+WHITE CLOUD COMMUNICATIONS,White Cloud Communications,radios,medium,98692.03,1
+WILDERNESS MEDICS,Wilderness Medics,professional,low,395468.44,1
+WILDFIRE RESOURCES AND SERVICES,Wildfire Resources & Services,wildland,medium,84913.56,1
+WILLIAM LOWRY AND SON TRUCKING,William Lowry & Son Trucking,wildland,low,232613.44,1
+WORLEY FIRE PROTECTION DISTRICT,Worley Fire Protection District,government,medium,1120318.19,1
+WW GRAINGER,Grainger,general,high,124800.85,1
+WW TRANSPORT,WW Transport,wildland,low,297990.00,1
+YABOY FIRE,Yaboy Fire,wildland,medium,81200.00,1
+ZETRON,Zetron,radios,medium,68602.50,1
