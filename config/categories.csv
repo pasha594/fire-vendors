@@ -1,34 +1,34 @@
-id,name,group,purchasing
-apparatus,Fire apparatus (sales and service),Apparatus and vehicles,yes
-ambulance,Ambulances,Apparatus and vehicles,yes
-fleet,"Fleet vehicles, fuel and parts",Apparatus and vehicles,yes
-fire-equipment,"Fire equipment distributors (hose, tools, PPE, SCBA)",Firefighter equipment,yes
-ppe,Turnouts and PPE,Firefighter equipment,yes
-scba,SCBA and breathing air,Firefighter equipment,yes
-wildland,Wildland equipment,Firefighter equipment,yes
-ems-equipment,"EMS equipment (monitors, stretchers, CPR devices)",EMS,yes
-ems-supplies,Medical supplies and oxygen,EMS,yes
-ems-billing,Ambulance billing,EMS,yes
-radios,Radios and communications equipment,Communications and technology,yes
-dispatch,Dispatch services,Communications and technology,yes
-rms,"Records, ePCR and CAD software",Communications and technology,yes
-staffing-software,Scheduling and staffing software,Communications and technology,yes
-training-software,"Training, policy and compliance software",Communications and technology,yes
-software,Other software,Communications and technology,yes
-it,IT hardware and services,Communications and technology,yes
-telecom,Phone and internet,Communications and technology,yes
-construction,Station construction and design,Facilities,yes
-facilities,Facility maintenance and supplies,Facilities,yes
-utilities,Utilities,Facilities,yes
-uniforms,Uniforms and station wear,Services and supplies,yes
-training,"Training, conferences, travel and dues",Services and supplies,yes
-medical-exams,Medical exams and wellness,Services and supplies,yes
-professional,"Professional services (legal, audit, HR, consulting)",Services and supplies,yes
-insurance,"Insurance (liability, property, workers' comp)",Services and supplies,yes
-general,General supplies and retail,Services and supplies,yes
-unclassified,Unclassified,Unclassified,yes
-payroll,"Payroll, benefits and taxes",Not purchasing,no
-finance,"Debt, banking and card payments",Not purchasing,no
-government,Payments to other governments,Not purchasing,no
-placeholder,No vendor named,Not purchasing,no
-individuals,Individuals (names withheld),Not purchasing,no
+id,name,group,purchasing,note,ael,ael_title,ael_url
+apparatus,Fire apparatus (sales and service),Apparatus and vehicles,yes,,,,
+ambulance,Ambulances,Apparatus and vehicles,yes,,,,
+fleet,"Fleet vehicles, fuel and parts",Apparatus and vehicles,yes,,,,
+fire-equipment,"Fire equipment distributors (hose, tools, PPE, SCBA)",Firefighter equipment,yes,,"03SR-02-TPHY, 03OE-02-TILA, 03SF-01-FOMA","Hydraulic rescue tools, thermal imagers, firefighting foam",https://www.fema.gov/grants/tools/authorized-equipment-list/03sr-02-tphy
+ppe,Turnouts and PPE,Firefighter equipment,yes,"Most turnout gear is bought through fire equipment distributors (L.N. Curtis & Sons, Municipal Emergency Services, Sea-Western, Weidner Fire); those payments are under Fire equipment distributors.","01SF-01-GARM, -HLMT, -GLOV, -FTWR, -HOOD","Structural firefighting garments, helmets, gloves, footwear, hoods",https://www.fema.gov/grants/tools/authorized-equipment-list/01sf-01-garm
+scba,SCBA and breathing air,Firefighter equipment,yes,"Most SCBA is bought through fire equipment distributors (L.N. Curtis & Sons, Municipal Emergency Services, Sea-Western, Weidner Fire); those payments are under Fire equipment distributors.","01AR-01-SCBA, 01ZA-01-PASS, 19GN-00-COMP","SCBA (CBRN), PASS devices, breathing air compressors",https://www.fema.gov/grants/tools/authorized-equipment-list/01ar-01-scba
+wildland,Wildland equipment,Firefighter equipment,yes,,01WF-01-GARM and other 01WF items,"Wildland firefighting PPE, chainsaws and tools",https://www.fema.gov/grants/tools/authorized-equipment-list/01wf-01-garm
+ems-equipment,"EMS equipment (monitors, stretchers, CPR devices)",EMS,yes,,"09ME-03-DEMP, 09ME-03-MCCD, 09ME-05-LITR","Cardiac monitors and AEDs, chest compression devices, stretchers",https://www.fema.gov/grants/tools/authorized-equipment-list/09me-03-demp
+ems-supplies,Medical supplies and oxygen,EMS,yes,,"09MS-02-OXYA, 09MS-04-BAND, 09MS-05-IVSA","Oxygen, bandages and IV supplies",https://www.fema.gov/grants/tools/authorized-equipment-list/09ms-02-oxya
+ems-billing,Ambulance billing,EMS,yes,,,,
+radios,Radios and communications equipment,Communications and technology,yes,,"06CP-01-PORT, 06CP-01-MOBL, 06CP-01-REPT","Portable, mobile and base radios, repeaters",https://www.fema.gov/grants/tools/authorized-equipment-list/06cp-01-port
+dispatch,Dispatch services,Communications and technology,yes,,,,
+rms,"Records, ePCR and CAD software",Communications and technology,yes,,"04AP-01-CADS, 04AP-11-SAAS","Computer-aided dispatch systems, software as a service",https://www.fema.gov/grants/tools/authorized-equipment-list/04ap-01-cads
+staffing-software,Scheduling and staffing software,Communications and technology,yes,,,,
+training-software,"Training, policy and compliance software",Communications and technology,yes,,,,
+software,Other software,Communications and technology,yes,,04AP-11-SAAS,Software as a service,https://www.fema.gov/grants/tools/authorized-equipment-list/04ap-11-saas
+it,IT hardware and services,Communications and technology,yes,,"04HW-01-INHW, 04HW-01-MOBL","Computer hardware, mobile data computers",https://www.fema.gov/grants/tools/authorized-equipment-list/04hw-01-inhw
+telecom,Phone and internet,Communications and technology,yes,,,,
+construction,Station construction and design,Facilities,yes,,,,
+facilities,Facility maintenance and supplies,Facilities,yes,,,,
+utilities,Utilities,Facilities,yes,,,,
+uniforms,Uniforms and station wear,Services and supplies,yes,,,,
+training,"Training, conferences, travel and dues",Services and supplies,yes,,,,
+medical-exams,Medical exams and wellness,Services and supplies,yes,,,,
+professional,"Professional services (legal, audit, HR, consulting)",Services and supplies,yes,,,,
+insurance,"Insurance (liability, property, workers' comp)",Services and supplies,yes,,,,
+general,General supplies and retail,Services and supplies,yes,,,,
+unclassified,Unclassified,Unclassified,yes,,,,
+payroll,"Payroll, benefits and taxes",Not purchasing,no,,,,
+finance,"Debt, banking and card payments",Not purchasing,no,,,,
+government,Payments to other governments,Not purchasing,no,,,,
+placeholder,No vendor named,Not purchasing,no,,,,
+individuals,Individuals (names withheld),Not purchasing,no,,,,

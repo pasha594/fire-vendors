@@ -90,17 +90,20 @@ ul.plain { margin: 4px 0; padding-left: 18px; }
 .search label { font-weight: 600; margin-right: 6px; }
 #results:empty { display: none; }
 .filters { margin: 6px 0; padding: 0; list-style: none; font-size: .9rem; }
-.filters li { display: inline; margin-right: 14px; }
+.filters li { display: inline-block; margin-right: 16px; }
 
 /* Tables */
 .tbl { margin-top: 26px; }
+.gsub { font-weight: 400; }
 .thead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; margin-bottom: 6px; }
 .tw { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: .875rem; }
-th, td { padding: 4px 8px; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+th, td { padding: 4px 8px; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: top; overflow-wrap: break-word; }
 thead th { border-bottom: 1px solid var(--rule-strong); font-weight: 600; vertical-align: bottom; overflow-wrap: normal; }
 tbody th { font-weight: 400; min-width: 10em; }
+.nw { white-space: nowrap; }
 .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; overflow-wrap: normal; }
+thead th.num { white-space: normal; }
 tr.grp th, tr.grp td { background: var(--shade); font-weight: 600; }
 tfoot th, tfoot td { border-top: 1px solid var(--rule-strong); border-bottom: 0; font-weight: 600; }
 button.sort {
@@ -407,7 +410,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ESC[c]);
   const enc = encodeURIComponent;
   const int = v => nf.format(v);
-  const pct = v => (v * 100).toFixed(1) + '%';
+  const pct = v => (v > 0 && v < 0.0005 ? '<0.1%' : (v * 100).toFixed(1) + '%');
   function money(v) {
     const r = Math.round(v);
     if (r === 0) return '$0';
@@ -514,44 +517,54 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     return out;
   }
   function cell(c, inner, header) {
-    const cls = c && c.num ? ' class="num"' : '';
+    const cls = c && c.num ? ' class="num"' : c && c.nw ? ' class="nw"' : '';
     return header ? '<th scope="row"' + cls + '>' + inner + '</th>' : '<td' + cls + '>' + inner + '</td>';
   }
   function tableInner(t) {
     const st = TSTATE[t.id] || (TSTATE[t.id] = {});
     const spec = sortSpec(t);
     const [pc, pd] = spec[0];
-    const ncols = t.cols.length;
+    // Columns marked hidden are left out of the page (a group header shows them) but kept in the CSV
+    const vis = t.cols.map((c, i) => [c, i]).filter(([c]) => !c.hidden);
+    const ncols = vis.length;
     const nrows = t.rows.length;
-    const limit = st.all ? Infinity : PAGE;
+    // Grouped tables with a cap show the first rows of every group; others show the first PAGE rows
+    const cap = st.all || !t.group || !t.group.cap ? Infinity : t.group.cap;
+    const limit = st.all || cap < Infinity ? Infinity : PAGE;
     let h = '<div class="thead"><h2 id="h-' + t.id + '">' + esc(t.title) + '</h2>';
     h += '<button type="button" class="btn" data-csv="' + t.id + '">Download CSV</button></div>';
+    if (t.intro) h += t.intro;
     h += '<div class="tw" tabindex="0" role="region" aria-labelledby="h-' + t.id + '"><table>';
     h += '<thead><tr>';
-    t.cols.forEach((c, i) => {
+    for (const [c, i] of vis) {
       const cls = c.num ? ' class="num"' : '';
-      if (c.nosort) { h += '<th scope="col"' + cls + '>' + esc(c.label) + '</th>'; return; }
+      if (c.nosort) { h += '<th scope="col"' + cls + '>' + esc(c.label) + '</th>'; continue; }
       const s = i === pc ? (pd === 'asc' ? 'ascending' : 'descending') : '';
       h += '<th scope="col"' + cls + (s ? ' aria-sort="' + s + '"' : '') + '>' +
         '<button type="button" class="sort" data-t="' + t.id + '" data-c="' + i + '">' + esc(c.label) +
-        '<span class="ar" aria-hidden="true">' + (s ? (pd === 'asc' ? '↑' : '↓') : '') + '</span></button></th>';
-    });
+        '<span class="ar" aria-hidden="true">' + (s ? (pd === 'asc' ? '\u2191' : '\u2193') : '') + '</span></button></th>';
+    }
     h += '</tr></thead>';
+    // cells: one html string per visible column; the first is a header cell when scope is given
+    const line = (cells, scope, cls) => '<tr' + (cls ? ' class="' + cls + '"' : '') + '>' + cells.map((x, j) =>
+      (j === 0 && scope) ? '<th scope="' + scope + '"' + (vis[0][0].num ? ' class="num"' : '') + '>' + x + '</th>' : cell(vis[j][0], x)).join('') + '</tr>';
+    const rowHtml = r => '<tr>' + vis.map(([c]) => cell(c, c.html ? c.html(r) : esc(c.val(r)), c.th)).join('') + '</tr>';
     let shown = 0;
-    const rowHtml = (r, blankCol) => '<tr>' + t.cols.map((c, i) =>
-      cell(c, i === blankCol ? '' : (c.html ? c.html(r) : esc(c.val(r))), c.th)).join('') + '</tr>';
     const sorted = sortedRows(t);
     if (t.group) {
       for (const [k, rs] of sorted) {
-        if (!rs.length && !t.group.showEmpty) continue;
+        if (!rs.length) continue;
         if (shown >= limit) break;
-        const head = t.group.head(k, rs);
-        h += '<tbody><tr class="grp">' + head.map((x, i) =>
-          i === 0 ? '<th scope="rowgroup" colspan="' + (t.group.span || 1) + '">' + x + '</th>' : cell(t.cols[i + (t.group.span || 1) - 1], x)).join('') + '</tr>';
+        h += '<tbody>' + line(t.group.head(k, rs), 'rowgroup', 'grp');
+        let n = 0;
         for (const r of rs) {
-          if (shown >= limit) break;
-          h += rowHtml(r, t.group.col);
+          if (shown >= limit || n >= cap) break;
+          h += rowHtml(r);
           shown++;
+          n++;
+        }
+        if (n < rs.length && shown < limit) {
+          h += '<tr><td class="muted" colspan="' + ncols + '">' + int(rs.length - n) + ' more' + (t.group.noun ? ' ' + t.group.noun : '') + '</td></tr>';
         }
         h += '</tbody>';
       }
@@ -565,13 +578,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       h += '</tbody>';
     }
     if (!nrows) h += '<tbody><tr><td class="empty" colspan="' + ncols + '">No rows match the current filters.</td></tr></tbody>';
-    if (t.foot && nrows) {
-      h += '<tfoot>' + t.foot.map(fr => '<tr>' + fr.map((x, i) => cell(t.cols[i], x, i === 0)).join('') + '</tr>').join('') + '</tfoot>';
-    }
+    if (t.foot && nrows) h += '<tfoot>' + t.foot.map(fr => line(fr, 'row')).join('') + '</tfoot>';
     h += '</table></div>';
     if (nrows > shown) {
       h += '<p class="more"><button type="button" class="btn" data-all="' + t.id + '">Show all ' + int(nrows) + '</button> ' +
-        '<span class="muted">Showing the first ' + int(shown) + '.</span></p>';
+        '<span class="muted">Showing ' + (cap < Infinity ? 'the top ' + cap + ' in each group' : 'the first ' + int(shown)) + '.</span></p>';
     }
     return h;
   }
@@ -764,9 +775,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     h += '<p class="muted">' + esc(c.group) + (c.purchasing === 'no' ? '. Not counted as purchasing.' : '') + '</p>';
     h += '<p>' + R(f, money(m.sum.spend)) + ' paid to ' + R(f, plural(m.sum.ve.size, 'vendor', 'vendors')) + ' by ' +
       R(f, int(m.sum.ag.size)) + ' of ' + plural(m.peers.size, 'agency', 'agencies') + ', ' + esc(yearSpan(G)) + '.</p>';
+    if (c.note) h += '<p class="note">' + esc(c.note) + '</p>';
     if (c.ael) {
-      const label = esc(c.ael) + (c.ael_title ? ' ' + esc(c.ael_title) : '');
-      h += '<p>FEMA Authorized Equipment List: ' + A(c.ael_url || LINKS.ael, label) + '</p>';
+      const label = esc(c.ael) + (c.ael_title ? ': ' + esc(c.ael_title) : '');
+      h += '<p>FEMA Authorized Equipment List: ' + A(c.ael_url || LINKS.ael, label) +
+        '. <span class="muted">The list governs Homeland Security Grant Program awards, not AFG; FEMA limits many fire and medical items to surge or CBRN use.</span></p>';
     }
     if (id === 'unclassified') h += '<p class="note">These vendors did not match the vendor map or any keyword rule. See About.</p>';
 
@@ -875,7 +888,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       id: 'ag-b', title: 'Total expenses', file: 'agency-' + id + '-expenses',
       rows: years.map(y => ({ y, v: a.budget[y] })),
       cols: [
-        { label: 'Fiscal year', val: r => r.y, html: r => esc(fy(r.y)) },
+        { label: 'Fiscal year', nw: true, val: r => r.y, html: r => esc(fy(r.y)) },
         { label: 'Total expenses', num: true, val: r => r.v, html: r => money(r.v) },
       ],
       sort: [[0, 'asc']],
@@ -885,29 +898,29 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         esc(ix.meta.raw_path + '/transparent_utah/expense_categories/' + id + '.json.gz')) + '</p>';
 
     // Vendor payments, grouped by category
-    h += '<p>' + R(f, money(m.sum.spend)) + ' paid to ' + R(f, plural(m.sum.ve.size, 'vendor', 'vendors')) + ', ' + esc(yearSpan(G)) +
-      (G.np ? ', all payments.' : ', purchasing categories.') + '</p>';
     const vf = o => ({ agency: id, vendor: V()[o.key].id });
     h += table({
       id: 'ag-v', title: 'Vendors by category', file: 'agency-' + id + '-vendors',
+      intro: '<p>' + R(f, money(m.sum.spend)) + ' paid to ' + R(f, plural(m.sum.ve.size, 'vendor', 'vendors')) + ', ' + esc(yearSpan(G)) +
+        (G.np ? ', all payments.' : ', purchasing categories.') + '</p>',
       rows: [...m.byVendor.values()],
       cols: [
-        { label: 'Category', nosort: true, val: o => ix.cat.get(ix.vcat[o.key]).name },
+        { label: 'Category', hidden: true, val: o => ix.cat.get(ix.vcat[o.key]).name },
         { label: 'Vendor', th: true, val: o => V()[o.key].name, html: o => venLink(o.key) },
         { label: 'Spend', num: true, val: o => o.spend, html: o => R(vf(o), money(o.spend)) },
         lastCol(vf),
       ],
       sort: [[2, 'desc'], [1, 'asc']],
       group: {
-        key: o => ix.vcat[o.key], col: 0,
+        key: o => ix.vcat[o.key], cap: 5, noun: 'vendors',
         order: ix.D.categories.map(c => c.id),
         head: (k) => {
           const c = m.byCat.get(k);
           const cf = { agency: id, cat: k };
-          return [catLink(k), R(cf, plural(c.ve.size, 'vendor', 'vendors')), R(cf, money(c.spend)), ''];
+          return [catLink(k) + '<span class="gsub">, ' + R(cf, plural(c.ve.size, 'vendor', 'vendors')) + '</span>', R(cf, money(c.spend)), ''];
         },
       },
-      foot: [['Total', R(f, plural(m.sum.ve.size, 'vendor', 'vendors')), R(f, money(m.sum.spend)), '']],
+      foot: [['Total, ' + R(f, plural(m.sum.ve.size, 'vendor', 'vendors')), R(f, money(m.sum.spend)), '']],
     });
     h += '<p class="note">Source: ' + A(ix.meta.transparent_utah, 'Transparent Utah') + ' vendor payments. Raw file: ' +
       A(rawVendorFile(id), esc(ix.meta.raw_path + '/transparent_utah/vendors/' + id + '.json.gz')) + '</p>';
@@ -922,7 +935,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         cols: [
           { label: 'Year', val: g => g.year },
           { label: 'Program', val: g => g.program },
-          { label: 'Award number', val: g => g.award },
+          { label: 'Award number', nw: true, val: g => g.award },
           { label: 'Amount', num: true, val: g => g.amount, html: g => money(g.amount) },
         ],
         sort: [[0, 'desc'], [2, 'asc']],
@@ -979,7 +992,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     }
     const scope = [];
     scope.push(f.year ? 'Fiscal year ' + fy(f.year) + ' (overrides the year range)' : 'Fiscal years ' + yearSpan(G));
-    scope.push(f.agency ? 'Agency filters do not apply when one agency is selected' : 'Agencies: ' + peerNote(Core.peerIds(ix, G)));
+    scope.push(f.agency ? 'Agency filters do not apply when one agency is selected' : 'Agencies: ' + int(Core.peerIds(ix, G).size) + ' of ' + int(ix.D.agencies.length));
     if (!G.np && !f.cat && !f.group && !f.purch && !f.vendor) scope.push('Purchasing categories only');
     h += '<p class="note">' + scope.map(esc).join('. ') + '.</p>';
     h += '<p>' + plural(m.rows.length, 'row', 'rows') + '. Net total ' + money(m.sum.spend) + '. ' +
@@ -989,7 +1002,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       rows: m.rows,
       cols: [
         { label: 'Agency', val: r => ix.agency.get(r[0]).name, html: r => agLink(r[0]) },
-        { label: 'Fiscal year', val: r => r[2], html: r => 'FY' + r[2] + (ix.partial.has(r[2]) ? ' (partial)' : '') },
+        { label: 'Fiscal year', nw: true, val: r => r[2], html: r => 'FY' + r[2] + (ix.partial.has(r[2]) ? ' (partial)' : '') },
         { label: 'Payee as reported', th: true, val: r => (r[4] < 0 ? 'Name withheld' : ix.D.aliases[r[4]]) },
         { label: 'Vendor', val: r => V()[r[1]].name, html: r => venLink(r[1]) },
         { label: 'Category', val: r => ix.cat.get(ix.vcat[r[1]]).name, html: r => catLink(ix.vcat[r[1]]) },
@@ -1015,7 +1028,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const gh = p => A(BLOB + p, esc(p));
     let h = '<div class="prose"><h1 tabindex="-1">About</h1>';
     h += '<p>This prototype shows what Utah fire districts and interlocal fire agencies paid to vendors. It is for a fire chief or purchasing officer who wants to see, for one kind of purchase, which vendors similar agencies use, how many agencies use each, and what they spend.</p>';
-    h += '<p>Every total links to the source rows behind it. Each source row links to the raw file it came from.</p>';
+    h += '<p>Every total links to the source rows behind it. The source rows view links to the raw file for each agency.</p>';
     h += '<h2>Sources</h2><ul>';
     h += '<li>' + A(LINKS.tu, 'Transparent Utah') + ': vendor payments and total expenses for ' + int(meta.counts.agencies) + ' agencies, FY' + meta.years[0] + ' to FY' + meta.years[meta.years.length - 1] + '. Fetched ' + esc(meta.fetched) + '. Raw files: ' + A(REPO + '/tree/main/' + meta.raw_path, esc(meta.raw_path)) + '.</li>';
     h += '<li>' + A(LINKS.usfa, 'USFA National Fire Department Registry') + ': department type, stations and firefighter counts.</li>';
@@ -1042,7 +1055,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     h += '<li>FY' + (meta.partial_years || []).join(', FY') + ' is partly reported.</li>';
     h += '<li>Names of people paid by agencies are withheld.</li>';
     h += '<li>The USFA registry is self-reported and some agencies are missing from it.</li>';
-    h += '<li>Some agencies pay others: a taxing service area may fund an operating agency, so the same money can appear twice under Payments to other governments.</li>';
+    h += '<li>Some agencies fund others. For example, Unified Fire Service Area pays Unified Fire Authority. Those transfers are under Payments to other governments, which is not counted as purchasing.</li>';
     h += '</ul>';
     h += '<h2>Code</h2><p>' + A(REPO, 'github.com/pasha594/utah-fire-procurement') + '. Data built ' + esc(meta.built) + '.</p>';
     h += '</div>';

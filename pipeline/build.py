@@ -6,6 +6,7 @@
 Rules for vendors, in order:
   1. config/vendor_map.csv     normalized name -> canonical vendor name and category
   2. config/keyword_rules.csv  first regex that matches the normalized name sets the category
+                               (and the vendor name, when the rule has one)
   3. otherwise                 "unclassified"
 Payees that look like a person ("Last, First") are grouped as "Individuals (names withheld)".
 """
@@ -65,7 +66,8 @@ def is_person(raw):
 
 def looks_like_person(raw):
     """'NICK MOTTA'-style names. Only used for payees that no vendor_map row or keyword rule claims."""
-    raw = (raw or "").strip()
+    raw = re.sub(r"\(.*?\)|[*#0-9]", " ", raw or "")  # "NOLAN CURTIS (rent)", "MONTE CURTIS*"
+    raw = " ".join(raw.split())
     return bool(PERSON_NO_COMMA.match(raw)) and not BUSINESS_WORDS.search(raw)
 
 
@@ -83,8 +85,9 @@ def main(worklist_path=None):
     tu = raw / "transparent_utah"
     categories = read_csv("categories.csv")
     cat_ids = {c["id"] for c in categories}
-    rules = [(r["category"], re.compile(r["pattern"])) for r in read_csv("keyword_rules.csv")]
-    for c, _ in rules:
+    rules = [(r["category"], re.compile(r["pattern"]), (r.get("vendor") or "").strip())
+             for r in read_csv("keyword_rules.csv")]
+    for c, _, _ in rules:
         assert c in cat_ids, f"keyword_rules.csv: unknown category {c}"
     vendor_map = {}
     for r in read_csv("vendor_map.csv"):
@@ -154,9 +157,9 @@ def main(worklist_path=None):
         if k in vendor_map:
             return vendor_map[k][0], vendor_map[k][1], "map"
         display = key_names[k].most_common(1)[0][0].strip()
-        for cat, rx in rules:
+        for cat, rx, vendor in rules:
             if rx.search(k):
-                return display, cat, "rule"
+                return vendor or display, cat, "rule"
         return display, "unclassified", "none"
 
     def in_worklist(k):  # payees big enough to be reviewed one by one in config/vendor_map.csv
