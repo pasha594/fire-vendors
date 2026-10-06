@@ -307,3 +307,4 @@ payroll,^US DEPARTMENT OF (THE )?TREASURY$,U.S. Department of the Treasury,Treas
 ems-equipment,^PHYSIO ?CONTROL\b,Stryker,Physio-Control is part of Stryker
 ems-equipment,^(PURCHASE \d\d \d\d )?FERNO\b,Ferno,Ferno spellings
 utilities,^DOMINION ENERGY\b,Enbridge Gas,Dominion Energy Utah became Enbridge Gas Utah
+general,^MURDOCHS?\b,Murdoch's Ranch & Home Supply,Murdoch's spellings

@@ -59,6 +59,33 @@ def norm(name):
     return " ".join(s.split())
 
 
+def fix_mojibake(s):
+    """Undo UTF-8 text that was decoded as Windows-1252, possibly more than once ("Â·" -> "·")."""
+    for _ in range(4):
+        if not re.search(r"[ÃÂâ]", s):
+            break
+        try:
+            s = s.encode("cp1252").decode("utf-8")
+        except UnicodeError:
+            break
+    return s
+
+
+def clean_payee(raw):
+    s = fix_mojibake(html.unescape(raw or ""))
+    s = re.sub(r"(?<=[A-Za-z])[ÃÂâ][^\sA-Za-z]*(?=s\b)", "'", s)  # unrecoverable debris before a possessive s
+    s = re.sub(r"[ÃÂ][^\sA-Za-z]*", " ", s)
+    return " ".join(s.split())
+
+
+def clean_label(raw):
+    """Account names: drop the leading account number and any separator, repair encoding."""
+    s = fix_mojibake(html.unescape(raw or ""))
+    s = re.sub(r"^\s*\d[\d.]*\s*[^A-Za-z0-9(]*\s*", "", s)
+    s = re.sub(r"\s*[ÃÂ][^\sA-Za-z]*\s*", " ", s)
+    return " ".join(s.split()) or (raw or "").strip()
+
+
 PERSON_NO_COMMA = re.compile(r"^[A-Za-z'\-]{2,}( [A-Za-z]\.?)? [A-Za-z'\-]{2,}$")
 
 
@@ -80,7 +107,8 @@ def slug(s):
 
 def staff_by_year(tu, tid):
     """People paid, wages and benefits per fiscal year from the compensation files.
-    A person is one employee number in a year's file; their title is the title on their largest pay line."""
+    A person is one employee number with wages in a year's file; their title is the title on their largest
+    wage line. Benefits are employer-paid only; reimbursements and employee-paid deductions are left out."""
     out = {}
     for year in YEARS:
         path = tu / "compensation" / str(tid) / f"{year}.json.gz"
@@ -91,13 +119,19 @@ def staff_by_year(tu, tid):
         wages = benefits = 0.0
         for r in json.loads(read_gz(path)):
             amount = r["net_amount"] or 0
-            if "benefit" in (r.get("cat1") or "").lower():
-                benefits += amount
-            else:
+            kind = " ".join(r.get(f) or "" for f in ("cat1", "cat2", "description")).lower()
+            if "reimb" in kind:
+                continue
+            if re.search(r"wage|compensation|salar|paid leave|payroll", kind):
                 wages += amount
-            pay[r["employee"]] += amount
-            if amount > top_line.get(r["employee"], (0, ""))[0]:
-                top_line[r["employee"]] = (amount, (r.get("title") or "").strip() or "No title")
+                pay[r["employee"]] += amount
+                if amount > top_line.get(r["employee"], (0, ""))[0]:
+                    title = " ".join(fix_mojibake(r.get("title") or "").split())
+                    title = re.sub(r"^(?=[A-Z0-9]*\d)[A-Z][A-Z0-9]{2,}\s+", "", title)  # payroll code prefix "CAPO89 Captain"
+                    top_line[r["employee"]] = (amount, title or "No title")
+            elif "benefit" in kind and "employee paid" not in kind:
+                benefits += amount
+            # reimbursements and employee-paid deductions are left out
         paid = [e for e, total in pay.items() if total > 0]
         if not paid:
             continue
@@ -120,6 +154,7 @@ def main(worklist_path=None):
     rules = [(r["category"], re.compile(r["pattern"]), (r.get("vendor") or "").strip())
              for r in read_csv("vendor_rules.csv") + read_csv("keyword_rules.csv")]
     redactions = [re.compile(r["pattern"], re.I) for r in read_csv("payee_name_redactions.csv")]
+    revenue_exclusions = [re.compile(r["pattern"], re.I) for r in read_csv("revenue_exclusions.csv")]
     for c, _, _ in rules:
         assert c in cat_ids, f"keyword_rules.csv: unknown category {c}"
     vendor_map = {}
@@ -149,7 +184,9 @@ def main(worklist_path=None):
         path = tu / "revenue_categories" / f"{tid}.json.gz"
         for x in json.loads(read_gz(path)) if path.exists() else []:
             if x["fiscal_year"] in YEARS:
-                revenue[str(x["fiscal_year"])][x["agg1"]] += x["net_amount"] or 0
+                revenue[str(x["fiscal_year"])][clean_label(x["agg1"])] += x["net_amount"] or 0
+        revenue_excluded = sorted({c for cats in revenue.values() for c in cats
+                                   if any(rx.search(c) for rx in revenue_exclusions)})
         agencies.append({
             "id": tid,
             "name": a["name"],
@@ -166,7 +203,10 @@ def main(worklist_path=None):
                 "paid_per_call": int(u["Active Firefighters - Paid per Call"] or 0),
             } if u else None,
             "budget": {str(y): round(budget[y]) for y in YEARS if y in budget},
-            "revenue": {y: {c: round(v) for c, v in sorted(cats.items())} for y, cats in sorted(revenue.items())},
+            "revenue": {y: {c: round(v) for c, v in sorted(cats.items()) if round(v)} for y, cats in sorted(revenue.items())},
+            "revenue_total": {y: sum(round(v) for c, v in cats.items() if c not in revenue_excluded)
+                              for y, cats in sorted(revenue.items())},
+            "revenue_excluded": revenue_excluded,
             "staff": staff_by_year(tu, tid),
             "fy_start": {"01": "January", "07": "July"}.get((details.get("fiscal_year_begins") or "")[5:7]),
             "notes": a["notes"] or None,
@@ -181,7 +221,7 @@ def main(worklist_path=None):
             continue
         for x in json.loads(read_gz(path)):
             if x["fiscal_year"] in YEARS and x["net_amount"]:
-                raw_rows.append((tid, html.unescape(x["vendor_name"] or ""), x["fiscal_year"], float(x["net_amount"])))
+                raw_rows.append((tid, clean_payee(x["vendor_name"]), x["fiscal_year"], float(x["net_amount"])))
 
     key_spend = collections.defaultdict(float)
     key_names = collections.defaultdict(collections.Counter)
@@ -253,14 +293,20 @@ def main(worklist_path=None):
     rows = [[t, v, y, round(a, 2), al] for (t, v, y, al), a in sorted(rows.items()) if round(a, 2) != 0]
 
     # Single payments: each agency's 100 largest payments per fiscal year. Kept when the payee maps to a
-    # purchasing vendor and the payment is $1,000 or more.
+    # purchasing vendor and the payment is $1,000 or more. The lists include payments that were later voided
+    # or duplicated, so per agency, vendor and year the kept payments (largest first) never add up to more
+    # than the net amount paid.
     purchasing = {c["id"] for c in categories if c["purchasing"] == "yes"}
-    payments, unmatched = [], 0
+    net_paid = collections.defaultdict(float)
+    for t, v, y, a, _ in rows:
+        net_paid[(t, v, y)] += a
+    payments, unmatched, over_net = [], 0, 0
     for tid in sorted(agency_ids):
         for year in YEARS:
             path = tu / "top_payments" / str(tid) / f"{year}.json.gz"
-            for x in json.loads(read_gz(path)) if path.exists() else []:
-                name, amount = html.unescape(x["vendor_name"] or ""), float(x["amount"] or 0)
+            room = {}
+            for x in sorted(json.loads(read_gz(path)) if path.exists() else [], key=lambda x: x["ven_rank"]):
+                name, amount = clean_payee(x["vendor_name"]), float(x["amount"] or 0)
                 k = norm(name)
                 if is_person(name) or k in person_keys:
                     continue
@@ -268,8 +314,14 @@ def main(worklist_path=None):
                     unmatched += 1
                     continue
                 vi = key_vendor[k]
-                if vendors[vi]["category"] in purchasing and amount >= 1000:
-                    payments.append([tid, year, x["ven_rank"], vi, round(amount, 2), alias_index.get(name, -1)])
+                if vendors[vi]["category"] not in purchasing or amount < 1000:
+                    continue
+                left = room.setdefault(vi, net_paid[(tid, vi, year)])
+                if amount > left + 1:  # $1 tolerance for rounding
+                    over_net += 1
+                    continue
+                room[vi] = left - amount
+                payments.append([tid, year, x["ven_rank"], vi, round(amount, 2), alias_index.get(name, -1)])
     payments.sort(key=lambda p: (p[0], p[1], p[2]))
 
     # FEMA firefighter grants matched to agencies through config/grant_recipients.csv
@@ -295,7 +347,8 @@ def main(worklist_path=None):
         "transparent_utah": TU_SITE,
         "counts": {"agencies": len(agencies), "vendors": len(vendors), "rows": len(rows), "grants": len(grants),
                    "payments": len(payments)},
-        "payments_rule": "Each agency's 100 largest payments per fiscal year, purchasing vendors, $1,000 or more",
+        "payments_rule": "Each agency's 100 largest payments per fiscal year, purchasing vendors, $1,000 or more,"
+                         " capped so they never add up to more than the net amount paid to that vendor that year",
         "purchasing_total": round(buy),
         "purchasing_classified_share": round(classified / buy, 4) if buy else None,
     }
@@ -304,7 +357,7 @@ def main(worklist_path=None):
     (ROOT / "data").mkdir(exist_ok=True)
     (ROOT / "data" / "data.json").write_text(json.dumps(out, separators=(",", ":"), ensure_ascii=False))
     print(f"data/data.json: {len(agencies)} agencies, {len(vendors)} vendors, {len(rows)} rows, {len(grants)} grants,"
-          f" {len(payments)} single payments ({unmatched} top payments with an unmatched payee);"
+          f" {len(payments)} single payments ({unmatched} with an unmatched payee, {over_net} over the net paid);"
           f" purchasing ${buy:,.0f}, classified {meta['purchasing_classified_share']:.1%}")
 
     if worklist_path:

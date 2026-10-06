@@ -18,7 +18,8 @@ Page: https://pasha594.github.io/utah-fire-procurement/
 ## What the numbers are
 
 Each row is the net amount one agency paid one payee name in one fiscal year, as reported to
-Transparent Utah. There are no invoice lines or item descriptions, so categories are assigned per
+Transparent Utah. Agency pages add each agency's largest single payments, staff counts and pay from its
+compensation reports (employee names replaced by numbers), and revenue by account. There are no invoice lines or item descriptions, so categories are assigned per
 vendor, not per purchase. Payees that are private persons are grouped as "Individuals (names withheld)".
 
 ## Run locally
@@ -48,7 +49,10 @@ names exactly as Transparent Utah publishes them, including private persons; the
 | `config/agencies.csv` | Which Transparent Utah entities are included, their USFA registry id and county |
 | `config/categories.csv` | Category list, and which categories count as purchasing |
 | `config/vendor_map.csv` | Payee name (normalized) to canonical vendor name and category |
+| `config/vendor_rules.csv` | Regex rules that fold rare spellings into a vendor already in the vendor map |
 | `config/keyword_rules.csv` | Fallback regex rules for payees not in the vendor map, first match wins |
+| `config/payee_name_redactions.csv` | Payee text that is not shown (email addresses, bank references) |
+| `config/revenue_exclusions.csv` | Revenue accounts left out of revenue totals (borrowing, transfers, donated infrastructure) |
 | `config/grant_recipients.csv` | FEMA grant recipient names matched to agencies |
 | `config/neris_partners.csv` | NERIS integration partners, used to flag vendors |
 

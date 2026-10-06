@@ -1,0 +1,4 @@
+pattern,note
+proceeds from (debt|borrowing|financing|long-term debt)|other sources of funding|other financing sources|\bborrow|debt service|principal|interest paid|redemptions,Borrowing and debt
+interfund|transfers? (in|out)\b|transfers? (in )?(from|to) (the )?(general fund|gf|other funds?)|operating trns|capital account transfers|contributions? (&|and) transfers|fund balance,"Transfers between the agency's own funds, and fund balance"
+contribution of infrastructure|capital contribution|developer advance,Donated infrastructure and developer advances
