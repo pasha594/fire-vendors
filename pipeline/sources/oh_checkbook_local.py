@@ -109,7 +109,7 @@ CHART = "Bar | SOH"  # the dashboard's default chart; its underlying rows are ev
 FIRE_NAME = re.compile(r"\bFIRE(S|FIGHTERS?|FIGHTING|MEN|MEN'?S)?\b", re.I)
 # shared police-and-fire names, water hydrants, fire-loss insurance escrow (ORC 3929.86 "fire damaged structures"
 # funds), fireworks permits, and wage garnishments passed through to creditors
-NOT_FIRE_NAME = re.compile(r"POLICE|HYDRANT|FIRE ?LOSS|FIREWORK|INSURANCE|ESCROW|DAMAGED STRUCTURE|GARNISH", re.I)
+NOT_FIRE_NAME = re.compile(r"POLICE|HYDRANT|FIRE ?LOSS|FIREWORK|INSURANCE|ESCROW|DAMAGED? STRUCTURE|GARNISH", re.I)
 # A month whose upload carries batch totals instead of line amounts: most of its lines share their date and amount
 # with at least two other lines paid to other payees (Jackson Township (Stark), 2026: every line of a day shows
 # the same $0.5-4.7 million). Its lines are dropped.

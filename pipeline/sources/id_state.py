@@ -55,19 +55,13 @@ reversal), so source_record_id is unique_id, or unique_id-<n> when the id repeat
 (credits, reversals, refunds) are kept, so amounts are net. Lines in EXCLUDED_CATEGORIES are accounting entries,
 not payments (encumbrances, accrual adjustments, transfers), and are dropped with their totals printed.
 
-Payees (payee): common.withhold_person, plus (1) employee travel accounts (EMPLOYEE_ACCOUNT, mostly reimbursements
-to staff) withhold every payee that carries no business word; (2) names withhold_person misses are withheld when
-they carry no business word: "First Middle Last", couples and owners' full names of 3 to 7 plain words ("DAN L AND
-JANE DOE", "JOHN A DOE JANE DOE"), and "XYZ DBA JANE A DOE" (private); (3) a name withhold_person withholds is kept
-when it carries a business word (BUSINESS: two-word companies such as "XEROX CORPORATION") or a reviewed row of
-config/vendor_map.csv or config/states/id/vendor_map_additions.csv claims it, as the Texas and California adapters
-do. Purchase-card and card-processor prefixes ("PCARD - ", "SQ *", "AMZ*") are stripped before the tests, so
-"SQ *JOHN DOE" is withheld. "REDACTED" is the State's own mask and is kept as published.
+Payees: shown as published, private persons included (owner decision of 2026-10-06): every vendor goes through
+common.withhold_person, which only replaces payee text matching config/payee_name_redactions.csv (e-mail addresses,
+bank account text) by "Payee name withheld". "REDACTED" is the State's own mask and is kept as published; lines
+without a vendor have an empty payee_name.
 """
 import collections
-import csv
 import json
-import re
 import sys
 import time
 import urllib.request
@@ -81,6 +75,7 @@ REPORT = "2b17eed6-3282-4416-ab38-656795512745"
 CONFIG = "9711ec09-4057-47c6-8ebc-1f27ee4261d3"   # saved view "Expenditure Transactions"
 FUNCTION = "320-07H"
 FIRST_FY = 2021
+BLOCK_COPIES = 4  # same-batch identical copies that make a reloaded block (see reloads)
 PAGE = 250
 AGENCY_ID = "ID-X-IDAHO-DEPARTMENT-OF-LANDS-FIRE-DEPARTMENT-COEUR-D-ALENE"
 PAYMENT_CATEGORIES = {"Operating", "Capital Expenditures", "Trustee & Benefit Payments", "FED PAYMENTS TO SUBGRANTES",
@@ -178,77 +173,6 @@ def fetch():
     common.save_raw(ST, SOURCE, "control.json", json.dumps(control, indent=0, sort_keys=True).encode())
 
 
-EMPLOYEE_ACCOUNT = re.compile(r"^Employee (In State|Out Of State|Out Of Country) Travel Costs$")
-BUSINESS = re.compile(
-    r"\b(PCARD|LLC|L L C|INC|INCORPORATED|CORPORATION|CORP|COR|COMPANY|CO-OP|COOP|LTD|LP|LLP|PLLC|PA|ASSN|ASSOC|"
-    r"ASSOCIATION|ASSOCIATI|BANK|CREDIT|SONS|BROTHERS|BROS|AIRLINES?|AIR|AIRPORT|AVIATION|HELICOPTERS?|HELI|FLYING|"
-    r"HOTELS?|INNS?|SUITES|MOTEL|LODGE|RESORT|RENT|RENTALS?|FOODS?|MARKET|MARKETPLACE|MART|STORES?|SUPERCENTER|"
-    r"GROCERY|PHARMACY|SUPPLY|SUPPLIES|SUPPLIERS|BUILDERS|BUILDING|PRINTING|PRINT|PRESS|IMAGING|TONER|INK|FIBER|"
-    r"WIRELESS|COMMUNICATIONS|TELEPHONE|ELECTRIC|ELECTRONICS|POWER|ENERGY|PROPANE|PAYMENTS|OUTFITTERS|INDUSTRIES|"
-    r"INDUSTRIAL|EQUIPMENT|MOTORS?|MOTORSPORTS|AUTO|AUTOMOTIVE|TRUCKS?|TRUCKING|TRANSPORT|TRANSPORTATION|FREIGHT|"
-    r"TRAILERS?|TRACTOR|TIRES?|TOWING|RECOVERY|SALVAGE|RECYCLING|REFUSE|EXCAVATION|EXCAVATORS|EXCAVATING|DRILL|"
-    r"DRILLING|ASPHALT|PAVING|SEALING|CONSTRUCTION|CONTRACTING|CONTRACTORS?|LOGGING|TIMBER|LUMBER|FORESTRY|"
-    r"REFORESTATION|HARDWARE|TOOLS?|FUEL|FUELS|OIL|PETROLEUM|GAS|SERVICES?|SYSTEMS?|SOLUTIONS|TECHNOLOGY|"
-    r"TECHNOLOGIES|COMPUTER|ENTERPRISES?|INTERNATIONAL|DISTRIBUTING|DISTRIBUTORS?|SALES|RANCH|FARMS?|PROPERTIES|"
-    r"PROPERTY|MAINTENANCE|REPAIR|INVESTMENTS|HOLDINGS|PARTNERS|PARTNERSHIP|MANAGEMENT|CONSULTING|CONSULTANTS|"
-    r"ENGINEERING|ENGINEERS|ARCHITECTS|LABORATORIES|LABS?|MEDICAL|MEDICS|MEDICINE|HOSPITAL|CLINIC|HEALTH|EMS|"
-    r"UNIVERSITY|COLLEGE|SCHOOL|ACADEMY|INSTITUTE|DEPARTMENT|DEPT|DIVISION|BUREAU|AGENCY|CITY|COUNTY|STATE|"
-    r"DISTRICT|AUTHORITY|COMMISSION|IDAHO|FIRE|FIREFIGHTING|RESCUE|PROTECTIVE|PROTECTION|TRUST|FUND|TREASURER|"
-    r"CAFE|RESTAURANT|PIZZA|GRILL|COFFEE|BAKERY|DELI|KITCHEN|CATERING|BBQ|EXPRESS|SHOP|CENTER|CENTRE|WORKS|"
-    r"WAREHOUSE|OUTLET|SPORTING|GOODS|BOOKSTORE|GLASS|PAINT|COATINGS?|PLUMBING|HEATING|DOORS|LOCKSMITH|PEST|LAWN|"
-    r"SIGNS|ADVERTISING|MARKETING|PROMOTIONS|WRAPS|ENGRAVING|PLATING|PHOTO|VIDEO|STUDIO|EVENTS|TOURS|MERCANTILE|"
-    r"CHEVROLET|FORD|DODGE|TOYOTA|CHURCH|LEGION|SEPTIC|SANITATION|TRANSMISSION|HOSE|FITTINGS|BATTERIES|PARTS|LUBE|"
-    r"WASH|STEEL|ALUMINUM|MATERIAL|HANDLING|EXCHANGE|AMAZON|AMZN|WAL-?MART|WALMART|COSTCO|DEPOT|USA|US|NATIONAL|"
-    r"AMERICAN|NORTHWEST|PACIFIC|ROCKY MOUNTAIN|INTERMOUNTAIN|WESTERN)\b", re.I)
-PREFIX = re.compile(r"^(PCARD( PP)? - )?([A-Z0-9]{1,6} ?\* ?)?", re.I)  # purchase card; "SQ *", "AMZ*", "TST* "
-FULL_NAME = re.compile(r"^[A-Za-z][A-Za-z'\-]+ [A-Za-z][A-Za-z'\-\.]* [A-Za-z][A-Za-z'\-]+( (JR|SR|II|III|IV))?$", re.I)
-NAME_TOKENS = re.compile(r"^[A-Za-z][A-Za-z'\-\.]*( ([A-Za-z][A-Za-z'\-\.]*|&))+$")
-STOP_WORDS = re.compile(r"\b(OF|THE|FOR|AT|ON|IN|TO|BY|DBA)\b", re.I)
-_CLAIMED = None
-
-
-def claimed():
-    """name_keys that config/vendor_map.csv or a reviewed config/states/id/vendor_map_additions.csv row names as a
-    business (any category but individuals)."""
-    global _CLAIMED
-    if _CLAIMED is None:
-        rows = common.read_config(ST, "vendor_map_additions.csv")
-        with open(common.ROOT / "config" / "vendor_map.csv", newline="", encoding="utf-8") as f:
-            rows += list(csv.DictReader(f))
-        _CLAIMED = {r["name_key"] for r in rows if r["category"] != "individuals"}
-    return _CLAIMED
-
-
-def private(s):
-    """True when s reads like a private person's name: withhold_person's shapes, "First Middle Last", or 3 to 7
-    plain words (AND, OR and & allowed) with no business word, which covers couples ("DAN L AND JANE DOE") and
-    owners' full names; callers test BUSINESS first."""
-    if not s:
-        return False
-    if common.is_person(s) or common.looks_like_person(s) or FULL_NAME.match(s):
-        return True
-    return 3 <= len(s.split()) <= 7 and bool(NAME_TOKENS.match(s)) and not STOP_WORDS.search(s)
-
-
-def payee(raw, employee_account=False):
-    """Payee name as it may be published (rules in the module docstring)."""
-    name = " ".join((raw or "").split())
-    if not name:
-        return ""
-    base = PREFIX.sub("", name).strip() or name
-    claim = common.norm(name) in claimed() or common.norm(base) in claimed()
-    business = claim or bool(BUSINESS.search(base)) or bool(common.BUSINESS_WORDS.search(base))
-    if not business and (employee_account or private(base)):
-        return common.WITHHELD
-    dba = re.split(r"\bDBA\b", base, flags=re.I)
-    if not claim and len(dba) > 1 and private(dba[-1].strip()):
-        return common.WITHHELD  # "XYZ DBA JANE A DOE"
-    out = common.withhold_person(name)
-    if out == common.WITHHELD:
-        return name if business else out
-    return out  # the name, or "Payee name withheld" (config/payee_name_redactions.csv)
-
-
 def lines(raw):
     """Every fetched line as a dict, oldest year first."""
     out = []
@@ -259,18 +183,28 @@ def lines(raw):
 
 
 def reloads(rows):
-    """Indexes of reloaded copies: lines identical in every column but unique_id and load dates to a line of an
-    earlier load batch (date_of_load, zz_extract_date). Copies within the earliest batch are kept."""
+    """Indexes of reloaded copies among lines identical in every column but unique_id and the load dates:
+    (1) copies from a later load batch (date_of_load, zz_extract_date) than the first copy are dropped;
+    (2) copies inside one batch are dropped, keeping the lowest unique_id, when that batch inserts BLOCK_COPIES or
+    more lines twice (a block reloaded within one load: the copies' unique_ids run in a parallel series at a
+    near-constant offset, and include airline tickets and marketplace orders with their own order numbers);
+    identical lines inside a batch with fewer such copies are kept as possible repeat purchases."""
+    batch = lambda i: (rows[i]["date_of_load"] or "", rows[i]["zz_extract_date"] or "")
     groups = collections.defaultdict(list)
     for i, r in enumerate(rows):
         groups[tuple((k, v) for k, v in sorted(r.items())
                      if k not in ("unique_id", "date_of_load", "zz_extract_date"))].append(i)
-    drop = set()
+    drop, same_batch = set(), collections.defaultdict(list)  # batch -> [extra copies]
     for idx in groups.values():
-        if len(idx) > 1:
-            batch = lambda i: (rows[i]["date_of_load"] or "", rows[i]["zz_extract_date"] or "")
-            first = min(batch(i) for i in idx)
-            drop |= {i for i in idx if batch(i) != first}
+        if len(idx) < 2:
+            continue
+        first = min(batch(i) for i in idx)
+        drop |= {i for i in idx if batch(i) != first}
+        kept = sorted((i for i in idx if batch(i) == first), key=lambda i: int(rows[i]["unique_id"]))
+        same_batch[first] += kept[1:]
+    for b, extra in same_batch.items():
+        if len(extra) >= BLOCK_COPIES:
+            drop |= set(extra)
     return drop
 
 
@@ -312,7 +246,7 @@ def normalize():
         assert cat in PAYMENT_CATEGORIES, f"unknown account category {cat!r}: add it to PAYMENT_ or EXCLUDED_CATEGORIES"
         out.append({
             "agency_id": AGENCY_ID, "fiscal_year": r["fiscal_year"], "posting_date": r["effective_date"] or "",
-            "payee_name": payee(r["vendor"], bool(EMPLOYEE_ACCOUNT.match(r["summary_account"] or ""))),
+            "payee_name": common.withhold_person(r["vendor"]),
             "description": "",
             "account": " / ".join(x for x in (f"{r['fund_code']} {r['fund_title']}", r["agency_function"], cat,
                                                f"{r['account']} {r['summary_account']}") if x and x.strip()),

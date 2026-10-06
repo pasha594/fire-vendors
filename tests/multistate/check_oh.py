@@ -61,8 +61,10 @@ REACHABLE = ["oh_cincinnati", "oh_checkbook_state", "oh_aos", "oh_checkbook_loca
 
 # Ohio Checkbook local: what a fire line is, written independently of the adapter
 FIRE_WORD = re.compile(r"\bfire(s|fighters?|fighting|men|men'?s)?\b", re.I)
-NOT_FIRE_WORDS = re.compile(r"police|hydrant|fire ?loss|firework|insurance|escrow|damaged structure|garnish", re.I)
+NOT_FIRE_WORDS = re.compile(r"police|hydrant|fire ?loss|firework|insurance|escrow|damaged? structure|garnish", re.I)
 EMS_ONLY_DISTRICTS = {"Joint Emergency Medical Service"}
+# participants in two counties, listed under another county than the registry's (checked by hand)
+COUNTY_EXCEPTIONS = {("City of Vermilion", "OH-22017")}  # Vermilion: Erie and Lorain counties
 EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+")
 BROKEN = set()  # (participant, month) left out as broken uploads, for the summary line
 DOUBLED = set()  # (participant, month) uploaded more than once
@@ -204,7 +206,8 @@ def expected_checkbook_local(agency_county):
         # attribution: the participant is named as linked, sits in the agency's county, is a fire district or a
         # township, city or village (whose fire lines only are taken), and is not an EMS-only district
         assert p["Name"] == link["source_entity_name"], f"link name differs from the participant list: {link}"
-        assert p["County"] == agency_county[link["agency_id"]], f"county differs: {link} vs {p['County']}"
+        assert p["County"] == agency_county[link["agency_id"]] or (p["Name"], link["agency_id"]) in COUNTY_EXCEPTIONS, \
+            f"county differs: {link} vs {p['County']}"
         assert link["fy_start"] == "01", f"Ohio locals use the calendar year: {link}"
         assert p["Name"] not in EMS_ONLY_DISTRICTS, f"EMS-only district linked: {link}"
         if kind == "special_districts":
@@ -277,7 +280,12 @@ def expected_checkbook_local(agency_county):
         # a linked participant's fire lines are a department's spending, not a stray grant or capital line:
         # at least 25 lines a year in the years it has any
         years = {r["TransDate"][:4] for r in kept}
-        assert kept and len(kept) >= 25 * len(years), f"{eid} {p['Name']}: only {len(kept)} fire lines in {len(years)} years"
+        assert kept and len(kept) >= 25 * len(years), \
+            f"{eid} {p['Name']}: only {len(kept)} fire lines in {len(years)} years"
+        # ... and not only its fire pension fund (contributions to the pension system, no purchasing)
+        pension = [r for r in kept if re.search(r"pension|disab", r["FundDescription"], re.I)
+                   and not (by_department and FIRE_WORD.search(r["DeptDescription"]))]
+        assert len(pension) < 0.9 * len(kept), f"{eid} {p['Name']}: fire lines are a pension fund only"
         for r in kept:
             if r["TransDate"][:7] in broken:
                 continue
