@@ -95,8 +95,8 @@
  "coverage_counts": {
   "1": 6,
   "2": 0,
-  "3": 581,
-  "4": 342
+  "3": 584,
+  "4": 339
  },
  "agencies": [
   {
@@ -13817,12 +13817,13 @@
    "county": "San Luis Obispo",
    "city": "Paso Robles",
    "usfa_fdid": "40050",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "ca_sco_cities",
     "openfema",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "07",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -16271,11 +16272,12 @@
    "county": "Siskiyou",
    "city": "Mount Shasta",
    "usfa_fdid": "47060",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "ca_sco_cities",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "07",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -19303,11 +19305,12 @@
    "county": "Ventura",
    "city": "Ventura",
    "usfa_fdid": "56025",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "ca_sco_cities",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "07",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",

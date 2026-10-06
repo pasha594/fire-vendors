@@ -55,6 +55,7 @@ CA-47010,ca_sco_cities,1363,Dunsmuir,07,exact name,registry name: Dunsmuir Fire 
 CA-37055,ca_sco_cities,1360,El Cajon,07,exact name,registry name: El Cajon Fire Department
 CA-13020,ca_sco_cities,1359,El Centro,07,exact name,registry name: El Centro Fire Department
 CA-07040,ca_sco_cities,1358,El Cerrito,07,exact name,registry name: El Cerrito Fire Department
+CA-40050,ca_sco_cities,1356,El Paso De Robles,07,manual,El Paso de Robles is the legal name of the City of Paso Robles; registry name: Paso Robles Department of Emergency Services (the city's fire department)
 CA-19065,ca_sco_cities,1355,El Segundo,07,exact name,registry name: El Segundo Fire Department
 CA-01035,ca_sco_cities,1353,Emeryville,07,exact name,registry name: Emeryville Fire Department
 CA-37065,ca_sco_cities,1352,Encinitas,07,exact name,registry name: Encinitas Fire Department
@@ -128,6 +129,7 @@ CA-19135,ca_sco_cities,1211,Monterey Park,07,exact name,registry name: Monterey 
 CA-43040,ca_sco_cities,1207,Morgan Hill,07,exact name,registry name: Morgan Hill City Fire Department
 CA-40040,ca_sco_cities,1206,Morro Bay,07,exact name,registry name: Morro Bay Fire Department
 CA-43050,ca_sco_cities,1205,Mountain View,07,exact name,registry name: Mountain View Fire Department
+CA-47060,ca_sco_cities,1204,Mt. Shasta,07,manual,registry name: Mount Shasta City Fire Department
 CA-28010,ca_sco_cities,1202,Napa,07,exact name,registry name: City of Napa Fire Department
 CA-37110,ca_sco_cities,1201,National City,07,exact name,registry name: National City Fire Department
 CA-29040,ca_sco_cities,1199,Nevada City,07,exact name,registry name: Nevada City Fire Department
@@ -172,6 +174,7 @@ CA-31085,ca_sco_cities,1125,Roseville,07,exact name,registry name: City of Rosev
 CA-34080,ca_sco_cities,1123,Sacramento,07,exact name,registry name: Sacramento Fire Department
 CA-27070,ca_sco_cities,1122,Salinas,07,exact name,registry name: Salinas Fire Department
 CA-41080,ca_sco_cities,1119,San Bruno,07,exact name,registry name: San Bruno Fire Department
+CA-56025,ca_sco_cities,1118,San Buenaventura,07,manual,San Buenaventura is the legal name of the City of Ventura; registry name: Ventura City Fire Department
 CA-37140,ca_sco_cities,1115,San Diego,07,exact name,registry name: City of San Diego Fire-Rescue Department
 CA-38005,ca_sco_cities,1112,San Francisco,07,exact name,registry name: San Francisco Fire Department
 CA-19165,ca_sco_cities,1111,San Gabriel,07,manual,registry name: San Gabriel Fire Deparetment

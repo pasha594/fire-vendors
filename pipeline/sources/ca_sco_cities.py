@@ -25,8 +25,11 @@ Attribution: a city's fire line counts only through a hand-reviewed row of confi
 (source ca_sco_cities, source_entity_name = SCO city name; source_entity_id = the SCO's 4-digit city code, the
 digits after the year in `row_number`) that links the city to its
 own fire department in the USFA registry: the registry department in the same county named "<City> Fire
-Department", "City of <City> Fire Department", "<City> Fire", "<City> Fire & Rescue" or "<City> Fire-Rescue".
-A city with no such department (it contracts with a county, CAL FIRE or a fire district, or is served by a
+Department", "City of <City> Fire Department", "<City> Fire", "<City> Fire & Rescue" or "<City> Fire-Rescue"
+(match_method "exact name"), or, reviewed by hand (match_method "manual"), a department the registry spells
+differently or a city the SCO lists under its legal name (San Buenaventura = Ventura, El Paso De Robles = Paso
+Robles, Angels = Angels Camp). A city that depends on a fire protection district filing its own report (Murrieta,
+Coachella, Gonzales) is linked through the district only. A city with no such department (it contracts with a county, CAL FIRE or a fire district, or is served by a
 fire authority JPA) is not linked, because its fire line then pays another agency. Lines of $0 are dropped.
 
 Duplicates and reversals: one value per city, year and line (`row_number` is unique; normalize asserts it).

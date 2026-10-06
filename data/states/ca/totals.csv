@@ -4068,6 +4068,10 @@ CA-40040,2021,Fire_Current Expenditures,3380843.00,ca_sco_cities
 CA-40040,2022,Fire_Current Expenditures,3464427.00,ca_sco_cities
 CA-40040,2023,Fire_Current Expenditures,4186140.00,ca_sco_cities
 CA-40040,2024,Fire_Current Expenditures,4129915.00,ca_sco_cities
+CA-40050,2021,Fire_Current Expenditures,8184139.00,ca_sco_cities
+CA-40050,2022,Fire_Current Expenditures,8098713.00,ca_sco_cities
+CA-40050,2023,Fire_Current Expenditures,8921726.00,ca_sco_cities
+CA-40050,2024,Fire_Current Expenditures,10168952.00,ca_sco_cities
 CA-40055,2021,Fire_Current Expenditures,2423098.00,ca_sco_cities
 CA-40055,2022,Fire_Current Expenditures,2664741.00,ca_sco_cities
 CA-40055,2023,Fire_Current Expenditures,3091003.00,ca_sco_cities
@@ -4914,6 +4918,10 @@ CA-47055,2021,Fire_Current Expenditures,219211.00,ca_sco_cities
 CA-47055,2022,Fire_Current Expenditures,502558.00,ca_sco_cities
 CA-47055,2023,Fire_Current Expenditures,424736.00,ca_sco_cities
 CA-47055,2024,Fire_Current Expenditures,519921.00,ca_sco_cities
+CA-47060,2021,Fire_Current Expenditures,973236.00,ca_sco_cities
+CA-47060,2022,Fire_Current Expenditures,938413.00,ca_sco_cities
+CA-47060,2023,Fire_Current Expenditures,1092366.00,ca_sco_cities
+CA-47060,2024,Fire_Current Expenditures,1124692.00,ca_sco_cities
 CA-47065,2021,Capital Outlay_General,377371.00,ca_sco_districts
 CA-47065,2021,Debt Service / Interest Payments on Long-Term Debt_General,4075.00,ca_sco_districts
 CA-47065,2021,Employee Benefits_General,5469.00,ca_sco_districts
@@ -5753,6 +5761,10 @@ CA-56020,2024,"Debt Service / Lease Financing, Principal and Interest Payments_S
 CA-56020,2024,Employee Benefits_Special Revenue,46198874.00,ca_sco_districts
 CA-56020,2024,Salaries and Wages_Special Revenue,108449530.00,ca_sco_districts
 CA-56020,2024,Services and Supplies_Special Revenue,49216057.00,ca_sco_districts
+CA-56025,2021,Fire_Current Expenditures,24997502.00,ca_sco_cities
+CA-56025,2022,Fire_Current Expenditures,27200156.00,ca_sco_cities
+CA-56025,2023,Fire_Current Expenditures,36534832.00,ca_sco_cities
+CA-56025,2024,Fire_Current Expenditures,32220117.00,ca_sco_cities
 CA-57010,2021,Employee Benefits_General,10362.00,ca_sco_districts
 CA-57010,2021,Other Expenditures_General,14000.00,ca_sco_districts
 CA-57010,2021,Salaries and Wages_General,60620.00,ca_sco_districts

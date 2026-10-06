@@ -49,10 +49,15 @@ name does not say fire. Only participants linked in config/states/oh/agency_sour
 Fiscal year: Ohio local governments use the calendar year (fy_start 01); fiscal_year is the transaction date's
 year. Years 2021 on.
 
-Duplicates: rows are keyed by the checkbook's row Id; a row fetched twice (overlapping requests) is kept once.
-Rows with a new Id but the same entity, transaction id, date, payee, fund, department, object and amount as an
-earlier row are re-uploads and dropped (counted in the normalize output); identical lines with different
-transaction ids are separate payments and kept. Negative amounts (voids, refunds) are kept so they net out.
+Duplicates and broken uploads (normalize): rows are keyed by the checkbook's row Id; a row fetched twice
+(overlapping requests) is kept once. TransactionId is unique per line in every fetched participant, so lines that
+match in every field but TransactionId are separate lines (several identical invoices or benefit lines paid the
+same day) and are kept, except in a month uploaded k times: a month of DOUBLED_MIN lines or more in which every
+group of lines identical in date, payee, fund, department, object and amount has a size divisible by k >= 2
+keeps size/k lines of each group (Beavercreek Township, March 2023). A month whose lines carry batch totals
+instead of line amounts (BROKEN_SHARE rule; Jackson Township (Stark), 2026) is left out. Negative amounts
+(voids, refunds, reversals) are kept so they net out. Every fetched slice is checked against the dashboard's
+own summary totals for the same filters, per year.
 """
 import argparse
 import collections
