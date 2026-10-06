@@ -311,7 +311,7 @@ def main():
     cut = collections.Counter(r["source"] for r in tx if r["payee_name"] == CUT)
     report.append(f"payees: published as in the source; {sum(cut.values())} lines cut by the redaction rule; "
                   f"{sum(person_like.values())} lines have person-shaped payee names (shown, owner decision) "
-                  f"{dict(sorted(person_like.items()))}; {emails} lines carry an email address in description or account")
+                  f"{dict(sorted(person_like.items()))}; {emails} lines carry an email address in a payee, description or account")
 
     # 3. agencies and coverage
     ids = {a["id"] for a in agencies["agencies"]}

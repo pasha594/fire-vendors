@@ -84,7 +84,8 @@ state government rows (CAL FIRE units and state institutions), 36 federal, 30 co
   Orange County Fire Authority and Livermore-Pleasanton Fire Department) and 1 community services district that runs a
   fire department. 49 fire-named entities are not fire agencies and are listed with the reason in the adapter's
   `NOT_FIRE` (11 fire-escape road divisions, 6 EMS agencies, dispatch, insurance pools, training centres, ambulance
-  JPAs); normalize stops on any fire-named entity in neither list.
+  JPAs; EMS-only agencies stay out, in line with owner decision 3 on ambulance-only districts); normalize stops on any
+  fire-named entity in neither list.
 - **Matching:** 366 SCO entities link to 363 agencies (three districts filed under two names in different years, with
   no overlapping year). 186 match a registry department by exact name in the same county; 180 are manual (registry
   name differs, or the district is missing from the registry). 73 districts and fire authorities the registry lacks
@@ -375,18 +376,23 @@ to employees). `check_ca.py` reports 141,075 lines whose payee looks like a pers
 
 ## Vendor categories (`config/states/ca/vendor_map_additions.csv`)
 
-2,336 rows proposing canonical names and categories for California payees, with `spend` and `agencies` recomputed
+2,777 rows proposing canonical names and categories for California payees, with `spend` and `agencies` recomputed
 from `transactions.csv.gz`. "Purchasing dollars" = net positive spend per `common.norm(payee)` key, excluding keys
 mapped (in `config/vendor_map.csv` or this file) to a category whose `purchasing` is `no` (government, payroll,
-finance, placeholder, individuals). Mapped share: **90.5%** of $6.31B purchasing dollars (by source: FI$Cal 91.1%,
-LA 94.5%, SF 88.8%, Riverside County 86.1%, SCPRS 85.5%, Moreno Valley 74.1%, Corona 65.9%). $64.6M of that is mapped to
-`unclassified` (mostly CAL FIRE forest-health and urban-forestry grantees); mapped to a real category: 89.5%.
+finance, placeholder, individuals). Mapped share: **91.4%** of $6.25B purchasing dollars (by source: FI$Cal 92.0%,
+LA 94.7%, SF 88.9%, Riverside County 86.3%, SCPRS 87.1%, Moreno Valley 74.1%, Corona 66.6%). $64.6M of that is mapped
+to `unclassified` (mostly CAL FIRE forest-health and urban-forestry grantees); mapped to a real category: **90.4%**.
 Categories: names first (keywords: aviation, apparatus makers, logging and water tenders, vehicles, utilities,
 telecom, governments), else the payee's dominant published account (confidence low); the top payees were reviewed by
-hand. Canonical names from `config/vendor_map.csv` are reused when the company is the same (Verizon, AT&T, Comcast,
-Goodyear, FedEx, Grainger, Staples, Municipal Emergency Services). Confidence: 29 high, 1,335 medium, 972
-low. No row classifies a name as a person (owner decision 1). CalCard payments (US Bank, $605.9M) are `finance` and
-the "CONFIDENTIAL" and "PRIVACY-FIRE" placeholders are `placeholder`, so they are outside purchasing dollars.
+hand. Review of 2026-10-06 added 441 rows for payees of $25,000 or more that are governments or public fire agencies
+(cities, counties, fire districts and departments, community services, water and irrigation districts, tribes,
+state prisons and departments, universities; $64.0M, almost all CAL FIRE mutual-aid and agreement payments) as
+`government` (confidence medium), which takes them out of purchasing dollars; names with business words (Inc, LLC,
+Supply, Association, Foundation, Council) were left out of that rule. Canonical names from `config/vendor_map.csv`
+are reused when the company is the same (Verizon, AT&T, Comcast, Goodyear, FedEx, Grainger, Staples, Municipal
+Emergency Services, Rush Truck Centers). Confidence: 29 high, 1,776 medium, 972 low. No row classifies a name as a
+person (owner decision 1). CalCard payments (US Bank, $605.9M) are `finance` and the "CONFIDENTIAL" and
+"PRIVACY-FIRE" placeholders are `placeholder`, so they are outside purchasing dollars.
 
 ## Checks
 
@@ -410,7 +416,10 @@ sharing only `agency_sources.csv`, the redaction patterns and common's file help
    `docs/multistate/data-contract.md`), dates `YYYY-MM-DD`, amounts with two decimals, and every payment date inside
    the fiscal year it is filed under (SCPRS purchase-order dates excepted).
 
-Normalize is deterministic: every adapter's normalize was run twice; the data files were byte-identical.
+Normalize is deterministic: every adapter's normalize was run twice; the data files were byte-identical (re-run in the
+review of 2026-10-06 after its changes: all nine normalizes twice, every file in `data/states/ca/` and
+`config/states/ca/` byte-identical between the runs; `transactions.csv.gz` and `line_items.csv.gz` also unchanged from
+before the review).
 
 ## Open questions
 
