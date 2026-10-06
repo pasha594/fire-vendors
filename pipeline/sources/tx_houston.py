@@ -13,7 +13,8 @@ fetch      raw/<date>/tx/tx_houston/checkbook_page.html.gz       the dataset pag
            raw/<date>/tx/tx_houston/checkbook-<fy>-hfd.csv.gz    lines of department 1200 (HFD) only, FY2021 on
            raw/<date>/tx/tx_houston/manifest.json.gz             each full file's URL, bytes, SHA-256, line counts
            raw/<date>/tx/tx_houston/sample.csv.gz                first 100 lines of the newest full file
-           The site's robots.txt disallows /api/, so links are read from the dataset page, not the CKAN API.
+           The site's robots.txt disallows /api/, so links are read from the dataset page, not the CKAN API,
+           and asks for a 10-second crawl delay, which resolve() keeps between requests to data.houstontx.gov.
            Downloads redirect to a presigned S3 URL written with an explicit ':443' port, whose signature fails
            when urllib follows the redirect; fetch resolves the redirect itself and drops the port.
 normalize  data/states/tx/transactions.csv.gz   one row per HFD payment line
@@ -46,6 +47,7 @@ SOURCE = "tx_houston"
 PAGE = "https://data.houstontx.gov/dataset/checkbook"
 DEPARTMENT = "1200"
 FIRST_FY = 2021
+CRAWL_DELAY = 10  # data.houstontx.gov robots.txt: "Crawl-delay: 10" for every user agent
 
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -54,8 +56,9 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 def resolve(url):
-    """Location of a CKAN download redirect, with S3's explicit ':443' port removed (see docstring)."""
-    time.sleep(common.DELAY)
+    """Location of a CKAN download redirect, with S3's explicit ':443' port removed (see docstring). Waits the
+    host's 10-second crawl delay first (the download itself goes to S3, another host)."""
+    time.sleep(max(common.DELAY, CRAWL_DELAY))
     try:
         urllib.request.build_opener(_NoRedirect).open(urllib.request.Request(url, headers=common.HEADERS), timeout=60)
     except urllib.error.HTTPError as e:
