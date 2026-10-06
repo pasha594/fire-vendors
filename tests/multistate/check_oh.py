@@ -222,7 +222,8 @@ def expected_checkbook_local(agency_county):
         for filters, summary in sums:
             want, got = collections.defaultdict(D), collections.defaultdict(D)
             for s in summary:
-                want[s["YEAR(Transaction Date)"]] += D(s["SUM(Amount)"])
+                if s["SUM(Amount)"] != "null":  # fund and year pairs without rows
+                    want[s["YEAR(Transaction Date)"]] += D(s["SUM(Amount)"])
             for r in by_id.values():
                 if all(r[k] in v for k, v in filters.items()):
                     got[r["TransDate"][:4]] += D(r["Amt"]).quantize(CENTS)

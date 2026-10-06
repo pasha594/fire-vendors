@@ -96,7 +96,13 @@ KINDS = {
 CHART = "Bar | SOH"  # the dashboard's default chart; its underlying rows are every transaction behind it
 
 FIRE_NAME = re.compile(r"\bFIRE(S|FIGHTERS?|FIGHTING|MEN|MEN'?S)?\b", re.I)
-NOT_FIRE_NAME = re.compile(r"POLICE|HYDRANT|FIRE ?LOSS|FIREWORK|INSURANCE|ESCROW", re.I)
+# shared police-and-fire names, water hydrants, fire-loss insurance escrow (ORC 3929.86 "fire damaged structures"
+# funds), fireworks permits, and wage garnishments passed through to creditors
+NOT_FIRE_NAME = re.compile(r"POLICE|HYDRANT|FIRE ?LOSS|FIREWORK|INSURANCE|ESCROW|DAMAGED STRUCTURE|GARNISH", re.I)
+# A month whose upload carries batch totals instead of line amounts: most of its lines share their date and amount
+# with at least two other lines paid to other payees (Jackson Township (Stark), 2026: every line of a day shows
+# the same $0.5-4.7 million). Its lines are dropped.
+BROKEN_SHARE = decimal.Decimal("0.5")
 # Special districts that are fire agencies (whole checkbook), and the ones whose name suggests fire or EMS but
 # which are not fire agencies, by participant name.
 FIRE_DISTRICT = re.compile(r"\bFIRE\b", re.I)
@@ -450,7 +456,7 @@ def fetch(date=None, only=None, cache=None):
         cache_path = pathlib.Path(cache)
         if cache_path.exists():
             screen = json.loads(cache_path.read_text())
-    vizzes = {}
+    vizzes, failed = {}, []
     folder = common.raw_dir(ST, SOURCE, date)
     for kind, p in order_entities(lists):
         name, key = p["Name"], f"{kind}:{p['Id']}"
@@ -483,10 +489,15 @@ def fetch(date=None, only=None, cache=None):
                 err = e
                 vizzes[kind] = None
         else:
-            raise RuntimeError(f"{name}: failed three times: {err}")
+            # not cached, so the next run tries it again; the run goes on with the other participants
+            failed.append(name)
+            print(f"{ST}: {SOURCE}: {name}: failed three times, left for the next run: {err}")
+            continue
         screen[key] = entry
         if cache_path:
             cache_path.write_text(json.dumps(screen))
+    if failed:
+        raise RuntimeError(f"{len(failed)} participants failed; run fetch again: {failed}")
     if not only:
         done = {**screen}
         for path in sorted(folder.glob("entity_*.json.gz")):
@@ -550,7 +561,8 @@ def entity_lines(path):
     for filters, summary in sums:
         want = collections.defaultdict(decimal.Decimal)
         for s in summary:
-            want[s["YEAR(Transaction Date)"]] += decimal.Decimal(s["SUM(Amount)"])
+            if s["SUM(Amount)"] != "null":  # the chart pads fund and year pairs without rows with null
+                want[s["YEAR(Transaction Date)"]] += decimal.Decimal(s["SUM(Amount)"])
         got = collections.defaultdict(decimal.Decimal)
         for r in by_id.values():
             if all(r[{"Fund": "Fund", "Department": "Department", "Year Of Transaction Date": "Year Of Transaction Date"}
@@ -559,6 +571,46 @@ def entity_lines(path):
         for y in set(want) | set(got):
             assert abs(want[y] - got[y]) <= CENTS, f"{path.name}: {filters} {y}: rows {got[y]} vs summary {want[y]}"
     return entity, by_id
+
+
+def broken_months(rows):
+    """Months (YYYY-MM) of one entity whose lines mostly share date and amount with 2+ other lines of 2+ payees."""
+    pair, payees = collections.Counter(), collections.defaultdict(set)
+    for r in rows:
+        k = (r["TransDate"][:10], r["Amt"])
+        pair[k] += 1
+        payees[k].add(r["Payee"])
+    n, rep = collections.Counter(), collections.Counter()
+    for r in rows:
+        k = (r["TransDate"][:10], r["Amt"])
+        n[r["TransDate"][:7]] += 1
+        rep[r["TransDate"][:7]] += pair[k] >= 3 and len(payees[k]) >= 2
+    return {m for m in n if rep[m] > BROKEN_SHARE * n[m]}
+
+
+def entity_rows(eid, entity, by_id, stats):
+    """The entity's published lines: fire lines from FIRST_FY, re-uploads once, broken-upload months dropped."""
+    seen, rows = set(), []
+    for rid in sorted(by_id, key=int):
+        r = by_id[rid]
+        if int(r["TransDate"][:4]) < FIRST_FY or not is_fire_line(entity["kind"], r):
+            stats["outside"] += 1
+            continue
+        key = (r["TransactionId"], r["TransDate"], r["Payee"], r["FundCode"], r["DeptCode"], r["ObjCode"], r["Amt"])
+        if key in seen:
+            stats["reuploads"] += 1
+            stats["reupload_dollars"] += money(r["Amt"])
+            continue
+        seen.add(key)
+        rows.append(r)
+    broken = broken_months(rows)
+    for m in sorted(broken):
+        lines = [r for r in rows if r["TransDate"][:7] == m]
+        stats["broken_lines"] += len(lines)
+        stats["broken_dollars"] += sum(money(r["Amt"]) for r in lines)
+        print(f"  {entity['name']}: {m}: {len(lines)} lines dropped (upload carries batch totals, "
+              f"${sum(money(r['Amt']) for r in lines):,.2f})")
+    return [r for r in rows if r["TransDate"][:7] not in broken]
 
 
 def normalize():
@@ -570,24 +622,13 @@ def normalize():
         link = links[eid]
         entity, by_id = entity_lines(d / f"entity_{eid}.json.gz")
         assert entity["name"] == link["source_entity_name"], f"link {eid}: {entity['name']!r} != {link}"
-        seen = {}
-        for rid in sorted(by_id, key=int):
-            r = by_id[rid]
-            fy = int(r["TransDate"][:4])
-            if fy < FIRST_FY or not is_fire_line(entity["kind"], r):
-                stats["outside"] += 1
-                continue
-            key = (r["TransactionId"], r["TransDate"], r["Payee"], r["FundCode"], r["DeptCode"], r["ObjCode"], r["Amt"])
-            if key in seen:
-                stats["reuploads"] += 1
-                continue
-            seen[key] = rid
+        for r in entity_rows(eid, entity, by_id, stats):
             out.append({
-                "agency_id": link["agency_id"], "fiscal_year": str(fy), "posting_date": r["TransDate"][:10],
+                "agency_id": link["agency_id"], "fiscal_year": r["TransDate"][:4], "posting_date": r["TransDate"][:10],
                 "payee_name": common.withhold_person(r["Payee"]), "description": "",
                 "account": " / ".join([label(r, "Fund"), label(r, "Dept"), label(r, "Obj")]),
                 "category_published": r["ObjDescription"], "amount": str(money(r["Amt"])),
-                "source_record_id": f"{eid}-{rid}"})
+                "source_record_id": f"{eid}-{r['Id']}"})
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, out)
     years = sorted({int(r["fiscal_year"]) for r in out})
     last = max(r["posting_date"] for r in out)
@@ -601,8 +642,12 @@ def normalize():
                 f"entity (latest payment {last}); FY{years[-1]} partial"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in out)
+    neg = [r for r in out if r["amount"].startswith("-")]
     print(f"{ST}: {SOURCE}: {len(out)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}, {len(links)} agencies; "
-          f"{stats['reuploads']} re-uploaded lines dropped; {stats['outside']} fetched lines outside the rule or years")
+          f"{stats['reuploads']} re-uploaded lines dropped (${stats['reupload_dollars']:,.2f}); "
+          f"{stats['broken_lines']} lines of broken-upload months dropped (${stats['broken_dollars']:,.2f}); "
+          f"{stats['outside']} fetched lines outside the rule or years; {len(neg)} negative lines "
+          f"(${sum(decimal.Decimal(r['amount']) for r in neg):,.2f}) kept")
 
 
 def register_source(row):
