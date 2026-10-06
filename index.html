@@ -155,7 +155,7 @@ footer { border-top: 1px solid var(--rule); padding: 12px 0 24px; font-size: .82
     <p class="site-title"><a href="#/" id="home-link">Utah fire agency vendor payments</a><span class="asof" id="asof"></span></p>
     <p class="lede" id="lede">Net payments from Utah fire districts and interlocal fire agencies to vendors, FY2021 to FY2026, as reported to Transparent Utah.</p>
     <nav class="nav" aria-label="Main">
-      <a href="#/" id="nav-cats">Categories</a><a href="#/agencies" id="nav-agencies">Agencies</a><a href="#/about" id="nav-about">About</a>
+      <a href="#/" id="nav-cats">Categories</a><a href="#/vendors" id="nav-vendors">Vendors</a><a href="#/agencies" id="nav-agencies">Agencies</a><a href="#/about" id="nav-about">About</a>
     </nav>
   </div>
 </header>
@@ -507,6 +507,10 @@ const Core = (function () {
       byVendor: agg(rows, r => r[1]), byCat: agg(rows, r => ix.vcat[r[1]]),
     };
   }
+  function vendorsModel(ix, g) {
+    const rows = selectRows(ix, g, {});
+    return { peers: peerIds(ix, g), rows, sum: summary(rows), byVendor: agg(rows, r => r[1]) };
+  }
   function agenciesModel(ix, g) {
     const rows = selectRows(ix, g, {});
     // year: latest fully reported year in the range, for the people paid and revenue columns
@@ -521,7 +525,7 @@ const Core = (function () {
     TYPES, STAFF, SIZES, buildIndex, normGlobal, peerIds, selectRows, agg, summary, grantsIn,
     selectPayments, paymentsModel, fullYear, staffModel, revenueModel, peopleIn, revenueIn, fyStarts,
     searchRe, searchCategories,
-    homeModel, categoryModel, vendorModel, agencyModel, agenciesModel, rowsModel,
+    homeModel, categoryModel, vendorModel, agencyModel, vendorsModel, agenciesModel, rowsModel,
   };
 })();
 
@@ -1364,6 +1368,36 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   }
 
   // Agencies in the current peer set
+  // Vendors: every vendor the filtered agencies paid in the range, with total received and agency count
+  function viewVendors() {
+    const m = Core.vendorsModel(ix, G);
+    let h = '<h1 tabindex="-1">Vendors</h1>';
+    if (!m.rows.length) {
+      h += '<p>' + (m.peers.size ? 'No payments by the ' + plural(m.peers.size, 'agency', 'agencies') + ' in the current filters, ' + esc(yearSpan(G)) + '.'
+        : 'No agencies match the current filters.') + '</p>';
+      return { title: 'Vendors', html: h };
+    }
+    h += '<p>' + plural(m.sum.ve.size, 'vendor', 'vendors') + ' paid by ' + agOf(m.sum.ag.size, m.peers.size) + ', ' + esc(yearSpan(G)) + '.</p>';
+    const vf = o => ({ vendor: V()[o.key].id });
+    h += table({
+      id: 'vendors', title: 'Vendors', file: 'vendors',
+      rows: [...m.byVendor.values()],
+      cols: [
+        { key: 'vendor', label: 'Vendor', th: true, val: o => V()[o.key].name, html: o => venLink(o.key) },
+        { key: 'paid', label: 'Received ' + shortSpan(G), labelHtml: 'Received <span class="nw">' + esc(shortSpan(G)) + '</span>', num: true,
+          val: o => o.spend, html: o => R(vf(o), money(o.spend)) },
+        { key: 'agencies', label: 'Agencies', num: true, val: o => o.ag.size, html: o => A(venHref(o.key), int(o.ag.size)) },
+        { key: 'cat', label: 'Category', opt: true, val: o => ix.cat.get(V()[o.key].category).name, html: o => catLink(V()[o.key].category) },
+        lastCol(vf),
+      ],
+      sort: [['paid', 'desc'], ['vendor', 'asc']],
+      foot: [['All vendors', R({}, money(m.sum.spend)), int(m.sum.ag.size), '', '']],
+    });
+    h += '<p class="note">Received: net payments from the agencies in the current filters, ' + (G.np ? 'all payments' : 'purchasing categories') + '. ' +
+      'Agencies: agencies with a positive net payment to the vendor in at least one year of the range. Vendors with only refunds or credits in the range are listed but not counted.</p>';
+    return { title: 'Vendors', html: h };
+  }
+
   function viewAgencies() {
     const m = Core.agenciesModel(ix, G);
     let h = '<h1 tabindex="-1">Agencies</h1>';
@@ -1579,6 +1613,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const p = new URLSearchParams(extra).toString();
     $('f-reset').href = '#' + path + (p ? '?' + p : '');
     $('nav-cats').href = href('/');
+    $('nav-vendors').href = href('/vendors');
     $('nav-agencies').href = href('/agencies');
     $('nav-about').href = href('/about');
     $('home-link').href = href('/');
@@ -1597,6 +1632,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       case 'category': v = viewCategory(parts[1]); break;
       case 'vendor': v = viewVendor(parts[1]); break;
       case 'agency': v = viewAgency(parts[1]); break;
+      case 'vendors': v = viewVendors(); break;
       case 'agencies': v = viewAgencies(); break;
       case 'rows': v = viewRows(q); break;
       case 'about': v = viewAbout(); break;
@@ -1617,9 +1653,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       main.innerHTML = '<h1 tabindex="-1">Something went wrong</h1><p>This page could not be shown. ' + A('#/', 'Back to categories') + '.</p>';
       document.title = 'Error – ' + SITE;
     }
-    const section = parts[0] === 'about' ? 'about' : parts[0] === 'agencies' ? 'agencies'
+    const section = parts[0] === 'about' ? 'about'
+      : (parts[0] === 'agencies' || parts[0] === 'agency') ? 'agencies'
+      : (parts[0] === 'vendors' || parts[0] === 'vendor') ? 'vendors'
       : (parts[0] === undefined || parts[0] === 'category') ? 'cats' : '';
-    for (const s of ['cats', 'agencies', 'about']) $('nav-' + s).toggleAttribute('aria-current', false);
+    for (const s of ['cats', 'vendors', 'agencies', 'about']) $('nav-' + s).toggleAttribute('aria-current', false);
     if (section) $('nav-' + section).setAttribute('aria-current', 'page');
     $('controls').hidden = parts[0] === 'about';
     fitRegions(main);
