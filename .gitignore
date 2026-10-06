@@ -4,3 +4,4 @@ __pycache__/
 .claude/settings.local.json
 # Raw downloads include private persons named as payees; kept local until a decision on publishing them
 raw/
+.claude/scheduled_tasks.lock
