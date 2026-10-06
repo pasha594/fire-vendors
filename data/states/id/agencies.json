@@ -1,11 +1,32 @@
 {
  "state": "ID",
- "sources": [],
+ "sources": [
+  {
+   "source": "id_lgr",
+   "name": "Idaho Local Government Registry (Transparent Idaho): fire district totals",
+   "tier": "3",
+   "url": "https://transparent.idaho.gov/local-district",
+   "years": "2021-2024",
+   "fiscal_year": "District FY, Oct-Sep or Jan-Dec (Idaho Code 31-1422), the year it ends in",
+   "fetched": "2026-10-06",
+   "note": "Total actual expenditures (all funds) each fire district files with the State Controller; no vendor detail; the newest year has budgets only, so no row"
+  },
+  {
+   "source": "id_state",
+   "name": "Transparent Idaho state transactions (Idaho Department of Lands fire program)",
+   "tier": "1",
+   "url": "https://idaho.opengov.com/transparency-reporting/idaho/2b17eed6-3282-4416-ab38-656795512745/9711ec09-4057-47c6-8ebc-1f27ee4261d3?savedViewId=79113c65-e697-4dd8-a78a-9e92aca0d6d8",
+   "years": "2021-2027",
+   "fiscal_year": "Idaho state FY, Jul-Jun",
+   "fetched": "2026-10-06",
+   "note": "Idaho Department of Lands Forest and Range Fire Protection program (agency 320, function 07H), including fire suppression paid from deficiency warrants; payroll left out; state fire agency"
+  }
+ ],
  "coverage_counts": {
-  "1": 0,
+  "1": 1,
   "2": 0,
-  "3": 0,
-  "4": 198
+  "3": 156,
+  "4": 101
  },
  "agencies": [
   {
@@ -39,8 +60,9 @@
    "county": "Ada",
    "city": "Garden City",
    "usfa_fdid": "01236",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -62,8 +84,9 @@
    "county": "Ada",
    "city": "Kuna",
    "usfa_fdid": "01246",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -108,8 +131,9 @@
    "county": "Ada",
    "city": "Star",
    "usfa_fdid": "01342",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -131,8 +155,9 @@
    "county": "Idaho",
    "city": "Eagle",
    "usfa_fdid": "01344",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -201,8 +226,9 @@
    "county": "Adams",
    "city": "Indian Valley",
    "usfa_fdid": "03334",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -225,8 +251,9 @@
    "county": "Adams",
    "city": "New Meadows",
    "usfa_fdid": "03340",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -318,8 +345,9 @@
    "county": "Bannock",
    "city": "Chubbuck",
    "usfa_fdid": "05323",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -341,8 +369,9 @@
    "county": "Bannock",
    "city": "Downey",
    "usfa_fdid": "05326",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -457,8 +486,9 @@
    "county": "Benewah",
    "city": "Plummer",
    "usfa_fdid": "09302",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -481,8 +511,9 @@
    "county": "Benewah",
    "city": "St Maries",
    "usfa_fdid": "09320",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -504,8 +535,9 @@
    "county": "Benewah",
    "city": "Fernwood",
    "usfa_fdid": "09330",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -550,8 +582,9 @@
    "county": "Benewah",
    "city": "Saint Maries",
    "usfa_fdid": "09366",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -597,8 +630,9 @@
    "county": "Bingham",
    "city": "Firth",
    "usfa_fdid": "11301",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -620,8 +654,9 @@
    "county": "Bingham",
    "city": "Aberdeen",
    "usfa_fdid": "11303",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -783,8 +818,9 @@
    "county": "Clearwater",
    "city": "Carey",
    "usfa_fdid": "13354",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -806,8 +842,9 @@
    "county": "Boise",
    "city": "Placerville",
    "usfa_fdid": "15301",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -854,8 +891,9 @@
    "county": "Boise",
    "city": "Garden Valley",
    "usfa_fdid": "15311",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -901,8 +939,9 @@
    "county": "Boise",
    "city": "Idaho City",
    "usfa_fdid": "15324",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -1064,8 +1103,9 @@
    "county": "Bonner",
    "city": "Priest Lake",
    "usfa_fdid": "17319",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -1087,8 +1127,9 @@
    "county": "Bonner",
    "city": "Ponderay",
    "usfa_fdid": "17333",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -1111,8 +1152,9 @@
    "county": "Bonner",
    "city": "Sandpoint",
    "usfa_fdid": "17335",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -1135,8 +1177,9 @@
    "county": "Bonner",
    "city": "Priest River",
    "usfa_fdid": "17337",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -1159,8 +1202,9 @@
    "county": "Bonner",
    "city": "Coolin",
    "usfa_fdid": "17339",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -1183,8 +1227,9 @@
    "county": "Bonner",
    "city": "Sandpoint",
    "usfa_fdid": "17341",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -1207,8 +1252,9 @@
    "county": "Bonner",
    "city": "Coolin",
    "usfa_fdid": "17344",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -1230,8 +1276,9 @@
    "county": "Bonner",
    "city": "Sandpoint",
    "usfa_fdid": "17349",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -1254,8 +1301,9 @@
    "county": "Bonner",
    "city": "Hope",
    "usfa_fdid": "17360",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -1348,8 +1396,9 @@
    "county": "Bonneville",
    "city": "Swan Valley",
    "usfa_fdid": "19340",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -1487,8 +1536,9 @@
    "county": "Boundary",
    "city": "Naples",
    "usfa_fdid": "21346",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -1511,8 +1561,9 @@
    "county": "Boundary",
    "city": "Bonners Ferry",
    "usfa_fdid": "21348",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -1580,8 +1631,9 @@
    "county": "Butte",
    "city": "Moore",
    "usfa_fdid": "23341",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -1603,8 +1655,9 @@
    "county": "Blaine",
    "city": "West Magic",
    "usfa_fdid": "25340",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -1672,8 +1725,9 @@
    "county": "Canyon",
    "city": "Wilder",
    "usfa_fdid": "27307",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -1695,8 +1749,9 @@
    "county": "Canyon",
    "city": "Middleton",
    "usfa_fdid": "27336",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -1719,8 +1774,9 @@
    "county": "Canyon",
    "city": "Parma",
    "usfa_fdid": "27338",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -1742,8 +1798,9 @@
    "county": "Canyon",
    "city": "Nampa",
    "usfa_fdid": "27339",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -1765,8 +1822,9 @@
    "county": "Canyon",
    "city": "Melba",
    "usfa_fdid": "27344",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -1857,8 +1915,9 @@
    "county": "Cassia",
    "city": "Albion",
    "usfa_fdid": "31342",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -1949,8 +2008,9 @@
    "county": "Clearwater",
    "city": "Orofino",
    "usfa_fdid": "35305",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -1995,8 +2055,9 @@
    "county": "Clearwater",
    "city": "Weippe",
    "usfa_fdid": "35312",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2018,8 +2079,9 @@
    "county": "Clearwater",
    "city": "Lenore",
    "usfa_fdid": "35338",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2041,8 +2103,9 @@
    "county": "Clearwater",
    "city": "Lenore",
    "usfa_fdid": "35341",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2064,8 +2127,9 @@
    "county": "Custer",
    "city": "Stanley",
    "usfa_fdid": "37301",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2133,8 +2197,9 @@
    "county": "Custer",
    "city": "Challis",
    "usfa_fdid": "37334",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2202,8 +2267,9 @@
    "county": "Elmore",
    "city": "Mountain Home",
    "usfa_fdid": "39334",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2225,8 +2291,9 @@
    "county": "Elmore",
    "city": "Glenns Ferry",
    "usfa_fdid": "39336",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2248,8 +2315,9 @@
    "county": "Elmore",
    "city": "Atlanta",
    "usfa_fdid": "39338",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2271,8 +2339,9 @@
    "county": "Franklin",
    "city": "Preston",
    "usfa_fdid": "41301",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2294,8 +2363,9 @@
    "county": "Fremont",
    "city": "Macks Inn",
    "usfa_fdid": "43334",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -2318,8 +2388,9 @@
    "county": "Fremont",
    "city": "Ashton",
    "usfa_fdid": "43336",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2341,8 +2412,9 @@
    "county": "Fremont",
    "city": "Saint Anthony",
    "usfa_fdid": "43338",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2387,8 +2459,9 @@
    "county": "Gem",
    "city": "Emmett",
    "usfa_fdid": "45334",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2410,8 +2483,9 @@
    "county": "Gem",
    "city": "Sweet",
    "usfa_fdid": "45339",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2479,8 +2553,9 @@
    "county": "Gooding",
    "city": "Hagerman",
    "usfa_fdid": "47323",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2502,8 +2577,9 @@
    "county": "Idaho",
    "city": "Wendell",
    "usfa_fdid": "47335",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2525,8 +2601,9 @@
    "county": "Gooding",
    "city": "Bliss",
    "usfa_fdid": "47341",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2687,8 +2764,9 @@
    "county": "Idaho",
    "city": "Cottonwood",
    "usfa_fdid": "49335",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -2804,8 +2882,9 @@
    "county": "Idaho",
    "city": "Harpster",
    "usfa_fdid": "49362",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2850,8 +2929,9 @@
    "county": "Jefferson",
    "city": "Rigby",
    "usfa_fdid": "51334",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -2898,8 +2978,9 @@
    "county": "Jerome",
    "city": "Eden",
    "usfa_fdid": "53353",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -2945,8 +3026,9 @@
    "county": "Kootenai",
    "city": "Post Falls",
    "usfa_fdid": "55234",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -2969,8 +3051,9 @@
    "county": "Kootenai",
    "city": "Worley",
    "usfa_fdid": "55336",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -2993,8 +3076,9 @@
    "county": "Kootenai",
    "city": "Spirit Lake",
    "usfa_fdid": "55338",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -3016,8 +3100,9 @@
    "county": "Kootenai",
    "city": "Hayden",
    "usfa_fdid": "55342",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -3040,8 +3125,9 @@
    "county": "Kootenai",
    "city": "Hauser",
    "usfa_fdid": "55346",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -3064,8 +3150,9 @@
    "county": "Kootenai",
    "city": "Athol",
    "usfa_fdid": "55352",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -3088,8 +3175,9 @@
    "county": "Kootenai",
    "city": "Coeur d' Alene",
    "usfa_fdid": "55354",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -3112,8 +3200,9 @@
    "county": "Kootenai",
    "city": "Harrison",
    "usfa_fdid": "55360",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -3251,8 +3340,9 @@
    "county": "Latah",
    "city": "Genesee",
    "usfa_fdid": "57338",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -3297,8 +3387,9 @@
    "county": "Latah",
    "city": "Deary",
    "usfa_fdid": "57342",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -3321,8 +3412,9 @@
    "county": "Lemhi",
    "city": "Salmon",
    "usfa_fdid": "59310",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -3367,8 +3459,9 @@
    "county": "Lemhi",
    "city": "Salmon",
    "usfa_fdid": "59330",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -3390,8 +3483,9 @@
    "county": "Lemhi",
    "city": "North Fork",
    "usfa_fdid": "59333",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -3505,8 +3599,9 @@
    "county": "Lewis",
    "city": "Kamiah",
    "usfa_fdid": "61335",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -3529,8 +3624,9 @@
    "county": "Lincoln",
    "city": "Shoshone",
    "usfa_fdid": "63301",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -3553,8 +3649,9 @@
    "county": "Lincoln",
    "city": "Dietrich",
    "usfa_fdid": "63306",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -3622,8 +3719,9 @@
    "county": "Minidoka",
    "city": "Paul",
    "usfa_fdid": "67334",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -3646,8 +3744,9 @@
    "county": "Minidoka",
    "city": "Heyburn",
    "usfa_fdid": "67336",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -3762,8 +3861,9 @@
    "county": "Nez Perce",
    "city": "Peck",
    "usfa_fdid": "69333",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -3786,8 +3886,9 @@
    "county": "Nez Perce",
    "city": "Lewiston",
    "usfa_fdid": "69345",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -3809,8 +3910,9 @@
    "county": "Owyhee",
    "city": "Homedale",
    "usfa_fdid": "73334",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -3832,8 +3934,9 @@
    "county": "Owyhee",
    "city": "Marsing",
    "usfa_fdid": "73336",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -3855,8 +3958,9 @@
    "county": "Owyhee",
    "city": "Grand View",
    "usfa_fdid": "73338",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -3879,8 +3983,9 @@
    "county": "Owyhee",
    "city": "Bruneau",
    "usfa_fdid": "73340",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -3902,8 +4007,9 @@
    "county": "Owyhee",
    "city": "Melba",
    "usfa_fdid": "73342",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -3995,8 +4101,9 @@
    "county": "Power",
    "city": "Rockland",
    "usfa_fdid": "77306",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -4065,8 +4172,9 @@
    "county": "Shoshone",
    "city": "Osburn",
    "usfa_fdid": "79236",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -4135,8 +4243,9 @@
    "county": "Shoshone",
    "city": "Mullan",
    "usfa_fdid": "79316",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -4158,8 +4267,9 @@
    "county": "Teton",
    "city": "Driggs",
    "usfa_fdid": "81334",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -4250,8 +4360,9 @@
    "county": "Twin Falls",
    "city": "Kimberly",
    "usfa_fdid": "83334",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -4297,8 +4408,9 @@
    "county": "Idaho",
    "city": "Castleford",
    "usfa_fdid": "83340",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -4320,8 +4432,9 @@
    "county": "Twin Falls",
    "city": "Twin Falls",
    "usfa_fdid": "83349",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -4343,8 +4456,9 @@
    "county": "Valley",
    "city": "Donnelly",
    "usfa_fdid": "85304",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -4366,8 +4480,9 @@
    "county": "Valley",
    "city": "Cascade",
    "usfa_fdid": "85334",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -4390,8 +4505,9 @@
    "county": "Valley",
    "city": "McCall",
    "usfa_fdid": "85339",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -4437,8 +4553,9 @@
    "county": "Washington",
    "city": "Cambridge",
    "usfa_fdid": "87330",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -4461,8 +4578,9 @@
    "county": "Washington",
    "city": "Weiser",
    "usfa_fdid": "87334",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -4485,8 +4603,9 @@
    "county": "Washington",
    "city": "Midvale",
    "usfa_fdid": "87336",
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "openfema",
     "usfa"
    ],
@@ -4555,11 +4674,12 @@
    "county": "Kootenai",
    "city": "Coeur D Alene",
    "usfa_fdid": null,
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "id_state",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "07",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -4578,8 +4698,9 @@
    "county": "Blaine",
    "city": "Stanley",
    "usfa_fdid": null,
-   "coverage": 4,
+   "coverage": 3,
    "sources": [
+    "id_lgr",
     "usfa"
    ],
    "fy_start": null,
@@ -4614,6 +4735,960 @@
     "volunteer": 0,
     "paid_per_call": 0
    },
+   "grants": 0
+  },
+  {
+   "id": "ID-S-ace-fire-district",
+   "state": "ID",
+   "name": "Ace Fire District",
+   "kind": "Fire district",
+   "county": "Cassia",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-american-falls-rural-fire-protection-district",
+   "state": "ID",
+   "name": "American Falls Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Power",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-arimo-fire-district",
+   "state": "ID",
+   "name": "Arimo Fire District",
+   "kind": "Fire district",
+   "county": "Bannock",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-arrow-junction-fire-protection-district",
+   "state": "ID",
+   "name": "Arrow Junction Fire Protection District",
+   "kind": "Fire district",
+   "county": "Nez Perce",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-bailey-creek-fire-protection-district",
+   "state": "ID",
+   "name": "Bailey Creek Fire Protection District",
+   "kind": "Fire district",
+   "county": "Bear Lake; Caribou",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-bc-south-fire-district-protection-district",
+   "state": "ID",
+   "name": "BC South Fire District Protection District",
+   "kind": "Fire district",
+   "county": "Blaine",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-bear-lake-county-fire-district",
+   "state": "ID",
+   "name": "Bear Lake County Fire District",
+   "kind": "Fire district",
+   "county": "Bear Lake",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-blackfoot-snake-river-fire-protection-district",
+   "state": "ID",
+   "name": "Blackfoot-Snake River Fire Protection District",
+   "kind": "Fire district",
+   "county": "Bingham",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-bonneville-alpine-fire-district-4",
+   "state": "ID",
+   "name": "Bonneville-Alpine Fire District 4",
+   "kind": "Fire district",
+   "county": "Bonneville",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-bonneville-county-fire-district-1",
+   "state": "ID",
+   "name": "Bonneville County Fire District #1",
+   "kind": "Fire district",
+   "county": "Bonneville",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-buhl-rural-fire-protection-district",
+   "state": "ID",
+   "name": "Buhl Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Twin Falls",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-caldwell-rural-fire-protection-district",
+   "state": "ID",
+   "name": "Caldwell Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Canyon",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-council-volunteer-fire-district",
+   "state": "ID",
+   "name": "Council Volunteer Fire District",
+   "kind": "Fire district",
+   "county": "Adams",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-east-priest-lake-fire-protection-district",
+   "state": "ID",
+   "name": "East Priest Lake Fire Protection District",
+   "kind": "Fire district",
+   "county": "Bonner",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-eastern-power-county-fire-district",
+   "state": "ID",
+   "name": "Eastern Power County Fire District",
+   "kind": "Fire district",
+   "county": "Power",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-filer-rural-fire-protection-district",
+   "state": "ID",
+   "name": "Filer Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Twin Falls",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-freedom-fire-district",
+   "state": "ID",
+   "name": "Freedom Fire District",
+   "kind": "Fire district",
+   "county": "Caribou",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-gooding-rural-fire-district",
+   "state": "ID",
+   "name": "Gooding Rural Fire District",
+   "kind": "Fire district",
+   "county": "Gooding",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-grangemont-volunteer-fire-district",
+   "state": "ID",
+   "name": "Grangemont Volunteer Fire District",
+   "kind": "Fire district",
+   "county": "Clearwater",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-grangeville-rural-fire-district",
+   "state": "ID",
+   "name": "Grangeville Rural Fire District",
+   "kind": "Fire district",
+   "county": "Idaho",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-greer-rural-fire-district",
+   "state": "ID",
+   "name": "Greer Rural Fire District",
+   "kind": "Fire district",
+   "county": "Clearwater",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-hamer-fire-district",
+   "state": "ID",
+   "name": "Hamer Fire District",
+   "kind": "Fire district",
+   "county": "Fremont; Jefferson",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-horseshoe-bend-fire-protection-district",
+   "state": "ID",
+   "name": "Horseshoe Bend Fire Protection District",
+   "kind": "Fire district",
+   "county": "Boise",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-jackson-creek-fire-protection-district",
+   "state": "ID",
+   "name": "Jackson Creek Fire Protection District",
+   "kind": "Fire district",
+   "county": "Bannock",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-jerome-rural-fire-district-1",
+   "state": "ID",
+   "name": "Jerome Rural Fire District #1",
+   "kind": "Fire district",
+   "county": "Jerome",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-ketchum-fire-district",
+   "state": "ID",
+   "name": "Ketchum Fire District",
+   "kind": "Fire district",
+   "county": "Blaine",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 4,
+   "sources": [],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-lava-rural-fire-district",
+   "state": "ID",
+   "name": "Lava Rural Fire District",
+   "kind": "Fire district",
+   "county": "Bannock",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-madison-county-fire-protection-district",
+   "state": "ID",
+   "name": "Madison County Fire Protection District",
+   "kind": "Fire district",
+   "county": "Madison",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-mccammon-rural-fire-district",
+   "state": "ID",
+   "name": "McCammon Rural Fire District",
+   "kind": "Fire district",
+   "county": "Bannock",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-meridian-rural-fire-protection-district",
+   "state": "ID",
+   "name": "Meridian Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Ada",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-moscow-rural-fire-district",
+   "state": "ID",
+   "name": "Moscow Rural Fire District",
+   "kind": "Fire district",
+   "county": "Latah",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-nampa-fire-protection-district",
+   "state": "ID",
+   "name": "Nampa Fire Protection District",
+   "kind": "Fire district",
+   "county": "Canyon",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-new-plymouth-fire-protection-district",
+   "state": "ID",
+   "name": "New Plymouth Fire Protection District",
+   "kind": "Fire district",
+   "county": "Payette",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-nezperce-rural-fire-protection-district",
+   "state": "ID",
+   "name": "Nezperce Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Lewis",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-north-blaine-county-fire-district",
+   "state": "ID",
+   "name": "North Blaine County Fire District",
+   "kind": "Fire district",
+   "county": "Blaine",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-north-cassia-rural-fire-district",
+   "state": "ID",
+   "name": "North Cassia Rural Fire District",
+   "kind": "Fire district",
+   "county": "Cassia",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-north-latah-fire-district",
+   "state": "ID",
+   "name": "North Latah Fire District",
+   "kind": "Fire district",
+   "county": "Latah",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-oakley-fire-protection-district",
+   "state": "ID",
+   "name": "Oakley Fire Protection District",
+   "kind": "Fire district",
+   "county": "Cassia",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-oasis-volunteer-fire-dept",
+   "state": "ID",
+   "name": "Oasis Volunteer Fire Dept., Inc.",
+   "kind": "Volunteer fire department",
+   "county": "Elmore",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-oneida-county-fire-district",
+   "state": "ID",
+   "name": "Oneida County Fire District",
+   "kind": "Fire district",
+   "county": "Oneida",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-orofino-rural-fire-district",
+   "state": "ID",
+   "name": "Orofino Rural Fire District",
+   "kind": "Fire district",
+   "county": "Clearwater",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-pocatello-valley-fire-protection-district",
+   "state": "ID",
+   "name": "Pocatello Valley Fire Protection District",
+   "kind": "Fire district",
+   "county": "Bannock",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-potlatch-rural-fire-district",
+   "state": "ID",
+   "name": "Potlatch Rural Fire District",
+   "kind": "Fire district",
+   "county": "Latah",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 4,
+   "sources": [],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-raft-river-fire-protection-district",
+   "state": "ID",
+   "name": "Raft River Fire Protection District",
+   "kind": "Fire district",
+   "county": "Cassia",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-richfield-fire-protection-district",
+   "state": "ID",
+   "name": "Richfield Fire Protection District",
+   "kind": "Fire district",
+   "county": "Lincoln",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-roberts-fire-district",
+   "state": "ID",
+   "name": "Roberts Fire District",
+   "kind": "Fire district",
+   "county": "Jefferson",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-sand-hollow-fire-protection-district",
+   "state": "ID",
+   "name": "Sand Hollow Fire Protection District",
+   "kind": "Fire district",
+   "county": "Payette",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-south-custer-rural-fire-district",
+   "state": "ID",
+   "name": "South Custer Rural Fire District",
+   "kind": "Fire district",
+   "county": "Custer",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-st-joe-valley-fire-district-4",
+   "state": "ID",
+   "name": "St. Joe Valley Fire District #4",
+   "kind": "Fire district",
+   "county": "Shoshone",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-sunset-fire-district",
+   "state": "ID",
+   "name": "Sunset Fire District",
+   "kind": "Fire district",
+   "county": "Ada",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-troy-rural-fire-district",
+   "state": "ID",
+   "name": "Troy Rural Fire District",
+   "kind": "Fire district",
+   "county": "Latah",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 4,
+   "sources": [],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-twin-falls-rural-fire-protection-district",
+   "state": "ID",
+   "name": "Twin Falls Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Twin Falls",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-upper-fords-creek-rural-fire-district",
+   "state": "ID",
+   "name": "Upper Fords Creek Rural Fire District",
+   "kind": "Fire district",
+   "county": "Clearwater",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-west-jefferson-fire-control",
+   "state": "ID",
+   "name": "West Jefferson Fire Control",
+   "kind": "Fire district",
+   "county": "Jefferson",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-whitney-fire-protection-district",
+   "state": "ID",
+   "name": "Whitney Fire Protection District",
+   "kind": "Fire district",
+   "county": "Ada",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-wilderness-ranch-fire-protection-district",
+   "state": "ID",
+   "name": "Wilderness Ranch Fire Protection District",
+   "kind": "Fire district",
+   "county": "Boise",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-winchester-rural-fire-district",
+   "state": "ID",
+   "name": "Winchester Rural Fire District",
+   "kind": "Fire district",
+   "county": "Lewis",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-wood-river-fire-protection-district",
+   "state": "ID",
+   "name": "Wood River Fire Protection District",
+   "kind": "Fire district",
+   "county": "Blaine",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-yellow-pine-fire-protection-district",
+   "state": "ID",
+   "name": "Yellow Pine Fire Protection District",
+   "kind": "Fire district",
+   "county": "Valley",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-yellow-pine-rural-fire-district",
+   "state": "ID",
+   "name": "Yellow Pine Rural Fire District",
+   "kind": "Fire district",
+   "county": "Valley",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
    "grants": 0
   }
  ]
