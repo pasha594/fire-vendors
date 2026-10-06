@@ -24,8 +24,9 @@ normalize  data/states/ca/transactions.csv.gz   one row per invoice distribution
 Attribution: department_name FIRE (department number 38), linked to CA-19105 in agency_sources.csv. Purchases
 other City departments make for the Fire Department (General Services fleet and fuel, ITA) are not included.
 
-Payees: shown as published (owner decision of 2026-10-06), including the City's own "PRIVACY-FIRE" placeholder and
-the persons named on revenue refunds (ambulance charges, fire department services, plan checking fees);
+Payees: shown as published (owner decision of 2026-10-06). The City itself publishes almost every refund of
+ambulance charges, fire department services and plan checking fees to "PRIVACY-FIRE" (in the 2026-10-06 pull
+12,802 of 12,808 ambulance-charge refund lines); the few refund payees it names are shown as named.
 common.withhold_person cuts only email and bank account text.
 
 Duplicates and reversals: lines identical in every kept column other than the Socrata row id are kept once.
