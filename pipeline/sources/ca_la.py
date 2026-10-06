@@ -132,7 +132,8 @@ def normalize():
         "url": f"{DOMAIN}/d/{DATASET}", "years": f"{years[0]}-{years[-1]}",
         "fiscal_year": "City of Los Angeles FY, Jul-Jun", "fetched": d.parent.parent.name,
         "note": "Los Angeles Fire Department (department 38) invoice lines; cancelled checks are negative lines; "
-                "refunds of ambulance and fire service charges are shown without payee names; purchases other City "
+                "the City publishes most refunds of ambulance and fire service charges to PRIVACY-FIRE instead of "
+                "the payee; purchases other City "
                 f"departments make for Fire are not included; FY{years[-1]} partial (payments through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)

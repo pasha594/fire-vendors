@@ -2,6 +2,9 @@ agency_id,source,source_entity_id,source_entity_name,fy_start,match_method,note
 CA-33025,ca_corona,30,FIRE,07,department code,registry name: Corona Fire Department
 CA-00555,ca_fiscal,3540,CAL FIRE,07,department code,"state fire agency (PRD open question), business unit 3540, whole department; the registry's regional CAL FIRE rows are not linked"
 CA-19105,ca_la,38,FIRE,07,department code,department 38 FIRE; registry name: Los Angeles Fire Department
+CA-33054,ca_moreno_valley,,Fire - Office of Emergency Mgmt,07,manual,City of Moreno Valley Fire department; registry name: Moreno Valley Fire Service
+CA-33054,ca_moreno_valley,,Fire Operations,07,manual,City of Moreno Valley Fire department; registry name: Moreno Valley Fire Service
+CA-33054,ca_moreno_valley,,Fire Prevention,07,manual,City of Moreno Valley Fire department; registry name: Moreno Valley Fire Service
 CA-33090,ca_riverside_county,,Fire Protection,07,department code,"County department Fire Protection; registry also lists the same operation as Cal Fire - Riverside County Fire Department (CA-33555), not linked"
 CA-01005,ca_sco_cities,1480,Alameda,07,exact name,registry name: City of Alameda Fire Department
 CA-01010,ca_sco_cities,1479,Albany,07,exact name,registry name: Albany Fire Department

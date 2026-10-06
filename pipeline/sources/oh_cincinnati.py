@@ -40,19 +40,14 @@ the 2026-10-06 pull). Lines with the same vendor, amount and date on one check a
 are kept. Credits (mostly purchasing-card credits from U.S. Bank and Fifth Third) are negative lines and kept,
 so they net out.
 
-Payees: common.withhold_person, plus local rules (Payees.publish, missed_person) for names it misses ("Last First
-M.", a generational suffix such as "III", "Mr Name", a trailing tag after "First M. Last"), and every payee of the
-"Uniform And Other Allowance" account (payments to individual employees and retirees) is withheld. Business names
-that common.looks_like_person over-matches ("UC HEALTH", "T-Mobile USA") are published when a reviewed row of
-config/states/oh/vendor_map_additions.csv claims them, as config/vendor_map.csv rows do inside common. A name
-common.is_person matches ("OHD, LLLP") stays withheld even when claimed.
+Payees: published as the source has them (owner decision, 2026-10-06), through common.withhold_person, which
+only cuts payee text with an email address or bank account text.
 """
 import collections
 import csv
 import decimal
 import io
 import json
-import re
 import sys
 
 import common
@@ -67,8 +62,6 @@ COLUMNS = ["fiscal_year", "acct_period", "dept_code", "dept_desc", "fund_code", 
            "exp_acct_cat_desc", "trans_id", "trans_line_no", "record_date", "check_no", "amount", "vendor_name"]
 # Departments whose names match common.FIRE_NAME but are not the fire department.
 NOT_FIRE = {"922": "Police & Fire Fighter's Ins: insurance shared by police and fire"}
-# Expense accounts whose payees are individual people (employees, retirees): always withheld.
-PERSON_ACCOUNTS = {"Uniform And Other Allowance"}
 # Citywide vehicle accounts (context for the note only; never attributed) and the apparatus and ambulance makers
 # or dealers paid from 981 for the Fire Department: Vogelpohl Fire Equipment (fire apparatus dealer) and Halcore
 # Group (Horton and Leader ambulances). Reviewed by hand on 2026-10-06.
@@ -147,58 +140,6 @@ def apparatus_outside(d):
                if r["dept_code"] == "981" and r["vendor_name"] in APPARATUS_VENDORS)
 
 
-# --- Payee names -----------------------------------------------------------------------------------------------
-
-SUFFIX = re.compile(r",?\s+(JR|SR|II|III|IV)\.?$", re.I)
-LAST_FIRST_INITIAL = re.compile(r"^[A-Za-z'\-]{2,} [A-Za-z'\-]{2,},? [A-Za-z]\.?$")      # "Wiley Ruth M."
-FIRST_INITIAL_LAST = re.compile(r"^[A-Za-z'\-]{2,} [A-Za-z]\.? [A-Za-z'\-]{2,}$")          # "Michael W Earls"
-TRAILING_TAG = re.compile(r"^(.+) [A-Za-z]{2,4}$")
-HONORIFIC = re.compile(r"^(MR|MRS|MS|DR)\.? [A-Za-z'\-]{2,}( [A-Za-z'\-]{2,})?$", re.I)          # "MR NYREN"
-
-
-def _claimed():
-    """name_keys that a reviewed vendor_map_additions row claims as a business (any category but individuals)."""
-    return {r["name_key"] for r in common.read_config(ST, "vendor_map_additions.csv") if r["category"] != "individuals"}
-
-
-def _redactions():
-    path = common.ROOT / "config" / "payee_name_redactions.csv"
-    with open(path, newline="", encoding="utf-8") as f:
-        return [re.compile(r["pattern"], re.I) for r in csv.DictReader(f)]
-
-
-def missed_person(name):
-    """Person-name shapes common.withhold_person does not catch."""
-    if common.BUSINESS_WORDS.search(name):
-        return False
-    base = SUFFIX.sub("", name).strip()
-    if base != name and (common.is_person(base) or common.looks_like_person(base)):
-        return True
-    if LAST_FIRST_INITIAL.match(name) or HONORIFIC.match(name):
-        return True
-    m = TRAILING_TAG.match(name)
-    return bool(m and FIRST_INITIAL_LAST.match(m.group(1)))
-
-
-class Payees:
-    def __init__(self):
-        self.claimed, self.redact = _claimed(), _redactions()
-
-    def publish(self, raw, account_desc):
-        name = " ".join((raw or "").split())
-        if account_desc in PERSON_ACCOUNTS:
-            return common.withhold_person(name, person_flag=True)
-        out = common.withhold_person(name)
-        claimed = common.norm(name) in self.claimed
-        if claimed and out == common.WITHHELD and not common.is_person(name):
-            # withheld only by looks_like_person, which over-matches short company names; a reviewed
-            # vendor_map_additions row says this one is a business (as vendor_map rows do inside common)
-            out = "Payee name withheld" if any(rx.search(name) for rx in self.redact) else name
-        if out == name and not claimed and missed_person(name):
-            out = common.WITHHELD
-        return out
-
-
 # --- Normalize -------------------------------------------------------------------------------------------------
 
 def read_raw(d):
@@ -227,7 +168,7 @@ def normalize():
     for r in raw:
         unique.setdefault(tuple(r[c] for c in COLUMNS), r)
     dropped = len(raw) - len(unique)
-    payees, ids, rows = Payees(), collections.Counter(), []
+    ids, rows = collections.Counter(), []
     cents = decimal.Decimal("0.01")
     for key in sorted(unique):
         r = unique[key]
@@ -240,7 +181,7 @@ def normalize():
         rows.append({
             "agency_id": codes[r["dept_code"]]["agency_id"], "fiscal_year": str(fy),
             "posting_date": r["record_date"][:10],
-            "payee_name": payees.publish(r["vendor_name"], r["exp_acct_cat_desc"]), "description": "",
+            "payee_name": common.withhold_person(r["vendor_name"]), "description": "",
             "account": " / ".join([r["dept_desc"], f"{r['fund_code']} {r['fund_desc']}",
                                    f"{r['exp_acct_cat']} {r['exp_acct_cat_desc']}"]),
             "category_published": r["exp_acct_cat_desc"],
@@ -262,7 +203,7 @@ def normalize():
                 f"card banks, so those merchants are not shown; FY{years[-1]} partial (payments through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
-    withheld = sum(r["payee_name"] == common.WITHHELD for r in rows)
+    withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
     print(f"{ST}: {SOURCE}: {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {dropped} exact duplicate "
           f"lines dropped; {withheld} lines with the payee withheld")
 

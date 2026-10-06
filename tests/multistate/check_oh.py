@@ -2,18 +2,25 @@
 
     python3 tests/multistate/check_oh.py
 
-Independent of the adapters' code (it never imports pipeline/sources/oh_*.py): reads the raw CSV pages with gzip
-and csv, applies the published filter (linked department codes, fiscal year 2021 on) and compares
-- the raw pages with the source's own server-side control totals per fiscal year and department;
+Independent of the adapters' code (it never imports pipeline/sources/oh_*.py): it reads the raw files with gzip,
+csv and json, applies each source's published rule and compares
+- oh_cincinnati: the raw CSV pages with the source's own server-side control totals per fiscal year and
+  department; the linked fire department codes, fiscal year 2021 on;
+- oh_checkbook_local: every linked participant's raw Tableau responses (underlying rows) with the summary totals
+  the same dashboard gave for the same filters; fire districts' whole checkbooks, and for townships, cities and
+  villages the lines whose fund or department is named for fire; calendar years 2021 on; one line per row Id,
+  re-uploads (same transaction id, date, payee, fund, department, object and amount under a new row Id) once;
 - lines and dollars per agency, source and fiscal year with data/states/oh/transactions.csv.gz;
 - every published line, field by field, with its raw line (agency, fiscal year, date, payee, account, amount).
-Also checks: the contract's column names and order; that every linked source entity is a fire department (not
-police, insurance, pension or the shared 911 center) and every fire-named department is linked or a known
-exclusion; agency ids, links and coverage tiers; duplicate source_record_ids; sort order; private persons
-(common.is_person / looks_like_person plus independent person-name shapes); emails in any published text;
-sources.csv; vendor_map_additions.csv (spend recomputed from raw, categories, >= 90% of purchasing dollars); raw
-files (location, size, samples for every reachable source, no address columns in the state checkbook sample).
-common is used only for the shared person rules, norm() and the withheld marker.
+Also checks: the contract's column names and order; attribution (Cincinnati: every linked code is a fire
+department and every fire-named department is linked or a known exclusion; checkbook: every linked participant
+is a fire district or a township, city or village whose county equals the agency's county, no EMS-only
+district, every participant line published is a fire line); agency ids, links and coverage tiers; duplicate
+source_record_ids; sort order; payees published as the source has them except email or bank account text
+(owner decision 2026-10-06); emails in any published text; sources.csv; vendor_map_additions.csv (spend
+recomputed from raw, categories, >= 90% of purchasing dollars); raw files (location, size, samples for every
+reachable source, no address columns in the state checkbook sample).
+common is used only for norm() (the vendor map key).
 """
 import collections
 import csv
@@ -33,30 +40,26 @@ ST = "OH"
 FIRST_FY = 2021
 D = decimal.Decimal
 CENTS = D("0.01")
-WITHHELD = {common.WITHHELD, "Payee name withheld"}
+WITHHELD = "Payee name withheld"
 
 # docs/multistate/data-contract.md, written out here so a change in common.TABLES is caught
 TX_COLUMNS = ["agency_id", "fiscal_year", "posting_date", "payee_name", "description", "account",
               "category_published", "amount", "source", "source_record_id"]
 SOURCES_COLUMNS = ["source", "name", "tier", "url", "years", "fiscal_year", "fetched", "note"]
 LINK_COLUMNS = ["agency_id", "source", "source_entity_id", "source_entity_name", "fy_start", "match_method", "note"]
+AGENCY_COLUMNS = ["id", "name", "kind", "county", "city", "usfa_fdid", "dept_type", "organization_type", "stations",
+                  "career", "volunteer", "paid_per_call", "website", "grants"]
 ADDITION_COLUMNS = ["name_key", "vendor", "category", "confidence", "spend", "agencies"]
 
-# Cincinnati: account paid to individual employees and retirees; department codes whose name says fire but which
-# are not the fire department (insurance shared by police and fire)
-PERSON_ACCOUNTS = {"Uniform And Other Allowance"}
+# Cincinnati: department codes whose name says fire but which are not the fire department (insurance shared by
+# police and fire)
 NOT_FIRE_CODES = {"922"}
-REACHABLE = ["oh_cincinnati", "oh_checkbook_state", "oh_aos"]  # sources with a sample (checkbook_local: robots.txt)
+REACHABLE = ["oh_cincinnati", "oh_checkbook_state", "oh_aos", "oh_checkbook_local"]  # sources with a sample
 
-# person-name shapes the shared rules miss, written independently of the adapter
-NAME = r"[A-Za-z'\-]{2,}"
-PERSON_SHAPES = [
-    re.compile(rf"^{NAME}( [A-Za-z]\.?)? {NAME},? (JR|SR|II|III|IV)\.?$", re.I),   # Donald Buchanan III
-    re.compile(rf"^{NAME} {NAME},? [A-Za-z]\.?$"),                                  # Wiley Ruth M.
-    re.compile(rf"^(MR|MRS|MS|DR)\.? {NAME}( {NAME})?$", re.I),                     # Mr Nyren
-    re.compile(rf"^{NAME} [A-Za-z]\.? {NAME} [A-Za-z]{{2,4}}$"),                    # Michael W Earls SMS
-    re.compile(rf"^{NAME} [A-Za-z]\.? {NAME}$"),                                    # Brian D. Vorholt
-]
+# Ohio Checkbook local: what a fire line is, written independently of the adapter
+FIRE_WORD = re.compile(r"\bfire(s|fighters?|fighting|men|men'?s)?\b", re.I)
+NOT_FIRE_WORDS = re.compile(r"police|hydrant|fire ?loss|firework|insurance|escrow|damaged structure|garnish", re.I)
+EMS_ONLY_DISTRICTS = {"Joint Emergency Medical Service"}
 EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+")
 
 
@@ -86,8 +89,17 @@ def raw_folder(source):
     return dirs[-1] / "oh" / source
 
 
+def redacted(name):
+    """What the published payee must be: as the source has it (spaces collapsed), or the withheld marker when
+    the text matches config/payee_name_redactions.csv (email, bank account text)."""
+    name = " ".join((name or "").split())
+    if any(re.search(r["pattern"], name, re.I) for r in config_rows("payee_name_redactions.csv", state=False)):
+        return WITHHELD
+    return name
+
+
 def expected_cincinnati():
-    """(agency_id, fiscal_year) -> [lines, dollars] straight from the raw pages; also the raw lines by record id."""
+    """(agency_id, fiscal_year) -> [lines, dollars] straight from the raw pages; the raw lines by record id."""
     src = "oh_cincinnati"
     d = raw_folder(src)
     link_rows = [r for r in config_rows("agency_sources.csv") if r["source"] == src]
@@ -134,14 +146,111 @@ def expected_cincinnati():
         out[k][1] += D(r["amount"])
         rid = f"{r['trans_id']}-{r['trans_line_no']}"
         assert rid not in lines, f"raw record id {rid} is not unique"
+        r = dict(r)
+        r["_want"] = {"agency_id": links[r["dept_code"]], "fiscal_year": r["fiscal_year"],
+                      "posting_date": r["record_date"][:10], "description": "",
+                      "account": f"{r['dept_desc']} / {r['fund_code']} {r['fund_desc']} / "
+                                 f"{r['exp_acct_cat']} {r['exp_acct_cat_desc']}",
+                      "category_published": r["exp_acct_cat_desc"], "payee_name": redacted(r["vendor_name"]),
+                      "amount": str(D(r["amount"]).quantize(CENTS))}
+        r["_payee"] = r["vendor_name"]
         lines[rid] = r
-    return out, lines, links
+    return out, lines
 
 
-def is_person_like(name):
-    if common.is_person(name) or common.looks_like_person(name):
+def tableau_table(body):
+    """Rows of a Tableau underlying or summary data response, keyed by the data source's own column names (the
+    caption for calculated columns)."""
+    ret = json.loads(body)["vqlCmdResponse"]["cmdResultList"][0]["commandReturn"]
+    if not ret:
+        return []
+    dt = ret["dataTablePresModel"]
+    t = json.loads(dt["showDataTable"])["table"]
+    caps = {c["uniqueName"]: c["fieldCaption"] for c in dt.get("showDataTableColumnPresModels", [])}
+    cols = []
+    for c in t["schema"]:
+        base = c.split("].[")[-1].rstrip("]")
+        cols.append(caps.get(c, base) if base.startswith(("Calculation_", "yr:", "sum:", "none:")) else base)
+    return [dict(zip(cols, x)) for x in t["tuples"]]
+
+
+def fire_line(kind, r):
+    if kind == "special_districts":
         return True
-    return not common.BUSINESS_WORDS.search(name) and any(rx.match(name) for rx in PERSON_SHAPES)
+    return any(FIRE_WORD.search(r[f]) and not NOT_FIRE_WORDS.search(r[f]) for f in ("FundDescription",
+                                                                                    "DeptDescription"))
+
+
+def expected_checkbook_local(agency_county):
+    """(agency_id, fiscal_year) -> [lines, dollars] from the raw Tableau responses; the raw lines by record id."""
+    src = "oh_checkbook_local"
+    d = raw_folder(src)
+    links = [r for r in config_rows("agency_sources.csv") if r["source"] == src]
+    assert links, "no oh_checkbook_local links"
+    people = {}
+    for kind in ("special_districts", "townships", "cities_villages"):
+        for p in json.loads(json.loads(gzip.decompress((d / f"participants_{kind}.json.gz").read_bytes()))["d"]):
+            people[str(p["Id"])] = (kind, p)
+    out, lines = collections.defaultdict(lambda: [0, D(0)]), {}
+    assert len({r["source_entity_id"] for r in links}) == len(links), "a participant linked twice"
+    for link in links:
+        eid = link["source_entity_id"]
+        kind, p = people[eid]
+        # attribution: the participant is named as linked, sits in the agency's county, is a fire district or a
+        # township, city or village (whose fire lines only are taken), and is not an EMS-only district
+        assert p["Name"] == link["source_entity_name"], f"link name differs from the participant list: {link}"
+        assert p["County"] == agency_county[link["agency_id"]], f"county differs: {link} vs {p['County']}"
+        assert link["fy_start"] == "01", f"Ohio locals use the calendar year: {link}"
+        assert p["Name"] not in EMS_ONLY_DISTRICTS, f"EMS-only district linked: {link}"
+        if kind == "special_districts":
+            assert re.search(r"\bfire\b", p["Name"], re.I), f"special district that is not a fire district: {link}"
+        doc = json.loads(gzip.decompress((d / f"entity_{eid}.json.gz").read_bytes()))
+        assert doc["entity"]["name"] == p["Name"] and doc["entity"]["kind"] == kind, f"entity file {eid}"
+        by_id, sums = {}, []
+        for req in doc["requests"]:
+            rows = tableau_table(req["body"])
+            if req["kind"] == "summary":
+                sums.append((req["filters"], rows))
+                continue
+            for r in rows:
+                assert r["MuniName"] == p["Name"], f"{eid}: a row of {r['MuniName']}"
+                for k, v in req["filters"].items():
+                    assert r[k] in v, f"{eid}: row outside its request's filter {k}: {r[k]!r}"
+                assert by_id.setdefault(r["Id"], r) == r, f"{eid}: row Id {r['Id']} differs between requests"
+        # the rows of each slice equal the dashboard's own summary totals for the same filters, per year
+        assert sums, f"{eid}: no summary totals"
+        for filters, summary in sums:
+            want, got = collections.defaultdict(D), collections.defaultdict(D)
+            for s in summary:
+                want[s["YEAR(Transaction Date)"]] += D(s["SUM(Amount)"])
+            for r in by_id.values():
+                if all(r[k] in v for k, v in filters.items()):
+                    got[r["TransDate"][:4]] += D(r["Amt"]).quantize(CENTS)
+            assert all(abs(want[y] - got[y]) <= CENTS for y in set(want) | set(got)), \
+                f"{eid}: rows differ from the summary totals for {filters}"
+        seen = set()
+        for rid in sorted(by_id, key=int):
+            r = by_id[rid]
+            fy = r["TransDate"][:4]
+            if int(fy) < FIRST_FY or not fire_line(kind, r):
+                continue
+            key = (r["TransactionId"], r["TransDate"], r["Payee"], r["FundCode"], r["DeptCode"], r["ObjCode"], r["Amt"])
+            if key in seen:
+                continue
+            seen.add(key)
+            amount = D(r["Amt"]).quantize(CENTS)
+            k = (link["agency_id"], fy)
+            out[k][0] += 1
+            out[k][1] += amount
+            r = dict(r)
+            r["_want"] = {"agency_id": link["agency_id"], "fiscal_year": fy, "posting_date": r["TransDate"][:10],
+                          "description": "", "payee_name": redacted(r["Payee"]), "amount": str(amount),
+                          "account": f"{r['FundDescription']} - {r['FundCode']} / {r['DeptDescription']} - "
+                                     f"{r['DeptCode']} / {r['ObjDescription']} - {r['ObjCode']}",
+                          "category_published": r["ObjDescription"]}
+            r["_payee"] = r["Payee"]
+            lines[f"{eid}-{rid}"] = r
+    return out, lines
 
 
 def main():
@@ -152,8 +261,12 @@ def main():
     assert header_of(ROOT / "config" / "states" / "oh" / "agency_sources.csv") == LINK_COLUMNS, "agency_sources header"
     assert header_of(ROOT / "config" / "states" / "oh" / "vendor_map_additions.csv") == ADDITION_COLUMNS, \
         "vendor_map_additions.csv header"
+    if (ROOT / "config" / "states" / "oh" / "agencies_added.csv").exists():
+        assert header_of(ROOT / "config" / "states" / "oh" / "agencies_added.csv") == AGENCY_COLUMNS, \
+            "agencies_added.csv header"
     agencies = json.loads((ROOT / "data" / "states" / "oh" / "agencies.json").read_text())
     ids = {a["id"] for a in agencies["agencies"]}
+    county = {a["id"]: a["county"] for a in config_rows("agencies.csv") + config_rows("agencies_added.csv")}
     sources = {r["source"]: r for r in config_rows("sources.csv")}
     assert agencies["sources"] == config_rows("sources.csv"), "agencies.json sources differ from sources.csv"
     assert all(s["tier"] in ("1", "2") for s in sources.values() if s["source"] in {r["source"] for r in tx}), \
@@ -167,29 +280,21 @@ def main():
         assert re.fullmatch(r"-?\d+\.\d\d", r["amount"]), f"amount format: {r}"
         assert int(r["fiscal_year"]) >= FIRST_FY, f"fiscal year before {FIRST_FY}: {r}"
         assert not r["posting_date"] or re.fullmatch(r"\d{4}-\d\d-\d\d", r["posting_date"]), f"date: {r}"
-    exp_cin, raw_lines, cin_links = expected_cincinnati()
-    expect = {(a, "oh_cincinnati", fy): v for (a, fy), v in exp_cin.items()}
+    expect, raw_lines = {}, {}
+    for src, fn in (("oh_cincinnati", expected_cincinnati), ("oh_checkbook_local", expected_checkbook_local)):
+        totals, lines = fn(county) if src == "oh_checkbook_local" else fn()
+        expect.update({(a, src, fy): v for (a, fy), v in totals.items()})
+        raw_lines.update({(src, rid): r for rid, r in lines.items()})
     assert set(got) == set(expect), f"agency/source/year keys differ: {sorted(set(got) ^ set(expect))[:5]}"
     for k in sorted(expect):
         assert got[k][0] == expect[k][0] and got[k][1] == expect[k][1], f"{k}: got {got[k]}, raw {expect[k]}"
     assert {s for _, s, _ in got} <= set(sources), "a source with rows is missing from sources.csv"
 
-    # 2. every published line equals its raw line, field by field
+    # 2. every published line equals its raw line, field by field (payees as published, owner decision 2026-10-06)
     for r in tx:
-        if r["source"] != "oh_cincinnati":
-            continue
-        raw = raw_lines[r["source_record_id"]]
-        name = " ".join(raw["vendor_name"].split())
-        want = {"agency_id": cin_links[raw["dept_code"]], "fiscal_year": raw["fiscal_year"],
-                "posting_date": raw["record_date"][:10], "description": "",
-                "account": f"{raw['dept_desc']} / {raw['fund_code']} {raw['fund_desc']} / "
-                           f"{raw['exp_acct_cat']} {raw['exp_acct_cat_desc']}",
-                "category_published": raw["exp_acct_cat_desc"]}
-        assert all(r[k] == v for k, v in want.items()), f"{r['source_record_id']}: {r} differs from raw {raw}"
-        assert D(raw["amount"]).quantize(CENTS) == D(r["amount"]), f"amount differs for {r['source_record_id']}"
-        assert r["payee_name"] in WITHHELD | {name}, f"payee changed: {name!r} -> {r['payee_name']!r}"
-        if raw["exp_acct_cat_desc"] in PERSON_ACCOUNTS or common.is_person(name):
-            assert r["payee_name"] in WITHHELD, f"person payee published: {name!r}"
+        raw = raw_lines[(r["source"], r["source_record_id"])]
+        diff = {k: (r[k], v) for k, v in raw["_want"].items() if r[k] != v}
+        assert not diff, f"{r['source']} {r['source_record_id']} differs from raw: {diff}"
 
     # 3. agency ids, links and coverage
     assert {a for a, _, _ in got} <= ids, "transactions for agencies not in agencies.json"
@@ -199,13 +304,22 @@ def main():
     assert {(a, s) for a, s, _ in got} <= linked, "rows for an agency and source without an agency_sources.csv link"
     added = config_rows("agencies_added.csv")
     assert all(r["id"].startswith("OH-S-") for r in added), "agencies_added ids must be OH-S-<slug>"
+    assert not {r["id"] for r in added} & {r["id"] for r in config_rows("agencies.csv")}, "added id in registry"
     with_rows = {a for a, _, _ in got}
+    sources_of = collections.defaultdict(set)
+    for a, s, _ in got:
+        sources_of[a].add(s)
+    fy_of = collections.defaultdict(set)
+    for r in links:
+        fy_of[r["agency_id"]].add(r["fy_start"])
     tiers = {}
     for a in agencies["agencies"]:
         tiers[a["id"]] = a["coverage"]
         if a["id"] in with_rows:
             assert a["coverage"] == 1, f"{a['id']} has payee rows but coverage {a['coverage']}"
-            assert "oh_cincinnati" in a["sources"] and a["fy_start"] == "07", f"{a['id']}: {a}"
+            assert sources_of[a["id"]] <= set(a["sources"]), f"{a['id']}: sources {a['sources']}"
+            fys = sorted(fy_of[a["id"]])
+            assert a["fy_start"] == (fys[0] if len(fys) == 1 else fys), f"{a['id']}: fy_start {a['fy_start']}"
         else:
             assert a["coverage"] == 4, f"{a['id']} has no vendor data (no line items or totals) but coverage " \
                                        f"{a['coverage']}"
@@ -221,18 +335,9 @@ def main():
     keys = [tuple(r[c] for c in TX_COLUMNS) for r in tx]
     assert keys == sorted(keys), "transactions.csv.gz is not sorted"
 
-    # 5. no private person's name: is_person names are always withheld; looks_like_person names and the
-    #    independent shapes only when no vendor_map / vendor_map_additions row claims them as a business (never
-    #    for is_person); no email address in any published text
-    claimed = {r["name_key"] for r in config_rows("vendor_map.csv", state=False) if r["category"] != "individuals"} \
-        | {r["name_key"] for r in config_rows("vendor_map_additions.csv") if r["category"] != "individuals"}
+    # 5. no email address in any published text (payee text with one is withheld)
     for r in tx:
         assert not any(EMAIL.search(r[c]) for c in ("payee_name", "description", "account")), f"email: {r}"
-        name = r["payee_name"]
-        if name in WITHHELD:
-            continue
-        assert not common.is_person(name), f"person-like payee published: {name!r}"
-        assert not is_person_like(name) or common.norm(name) in claimed, f"person-like payee published: {name!r}"
 
     # 6. vendor_map_additions: spend recomputed from raw, valid categories, unique keys, >= 90% of purchasing
     categories = {c["id"]: c["purchasing"] == "yes" for c in config_rows("categories.csv", state=False)}
@@ -245,8 +350,7 @@ def main():
     raw_spend = collections.defaultdict(D)
     raw_agencies = collections.defaultdict(set)
     for r in tx:
-        raw = raw_lines.get(r["source_record_id"]) if r["source"] == "oh_cincinnati" else None
-        k = common.norm(" ".join(raw["vendor_name"].split()) if raw else r["payee_name"])
+        k = common.norm(" ".join(raw_lines[(r["source"], r["source_record_id"])]["_payee"].split()))
         raw_spend[k] += D(r["amount"])
         raw_agencies[k].add(r["agency_id"])
     for r in additions:
@@ -256,10 +360,7 @@ def main():
     purchasing, covered = D(0), D(0)
     for r in tx:
         key = common.norm(r["payee_name"])
-        if r["payee_name"] in WITHHELD:
-            cat = "individuals"
-        else:
-            cat = add.get(key) or vendor_map.get(key) or "unclassified"  # unmapped counts as purchasing
+        cat = add.get(key) or vendor_map.get(key) or "unclassified"  # unmapped counts as purchasing
         if categories[cat]:
             purchasing += D(r["amount"])
             covered += D(r["amount"]) if key in add else 0
@@ -284,8 +385,12 @@ def main():
         "state checkbook sample keeps address columns (they leak masked payees' names)"
 
     dollars = sum(v[1] for v in got.values())
-    print(f"{ST}: ok ({len(tx)} transaction lines, ${dollars:,.2f}, {len(with_rows)} agencies at tier 1; "
-          f"vendor_map_additions covers {share:.1%} of ${purchasing:,.0f} purchasing dollars)")
+    by_source = collections.Counter()
+    for (a, s, fy), (n, _) in got.items():
+        by_source[s] += n
+    print(f"{ST}: ok ({len(tx)} transaction lines, ${dollars:,.2f}, {len(with_rows)} agencies at tier 1 "
+          f"({', '.join(f'{s}: {n}' for s, n in sorted(by_source.items()))}); vendor_map_additions covers "
+          f"{share:.1%} of ${purchasing:,.0f} purchasing dollars)")
 
 
 if __name__ == "__main__":

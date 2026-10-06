@@ -32,6 +32,16 @@
    "note": "Los Angeles Fire Department (department 38) invoice lines; cancelled checks are negative lines; refunds of ambulance and fire service charges are shown without payee names; purchases other City departments make for Fire are not included; FY2027 partial (payments through 2026-09-09)"
   },
   {
+   "source": "ca_moreno_valley",
+   "name": "City of Moreno Valley Open Expenditures",
+   "tier": "1",
+   "url": "https://moreno-valley.data.socrata.com/d/qpw5-2938",
+   "years": "2021-2026",
+   "fiscal_year": "City of Moreno Valley FY, Jul-Jun",
+   "fetched": "2026-10-06",
+   "note": "Moreno Valley Fire Department (departments Fire Operations, Fire Prevention and Fire - Office of Emergency Mgmt) invoice lines; most dollars are the City's contract payments to the County of Riverside for fire staffing (CAL FIRE operated); purchases other City departments make for Fire are not included; FY2026 partial (payments through 2026-06-24)"
+  },
+  {
    "source": "ca_riverside_county",
    "name": "County of Riverside Check Book (Riverside County Fire Department)",
    "tier": "1",
@@ -83,10 +93,10 @@
   }
  ],
  "coverage_counts": {
-  "1": 5,
+  "1": 6,
   "2": 0,
   "3": 581,
-  "4": 343
+  "4": 342
  },
  "agencies": [
   {
@@ -10224,11 +10234,12 @@
    "county": "Riverside",
    "city": "Moreno Valley",
    "usfa_fdid": "33054",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "ca_moreno_valley",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "07",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",

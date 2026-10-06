@@ -4,9 +4,13 @@ name_key,vendor,category,confidence,spend,agencies
 11TH HOUR TRAUMA RETREAT,11TH Hour Trauma Retreat,professional,low,742587.62,1
 12 VOLT POWER,12 Volt Power,fleet,medium,22864.71,1
 2 ELEVEN SHIELDS,2-eleven Shields,unclassified,low,49844.90,1
+2 HOT ACTIVEWEAR AND UNIFORMS,2 Hot Activewear & Uniforms,uniforms,medium,467572.83,1
 2 HOT UNIFORMS,2 Hot Uniforms,uniforms,medium,2283646.45,1
+2008 TRISTAN R ALLEN AND MONET L,2008 Tristan R Allen & Monet L,wildland,low,466752.99,1
+25TH DIST AGRICULTURAL ASSN,25TH Dist Agricultural Assn,government,medium,455000.00,1
 2C LAND AND TIMBER MGMT,2C Land & Timber MGMT,wildland,low,1695451.25,1
 30TH DIST AGRICULTURAL ASSOC,30TH Dist Agricultural Assoc,training,medium,812750.00,1
+31ST DISTRICT AGRICULTURAL ASSOCIATION,31ST District Agricultural Association,government,medium,488150.00,1
 360 RESCUE,360 Rescue,unclassified,low,645002.49,1
 3B INDUSTRIES,3B Industries,fire-equipment,low,835480.05,1
 3DI,3di,software,low,1536387.00,1
@@ -15,10 +19,12 @@ name_key,vendor,category,confidence,spend,agencies
 40 TRAFFIC AND CONSTRUCTION,40 Traffic & Construction,construction,medium,745945.00,1
 49ER PRESSURE WASH AND WATER SVC,49er Pressure Wash & Water SVC,utilities,medium,816814.00,1
 4C ENTERPRISES,4C Enterprises,wildland,low,1691826.54,1
+804 US HIGHWAY,804 US Highway,facilities,low,469380.81,1
 805 DISCING AND GRADING,805 Discing & Grading,wildland,low,797579.85,1
 9TH DISTRICT AGRICULTURAL ASSN,9TH District Agricultural Assn,facilities,low,765400.00,1
 A 1 TREE SVC AND STUMP REMOVAL,A-1 Tree SVC & Stump Removal,wildland,low,541747.44,1
 A 1 WATER,A-1 Water,utilities,medium,1081720.72,1
+A AND A CONSTRUCTION,A & A Construction,construction,medium,430842.25,1
 A AND CC EQUIPMENT,A & CC Equipment,wildland,low,3775276.54,1
 A AND F ENTERPRISES,A & F Enterprises,wildland,low,558043.98,1
 A AND G PUMPING,A & G Pumping,wildland,low,966602.78,1
@@ -26,36 +32,47 @@ A AND H RENTS,A&H Rents,general,low,1436775.68,1
 A AND M HANDWASHING,A and M Handwashing,wildland,low,2472543.07,1
 A AND P HELICOPTERS,A & P Helicopters,apparatus,medium,2925364.08,1
 A PREMAN ROOFING,A Preman Roofing,construction,medium,869054.25,1
+A1 WATER AND DUMP TRUCKS,A1 Water and Dump Trucks,fleet,medium,470628.88,1
 AAA EQUIPMENT,Aaa Equipment,wildland,low,2539967.64,1
 AAA MOBILE BASECAMP,Aaa Mobile Basecamp,wildland,low,641158.81,1
 AAA MOBILE SOLUTIONS,Aaa Mobile Solutions,wildland,low,1615166.38,1
 AAA TOZIERS FIRE SUPPORT,Aaa Toziers Fire Support,fire-equipment,medium,6955649.08,1
+AB AEROSPACE,Ab Aerospace,apparatus,medium,427038.15,1
 ABEL EMERGENCY SUPPORT,Abel Emergency Support,unclassified,low,668071.70,1
 ABEL FIRE EQUIPMENT,Abel Fire Equipment,fire-equipment,medium,3449283.77,1
 ABG CONSTRUCTION AND RESTORATION,Abg Construction & Restoration,construction,medium,774569.58,1
 ABLEGOV,Ablegov,it,low,2157925.53,1
+ABSOLUTE SECURITY INTERNATIONAL,Absolute Security International,facilities,medium,524237.59,1
 ABSOLUTE TREE SERVICE,Absolute Tree Service,wildland,low,544278.00,1
 AC PRO,AC Pro,facilities,medium,23858.18,1
 ACADEMIC SUPPLIER,Academic Supplier,general,medium,22227.31,1
 ACCELL DRYWALL,Accell Drywall,construction,medium,18583.00,1
 ACCENTURE,Accenture,it,low,5676332.13,1
 ACCUGOV,AccuGov,software,low,2724142.76,1
+ACT FAST FIRE SUPPORT,Act Fast Fire Support,software,low,410316.73,1
 ACT FAST NATIONWIDE FIRE SUPP,Act Fast Nationwide Fire Supp,wildland,low,4505801.57,1
 ACTENVIRO,ACTenviro,professional,low,6363605.67,1
 ACTION EQUIPMENT RENTALS,Action Equipment Rentals,wildland,low,1215686.08,1
+ACTION POLICE SUPPLY,LC Action Police Supply,general,medium,456425.83,1
 ACTION SANITARY,Action Sanitary,wildland,low,4579970.99,1
 ACUITY TECHNICAL SOLUTIONS,Acuity Technical Solutions,it,low,631945.33,1
+ADAMES TRANS,Adames Trans,wildland,low,412152.87,1
 ADAMS CONSTRUCTION,Adams Construction Services,construction,high,576601.72,1
 ADVANCED CLERICAL AND EQUIPMENT,Advanced Clerical & Equipment,general,low,2196545.19,1
 ADVANCED CONCRETE,Advanced Concrete,construction,medium,57860.00,1
 ADVANCED DATA PROCESSING,Advanced Data Processing (Intermedix),ems-billing,high,44399610.42,2
+ADVANCED FIRE CONTROL,Advanced Fire Control,training,low,432312.00,1
+ADVEXURE UNMANNED SYSTEMS,Advexure Unmanned Systems,it,medium,402784.36,1
 AERO AIR,Aero Air,apparatus,medium,16652693.92,1
 AERO AIR ERICKSON AERO TANKER,Aero Air,apparatus,medium,6201768.00,1
+AERO AVIATION,Aero Aviation Company,apparatus,medium,509612.68,1
 AERO DYNAMIX,Aero Dynamix,apparatus,medium,13080.00,1
 AERO FLITE,Aero-flite,apparatus,medium,3392737.76,1
 AHEAD,Ahead,it,low,4425285.16,1
-AIR EXCHANGE,Air Exchange,facilities,medium,3143078.60,4
+AIR AND LUBE SYSTEMS,Air & Lube Systems,it,medium,428458.57,1
+AIR EXCHANGE,Air Exchange,facilities,medium,3217363.50,5
 AIR METHODS,Air Methods (United Rotorcraft),apparatus,medium,251127092.52,1
+AIR O SERVICE,Air-o Service,facilities,low,405244.30,1
 AIR RESOURCES HELICOPTERS,Air Resources Helicopters,apparatus,medium,612900.49,1
 AIR SHASTA ROTOR AND WING,Air Shasta Rotor & Wing,apparatus,medium,12146913.39,1
 AIRBORNE ELECTRONICS,Airborne Electronics,unclassified,low,35234.27,1
@@ -66,6 +83,7 @@ ALAMEDA CNTY AGRICULTURAL,Alameda CNTY Agricultural,facilities,low,1120000.00,1
 ALAMEDA COUNTY FIRE DEPARTMENT,Alameda County Fire Department,government,medium,11399140.99,2
 ALANS WATER TRUCK,Alan's Water Truck,fleet,medium,1051873.88,1
 ALGERINE WEST,Algerine West,wildland,low,2542434.54,1
+ALGERINE WEST CONSTRUCTION,Algerine West Construction,construction,medium,391018.50,1
 ALL AMERICAN EMERGENCY SVCS,All American Emergency Services,general,low,24942620.00,1
 ALL AMERICAN TENT,All American Tent,general,low,1412813.71,1
 ALL CLEAN EMERGENCY SERVICES,All Clean Emergency Services,wildland,low,2829183.74,1
@@ -73,33 +91,41 @@ ALL CLEAN WATER SOLUTIONS,All Clean Water Solutions,general,low,14327161.66,1
 ALL FIVE,All Five,unclassified,low,133471.68,1
 ALL PHASE LAND CLEARING,All Phase Land Clearing,wildland,low,804516.00,1
 ALLIED NETWORK SOLUTIONS,Allied Network Solutions,it,medium,3631751.48,1
-ALLIED STORAGE CONTAINERS,Allied Storage Containers,unclassified,low,527763.94,2
-ALLSTAR FIRE EQUIPMENT,Allstar Fire Equipment,fire-equipment,medium,97360516.01,5
+ALLIED STORAGE CONTAINERS,Allied Storage Containers,unclassified,low,532510.33,3
+ALLRED MAROKO AND GOLDBERG,Allred Maroko & Goldberg,professional,low,412500.00,1
+ALLSTAR FIRE EQUIPMENT,Allstar Fire Equipment,fire-equipment,medium,97361568.99,6
 ALLSTEEL,Allsteel,general,low,544138.79,1
 ALPENGLOW TIMBER,Alpenglow Timber,government,low,2000000.00,1
 ALPHA ONE FIRE SUPPORT,Alpha One Fire Support,fire-equipment,medium,1527915.14,1
+ALPHA VEHICLE ACCESSORIES,Alpha Vehicle Accessories,wildland,low,402837.57,1
 ALPINE COUNTY,Alpine County,government,medium,849204.30,1
 ALPINE FIRE PROTECTION DIST,Alpine Fire Protection Dist,government,medium,1074152.21,1
 ALPINE FIRE SAFE COUNCIL,Alpine Fire Safe Council,government,medium,1450652.52,1
+ALS AUTO TOPS,Al's Auto Tops,fleet,medium,407667.27,1
 ALS KUBOTA TRACTOR,Als Kubota Tractor,fleet,medium,557713.11,1
 ALTA ARCHAEOLOGICAL CSLTG,Alta Archaeological Consulting,professional,medium,1356193.41,1
 ALTAVILLE MELONES FIRE PROTECT,Altaville Melones Fire Protect,government,medium,926880.34,1
 ALTURAS DISPOSAL,Alturas Disposal,utilities,medium,48966.35,1
+AMADOR COUNTY,Amador County,government,medium,511014.11,1
 AMADOR FIRE PROTECTION DIST,Amador Fire Protection Dist,government,medium,1506380.76,1
 AMADOR FIRE SAFE COUNCIL,Amador Fire Safe Council,government,medium,4464320.57,1
+AMADOR MECHANICAL,Amador Mechanical,construction,medium,419532.55,1
 AMADOR RESOURCE CONS DIST,Amador Resource Cons Dist,government,medium,3749444.34,1
 AMADOR WATER AGENCY,Amador Water Agency,government,medium,524764.26,1
+AMAN GENERAL CONTRACTING,Aman General Contracting,wildland,low,477629.41,1
 AMCO STRUCTURES,Amco Structures,training,low,925711.06,1
 AMENTUM SERVICES,Amentum (formerly DynCorp International),apparatus,medium,316880635.27,1
 AMERICAN CANYON FIRE,American Canyon Fire,government,low,898863.83,1
 AMERICAN FOREST FOUNDATION,American Forest Foundation,government,medium,16202352.02,1
 AMERICAN FORESTS,American Forests,unclassified,low,6613829.53,1
+AMERICAN INDIAN MARTINA TREE,American Indian Martina Tree,wildland,medium,471983.00,1
 AMERICAN IRON RENTALS,American Iron Rentals,wildland,low,1102095.74,1
 AMERICAN MEDICAL RESPONSE WEST,American Medical Response,professional,low,3972943.51,1
 AMERICAN MOVING PARTS,American Moving Parts,fleet,medium,1022819.35,1
 AMERICAN RIVER CONSERVANCY,American River Conservancy,government,medium,2740103.17,1
 AMERICAN RIVER CONSTRUCTION,American River Construction,construction,medium,897621.50,1
 AMERICAN RIVER IRON,American River Iron,wildland,low,1524705.12,1
+AMERICAN SHEET METAL,American Sheet Metal,facilities,low,408040.41,1
 AMERICAN WATER AND SUPPORT,American Water and Support,utilities,medium,729592.64,1
 AMERICAN WATER TRUCK SVCS,American Water Truck SVCS,fleet,medium,967398.20,1
 AMERICAN WOOD FIBERS,American Wood Fibers,government,low,1700000.00,1
@@ -112,39 +138,56 @@ ANCIENT FOREST SOCIETY,Ancient Forest Society,unclassified,low,635342.00,1
 ANDERSON EMERGENCY SERVICES,Anderson Emergency Services,wildland,low,865065.25,1
 ANDERSON FIRE PROTECT DIST,Anderson Fire Protect Dist,government,medium,981637.72,1
 ANDERSON VALLEY COMM SVCS DIST,Anderson Valley Comm SVCS Dist,government,low,901522.51,1
+ANDREW BUSHEY,Andrew Bushey,wildland,low,791782.16,1
 ANDY GUMP,Andy Gump,facilities,medium,3096000.96,2
 ANGELS CAMP FIRE DEPARTMENT,Angels Camp Fire Department,government,medium,620154.67,1
 ANODYNE ELECTRONICS MFG,Anodyne Electronics MFG,radios,low,1842558.40,1
+ANSURTECH,Ansurtech,software,low,509527.78,1
 ANTELOPE VALLEY FIRE PROT DIST,Antelope Valley Fire Prot Dist,government,medium,1066948.08,1
+APPLE ONE,Apple One,professional,low,458086.44,1
 APPLE VALLEY FIRE PROT DIST,Apple Valley Fire Prot Dist,government,medium,1995155.09,1
 APTOS LA SELVA FPD,Aptos La Selva FPD,government,medium,1165292.10,1
 ARBOR DVBE SERVICE,Arbor DVBE Service,wildland,low,1386527.64,1
+ARCATA FIRE PROTECTION DIST,Arcata Fire Protection Dist,government,medium,515116.32,1
 ARCHER TRUCKING AUDIE ARCHER,Archer Trucking Audie Archer,fleet,medium,562318.00,1
 ARCHIBALD EXCAVATING AND GRADING,Archibald Excavating & Grading,construction,medium,751910.97,1
 ARIAS EQUIPMENT RENTALS,Arias Equipment Rentals,wildland,low,698600.38,1
 ARIS HELICOPTERS,Aris Helicopters,apparatus,medium,684286.47,1
 ARJIS SANDAG,ARJIS (SANDAG),government,medium,53079.50,1
+ARMED GUARD PRIVATE SECTY,Armed Guard Private Secty,facilities,low,390525.00,1
 ARMOROUS,Armorous,facilities,low,1545578.55,1
+AROMAS TRI COUNTY FPD,Aromas Tri-county FPD,government,medium,454473.81,1
 ASAP CONSTRUCTION,Asap Construction,construction,medium,854421.54,1
 ASAP SEMICONDUCTOR,Asap Semiconductor,unclassified,low,65793.01,1
 ASAP SERVICES,Asap Services,wildland,low,555562.56,2
 ASCENT ENVIRONMENTAL,Ascent Environmental,professional,low,4715053.28,1
+ASCENT FORESTRY,Ascent Forestry,wildland,medium,500000.00,1
 ASHBROOK ENTERPRISES,Ashbrook Enterprises,wildland,low,1165282.53,1
 ASM AFFILIATES,Asm Affiliates,unclassified,low,1470219.13,1
 ASPEN HELICOPTERS,Aspen Helicopters,apparatus,medium,4230869.80,1
 AT AND T CALIFORNIA,AT&T California,telecom,medium,569052.84,2
+AT AND T DATACOMM,At&t Datacomm,telecom,medium,450179.06,1
 AT AND T ENTERPRISES,AT&T,telecom,high,16707483.17,1
 AT AND T GLOBAL SERVICES,AT&T Global Services,telecom,medium,1395342.43,1
 AT AND T LONG DISTANCE,At & T Long Distance,telecom,medium,619105.47,1
+AT AND T MOBILITY ACCOUNTS,At&t Mobility Accounts,telecom,medium,466373.07,1
 ATLAS 999,Atlas 999,facilities,low,542762.72,1
+AUBERRY SAWMILL,Auberry Sawmill,wildland,low,443768.00,1
+AUBURN CREEKSIDE,Auburn Creekside,facilities,low,389122.65,1
 AUDUBON CANYON RANCH,Audubon Canyon Ranch,government,low,2072109.48,1
 AV STRUCTURAL,Av Structural,software,low,868341.17,1
 AVALON LANDSCAPE,Avalon Landscape,facilities,medium,4067465.00,1
+AVENZA SYSTEMS,Avenza Systems,it,medium,458773.81,2
+AVIALL,Aviall,apparatus,medium,498709.44,1
+AVIATE ENTERPRISES,Aviate Enterprises,general,low,493875.92,2
 AVIATRIX,Aviatrix,fleet,low,784494.86,1
+AVILA DOZER,Avila Dozer,wildland,medium,513636.26,1
 AWB,Awb,wildland,low,535120.15,1
 AZ MOBILE SUPPORT,Az Mobile Support,wildland,low,542357.19,1
 AZTEC APPLIANCE,Aztec Appliance,general,medium,48972.16,1
 B AND B PORTABLE TOILETS,B&B Portable Toilets,wildland,low,1618181.16,1
+B AND C DEMOLITION,B & C Demolition,wildland,low,440883.75,1
+B AND M CIVIL,B&M Civil,facilities,low,466665.88,1
 B AND W AUTOMOTIVE BRAVO CHRYSLER,B&W Automotive Dba Bravo Chrysler,fleet,medium,1558948.29,1
 B AND W AUTOMOTIVE BRAVO CHRYSLER DODGE JEEP OF ALHAMBRA,B&W Automotive Dba Bravo Chrysler Dodge Jeep of Alhambra,fleet,medium,985344.79,1
 BACKWOODS EQUIPMENT,Backwoods Equipment,wildland,low,596349.62,1
@@ -154,6 +197,7 @@ BANNER UNIFORM CENTER,Banner Uniform Center,uniforms,medium,2232913.97,1
 BAR G FARM AND EQUIPMENT,Bar G Farm & Equipment,wildland,low,1301732.97,1
 BARHAM CONSTUCTORS,Barham Inc Constuctors,facilities,low,2229539.26,1
 BARONA BAND OF MISSION IND FD,Barona Band of Mission Ind FD,government,medium,1482498.80,1
+BARSTOW FIRE PROTECTION DIST,Barstow Fire Protection Dist,government,medium,379098.64,1
 BASE CAMP AVIATION,Base Camp Aviation,apparatus,medium,1891514.38,1
 BASELINE EMERGENCY SOLS,Baseline Emergency Sols,general,low,5214987.01,1
 BATTERY WORX,Battery Worx,fleet,medium,53432.38,1
@@ -163,17 +207,22 @@ BAY SHIP AND YACHT,Bay Ship & Yacht,construction,low,720899.63,1
 BAYSIDE BOATWORKS,Bayside Boatworks,fleet,low,1086365.04,1
 BEAR VALLEY FIRE DEPARTMENT,Bear Valley Fire Department,government,medium,841111.29,1
 BEAR VLY COMMUNITY SVCS DIST,Bear VLY Community SVCS Dist,government,low,2210345.79,1
+BECKWOURTH FIRE DISTRICT,Beckwourth Fire District,government,medium,514797.23,1
 BEJAC,Bejac,facilities,low,582900.00,1
 BELL TEXTRON,Bell Textron,apparatus,medium,3022487.53,1
 BEN FRANKLIN CONSTRUCTION,Ben Franklin Construction,construction,medium,846635.88,1
+BEN HAYNES CONSTRUCTION,Ben Haynes Construction,construction,medium,382734.83,1
+BEN LOMOND SCOTTS VALLEY MARKET,Ben Lomond/scotts Valley Market,general,medium,443040.96,1
 BEN TOILET RENTALS,Ben Toilet Rentals,general,low,2995669.68,1
 BENLO RV II,Benlo RV II,unclassified,low,20014.15,1
 BENS TRUCK AND EQUIPMENT,Bens Truck and Equipment,fleet,medium,963821.74,1
 BENTO BROS,Bento Bros,unclassified,low,55500.37,1
 BERETTA INVESTMENT GROUP,Beretta Investment Group,facilities,low,722146.68,1
+BERNARD DOWLING,Bernard Dowling,wildland,low,455136.55,1
 BERRY CREEK RANCHERIA OF MAIDU,Berry Creek Rancheria of Maidu,government,medium,822172.91,1
 BEST FUELS,Best Fuels,fleet,medium,530217.63,1
 BH PARTNERSHIP,BH Partnership,unclassified,low,61015.51,1
+BIANCHI HAY SQUEEZE AND TRUCKING,Bianchi Hay Squeeze & Trucking,fleet,medium,505319.00,1
 BIG BEAR FIRE AUTHORITY,Big Bear Fire Authority,government,medium,1670346.53,1
 BIG PINE FIRE PROTECTION DIST,Big Pine Fire Protection Dist,government,medium,1831507.25,1
 BIG TIMBER INCIDENT SUPPORT,Big Timber Incident Support,wildland,low,909975.97,1
@@ -181,7 +230,10 @@ BIG TOP RENTALS,Big Top Rentals,general,low,562890.80,1
 BIG VALLEY SANITATION,Big Valley Sanitation,utilities,medium,540475.05,1
 BILL WELCH PORTABLE WELDING,Bill Welch Portable Welding,wildland,low,831867.89,1
 BILLINGS FLYING SERVICE,Billings Flying Service,apparatus,medium,63269141.58,1
+BISCO INDUSTRIES,Bisco Industries,fleet,low,376861.16,1
+BISHOP GRADING,Bishop Grading,wildland,low,441118.16,1
 BISHOP INDIAN TRIBAL COUNCIL,Bishop Indian Tribal Council,government,medium,604727.84,1
+BJ SLATON,BJ Slaton,wildland,low,375023.46,1
 BL MURPHY AND SON,BL Murphy & Son,wildland,low,1013463.55,1
 BLACK BOX SAFETY,Black Box Safety,uniforms,low,3633425.30,2
 BLACK CAT GROUP,Black Cat Group,wildland,low,2721185.56,1
@@ -190,6 +242,7 @@ BLACK KNIGHT ENTERPRISES,Black Knight Enterprises,wildland,low,3373325.01,1
 BLACK KNIGHT FIRE SUPPORT,Black Knight Fire Support,fire-equipment,medium,731740.49,1
 BLAGGS FOOD SERVICE,Blaggs Food Service,general,low,2548583.85,1
 BLANCHARD TRAINING AND DEV,Blanchard Training & Dev,training,medium,3881098.31,1
+BLUE LAKE FIRE PROTECTION DIST,Blue Lake Fire Protection Dist,government,medium,393387.72,1
 BLUE MOUNTAIN ELECTRIC,Blue Mountain Electric Co,facilities,medium,1000040.56,1
 BLUESKY HELICOPTERS,Bluesky Helicopters,apparatus,medium,11176257.68,1
 BME FIRE TRUCKS,Bme Fire Trucks,apparatus,medium,6295503.18,2
@@ -199,24 +252,33 @@ BOB NOBLE AND SONS,Bob Noble & Sons,wildland,low,961613.87,1
 BOEING DISTRIBUTION,Boeing Distribution,fleet,low,2308854.16,2
 BOEING DISTRIBUTION SVCS,Boeing Distribution SVCS,fleet,low,847844.28,1
 BOGGS EQUIP AND ENGINEERING,Boggs Equip & Engineering,construction,medium,1861078.97,1
+BOHNA RANCH,Bohna Ranch,wildland,medium,423714.00,1
 BOISE MOBILE EQUIPMENT,Boise Mobile Equipment,apparatus,medium,27962740.68,2
 BONITA SUNNYSIDE FPD,Bonita-sunnyside FPD,government,medium,684202.73,1
 BONNY DOON FIRE SAFE COUNCIL,Bonny Doon Fire Safe Council,government,medium,1198313.45,1
+BORDER RECAPPING,Border Recapping,general,low,405534.27,1
 BORRELLI AND ASSOCIATES,Borrelli & Associates,facilities,low,1001270.94,1
 BOTACH,Botach,fire-equipment,low,1049740.19,1
 BOW VALLEY AGRI LAND SERVICES,Bow Valley Agri-land Services,wildland,low,533125.65,1
 BOWMAN TRUCKING,Bowman Trucking,fleet,medium,614212.50,1
 BRAD INGRAM CONSTRUCTION,Brad Ingram Construction,construction,medium,3569707.64,1
+BRANCIFORTE FIRE PROT DISTRICT,Branciforte Fire Prot District,government,medium,377563.90,1
 BRANSON ENTERPRISE,Branson Enterprise,wildland,low,592721.20,1
 BRASWELL,Braswell,facilities,low,565056.58,1
 BRAUL SUPPLY,Braul Supply,general,medium,20604005.13,1
+BRAUN EQUIPMENT,Braun Equipment,wildland,low,475812.62,1
 BRAUN NORTHWEST,Braun Northwest,ambulance,medium,48114116.83,3
 BRE DELTA INDUSTRIAL SAC LP,Bre Delta Industrial Sac,facilities,low,545162.90,1
+BRETT A ROSEN MD A PROF,Brett A Rosen MD A Prof,medical-exams,medium,567139.00,1
 BRIAN SMITH DEVELOPMENT,Brian Smith Development,unclassified,low,803216.35,1
 BRIAN WALSH BRUSH CLEARANCE,Brian Walsh Brush Clearance,wildland,low,1361219.00,1
 BRICELAND VOLUNTEER FIRE DEPT,Briceland Volunteer Fire Dept,government,medium,1364694.34,1
 BRIDGER AEROSPACE,Bridger Aerospace,apparatus,medium,1295534.82,1
 BRIGHT KNIGHT,Bright Knight,wildland,low,560179.12,1
+BRISENO TIRES AND TOWING,Briseno Tires & Towing,fleet,medium,501248.50,1
+BRODERICK GEN ENGINEERING,Broderick Gen Engineering,professional,medium,501405.00,1
+BROOKS PAINTING,Brooks Painting,facilities,medium,469635.00,1
+BROOKSTONE EMERGENCY SERVICES,Brookstone Emergency Services,facilities,low,521578.95,1
 BROTHERS AIR SUPPORT,Brothers Air Support,wildland,low,1807675.18,1
 BROUGH CONSTRUCTION,Brough Construction,construction,medium,777095.68,1
 BROWN BAG SANDWICH,Brown Bag Sandwich Co,general,low,3186794.71,2
@@ -225,6 +287,8 @@ BROWN PLUMBING,Brown Plumbing,facilities,medium,994589.42,1
 BUD GARMAN CONST SVCS,Bud Garman Const SVCS,wildland,low,1918398.12,1
 BUNDYS TREE SERVICE,Bundys Tree Service,wildland,low,1174717.12,1
 BURBANK PARADISE FIRE PROT,Burbank Paradise Fire Prot,government,medium,830167.26,1
+BURGESS AND SONS EXCAVATING,Burgess & Sons Excavating,wildland,medium,491419.86,1
+BURKE CONSTRUCTION,Burke Construction,construction,medium,524222.82,1
 BURKE DIVERSIFIED,Burke Diversified,facilities,low,630200.00,1
 BURKE FSR,Burke FSR,wildland,low,529959.19,1
 BURRO TRUCKING,Burro Trucking,fleet,medium,1809666.96,1
@@ -235,8 +299,11 @@ BUSHEY FARMS,Bushey Farms,wildland,low,581369.50,1
 BUTT HUT,Butt Hut,wildland,low,783550.50,1
 BUTTE COUNTY,Butte County,government,medium,8237405.71,1
 BUTTE COUNTY FIRE SAFE COUNCIL,Butte County Fire Safe Council,government,medium,24254819.67,1
+BUTTE COUNTY RCD,Butte County RCD,wildland,low,433732.06,1
 BUYVET,Buyvet,it,low,829198.21,1
 C AND C ASSOCATION,C&C Assocation,wildland,low,732544.36,1
+C AND P CONTRACTING,C&P Contracting,wildland,low,437435.00,1
+C SMART TRUCKING,C Smart Trucking,fleet,medium,389946.96,1
 CA ASSN OF RSC CONSERVE DISTS,CA Assn of RSC Conserve Dists,government,medium,5232456.28,1
 CA DEPT OF TAX AND FEE ADMIN,CA Dept of Tax and Fee Admin,government,medium,3065848.84,1
 CA FIRE SAFE COUNCIL,CA Fire Safe Council,government,medium,42044464.84,1
@@ -245,22 +312,32 @@ CA SURVEYING AND DRAFTING,CA Surveying & Drafting,it,low,810177.31,1
 CA SUSTAINABILITY GROUP,CA Sustainability Group,professional,low,4111056.17,1
 CA TAHOE CONSERVANCY,CA Tahoe Conservancy,government,medium,1475612.52,1
 CA URBAN FORESTS COUNCIL,CA Urban Forests Council,government,medium,2953305.81,1
+CABLE TECHNIQUES,Cable Techniques,it,low,378719.04,1
 CACREN FENCING,Cacren Fencing,facilities,medium,99630.00,1
 CADD MICROSYSTEMS,CADD Microsystems,software,medium,22528.48,1
 CAFIRELINE,Cafireline,wildland,low,883444.47,1
 CAHUILLA BAND OF INDIANS,Cahuilla Band of Indians,government,medium,629536.51,1
 CAL DREAMSCAPE LANDSCAPE,Cal Dreamscape Landscape Co,facilities,medium,1213415.13,1
+CAL FIRE,Cal Fire,professional,low,396958.18,1
 CAL PACIFIC TRUCK CENTER,Cal Pacific Truck Center,fleet,medium,2776970.07,1
 CAL POLY,Cal Poly Corporation,government,medium,12181468.76,1
 CAL POLY HUMBOLDT SPONSORED,Cal Poly Humboldt Sponsored,government,medium,2230568.36,1
 CAL SIERRA TITLE,Cal-sierra Title Company,finance,medium,1515000.00,1
 CAL WEST,Cal West,unclassified,low,293833.56,1
+CALALASKA HELICOPTER,Calalaska Helicopter,apparatus,medium,397631.81,1
 CALAVERAS CONSOLIDATED FIRE,Calaveras Consolidated Fire,government,low,1397395.17,1
+CALAVERAS COUNTY,Calaveras County,government,medium,444392.22,1
 CALAVERAS COUNTY RCD,Calaveras County RCD,government,medium,4044715.18,1
 CALAVERAS FOOTHILLS FIRE,Calaveras Foothills Fire,unclassified,low,2466370.22,1
 CALAVERAS HEALTHY IMPACT PROD,Calaveras Healthy Impact Prod,government,low,2144022.15,1
+CALFIRE SINGLE PAY,CALFIRE Single Pay,professional,low,421552.65,1
+CALIF DEPT OF FORESTRY AND FIRE PROTECTION,Calif Dept of Forestry & Fire Protection,government,medium,461100.00,1
+CALIF DEPT OF HEALTH CARE SRVCS,Calif. Dept of Health Care Srvcs,government,medium,109803435.51,1
 CALIFORNIA CONSERVATION CORPS,California Conservation Corps,government,high,175827386.17,2
 CALIFORNIA DEER ASSOCIATION,California Deer Association,government,medium,7690432.53,1
+CALIFORNIA DEPARTMENT OF CONSERVATION,California Department of Conservation,government,medium,449769.00,1
+CALIFORNIA DEPARTMENT OF HEALTH,California Department of Health,government,medium,54280790.30,1
+CALIFORNIA DEPARTMENT OF PARKS AND RECREATION,California Department of Parks and Recreation,government,medium,500000.00,1
 CALIFORNIA DEPARTMENT OF WATER RESOURCES,California Department of Water Resources,utilities,medium,2340913.35,1
 CALIFORNIA FORESTRY ASSN,California Forestry Assn,government,medium,20945879.41,1
 CALIFORNIA PACIFIC MEDICAL CENTER,California Pacific Medical Center,ems-supplies,medium,1395789.64,1
@@ -270,32 +347,40 @@ CALIFORNIA SANDWICH,California Sandwich Company,general,low,2746370.35,1
 CALIFORNIA STATE UNIVERSITY SACRAMENTO,California State University Sacramento,government,medium,2149000.00,1
 CALIFORNIA WOOD SHAVINGS,California Wood Shavings,government,low,1891000.00,1
 CALPERS,Calpers,payroll,medium,3275124.18,1
+CALPORTLAND,Calportland,wildland,low,500000.00,1
 CAMERON PARK FIRE DEPARTMENT,Cameron Park Fire Department,government,medium,1474866.20,1
+CAMP PENDLETON FIRE,Camp Pendleton Fire,government,low,468547.98,1
 CAMP ROBERTS,Camp Roberts,government,medium,211823.40,1
 CAMPBELL,The Campbell,wildland,low,2685907.98,1
 CANAAN SOUND AND LIGHT,Canaan Sound & Light,wildland,low,715576.75,1
 CANOPY,Canopy,government,low,1390400.75,1
 CANYON ROCK,Canyon Rock,unclassified,low,358728.00,1
+CAPAY VALLEY FPD,Capay Valley FPD,government,medium,464108.02,1
 CAPITAL REMAN,Capital Reman,fleet,medium,30723.50,1
 CAPITOL HELICOPTERS,Capitol Helicopters,apparatus,medium,7588265.13,1
 CARAHSOFT TECHNOLOGY,Carahsoft Technology,it,medium,4392226.85,1
 CAREFUSION SOLUTIONS,CareFusion,ems-supplies,medium,1146928.12,3
+CARIBOU BIOFUELS,Caribou Biofuels,wildland,low,499999.80,1
 CARLTON CHRISTMAS TREES,Carlton Christmas Trees,government,medium,757630.70,1
 CARPINTERIA SUMMERLAND FPD,Carpinteria-summerland FPD,government,medium,3564226.72,1
 CARSON CITY FIRE DEPARTMENT,Carson City Fire Department,government,medium,1065842.19,1
 CART ADDICTIONS,Cart Addictions,unclassified,low,88937.75,1
 CASE LOGISTICS,Case Logistics,unclassified,low,30106.25,1
 CASTELLA FIRE PROTECTION DIST,Castella Fire Protection Dist,government,medium,580663.42,1
+CATHEDRAL CITY FIRE DEPT,Cathedral City Fire Dept,government,medium,502310.07,1
 CATS USA PEST CONTROL,Cats USA Pest Control,facilities,medium,641904.61,1
 CATTLELACK RANCH,Cattlelack Ranch,wildland,low,574607.07,1
+CAZADERO COMM SERVICES DIST,Cazadero Comm Services Dist,government,medium,412145.65,1
 CB GARMENT,CB Garment,ppe,low,831361.30,2
 CCL ENGINEERING,CCL Engineering,construction,medium,2163328.93,1
 CD AND POWER,CD & Power,utilities,medium,664204.12,2
 CE BECKER AND SONS ENTERPRISES,C E Becker & Sons Enterprises,wildland,low,1861135.91,1
 CECIL LOGGING,Cecil Logging,facilities,low,695083.00,1
+CEDAR STICK RESOURCES GROUP,Cedar Stick Resources Group,wildland,low,449911.00,1
 CENTRAL CA CONFERENCE OF,Central CA Conference of,training,medium,1238376.20,1
 CENTRAL CALAVERAS FIRE AND RSQ,Central Calaveras Fire & RSQ,government,low,1381429.98,1
 CENTRAL COAST FENCE,Central Coast Fence,facilities,low,954308.71,1
+CENTRAL COPTERS,Central Copters,wildland,low,419999.00,1
 CENTRAL COUNTY FD,Central County FD,government,medium,3006025.64,1
 CENTRAL FIRE DISTRICT OF SANTA,Central Fire District of Santa,government,low,1773212.87,1
 CENTRAL FPD,Central FPD,government,medium,1331751.41,1
@@ -307,6 +392,8 @@ CERTIFIED STAINLESS SERVICE,Certified Stainless Service,unclassified,low,620976.
 CFT NV DEVELOPMENTS,CFT NV Developments,facilities,low,8134945.19,1
 CGS,CGS,wildland,low,846708.12,1
 CHAD JOHNSON TRUCKING,Chad Johnson Trucking,fleet,medium,576521.61,1
+CHAD PANKEY CONSTRUCTION,Chad Pankey Construction,construction,medium,422716.30,1
+CHANCE HART,Chance Hart,wildland,low,1204184.25,1
 CHARTER COMMUNICATIONS,Charter Communications,telecom,medium,995625.74,2
 CHASES FOOTHILL PETROLEUM,Chase's Foothill Petroleum,fleet,medium,593678.40,1
 CHERNOH EXCAVATING,Chernoh Excavating,construction,medium,875881.83,1
@@ -355,13 +442,16 @@ CITY OF DIXON,City of Dixon,government,medium,838948.40,1
 CITY OF EL CAJON,City of El Cajon,government,medium,950824.82,1
 CITY OF EL CENTRO,City of El Centro,government,medium,1513348.64,1
 CITY OF EL PASO DE ROBLES,City of El Paso de Robles,government,medium,1967252.06,1
+CITY OF ENCINITAS,City of Encinitas,government,medium,522250.86,1
 CITY OF ENCINITAS FD,City of Encinitas FD,government,medium,701237.98,1
 CITY OF FOLSOM,City of Folsom,government,medium,1056850.90,1
 CITY OF FREMONT,City of Fremont,government,medium,4785886.80,1
 CITY OF FRESNO,City of Fresno,government,medium,4821414.48,1
+CITY OF GARDEN GROVE,City of Garden Grove,government,medium,473993.24,1
 CITY OF GLENDALE,City of Glendale,government,medium,4848139.74,1
 CITY OF GOLETA,City of Goleta,government,medium,1708872.00,1
 CITY OF GRASS VALLEY,City of Grass Valley,government,medium,677697.33,1
+CITY OF GRIDLEY,City of Gridley,government,medium,381409.30,1
 CITY OF GUADALUPE,City of Guadalupe,government,medium,642160.62,1
 CITY OF HEMET,City of Hemet,government,medium,2138713.23,1
 CITY OF HOLLISTER,City of Hollister,government,medium,1844168.56,1
@@ -373,6 +463,7 @@ CITY OF LA MESA,City of La Mesa,government,medium,1449398.74,1
 CITY OF LA QUINTA,City of La Quinta,government,medium,5151987.04,1
 CITY OF LA VERNE,City of La Verne,government,medium,2922326.55,1
 CITY OF LAGUNA BEACH,City of Laguna Beach,government,medium,1124107.39,1
+CITY OF LEMON GROVE,City of Lemon Grove,government,medium,492095.74,1
 CITY OF LIVERMORE,City of Livermore,government,medium,1292277.56,1
 CITY OF LOMA LINDA,City of Loma Linda,government,medium,1143265.18,1
 CITY OF LONG BEACH,City of Long Beach,government,medium,7477033.40,1
@@ -381,8 +472,13 @@ CITY OF LOS ANGELES FIRE DEPT,city of los angeles fire dept.,government,medium,6
 CITY OF MANHATTAN BEACH,City of Manhattan Beach,government,medium,913010.76,1
 CITY OF MANTECA,City of Manteca,government,medium,1161881.75,1
 CITY OF MARINA,City of Marina,government,medium,946775.27,1
+CITY OF MAYWOOD,City of Maywood,government,medium,443703.74,1
 CITY OF MERCED,City of Merced,government,medium,1452829.76,2
+CITY OF MISSION VIEJO,City of Mission Viejo,government,medium,384890.44,1
+CITY OF MODESTO,City of Modesto,government,medium,481297.77,1
+CITY OF MONROVIA,City of Monrovia,government,medium,469838.17,1
 CITY OF MONTAGUE,City of Montague,government,medium,1068894.45,1
+CITY OF MONTEBELLO,City of Montebello,government,medium,492394.65,1
 CITY OF MONTEREY,City of Monterey,government,medium,577019.77,1
 CITY OF MONTEREY PARK,City of Monterey Park,government,medium,1964705.56,1
 CITY OF MORGAN HILL,City of Morgan Hill,government,medium,562271.26,1
@@ -395,6 +491,7 @@ CITY OF OAKLAND,City of Oakland,government,medium,1329543.91,1
 CITY OF OAKLAND FIRE DEPT,City of Oakland Fire Dept,government,medium,5070466.33,1
 CITY OF OCEANSIDE,City of Oceanside,government,medium,3392794.36,1
 CITY OF ORANGE,City of Orange,government,medium,5263699.83,1
+CITY OF ORLAND,City of Orland,government,medium,480934.34,1
 CITY OF OXNARD,City of Oxnard,government,medium,2653197.94,1
 CITY OF PALM SPRINGS,City of Palm Springs,government,medium,1011551.86,2
 CITY OF PALO ALTO,City of Palo Alto,government,medium,1575396.46,1
@@ -406,7 +503,9 @@ CITY OF REDDING,City of Redding,government,medium,6945027.82,1
 CITY OF REDLANDS,City of Redlands,government,medium,1205671.41,1
 CITY OF REDONDO BEACH,City of Redondo Beach,government,medium,790700.98,1
 CITY OF RENO,City of Reno,government,medium,557666.97,1
+CITY OF RENO FD,City of Reno FD,government,medium,514622.64,1
 CITY OF RIALTO,City of Rialto,government,medium,1998031.59,1
+CITY OF RICHMOND,City of Richmond,government,medium,411386.45,1
 CITY OF RIVERSIDE,City of Riverside,government,medium,4291144.49,3
 CITY OF ROCKLIN,City of Rocklin,government,medium,1041599.56,2
 CITY OF ROHNERT PARK,City of Rohnert Park,government,medium,533343.48,1
@@ -418,9 +517,12 @@ CITY OF SAN DIEGO,City of San Diego,government,medium,7926702.96,1
 CITY OF SAN JOSE,City of San Jose,government,medium,726952.47,1
 CITY OF SAN JOSE FIRE DEPT,City of San Jose Fire Dept,government,medium,15337823.53,1
 CITY OF SAN MARCOS,City of San Marcos,government,medium,4439109.66,1
+CITY OF SAN RAFAEL,City of San Rafael,government,medium,516386.80,1
 CITY OF SANTA BARBARA,City of Santa Barbara,government,medium,4199953.01,1
 CITY OF SANTA MONICA,City of Santa Monica,government,medium,3370442.23,1
 CITY OF SANTEE,City of Santee,government,medium,1386713.25,1
+CITY OF SCOTTS VALLEY,City of Scotts Valley,government,medium,386645.00,1
+CITY OF SEBASTOPOL,City of Sebastopol,government,medium,423262.99,1
 CITY OF SELMA FIRE DEPT,City of Selma Fire Dept,government,medium,954349.63,1
 CITY OF SHASTA LAKE,City of Shasta Lake,government,medium,2625796.93,1
 CITY OF SOUTH LAKE TAHOE,City of South Lake Tahoe,government,medium,792621.39,1
@@ -431,6 +533,7 @@ CITY OF TEMECULA,City of Temecula,government,medium,597512.37,1
 CITY OF TORRANCE,City of Torrance,government,medium,3511985.16,1
 CITY OF TULARE,City of Tulare,government,medium,631866.06,1
 CITY OF TURLOCK,City of Turlock,government,medium,723893.73,1
+CITY OF UKIAH,City of Ukiah,government,medium,473799.52,1
 CITY OF VACAVILLE,City of Vacaville,government,medium,1939978.13,1
 CITY OF VICTORVILLE,City of Victorville,government,medium,910507.58,1
 CITY OF VISALIA,City of Visalia,government,medium,732752.27,1
@@ -442,16 +545,23 @@ CITY OF WINTERS FIRE DEPARTMENT,City of Winters Fire Department,government,mediu
 CITY OF WOODLAND,City of Woodland,government,medium,587482.71,2
 CITY OF YORBA LINDA,City of Yorba Linda,government,medium,670385.34,1
 CITY OF YREKA,City of Yreka,government,medium,550646.13,1
+CITY OF YUMA,City of Yuma,government,medium,479052.51,1
+CITYGATE ASSOCIATES,Citygate Associates,professional,medium,459658.34,2
 CLASS 1 FIRE,Class 1 Fire,wildland,low,1028942.39,1
 CLAYTON J GRAHAM,Clayton J Graham,wildland,low,2547769.11,1
 CLEAN HARBORS ENVIRONMENTAL SERVICES,Clean Harbors Environmental Services,professional,low,4236613.38,2
 CLEAN SPORT,Clean Sport,unclassified,low,81892.91,1
 CLEAR LAKE ENVIRONMENTAL,Clear Lake Environmental,professional,low,12898014.30,1
+CLEAR WATER SUPPLY,Clear Water Supply,general,medium,469080.55,1
+CLEARLAKE LAVA,Clearlake Lava,wildland,low,520596.50,1
 CLEARWATER FOREST ANALYTICS,Clearwater Forest Analytics,government,low,681880.00,1
 CLEMENTS RURAL FPD,Clements Rural FPD,government,medium,2015128.86,1
+CLERE,Clere,telecom,low,423262.46,1
+CLIFTON ENVIRONMENTAL,Clifton Environmental,professional,medium,478492.50,1
 CLIMATE AND WILDFIRE INSTITUTE,Climate and Wildfire Institute,wildland,medium,2548589.48,1
 CLOVERDALE FIRE PROTECTION,Cloverdale Fire Protection,government,low,1802141.73,1
 CLOVIS FIRE DEPARTMENT,Clovis Fire Department,government,medium,910665.57,1
+CLP FIRE SUPPORT,CLP Fire Support,wildland,low,436741.12,1
 CLT LOGGING,CLT Logging,wildland,low,545741.50,1
 CNTY OF FRESNO PUBLIC,CNTY of Fresno Public,government,low,2042734.62,1
 COAR DESIGN GROUP,Coar Design Group,facilities,low,1761123.01,1
@@ -462,7 +572,8 @@ COASTAL QUEST,Coastal Quest,unclassified,low,57034.81,1
 COASTLINE EQUIPMENT,Coastline Equipment,fleet,low,1072526.44,2
 COBALT EQUIPMENT,Cobalt Equipment,wildland,low,2017158.10,1
 COCKSURE ENTERPRISES,Cocksure Enterprises,wildland,low,814104.00,1
-COLEMAN CONSTRUCTION,Coleman Construction,construction,medium,1121931.06,1
+CODY LAMB,Cody Lamb,wildland,low,1205856.36,1
+COLEMAN CONSTRUCTION,Coleman Construction,construction,medium,1058791.06,1
 COLEMAN ENVIRONMENTAL ENG,Coleman Environmental Eng,wildland,low,2172586.94,1
 COLLECTIVE DATA,Collective Data,software,low,841018.03,1
 COLLINS PINE,Collins Pine Company,government,low,1973000.00,1
@@ -479,6 +590,7 @@ COMMUNIQUE INTERPRETING,Communique Interpreting,professional,medium,29820.93,1
 COMMUNITY ASSN OF BIG SUR,Community Assn of Big Sur,unclassified,low,666756.00,1
 COMMUNITY BRIDGES,Community Bridges,government,medium,352741.74,1
 COMMUNITY WILDFIRE PLANNING,Community Wildfire Planning,wildland,medium,1116894.19,1
+COMPRESSED AIR SPECIALTIES,Compressed Air Specialties,fire-equipment,low,420018.32,4
 COMPTCHE VOLUNTEER FIRE DEPT,Comptche Volunteer Fire Dept,government,medium,580556.84,1
 COMPUCOM SYSTEMS,CompuCom Systems,it,medium,3977223.40,1
 COMPUTACENTER UNITED STATES,Computacenter United States,it,low,670620.04,1
@@ -487,6 +599,7 @@ COMPUTERLAND SILICON VALLEY,Computerland Silicon Valley,it,medium,2570714.65,1
 CONCERNED RESOURCE AND ENVIR,Concerned Resource & Envir,government,low,1004733.88,1
 CONCRETE NORTH,Concrete North,construction,medium,541997.33,1
 CONEXWEST,ConexWest,general,low,1106860.95,1
+CONFIDENTIAL,Confidential,placeholder,medium,35130847.63,1
 CONSERVATION BIOLOGY INST,Conservation Biology Inst,government,low,1016478.40,1
 CONSERVATION CORPS OF LONG,Conservation Corps of Long,government,medium,761379.61,1
 CONSERVATION WORKS,Conservation Works,unclassified,low,931660.35,1
@@ -495,11 +608,13 @@ CONTRA COSTA COUNTY,Contra Costa County,government,medium,7287298.87,1
 CONVERSE CONSTRUCTION,Converse Construction,construction,medium,1164966.96,1
 COOK CONSTRUCTION,Cook Construction,construction,medium,870917.74,1
 COOKE AND ASSOCIATES,Cooke & Associates,facilities,low,7528242.86,1
+COPE NORTHERN SONOMA COUNTY,Cope Northern Sonoma County,wildland,low,411568.40,1
 COPPER CROSS VINEYARDS,Copper Cross Vineyards,wildland,low,596198.99,1
 COPPEROPOLIS FIRE PROTECTION,Copperopolis Fire Protection,government,low,719763.45,1
 CORDELIA FIRE PROTECTION DIST,Cordelia Fire Protection Dist,government,medium,1414058.22,1
 CORDREY CONSTRUCTION,Cordrey Construction,construction,medium,585057.45,1
 CORNERSTONE COPIES,Cornerstone Copies,general,medium,78086.97,1
+CORNING VOLUNTEER FIRE DEPT,Corning Volunteer Fire Dept,government,medium,385367.19,1
 CORONA FIRE DEPARTMENT,Corona Fire Department,government,medium,1264058.85,1
 CORRAL CREEK TIMBER,Corral Creek Timber,government,low,1419691.39,1
 COSTA MESA FIRE DEPARTMENT,Costa Mesa Fire Department,government,medium,2372429.49,1
@@ -511,17 +626,22 @@ COUNCIL FOR WATERSHED HEALTH,Council for Watershed Health,government,medium,1568
 COUNTY OF BUTTE,County of Butte,government,medium,530505.10,1
 COUNTY OF FRESNO,County of Fresno,government,medium,4477698.38,1
 COUNTY OF HUMBOLDT,County of Humboldt,government,medium,3434654.25,1
+COUNTY OF IMPERIAL,County of Imperial,government,medium,496314.18,1
 COUNTY OF KERN,County of Kern,government,medium,337486768.97,1
 COUNTY OF LASSEN,County of Lassen,government,medium,846041.94,1
 COUNTY OF LOS ANGELES,County of Los Angeles,government,medium,249850034.74,2
 COUNTY OF MARIN,County of Marin,government,medium,149766376.59,1
 COUNTY OF MARIPOSA,County of Mariposa,government,medium,712298.57,2
 COUNTY OF MENDOCINO,County of Mendocino,government,medium,4915222.83,1
+COUNTY OF MERCED,County of Merced,government,medium,386845.76,2
+COUNTY OF NAPA,County of Napa,government,medium,522855.26,1
 COUNTY OF NEVADA,County of Nevada,government,medium,7706085.63,1
 COUNTY OF NEVADA FACILITIES,County of Nevada Facilities,government,medium,1000000.00,1
 COUNTY OF ORANGE,County of Orange,government,medium,16759989.00,1
 COUNTY OF PLACER,County of Placer,government,medium,728950.70,1
-COUNTY OF RIVERSIDE,County of Riverside,government,medium,13228089.87,3
+COUNTY OF PLACER AND COUNTY FIRE,County of Placer & County Fire,government,medium,390467.12,1
+COUNTY OF RIVERSIDE,County of Riverside,government,medium,13229756.54,4
+COUNTY OF RIVERSIDE FIRE DEPT,County of Riverside Fire Dept,government,medium,135512127.68,1
 COUNTY OF SACRAMENTO,County of Sacramento,government,medium,4593083.61,1
 COUNTY OF SAN BERNARDINO,County of San Bernardino,government,medium,11670868.41,1
 COUNTY OF SAN DIEGO,County of San Diego,government,medium,14579034.64,2
@@ -536,6 +656,7 @@ COUNTY OF SOLANO,County of Solano,government,medium,759873.20,1
 COUNTY OF SONOMA,County of Sonoma,government,medium,2357463.37,1
 COUNTY OF SUTTER,County of Sutter,government,medium,1580580.43,1
 COUNTY OF TEHAMA,County of Tehama,government,medium,901797.13,1
+COUNTY OF TULARE,County of Tulare,government,medium,384230.20,1
 COUNTY OF TUOLUMNE,County of Tuolumne,government,medium,24323963.42,1
 COUNTY OF VENTURA,County of Ventura,government,medium,238167673.54,1
 COURTESY CHEVROLET CENTER,Courtesy Chevrolet Center,fleet,medium,1504025.46,1
@@ -551,6 +672,7 @@ CREWBOSS,Crewboss,wildland,low,1352603.86,1
 CRIME SCENE AND FATALITY,Crime Scene & Fatality,facilities,low,584384.25,1
 CROCKETT CARQUINEZ FPD,Crockett-carquinez FPD,government,medium,900164.38,1
 CROMAN,Croman,apparatus,medium,3412925.82,1
+CROMER EQUIPMENT,Cromer Equipment,fleet,low,376699.14,1
 CROOK LOGGING,Crook Logging,wildland,low,1689438.90,1
 CROSS CONNECTIONS,Cross Connections,wildland,low,6692230.94,1
 CROSS CONNECTIONS EMERGENCY,Cross Connections Emergency,radios,low,20603222.19,1
@@ -563,12 +685,17 @@ CSU SONOMA,CSU Sonoma,government,medium,1532690.62,1
 CSUS CONTINUING EDUCATION,Csus Continuing Education,government,medium,775850.69,1
 CTS VENTURES,CTS Ventures,wildland,low,1102006.43,1
 CTVCT OF COLFAX RANCHERIA,Ctvct of the Colfax Rancheria,government,medium,1606858.42,1
+CULP WATER TRUCK SERVICE,Culp Water Truck Service,wildland,medium,523014.57,1
 CULTURAL FIRE MGMT COUNCIL,Cultural Fire Management Council,government,low,3179575.39,1
 CUTTING EDGE CONSTRUCTION,Cutting Edge Construction,construction,medium,1077889.63,1
 CUTTING EDGE PARTS,Cutting Edge Parts,fleet,medium,601492.50,1
+CVR WATER SOLUTIONS,CVR Water Solutions,general,medium,483398.62,1
 CWF PRECISION,CWF Precision,unclassified,low,51044.63,1
+D AND D ENTERPRISES,D&D Enterprises,fleet,low,392213.50,1
 DADCO CONSTRUCTION,Dadco Construction,construction,medium,568360.59,1
+DALE ULSH,Dale Ulsh,wildland,low,1083682.12,1
 DAN ENTERPRISES TEAM,Dan Enterprises Team,ppe,low,678445.42,1
+DANIEL G WARREN,Daniel G Warren,wildland,low,494552.72,1
 DANIELS ELECTRONICS,Daniels Electronics,radios,low,1650507.97,2
 DANIELS TIRE SERVICE,Daniels Tire Service,fleet,medium,1784243.96,3
 DANIELSEN,The Danielsen Co,general,low,745449.53,1
@@ -579,6 +706,7 @@ DAVID J PERRY,David J Perry,wildland,low,906816.56,1
 DAVIS AG,Davis Ag,unclassified,low,414752.00,1
 DAWSON OIL,Dawson Oil,fleet,medium,2731202.72,1
 DAY MANAGEMENT,Day Management,fleet,low,617184.06,1
+DC CUSTOMS,DC Customs,general,low,400159.12,1
 DEER CREEK RESOURCES,Deer Creek Resources,wildland,low,2969243.07,1
 DEER SPRINGS FIRE DEPARTMENT,Deer Springs Fire Department,government,medium,584775.48,1
 DEERE AND,Deere & Company,unclassified,low,607124.92,2
@@ -600,6 +728,7 @@ DEPT OF GENERAL SERVICES,California Department of General Services,government,hi
 DEPT OF INDUSTRIAL RELATIONS,Dept of Industrial Relations,government,medium,12376880.58,1
 DEPT OF PARKS AND RECREATION,Dept of Parks & Recreation,government,medium,7749366.99,1
 DEPT OF WATER RESOURCES,Dept of Water Resources,government,medium,7280773.74,1
+DEROTIC EMERGENCY EQUIPMENT,Derotic Emergency Equipment,fleet,low,442342.21,1
 DEUCES TRUCKING,Deuces Trucking,fleet,medium,1389690.47,1
 DFND TECHNOLOGIES,DFND Technologies,it,medium,806665.96,1
 DG BACKHOE SERVICE,D-g Backhoe Service,wildland,low,1587042.99,1
@@ -623,11 +752,14 @@ DIRECT LINE DOZER,Direct Line Dozer,wildland,low,534392.06,1
 DIRT WORKS DL,Dirt Works DL,wildland,low,647502.28,1
 DIRT WURKZ,Dirt Wurkz,unclassified,low,387254.09,1
 DISPLAYED GEOGRAPHICS,Displayed Geographics,wildland,low,731413.32,1
+DIVERSIFIED CONST INTL,Diversified Const Intl,wildland,low,429872.57,1
 DIVERSIFIED RESOURCES,Diversified Resources,wildland,low,1555793.44,1
 DLT SOLUTIONS,DLT Solutions,software,low,859454.55,2
 DM AND MM,DM & MM,radios,low,2003665.23,1
 DOCS WATER,Docs Water,utilities,medium,779285.86,2
 DON D DAVIS TOWING,Don D Davis Towing,fleet,medium,2152394.63,1
+DONALD HERBERT TRUCKING,Donald Herbert Trucking,fleet,medium,504820.75,1
+DOUBLE R SERVICES,Double R Services,wildland,low,420762.75,1
 DOWNEY FIRE DEPARTMENT,Downey Fire Department,government,medium,2034035.05,1
 DOWNS ENERGY,Downs Energy,fleet,medium,3011235.02,2
 DOWNTOWN FORD SALES,Downtown Ford Sales,fleet,medium,36967381.91,1
@@ -643,6 +775,7 @@ DUSHAN MEDAN CONSTRUCTION,Dushan Medan Construction,construction,medium,565531.7
 DUSI SERVIZZI DE UVAS,Dusi Servizzi de Uvas,wildland,low,1576020.69,1
 DUST STOPPERS,Dust Stoppers,wildland,low,782577.53,1
 DVBE SBE ENTERPRISES,Dvbe-sbe Enterprises,wildland,low,943774.18,1
+DVBE SBE ENTERPRISES LENAHANS WATER TRUCK SERVICE,"Dvbe-sbe Enterprises, Inc. / dba Lenahan's Water Truck Service",wildland,medium,400517.46,1
 DVBE SUPPLIERS,DVBE Suppliers (unspecified),placeholder,low,13273633.28,1
 DYE TRUCKING,Dye Trucking,fleet,medium,774270.23,1
 DYNCORP INTERNATIONAL,Amentum (formerly DynCorp International),apparatus,medium,335509535.22,1
@@ -655,13 +788,17 @@ EAST BAY REGIONAL PARKS FD,East Bay Regional Parks FD,government,medium,1482779.
 EAST BAY TIRE,East Bay Tire,fleet,medium,9140090.57,2
 EAST FORK FPD,East Fork FPD,government,medium,971196.78,1
 EASTERN MADERA COUNTY,Eastern Madera County,government,medium,613229.13,1
+EASTERN PLUMAS RURAL FIRE PROT,Eastern Plumas Rural Fire Prot,government,low,412768.71,1
 EASTSIDE IRON,Eastside Iron,wildland,low,1079161.96,1
 EBBETTS PASS FIRE DISTRICT,Ebbetts Pass Fire District,government,medium,798447.18,1
+EBV EXPLOSIVES ENVIRONMENTAL GENERAL DYNAMICS OTS MS,Ebv Explosives Environmental Company dba General Dynamics Ots MS,professional,medium,398600.00,1
 EC AMERICA,Ec America,software,low,1199607.34,1
 ECIVIS,Ecivis,it,low,798188.30,1
 ECO BEAR,Eco Bear,unclassified,low,35625.18,1
+ECOPIA TECH,Ecopia Tech,wildland,low,490000.00,1
 ECOTRUST FORESTS II,Ecotrust Forests II,government,low,2268377.06,1
 ECS HELIBASE,Ecs Helibase,wildland,low,2139009.38,1
+EDMO DISTRIBUTORS,Edmo Distributors,general,low,377825.75,1
 EDUCATE ADVANCING EARLY CHLDHD,Educate Advancing Early Chldhd,unclassified,low,901890.15,1
 EDWARD R BACON,Edward R Bacon Co,unclassified,low,561184.37,2
 EDWARDS CONSTRUCTION GROUP,Edwards Construction Group,construction,medium,5594962.59,1
@@ -673,18 +810,23 @@ EL AERO SERVICES,El Aero Services,apparatus,medium,684254.20,1
 EL CERRITO FIRE DEPARTMENT,El Cerrito Fire Department,government,medium,1751086.69,1
 EL DORADO CNTY FIRE PROTECTION,El Dorado CNTY Fire Protection,government,low,2373449.94,1
 EL DORADO CNTY FIRE SAFE COUN,El Dorado CNTY Fire Safe Coun,government,medium,12260780.09,1
+EL DORADO COUNTY,El Dorado County,government,medium,409563.01,1
 EL DORADO HILLS FIRE DEPT,El Dorado Hills Fire Dept,government,medium,2788881.22,1
 EL DORADO IRRIGATION DISTRICT,El Dorado Irrigation District,utilities,low,2168284.21,1
 EL DORADO RES CONSERV DIST,El Dorado Res Conserv Dist,government,medium,7034233.63,1
 EL DORADO WATER AND SHOWER SERVICE,El Dorado Water & Shower Service,general,medium,1725324.26,1
 EL DORADO WATER AND SHOWER SVC,El Dorado Water & Shower SVC,general,medium,8897305.90,1
 EL SEGUNDO FIRE DEPARTMENT,El Segundo Fire Department,government,medium,809587.96,1
+ELECTROJET COMMUNICATIONS,Electrojet Communications,radios,medium,412199.97,1
 ELEMENT SECURITY AND RISK MGMT,Element Security & Risk MGMT,facilities,low,566707.86,1
 ELK COMMUNITY SERVICES DIST,Elk Community Services Dist,government,medium,646392.03,1
+ELK CREEK FIRE PROTECTION DIST,Elk Creek Fire Protection Dist,government,medium,502466.18,1
+ELK GROVE AUTO,Elk Grove Auto,fleet,medium,492415.32,1
 ELK GROVE AUTO GROUP,Elk Grove Auto Group,fleet,medium,29969007.77,1
 ELKHORN SLOUGH FOUNDATION,Elkhorn Slough Foundation,government,medium,1769736.98,1
 ELLIS LAW,Ellis Law,professional,medium,2375000.00,1
 EMADCO DISPOSAL,Emadco Disposal,utilities,medium,75362.71,1
+EMERG VEHICLE SPECIALISTS,Emerg Vehicle Specialists,wildland,low,395721.35,1
 EMERGENCY COMMAND SUPPORT,Emergency Command Support,wildland,low,3758750.45,1
 EMERGENCY MEDICAL SERVICE AUTH,Emergency Medical Service Auth,ems-supplies,medium,1488245.21,1
 EMERGENCY VEHICLE EQUIPMENT,Emergency Vehicle Equipment,fleet,low,577882.93,1
@@ -701,10 +843,14 @@ ENVISAGE TECHNOLOGIES,Envisage Technologies,it,medium,2139341.72,1
 EPIPHANY CENTER,Epiphany Center,unclassified,low,919619.75,1
 ERC ROOFING AND WATERPROOFING,Erc Roofing & Waterproofing,construction,medium,2380092.01,1
 ERIC KRISMANS EQUIP SVCS,Eric Krismans Equip SVCS,wildland,low,2731474.12,1
+ERIC SPRATT,Eric Spratt,wildland,low,906128.54,1
+ERIC W LUDWIG WATER TENDER,Eric W Ludwig Water Tender,wildland,medium,408101.75,1
 ERICKSON,Erickson,wildland,low,1157754.22,1
 ERICKSON AIR CRANE,Erickson Air-Crane,apparatus,medium,25849873.09,2
+ERICKSON CONSTRUCTION,Erickson Construction,construction,medium,461308.52,1
 ESCONDIDO FIRE DEPT,Escondido Fire Dept,government,medium,2396795.14,1
 ESKATON PROPERTIES,Eskaton Properties,facilities,low,2050325.99,1
+ESPARTO FPD,Esparto FPD,government,medium,379461.41,1
 ESPOSTOS FINE FOODS,Espostos Fine Foods,general,low,4293438.30,1
 ESSELEN TRIBE OF MONTEREY CNTY,Esselen Tribe of Monterey CNTY,government,medium,1687731.11,1
 ESTRADAS WATER DOGS,Estradas Water Dogs,utilities,medium,631667.30,1
@@ -716,6 +862,9 @@ EXCEPTIONAL FIRE SERVICE,Exceptional Fire Service,wildland,low,3019601.00,1
 EXECUTIVE COMMUNICATION SYS,Executive Communication SYS,radios,low,1008866.38,1
 EXPEDITORS BY LINDALE,Expeditors BY Lindale,wildland,low,1964431.48,1
 EXTREME SAFETY,Extreme Safety,unclassified,low,670918.32,1
+FABRIC WKSP TIMBER CONST,Fabric Wksp Timber Const,wildland,medium,427171.37,1
+FAILSAFE TESTING,Failsafe Testing,fire-equipment,low,486815.58,3
+FAIR PRICE CARPETS,Fair Price Carpets,facilities,low,482419.63,2
 FAIRFIELD FD,Fairfield FD,government,medium,1537431.01,1
 FALCON FUELS,Falcon Fuels,fleet,medium,1949085.84,1
 FALK FORESTRY,Falk Forestry,wildland,low,1099584.75,1
@@ -724,6 +873,7 @@ FALLEN LEAF FD,Fallen Leaf FD,government,medium,1793110.93,1
 FALLEN LEAF LAKE COMM SVC DIST,Fallen Leaf Lake Comm SVC Dist,government,low,1977556.33,1
 FAMILY WATER ALLIANCE,Family Water Alliance,government,low,4995617.58,1
 FARELLA BRAUN AND MARTEL,Farella Braun & Martel,ambulance,medium,1590829.96,1
+FARMERSVILLE FD,Farmersville FD,government,low,493442.59,1
 FARMWORKERS INSTITUTE OF EDU AND,Farmworkers Institute of Edu &,training,medium,1985167.58,1
 FARRIS AND DALEY,Farris & Daley,wildland,low,593455.70,1
 FAST SIGNS,FastSigns,general,medium,21339.87,1
@@ -732,18 +882,23 @@ FEDERAL EXPRESS,Federal Express,general,low,1131469.23,2
 FEDEX FREIGHT,Fedex Freight,general,low,559179.98,1
 FERRARA FIRE APPARATUS,Ferrara Fire Apparatus,apparatus,medium,12631504.25,1
 FERRELLGAS LP,Ferrellgas,utilities,high,1489647.64,1
+FIDELITY NATIONAL TITLE,Fidelity National Title,construction,low,402166.56,1
 FIDELITY NATL TITLE OF CA,Fidelity Natl Title Co of CA,finance,medium,7000000.00,1
+FIESTA FORD LINCOLN MERCURY,Fiesta Ford Lincoln Mercury,fleet,medium,472830.66,1
 FIRE APPARATUS SOLUTIONS,Fire Apparatus Solutions,apparatus,medium,2195228.08,4
 FIRE DAWG GREEN,Fire Dawg Green,general,low,9065414.64,1
 FIRE DEPT EXTRACTOR SUPPLY,Fire Dept Extractor Supply,government,medium,2272918.16,1
 FIRE ETC,Fire Etc,fire-equipment,medium,12938900.98,4
 FIRE MONKEY CATERING SVCS,Fire Monkey Catering SVCS,general,medium,3374217.01,1
+FIRE RESCUE EQUIPMENT NW,Fire Rescue Equipment NW,government,medium,393046.37,1
+FIRE SAFE COUN E ORANGE CNTY,Fire Safe Coun E Orange Cnty,wildland,low,461300.00,1
 FIRE SAFE COUN OF SISKIYOU,Fire Safe Coun of Siskiyou,government,medium,3057446.69,1
 FIRE SAFE COUNCIL OF NEVADA,Fire Safe Council of Nevada,government,medium,6539586.06,1
 FIRE SAFE COUNCIL OF SAN DIEGO,Fire Safe Council of San Diego,government,medium,4984636.17,1
 FIRE SAFE SONOMA,Fire Safe Sonoma,government,medium,1046174.76,1
 FIRE SUPPORT UNLIMITED,Fire Support Unlimited,fire-equipment,medium,2739511.64,1
 FIRE WATER SUPPLY,Fire Water Supply,general,medium,7203421.49,1
+FIREBLAST GLOBAL,Fireblast Global,unclassified,low,399601.42,2
 FIREHAWK HELICOPTERS,Firehawk Helicopters,apparatus,medium,4205170.55,1
 FIREHOUSE ENTERTAINMENT,Firehouse Entertainment,unclassified,low,91077.98,1
 FIRELINE SUPPORT SERVICES,Fireline Support Services,wildland,low,1448455.11,1
@@ -752,6 +907,9 @@ FIREQUICK PRODUCTS,FireQuick Products,fire-equipment,medium,1971663.75,4
 FIRESAFE CORONA,Firesafe Corona,government,medium,67640.88,1
 FIRESAFE MARIN,Firesafe Marin,government,medium,847231.13,1
 FIRESTATIONFURNITURE COM,FireStationFurniture.com,general,medium,60772.44,1
+FIRESTORM TRUCKING,Firestorm Trucking,fleet,medium,446099.74,1
+FIRESTORM TRUCKING CA,Firestorm Trucking CA,fleet,medium,436345.77,1
+FIRST IN FIRE SUPPORT,First in Fire Support,wildland,low,468520.03,1
 FIRST RESPONDER RESILIENCY,First Responder Resiliency,training,low,1333278.69,1
 FIRST VANGUARD RENTALS AND SALES,First Vanguard Rentals & Sales,wildland,low,547869.65,1
 FISKS TREE AND EXCAVATING,Fisks Tree & Excavating,construction,medium,801632.12,1
@@ -759,6 +917,8 @@ FIVE CITIES FIRE AUTHORITY,Five Cities Fire Authority,government,medium,1485960.
 FIVE STAR MAINTENANCE AND REPAIR,Five Star Maintenance & Repair,wildland,low,822156.28,1
 FLIGHT SAFETY INTERNATIONAL,FlightSafety International,training,medium,1443000.00,1
 FLOORS PLUS,Floors Plus,facilities,medium,42025.00,1
+FLYHIGH USA,Flyhigh USA,apparatus,low,475881.97,1
+FLYING COLORS TRANSPORTATION,Flying Colors Transportation,wildland,low,488074.00,1
 FOLSOM FIRE DEPARTMENT,Folsom Fire Department,government,medium,758312.87,1
 FOLSOM LAKE FORD,Folsom Lake Ford,fleet,medium,2535003.75,2
 FOOTHILL H20 ENTERPRISES,Foothill H20 Enterprises,wildland,low,612616.31,1
@@ -767,6 +927,7 @@ FOOTHILL TECHNOLOGY CENTER,Foothill Technology Center,it,medium,715327.00,1
 FORBUSCO LUMBER,Forbusco Lumber,general,medium,42012.40,1
 FORCE ENERGY,Force Energy,utilities,medium,1000000.00,1
 FORCIBLE ENTRY,Forcible Entry,fire-equipment,low,708725.39,2
+FORD RANCHES,Ford Ranches,fleet,medium,424621.09,1
 FORD TRUCKING,Ford Trucking,fleet,medium,584386.91,1
 FOREST PRODUCTS AND EXCVTN,Forest Products & Excvtn,wildland,low,723795.28,1
 FORESTRY AND FIRE,The Forestry and Fire Recruitment Program,government,low,3665365.01,1
@@ -774,18 +935,22 @@ FORESTRY EDUCATORS,Forestry Educators,government,low,1350560.83,1
 FORESTRY RESOURCES,Forestry Resources,wildland,low,767364.18,1
 FORESTVILLE FIRE PROT DISTRICT,Forestville Fire Prot District,government,medium,581099.46,1
 FORKLIFTS GROUP WEST,Forklifts Group West,apparatus,low,1990508.00,1
+FORT BRAGG FP,Fort Bragg FP,government,low,472647.02,1
+FORT BRAGG SEPTIC,Fort Bragg Septic,wildland,low,467094.11,1
 FORT JONES FD,Fort Jones FD,government,medium,1062015.44,1
 FORTNER EXCAVATION,Fortner Excavation,construction,medium,817627.51,1
 FORTUNA FIRE PROTECT DIST,Fortuna Fire Protect Dist,government,medium,858035.11,1
 FOUNTAIN VALLEY FIRE DEPT,Fountain Valley Fire Dept,government,medium,1341199.91,1
 FRANCIS DISTRIBUTING,Francis Distributing,general,low,9892720.20,1
 FRANK FUNES EQUIPMENT,Frank Funes Equipment,wildland,low,756634.09,1
+FRANK J SCHLITZ TRACTOR SVCS,Frank J Schlitz Tractor Svcs,fleet,medium,375727.70,1
 FREDS FIREARMS,Freds Firearms,general,medium,65907.32,1
 FREEDOM AERO SERVICE,Freedom Aero Service,apparatus,medium,4779795.64,1
 FREMONT FD,Fremont FD,government,medium,1503929.08,1
 FRESH AND READY LEHMAN FOODS,Fresh and Ready/LEHMAN FOODS,training,low,1774070.00,1
 FRESH GRILL,Fresh Grill,general,low,1058392.99,1
 FRESNO AREA WORKFORCE,Fresno Area Workforce,government,medium,2960911.04,1
+FRESNO CA I FGF,Fresno CA I FGF,facilities,low,475847.94,1
 FRESNO COUNTY FIRE PROTECTION DISTRICT,Fresno County Fire Protection District,government,low,10175539.46,1
 FRIENDS OF EL CENTRO COMM SVCS,Friends of El Centro Comm SVCS,government,medium,711521.00,1
 FRIENDS OF URBAN FOREST,Friends of the Urban Forest,government,medium,4621132.46,1
@@ -793,16 +958,20 @@ FRIES FALLING,Fries Falling,wildland,medium,30249.50,1
 FRITTS FORD,Fritts Ford,fleet,medium,841221.31,2
 FRITZ JOHNSON TRACTOR SERVICE,Fritz Johnson Tractor Service,fleet,medium,694692.21,1
 FROG RANCH,Frog Ranch,wildland,low,540686.12,2
+FRONTGATE PROPERTIES,Frontgate Properties,wildland,low,494865.00,1
 FRONTIER,Frontier,telecom,medium,2295336.93,2
 FRONTIER CALIFORNIA,Frontier California,telecom,medium,1198664.46,2
 FTS FOREST TECH SYSTEMS,FTS Forest Technology Systems,it,low,2710948.13,1
 FUEL SERV,Fuel Serv,fleet,medium,58589.28,1
+FULLER TRUCK ACCESSORIES,Fuller Truck Accessories,fleet,medium,451752.55,2
 FULLERTON FIRE DEPARTMENT,Fullerton Fire Department,government,medium,1689807.69,1
 FUTURE FIRE ACADEMY,Future Fire Academy,training,medium,1269638.34,1
 FWS FORESTRY SERVICES CA,FWS Forestry Services CA,wildland,low,2710171.06,1
+G AND J TRUCK SALES,G and J Truck Sales,fleet,medium,509571.74,1
 GAMBOL INDUSTRIES,Gambol Industries,apparatus,low,3693247.56,1
 GANAHL LUMBER,Ganahl Lumber,facilities,medium,1486631.41,4
 GARDEN VALLEY FIRE PROTEC DIST,Garden Valley Fire Protec Dist,government,medium,3522699.38,1
+GARR GROUP,Garr Group,wildland,low,379887.22,1
 GARVEY EQUIPMENT,Garvey Equipment Company,general,low,2103113.14,2
 GARY FORD AND DAUGHTERS,Gary Ford & Daughters,fleet,medium,776142.75,1
 GASSAWAY FIRE LINE H20,Gassaway Fire Line H20,wildland,low,693825.27,1
@@ -817,6 +986,7 @@ GEORGETOWN DIVIDE PUBLIC,Georgetown Divide Public,unclassified,low,913651.06,1
 GEORGETOWN DIVIDE RCD,Georgetown Divide RCD,government,medium,2394365.48,1
 GEORGETOWN FIRE PROTECT DIST,Georgetown Fire Protect Dist,government,medium,1270200.98,1
 GEOTAB USA,Geotab USA,software,low,3471906.33,2
+GEVAS HEAVY TRANSPORT,Gevas Heavy Transport,wildland,low,505639.53,1
 GEYSERVILLE FIRE PROTECTION,Geyserville Fire Protection,unclassified,low,538669.69,1
 GHD,GHD,professional,medium,3407424.02,1
 GHILOTTI BROS,Ghilotti Bros,construction,low,953842.80,1
@@ -832,6 +1002,7 @@ GLENN E THOMAS,Glenn E Thomas,unclassified,low,3314262.97,1
 GLOBAL SUPERTANKER SVCS,Global Supertanker SVCS,apparatus,medium,7407724.81,1
 GLOBAL UAS SOLUTIONS,Global Uas Solutions,unclassified,low,639891.65,1
 GM BUSINESS INTERIORS,G/M Business Interiors,general,low,971747.52,1
+GOLD COUNTRY TRACTORS,Gold Country Tractors,wildland,low,395812.80,1
 GOLD RIDGE FIRE PROTECTION DIST,Gold Ridge Fire Protection Dist,government,medium,2771701.06,1
 GOLDEN GATE NATL PARKS CONS,Golden Gate Natl Parks Cons,government,medium,5284174.43,1
 GOLDEN GATE PETROLEUM,Golden Gate Petroleum,fleet,medium,5520283.43,1
@@ -841,47 +1012,67 @@ GOODYEAR COMM TIRE AND SRVC CTR,Goodyear Comm Tire & SRVC CTR,fleet,medium,60585
 GORDON AND POLLAND,Gordon & Polland,unclassified,low,585000.00,1
 GOVMOBILE,Govmobile,it,low,4869914.02,1
 GP DEVELOPMENT AND LAND CLEARING,GP Development & Land Clearing,wildland,low,778170.67,1
+GRAEAGLE FIRE PROTECTION DIST,Graeagle Fire Protection Dist,government,medium,429873.44,1
 GRANITE DATA SOLUTIONS,Granite Data Solutions,it,low,6949550.58,1
 GRANLIBAKKEN MANAGEMENT,Granlibakken Management Co,facilities,low,590050.04,1
+GRANT HANNA,Grant Hanna,wildland,low,549504.59,1
 GRATON FPD,Graton FPD,government,medium,848624.94,1
 GRAYBAR ELECTRIC,Graybar Electric Company,facilities,medium,583897.68,3
 GREAT BASIN INSTITUTE,The Great Basin Institute,government,medium,10806734.96,1
+GREEN VINE LANDSCAPING,Green Vine Landscaping,facilities,medium,389210.58,1
 GREEN WASTE OF TEHAMA,Green Waste of Tehama,utilities,medium,552880.96,1
 GREENOUS,Greenous,wildland,low,1188163.11,1
 GREENWOOD AGGREGATES,Greenwood Aggregates,facilities,low,897169.81,1
 GREENWOOD GROUP,Greenwood Group,wildland,low,1495869.88,1
+GREG B BARTLETT,Greg B Bartlett,wildland,low,973831.95,1
 GREG BARTLETT CONSTRUCTION,Greg Bartlett Construction,construction,medium,631492.42,1
 GREG HUMPHERYS FRM AND EQUIP,Greg Humpherys FRM & Equip,wildland,low,1030146.55,1
 GREG SHANDEL CONSTRUCTION,Greg Shandel Construction,construction,medium,547226.86,1
 GREGG SIMPSON TRUCKING,Gregg Simpson Trucking,fleet,medium,1428472.60,1
 GRIDLEY FIRE DEPARTMENT,Gridley Fire Department,government,medium,978603.69,1
+GRINNELL FIRE,Grinnell Fire,wildland,low,435139.29,1
+GRM INFORMATION MANAGEMENT SERVICES,GRM Information Management Services,professional,low,423420.03,1
 GROUNDWORK RICHMOND,Groundwork Richmond,unclassified,low,1387646.42,1
 GROVELAND COMMUNITY SVC DIST,Groveland Community SVC Dist,unclassified,low,913343.38,1
 GROW WEST,Grow West,unclassified,low,25263.52,1
 GROWING TOGETHER BAY AREA,Growing Together Bay Area,government,medium,3513443.15,1
 GSA KANSAS CITY REGION 6,GSA Kansas City Region 6,fire-equipment,low,792114.03,1
+GSG PROTECTIVE SERVICES CA,GSG Protective Services CA,general,low,467428.95,1
 GST,GST,it,low,6518326.26,2
 GT LOGGING,GT Logging,wildland,medium,152995.15,1
 GUARDIAN HELICOPTERS,Guardian Helicopters,apparatus,medium,1711171.53,1
+GUS MUELLER TRANSPORT,Gus Mueller Transport,wildland,low,397850.22,1
+GUY VAN GAASBEEK,Guy Van Gaasbeek,wildland,low,437753.49,1
+H2O TO GO,H2O To Go,wildland,low,407183.50,1
 H2O TRANSPORT,H2o Transport,wildland,low,1451639.65,1
+HAASE ENERGY SYSTEMS,Haase Energy Systems,utilities,medium,415778.71,1
+HACO RESOURCES,Haco Resources,wildland,low,404728.94,1
+HALL SOLUTIONS,Hall Solutions,wildland,low,399699.84,1
 HAMEY WOODS,Hamey Woods,unclassified,low,111818.25,1
 HAMILTON CITY FIRE PROT DIST,Hamilton City Fire Prot Dist,government,medium,672796.96,1
 HANFORD FD,Hanford FD,government,medium,625552.98,1
+HANGAR ONE AVIONICS,Hangar One Avionics,apparatus,medium,512308.37,1
 HANK VAN HEERINGEN TRUCKING,Hank Van Heeringen Trucking,fleet,medium,1376017.84,2
+HAPPY VALLEY FIRE PROTECT DIST,Happy Valley Fire Protect Dist,government,medium,483226.68,1
 HARD LOGGING AND CONSTRUCTION,Hard Logging & Construction,construction,medium,1544712.51,1
+HARRIS AND HARRIS,Harris & Harris,finance,low,974585.28,1
 HARRIS EMERGENCY SERVICES,Harris Emergency Services,radios,medium,1321250.82,1
+HARRISON GARR,Harrison Garr,wildland,low,609508.45,1
 HARVARD OFFICE INVESTORS,Harvard Office Investors,general,medium,3513366.12,1
 HARVEYS HEAVY HAUL,Harvey's Heavy Haul,wildland,low,780610.53,1
+HARVEYS HONEY HUTS,Harveys Honey Huts,wildland,low,468227.98,1
 HAT CREEK BIOENERGY,Hat Creek Bioenergy,utilities,medium,916184.58,1
 HAT CREEK CONSTRUCTION AND,Hat Creek Construction and,construction,medium,2316349.54,1
 HAT CREEK LUMBER,Hat Creek Lumber,facilities,medium,2000000.00,1
 HAWORTH,Haworth,unclassified,low,854869.22,1
+HAYFORK FIRE PROTECTION DIST,Hayfork Fire Protection Dist,government,medium,391920.17,1
 HAYWARD FD,Hayward FD,government,medium,4695656.56,1
 HD EXCAVATING,HD Excavating,construction,medium,2571664.71,1
 HD FIRE AND PROCUREMENT,HD Fire & Procurement,wildland,low,1966931.38,1
 HEADRICK LOGGING,Headrick Logging,wildland,medium,79607.00,1
 HEADWATERS BASIN PROJECT,Headwaters Basin Project,unclassified,low,2609680.00,1
 HEADWATERS ENVIRONMENTAL,Headwaters Environmental,professional,low,984243.28,1
+HEALDSBURG FIRE DEPT,Healdsburg Fire Dept,government,medium,505296.32,1
 HEAVY ROAD AND RAIL,Heavy Road & Rail,facilities,low,637594.58,1
 HEINRICH LAW IOLTA TRUST ACCT,Heinrich Law (client trust account),finance,low,10000000.00,1
 HELI1,Heli-1,apparatus,medium,15017330.93,1
@@ -894,19 +1085,26 @@ HELIQWEST AVIATION,Heliqwest Aviation,apparatus,medium,609432.63,1
 HELIQWEST INTL,Heliqwest Intl,apparatus,medium,5649643.32,1
 HELISTREAM,Helistream,wildland,low,1647503.68,1
 HEMET FIRE DEPARTMENT,Hemet Fire Department,government,medium,586808.32,1
+HEMET VALLEY AMBULANCE SVC,Hemet Valley Ambulance SVC,ems-supplies,medium,459917.22,1
+HEPBURN HERNANDEZ AND JUNG TRIAL,Hepburn Hernandez & Jung Trial,professional,medium,503675.00,1
+HEWLETT PACKARD ENTERPRISE,Hewlett Packard Enterprise,it,medium,517368.19,1
 HF TECH SERVICES,HF Tech Services,software,low,769508.20,1
 HI TECH EMERGENCY VEHICLE SERVICE,Hi-tech Emergency Vehicle Service,fleet,low,623582.22,2
+HIATT LOGGING,Hiatt Logging,wildland,medium,460496.75,1
 HIGGINS AREA FIRE PROTECT DIST,Higgins Area Fire Protect Dist,government,medium,2960972.81,1
 HIGH DESERT LUMBER,High Desert Lumber,facilities,medium,999646.06,1
 HIGH MOUNTAIN EXCAVATION,High Mountain Excavation,construction,medium,979548.77,1
 HIGH SIERRA INDUSTRIES,High Sierra Industries,general,low,5038980.81,1
 HIGHWAY 168 FIRE SAFE COUNCIL,Highway 168 Fire Safe Council,government,medium,7409445.14,1
+HIGHWAY PRODUCTS,Highway Products,general,low,491787.85,1
 HILL ENTERPRISES TOWING,Hill Enterprises Towing,fleet,medium,596061.04,1
 HILLSBORO AVIATION,Hillsboro Aviation,apparatus,medium,753217.44,1
 HILLTOP TREE AND WATER,Hilltop Tree & Water,utilities,medium,1063607.30,1
 HIS DESIGN PLAN AND DRAFT SVC,His Design Plan & Draft SVC,wildland,low,982943.87,1
 HME,Hme,apparatus,medium,26200776.07,1
+HOFF N VEST,Hoff-n-vest,wildland,low,399124.60,1
 HOLLISTER AUTO PARTS,Hollister Auto Parts,fleet,medium,802288.54,1
+HOLLISTER FIRE DEPT,Hollister Fire Dept,government,medium,500820.59,1
 HOLLYWOOD BEAUTIFICATION TEAM,Hollywood Beautification Team,government,medium,3159589.00,1
 HOLMES LOGGING,Holmes Logging,wildland,low,1194003.00,1
 HOLMES TRUCKING,Holmes Trucking,fleet,medium,1573293.32,1
@@ -916,14 +1114,17 @@ HOLZBERG COMMUNICATIONS,Holzberg Communications,unclassified,low,707390.34,1
 HOOPA VALLEY TRIBAL COUNCIL,Hoopa Valley Tribal Council,government,medium,3364534.00,1
 HOOPA VALLEY TRIBE,Hoopa Valley Tribe,government,medium,646554.87,1
 HOPLAND FIRE PROTECTION DIST,Hopland Fire Protection Dist,government,medium,1603544.95,1
-HPS MECHANICAL,HPS Mechanical,facilities,medium,725053.04,1
+HOWROYD WRIGHT EMPLOYMENT AGENCY,Howroyd-wright Employment Agency,government,medium,464594.89,1
+HPS MECHANICAL,HPS Mechanical,facilities,medium,725203.04,2
 HSCC,HSCC,construction,low,1030000.00,1
 HUGHES HARDWOODS,Hughes Hardwoods,unclassified,low,23922.94,1
 HUGHES TREE SERVICE,Hughes Tree Service,wildland,low,684500.56,1
 HUMBOLDT BAY FIRE JPA,Humboldt Bay Fire JPA,government,low,1418592.90,1
 HUMBOLDT BAY MUNICIPAL,Humboldt Bay Municipal,government,low,1967341.75,1
 HUMBOLDT LAND TITLE,Humboldt Land Title,finance,low,10875258.00,1
+HUMBOLDT REDWOOD,Humboldt Redwood Company,professional,low,514872.26,1
 HUMBOLDT RESOURCE CONS DIST,Humboldt Co Resource Cons Dist,government,medium,9890699.23,1
+HUMBOLDT STATE UNIV SPONSORED,Humboldt State Univ Sponsored,government,medium,481826.38,1
 HUNT AND SONS,Hunt & Sons,fleet,medium,13507318.38,1
 HUNT OIL OF CALIFORNIA,Hunt Oil of California,fleet,medium,10106748.70,1
 HYBRID INCIDENT SUPPORT,Hybrid Incident Support,wildland,low,668972.34,1
@@ -932,10 +1133,16 @@ ICL PERFORMANCE PRODUCTS LP,ICL Performance Products,wildland,medium,15317216.29
 IDEA COOPERATIVE,The Idea Cooperative,unclassified,low,904508.25,1
 IDLERS HOME,Idlers Home,general,medium,21679.66,1
 IDYLLWILD FIRE PROTECTION DIST,Idyllwild Fire Protection Dist,government,medium,3793130.01,1
+IIPAY NATION OF SANTA YSABEL,Iipay Nation of Santa Ysabel,government,medium,515029.64,1
+IMPACT CONSTRUCTION,Impact Construction,construction,medium,381641.87,1
+INDEPENDENT STRUCTURES,Independent Structures,wildland,low,506845.94,1
 INFINITE SOLUTIONS,Infinite Solutions,it,low,2713842.45,1
 INITIAL ACTION SERVICES,Initial Action Services,wildland,low,881200.01,1
+INLAND EMPIRE PROPERTY SERVICE,Inland Empire Property Service,facilities,medium,851419.80,1
 INLAND EMPIRE RES CONS DIST,Inland Empire Res Cons Dist,unclassified,low,582556.46,1
+INLAND FLEET SOLUTIONS,Inland Fleet Solutions,fleet,medium,409475.39,2
 INSIDE SOURCE,The Inside Source,general,low,646005.99,1
+INSPIRED ELEARNING,Inspired Elearning,radios,low,434597.16,1
 INST FOR BLDG TECH AND SAFETY,Institute for Building Technology and Safety,professional,medium,4559200.58,1
 INSURANCE INST FOR BUS AND HOME,Insurance Inst for Bus & Home,insurance,medium,1209702.14,1
 INTEGRATED PROCUREMENT TECHNOLOGIES,Integrated Procurement Technologies,it,medium,891693.11,1
@@ -943,7 +1150,9 @@ INTEGRATED RESOURCE,Integrated Resource,government,low,3106607.61,1
 INTENTS EMERGENCY RESPONSE,Intents Emergency Response,general,medium,10364859.59,1
 INTER CON SECURITY SYSTEMS,Inter-con Security Systems,facilities,low,2325457.56,1
 INTER MOUNTAIN HELICOPTER,Inter-mountain Helicopter,apparatus,medium,2037663.42,1
+INTERGALACTIC PLACEMENTS,Intergalactic Placements,professional,medium,578368.78,1
 INTERNATIONAL ENVIRONMENTAL,International Environmental Corporation,wildland,low,7409776.00,1
+INTERSTATE 80 FORKLIFT,Interstate 80 Forklift,fleet,low,425713.95,1
 INTERSTATE OIL,Interstate Oil Company,fleet,medium,5513999.72,1
 INTERSTATE TRUCK CENTER,Interstate Truck Center,fleet,medium,1000338.72,1
 INTERTALK CRIIT INFO SYS,Intertalk Criit Info SYS,telecom,low,532998.26,1
@@ -952,35 +1161,58 @@ IONE FIRE DEPARTMENT,Ione Fire Department,government,medium,998506.77,1
 IP ACCESS INTERNATIONAL,IP Access International,telecom,medium,2219072.69,2
 IRON HOG MACHINERY,Iron Hog Machinery,wildland,low,891062.87,1
 IRON RESPONSE,Iron Response,wildland,low,1706323.89,1
+ISRINGHAUSEN PAVING AND GRADING,Isringhausen Paving & Grading,construction,medium,497537.56,1
 ITSILO,Itsilo,it,low,669805.04,1
+J AND M EQUIPMENT,J&M Equipment,wildland,low,394449.00,1
 J COTA FORESTRY,J Cota Forestry,wildland,low,3024147.00,1
 J DEPUE TRUCKING,J Depue Trucking,fleet,medium,1697301.25,1
+J MACK ENT,J Mack Ent,wildland,low,490607.57,1
+J MEEKER,J Meeker Co,wildland,low,511742.25,1
 JA SNYDER PACIFIC WEST,Ja Snyder Pacific West,wildland,low,892388.66,1
+JACK L MARYMEE JR,Jack L Marymee JR,wildland,low,503368.27,1
 JACKSON GLASS,Jackson Glass,facilities,medium,45357.35,1
+JAMES DELLORTO,James Dellorto,wildland,low,576607.95,1
+JAMES LESTER,James Lester,general,low,412479.93,1
+JAMES R HALL,James R Hall,facilities,low,654931.00,1
 JANC CONSTRUCTION,Janc Construction Company,construction,medium,872929.14,1
 JANESVILLE FIRE PROTECT DIST,Janesville Fire Protect Dist,government,medium,650349.69,1
 JB PORTABLE SHOWERS,JB Portable Showers,general,medium,828071.00,1
 JC AUTO ENTERPRISE CAL,JC Auto Enterprise Cal,fleet,medium,654185.80,1
 JC CHANG AND ASSOC,J C Chang & Assoc,training,medium,3765887.24,1
 JEFF KURZ TRUCKING,Jeff Kurz Trucking,fleet,medium,990440.03,1
+JENNIFER HOLZUM,Jennifer Holzum,wildland,low,1308607.87,1
 JENNINGS TENT,Jennings Tent Company,general,medium,3297672.97,1
 JENSENS FINEST FOODS,Jensens Finest Foods,general,low,677853.22,1
 JENSENS TREE CARE,Jensens Tree Care,wildland,low,576701.75,1
+JEROLD SELBY DREW,Jerold Selby Drew,facilities,low,556060.15,1
+JERRY A JUNGWIRTH,Jerry A Jungwirth,wildland,low,1241963.97,1
+JILL GUSTAFSON LCSW,Jill Gustafson Lcsw,professional,low,384759.89,1
 JIM SHERER TRUCKING,Jim Sherer Trucking,fleet,medium,782614.77,1
 JIM WALTERS TRACTOR SERVICE,Jim Walters Tractor Service,fleet,medium,580639.66,1
 JIM WILSON EXCAVATION,Jim Wilson Excavation,construction,medium,748207.41,1
 JIMMIE MUSCATELLOS,Jimmie Muscatello's,uniforms,medium,1206.63,1
 JLH CLEANING,JLH Cleaning,facilities,medium,220720.42,1
+JLM,JLM,wildland,low,426892.75,1
+JMBS,J M B S,wildland,low,375736.27,1
 JOE WORRELL TRUCKING,Joe Worrell Trucking,fleet,medium,1125557.85,1
+JOHN BENDALLS FIRE SUPPORT,John Bendalls Fire Support,wildland,low,419944.01,1
 JOHN D WAIT MASONRY,John D Wait Masonry,facilities,low,2039829.49,1
+JOHN F SWIFT,John F Swift,wildland,low,4401489.09,1
+JOHN FISHER,John Fisher,wildland,low,489526.07,1
+JOHN MADONNA CONST,John Madonna Const Co,facilities,low,380910.93,1
 JOHN OMAHEN PLUMBING,John Omahen Plumbing,facilities,medium,1410231.77,1
+JOHN W HERTZIG,John W Hertzig,wildland,low,3889685.40,1
 JOHNNY ON SPOT PORTABLE,Johnny on the Spot Portable,wildland,low,2538564.41,1
 JOHNS GROUP,Johns Group,wildland,low,1216589.75,1
 JOHNSON EQUIPMENT,Johnson Equipment,radios,low,721472.79,3
 JPMORGAN CHASE BANK NA,JPMorgan Chase Bank,finance,high,13784817.79,1
 JR BACKHOE,J R Backhoe,wildland,low,1017497.84,1
+JUSTIN VOGEL TRACTOR SERVICE,Justin Vogel Tractor Service,fleet,medium,408503.93,1
+JW BAMFORD,J W Bamford,wildland,low,516374.00,1
 JW ENTERPRISES,JW Enterprises,wildland,low,562208.50,1
 JW MORRISON,JW Morrison,wildland,low,3539663.64,1
+K AND B WATER TRUCK SERVICE,K & B Water Truck Service,wildland,medium,418729.28,1
+K AND K PRODUCE,K & K Produce,general,low,444685.37,1
 K AND W ENTERPRISES,K & W Enterprises,wildland,low,777623.91,1
 K5 RANCH,K5 Ranch,wildland,low,1836997.85,1
 KALMIKOV ENTERPRISES,Kalmikov Enterprises,fleet,low,19816187.52,3
@@ -993,12 +1225,13 @@ KERCHER AND SONS,Kercher and Sons,wildland,low,1125236.69,1
 KERN ASPHALT PAVING AND SEALING,Kern Asphalt Paving & Sealing,construction,medium,1379438.70,1
 KERN COUNTY FIRE DEPT,Kern County Fire Dept,government,medium,7440808.76,1
 KEVIN ROBISON CONSTRUCTION,Kevin Robison Construction,construction,medium,1272341.72,1
-KEY CODE MEDIA,Key Code Media,it,low,1528725.46,1
+KEY CODE MEDIA,Key Code Media,it,low,1931038.96,2
 KEYES FIRE PROTECTION DISTRICT,Keyes Fire Protection District,government,low,625566.34,1
 KILROY REALTY 303,Kilroy Realty 303,facilities,low,1317137.44,1
 KILROY REALTY LP,Kilroy Realty,facilities,low,1042242.56,1
 KINGS CFD,Kings CFD,government,medium,37782.48,1
 KINGS COUNTY,Kings County,government,medium,5685293.37,1
+KINYON ELECTRIC,Kinyon Electric,construction,medium,521379.00,1
 KITE SOLUTIONS,Kite Solutions,wildland,low,3965819.01,1
 KLASSEN,Klassen Corporation,construction,medium,13690825.05,1
 KLEIN EQUIPMENT SERVICES,Klein Equipment Services,wildland,low,974792.60,1
@@ -1009,6 +1242,7 @@ KODAMA SYSTEMS,Kodama Systems,unclassified,low,600480.26,1
 KONICA MINOLTA BUSINESS SOLUTIONS,Konica Minolta Business Solutions,it,low,1105794.26,3
 KOREATOWN YOUTH AND COMM CTR,Koreatown Youth & Comm CTR,government,low,1828347.12,1
 KOVARUS,Kovarus,software,low,633932.15,1
+KOVATCH MOBILE EQUIPMENT KME FIRE APPARATUS,Kovatch Mobile Equipment dba KME Fire Apparatus,apparatus,medium,1309980.28,1
 KRITZ EXCAVATING AND TRUCKING,Kritz Excavating & Trucking,fleet,medium,1240829.46,1
 KROEKER,Kroeker,wildland,low,1053624.06,1
 KROPP HOLDINGS,Kropp Holdings,fleet,low,2060013.92,1
@@ -1020,7 +1254,10 @@ LA RUE TRUCKING AND EQPT,La Rue Trucking and Eqpt,fleet,medium,1569240.16,1
 LAC MAC LIMITED,Lac-mac Limited,uniforms,low,3457357.40,1
 LAFD CHIEF OFFICERS ASSOCIATION,Lafd Chief Officers Association,training,medium,1565000.00,1
 LAGUNA BEACH FIRE DEPARTMENT,Laguna Beach Fire Department,government,medium,1724543.99,1
+LAKE FOREST FIRE PROTECT DIST,Lake Forest Fire Protect Dist,government,medium,391504.27,1
 LAKE SHASTINA COMM SVCS DIST,Lake Shastina Comm SVCS Dist,government,low,1614306.13,1
+LAKE SHASTINA VLNTR FIRE DEPT,Lake Shastina Vlntr Fire Dept,government,medium,432891.40,1
+LAKE TAHOE COMMUNITY COLLEGE,Lake Tahoe Community College,government,medium,478075.50,1
 LAKE VALLEY FIRE PROTECTION,Lake Valley Fire Protection,government,low,1672494.59,1
 LAKESIDE FIRE PROTECTION DIST,Lakeside Fire Protection Dist,government,medium,2248754.35,1
 LANSHACK COM,LanShack.com,it,medium,22237.53,1
@@ -1032,6 +1269,10 @@ LATHROP MANTECA FIRE DISTRICT,Lathrop-manteca Fire District,government,medium,99
 LAUREL CREEK LP,Laurel Creek,facilities,low,816653.32,1
 LAW OFCS OF THOMAS N LIPPE APC,Law Ofcs of Thomas N Lippe Apc,professional,medium,655688.93,1
 LAW OFFICE OF MICHAEL R LOEWEN,Law Office of Michael R Loewen,professional,medium,1750000.00,1
+LAWRENCE BERKELEY NATL LAB,Lawrence Berkeley Natl Lab,government,medium,893363.00,1
+LAWSON PRODUCTS,Lawson Products,general,low,390306.83,2
+LD COBB FAMILY CAL II,LD Cobb Family Cal II,facilities,low,440348.00,1
+LEE ALLEN KELLER,Lee Allen Keller,facilities,low,569552.71,1
 LEESVILLE ENTERPRISES,Leesville Enterprises,wildland,low,801633.15,1
 LEETE GENERATORS,Leete Generators,facilities,medium,66137.02,1
 LEFT COAST LAND CLEARING,Left Coast Land Clearing,unclassified,low,734531.76,1
@@ -1039,6 +1280,7 @@ LEGACY RANCHING,Legacy Ranching,unclassified,low,22997.95,1
 LEGGETT VALLEY FPD,Leggett Valley FPD,government,medium,1079678.65,1
 LEHR,Lehr,fleet,low,3553243.09,1
 LEHR AUTO ELECTRIC,Lehr Auto Electric,fleet,medium,789052.45,1
+LEMUEL H PEARSON,Lemuel H Pearson,wildland,low,1064510.41,1
 LENAHANS WATER TRUCK SERVICE,Lenahans Water Truck Service,fleet,medium,4556306.06,1
 LEPAGE,Lepage Company,wildland,low,4874644.38,1
 LESLIE HEAVY HAUL,Leslie Heavy Haul,fleet,low,5839689.26,1
@@ -1057,26 +1299,33 @@ LIQUIDATION SOLUTIONS,Liquidation Solutions,wildland,low,860290.50,1
 LITE ON LAND,Lite on the Land,wildland,low,811052.07,1
 LITTLE LAKE FPD,Little Lake FPD,government,medium,966102.26,1
 LIVERMORE PLEASANTON FD,Livermore-pleasanton FD,government,medium,938205.85,1
+LOAMIST,Loamist,wildland,low,499985.00,1
 LOCKHEED GROUP,Lockheed Group,facilities,low,1444588.19,1
+LOCKWOOD FIRE PROTECTION DIST,Lockwood Fire Protection Dist,government,medium,482509.22,1
 LODI FIRE DEPARTMENT,Lodi Fire Department,government,medium,650863.68,1
 LOGISTIC SPECIALITIES,Logistic Specialties,apparatus,medium,51804262.77,1
 LOGISTIC SPECIALTIES,Logistic Specialties,apparatus,medium,218725103.12,1
 LOHMAN HELICOPTER,Lohman Helicopter,apparatus,medium,4048951.06,1
 LOMA RICA BROWNS VALLEY CSD,Loma Rica Browns Valley CSD,wildland,low,1805173.32,1
 LOMPOC FIRE DEPARTMENT,Lompoc Fire Department,government,medium,2008424.89,1
+LONE PINE FIRE PROTECTION DIST,Lone Pine Fire Protection Dist,government,medium,476192.00,1
 LONESTAR ENTERPRISES,Lonestar Enterprises,wildland,low,2171261.07,1
 LOS ANGELES COUNTY,Los Angeles County,government,medium,595818.64,1
 LOS ANGELES COUNTY FIRE DEPT,Los Angeles County Fire Dept,government,medium,186234216.41,2
 LOS ANGELES NEIGHBORHOOD,Los Angeles Neighborhood,government,low,1505649.20,1
 LOS ANGELES TRUCK CENTERS,Los Angeles Truck Centers,fleet,medium,1265063.67,2
 LOS ANGELES UNIFIED SCH DIST,Los Angeles Unified School District,government,high,5813139.94,1
+LOUIE RANCH,Louie Ranch,wildland,medium,487505.98,1
+LOUIS MOOSIOS,Louis Moosios,wildland,low,1782938.91,1
 LOWELL JOINT SCHOOL DIST,Lowell Joint School Dist,government,medium,803490.09,1
 LOWREY RANCH,Lowrey Ranch,wildland,low,636697.71,1
 LOYALTON FIRE DEPARTMENT,Loyalton Fire Department,government,medium,638145.83,1
 LTC FORESTRY,LTC Forestry,wildland,low,563337.68,1
 LUNTEYS MOUNTAIN WATER,Lunteys Mountain Water Company,utilities,medium,1138753.47,1
 LYNCH TRUCKING,Lynch Trucking,fleet,medium,1721555.12,1
+M AND C EQUIPMENT FIELDS FARM,M and C Equipment Fields Farm,wildland,low,466249.74,1
 M PETERS,M Peters,wildland,low,2524223.15,1
+M5 FARMS,M5 Farms,wildland,low,388480.27,1
 MA STEVENS CONSTRUCTION,M A Stevens Construction,construction,medium,834588.77,1
 MADERA COUNTY,Madera County,government,medium,581139.16,1
 MADERA COUNTY FIRE DEPARTMENT,Madera County Fire Department,government,medium,1361089.92,1
@@ -1088,7 +1337,9 @@ MAINTENANCE SUPPLIES,Maintenance Supplies,general,medium,4789943.67,1
 MAMMOTH LAKES FIRE DEPT,Mammoth Lakes Fire Dept,government,medium,728657.42,1
 MAMMOTH LAKES FIRE PROTECTION,Mammoth Lakes Fire Protection,government,low,838686.20,1
 MANSFIELD OIL OF GAINESVILLE IN,Mansfield Oil Company of Gainesville In,fleet,medium,1928046.58,1
+MANTECA DIST VOL AMB SRV,Manteca Dist Vol Amb SRV,government,medium,424473.53,1
 MANTECA FIRE DEPARTMENT,Manteca Fire Department,government,medium,2101439.97,1
+MARC R COHEN MD PROF,"Marc R. Cohen, MD Prof",medical-exams,medium,1152604.78,1
 MARIAH TRANSPORT,Mariah Transport,wildland,low,2173345.58,1
 MARIN COUNTY FIRE DEPARTMENT,Marin County Fire Department,government,medium,3899224.50,1
 MARIN WILDFIRE PREVENTION AUTH,Marin Wildfire Prevention Auth,government,medium,5335417.43,1
@@ -1097,15 +1348,23 @@ MARIPOSA CNTY RESOURCE,Mariposa CNTY Resource,government,medium,10511982.66,1
 MARIPOSA COUNTY FIRE DEPT,Mariposa County Fire Dept,government,medium,3585188.07,1
 MARIPOSA FIRE SAFE CNCL,Mariposa Fire Safe CNCL,government,medium,5849074.55,1
 MARIPOSA PORTABLE SANITATION,Mariposa Portable Sanitation,utilities,medium,593831.50,1
+MARK J WRIGHT,Mark J Wright,wildland,low,3284061.00,1
+MARK JOHNSON,Mark Johnson,wildland,low,486239.83,1
+MARK S BECK,Mark S Beck,wildland,low,408751.00,1
 MARSH AND,Marsh & Company,wildland,low,612608.00,1
+MARTIN GENERAL ENGINEERING,Martin General Engineering,professional,medium,501575.00,1
 MARYSVILLE FD,Marysville FD,government,medium,761529.01,1
 MASON CONTROLS,Mason Controls,unclassified,low,85486.72,1
 MASSH,MASSH,general,low,13058016.85,3
 MASSH NORTH,Massh North,general,low,2800140.77,1
 MATANDY LAND AND CATTLE,Matandy Land & Cattle,wildland,low,2665592.78,1
 MATT SELDON CONSTRUCTION,Matt Seldon Construction,construction,medium,825429.87,1
+MATTHEW AMOS,Matthew Amos,wildland,low,1924841.69,1
+MATTOLE RESTORATION COUNCIL,Mattole Restoration Council,wildland,low,482553.20,1
 MAXWELL FPD,Maxwell FPD,government,medium,907321.85,1
 MAYES MACHINERY,Mayes Machinery,unclassified,low,137903.72,1
+MCAS MIRAMAR FD,Mcas Miramar FD,government,low,409947.81,1
+MCCAHILL ENTERPRISES,Mccahill Enterprises,wildland,low,438233.07,1
 MCCLELLAN BUSINESS PARK,Mcclellan Business Park,facilities,low,1463160.18,1
 MCCLELLAN REALTY,Mcclellan Realty,facilities,low,8708002.82,1
 MCCLOUD COMMUNITY SVCS DIST,Mccloud Community SVCS Dist,government,low,852968.93,1
@@ -1113,9 +1372,14 @@ MCCONNELL FOUNDATION,The Mcconnell Foundation,government,medium,3450066.25,1
 MCDONNELL ROOFING,Mcdonnell Roofing,construction,medium,988321.16,1
 MCFADDEN CONSTRUCTION,Mcfadden Construction,construction,medium,593788.93,1
 MCGOWAN FIRE,Mcgowan Fire Company,wildland,low,1409532.62,1
+MCGRATH RENTCORP MOB MODULAR,Mcgrath Rentcorp Mob Modular,unclassified,low,456177.41,1
 MCGRATHS CATERING,Mcgraths Catering,general,medium,1808206.82,2
+MCI COMMUNICATION SERVICES,Mci Communication Services,radios,low,384536.73,1
+MEADOW VALLEY FIRE DEPT,Meadow Valley Fire Dept,government,medium,481885.26,1
 MEAN GENES GAS,Mean Genes Gas,fleet,low,2190315.50,1
 MEDICO PROFESSIONAL LINEN SVC,Medico Professional Linen SVC,unclassified,low,2511450.33,1
+MELANIE LYNN MARCUS MOORE,Melanie Lynn Marcus Moore,wildland,low,514691.06,1
+MELVIN A ARNOLD,Melvin A Arnold,wildland,low,691935.15,1
 MENDO WATER EXPRESS,Mendo Water Express,utilities,medium,551646.79,1
 MENDOCINO CNTY RESOURCE,Mendocino CNTY Resource,government,medium,8867474.52,1
 MENDOCINO COUNTY FIRE SAFE,Mendocino County Fire Safe,government,medium,4991228.36,1
@@ -1126,16 +1390,20 @@ MENLO PARK FIRE PROTEC DIST,Menlo Park Fire Protec Dist,government,medium,506067
 MERCED COUNTY,Merced County,government,medium,602111.69,1
 MERCED COUNTY FIRE DEPARTMENT,Merced County Fire Department,government,medium,3795750.66,1
 MERGENT SYSTEMS,Mergent Systems,it,low,537293.79,1
+MERIDIAN FIRE DEPARTMENT,Meridian Fire Department,government,medium,508692.06,1
 MERIT OIL,Merit Oil,fleet,medium,3742808.42,1
+MERZ BROS CONSTRUCTION,Merz Bros Construction,construction,medium,387477.63,1
 MESSER EXCAVATION,Messer Excavation,construction,medium,801580.16,1
 MEYERS STATION,Meyers Station,unclassified,low,501473.83,1
 MGP CONSTRUCTION,MGP Construction,construction,medium,1508871.10,1
 MHD ROCKLAND,Mhd-rockland,fleet,low,588904.72,1
 MI WUK SUGAR PINE FIRE,Mi-wuk Sugar Pine Fire,government,low,1350847.12,1
 MICHAEL KIRACK CONSTRUCTION,Michael Kirack Construction,construction,medium,3077411.93,1
+MICHALAK FAMILY TRUST,Michalak Family Trust,wildland,low,468276.30,1
 MICHIGAN STATE UNIVERSITY,Michigan State University,training,medium,723131.97,1
 MID KLAMATH WATERSHED COUNCIL,Mid Klamath Watershed Council,government,medium,12942334.93,1
 MID VALLEY PATRIOTS,Mid-valley Patriots,general,low,4258764.11,1
+MIDSTATE AUTOMOTIVE EQUIP,Midstate Automotive Equip,fleet,medium,452873.52,1
 MIDTOWN STATIONERS,Midtown Stationers,general,medium,128990.80,1
 MILANOS PIZZAS,Milanos Pizzas,general,medium,78953.69,1
 MILFORD VOLUNTEER FIRE DEPT,Milford Volunteer Fire Dept,government,medium,552547.28,1
@@ -1145,6 +1413,7 @@ MILLER TRUCKING 2,Miller Trucking 2,fleet,medium,1289155.00,1
 MILPITAS FD,Milpitas FD,government,medium,3450055.19,1
 MINDFUL CITIZEN,Mindful Citizen,government,medium,490980.58,1
 MIRANDA VOLUNTEER FIRE DEPT,Miranda Volunteer Fire Dept,government,medium,541995.70,1
+MISSION LINEN SUPPLY,Mission Linen Supply,general,medium,412790.67,2
 ML CLEANING,ML Cleaning,facilities,medium,198523.44,1
 MLSK,MLSK,facilities,low,720656.95,1
 MO DION AND SONS,M O Dion & Sons,fleet,low,906788.91,1
@@ -1154,21 +1423,26 @@ MOBILE MINI,Mobile Mini,facilities,medium,33499.33,2
 MOBILE MODULAR,Mobile Modular,facilities,medium,114256.74,1
 MOBILE MODULAR MANAGEMENT,Mobile Modular Management,facilities,low,1430920.53,1
 MOBILE SLEEPER,Mobile Sleeper Company,general,medium,8957884.02,1
+MOBLEY CONSTRUCTION,Mobley Construction,construction,medium,472077.73,1
 MODESTO FIRE DEPARTMENT,Modesto Fire Department,government,medium,1402239.34,1
 MODOC FIRE SAFE COUNCIL,Modoc Fire Safe Council,government,medium,880775.12,1
 MODULAR COMMUNICATIONS SYSTEMS,Modular Communications Systems,it,low,535067.45,1
 MOKELUMNE RURAL FD,Mokelumne Rural FD,government,medium,904992.80,1
 MOM AND POPS TRAVELING DELI,Mom and Pops Traveling Deli,general,low,1472031.77,1
+MONROVIA FIRE DEPARTMENT,Monrovia Fire Department,government,medium,433917.07,1
 MONSTER DISPLAYS,Monster Displays,unclassified,low,67660.11,1
 MONTE RIO FIRE PROTECTION DIST,Monte Rio Fire Protection Dist,government,medium,1199273.26,1
 MONTECITO FIRE PROTECT DIST,Montecito Fire Protect Dist,government,medium,5182753.43,1
 MONTEREY CNTY REG FIRE DIST,Monterey CNTY Reg Fire Dist,government,medium,942776.61,1
 MONTEREY COUNTY REG FIRE,Monterey County Reg Fire,government,low,3234059.68,1
 MONTEREY FIRE DEPARTMENT,Monterey Fire Department,government,medium,2646641.58,1
+MONTZ EQUIPMENT,Montz Equipment,wildland,low,453613.50,1
 MOORE EXCAVATING,Moore Excavating,construction,medium,1774117.40,1
 MORAGA ORINDA FIRE PROT DIST,Moraga-orinda Fire Prot Dist,government,medium,9831580.85,1
 MORGAN TREE SERVICE,Morgan Tree Service,wildland,low,748488.07,1
 MORONGO INDIAN RESERVATION FD,Morongo Indian Reservation FD,government,medium,1756185.60,1
+MORONGO VALLEY COM SVC DIST,Morongo Valley Com SVC Dist,government,medium,445737.66,1
+MOTE,Mote,wildland,low,500000.00,1
 MOTHER LODE FIRECAMP SERVICES,Mother Lode Firecamp Services,general,low,1932022.90,1
 MOUNTAIN AIR LAND MANAGEMENT,Mountain Air Land Management,wildland,low,651588.70,1
 MOUNTAIN DISPOSAL,Mountain Disposal,utilities,medium,27423.70,1
@@ -1189,28 +1463,37 @@ MUD LAKE OIL,Mud Lake Oil,fleet,medium,2868137.93,1
 MUNICIPAL EMERGENCY SVC,Municipal Emergency Services,fire-equipment,high,3226877.87,1
 MURDOCK LIVESTOCK AND EQUIPMENT,Murdock Livestock & Equipment,wildland,low,952194.92,1
 MURPHYS FIRE PROTECTION DIST,Murphys Fire Protection Dist,government,medium,2460508.56,1
+MUSTIN PIPELINE CONSTRUCTION,Mustin Pipeline Construction,construction,medium,490730.25,1
 NAPA COMMUNITIES FIREWISE FDN,Napa Communities Firewise Foundation,government,low,14827811.89,1
 NAPA COUNTY,Napa County,government,medium,2408286.65,2
 NAPA COUNTY FIRE DEPT,Napa County Fire Dept,government,medium,1147673.94,1
 NAPA COUNTY RESC CONSERV DIST,Napa County Resc Conserv Dist,fleet,medium,763427.04,1
+NATHAN A RUBINI,Nathan A Rubini,wildland,low,495034.11,1
 NATIONAL FISH AND WILDLIFE FDN,National Fish & Wildlife FDN,government,medium,2613713.17,1
 NATIONAL FOREST FOUNDATION,National Forest Foundation,government,medium,22858442.92,1
 NATIONAL OCEANIC AND ATMOSPHERIC ADMI,National Oceanic & Atmospheric Admi,fleet,low,700000.00,1
 NATIX,Natix,it,medium,16507140.39,1
 NATURE CONSERVANCY,The Nature Conservancy,government,medium,5308912.48,1
+NDN FABRICATION AND EQUIPMENT,NDN Fabrication & Equipment,wildland,low,462915.00,1
+NEASHAM AND KRAMER CLIENT,Neasham & Kramer LLP Client,unclassified,low,425000.00,1
 NEPTUNE AVIATION SERVICES,Neptune Aviation Services,apparatus,medium,27390365.97,1
 NETSOUND,Netsound,wildland,low,2331524.63,1
 NETSYNC NETWORK SOLUTIONS,Netsync Network Solutions,it,medium,1266425.50,1
 NEVADA COUNTY CONSOLIDATED,Nevada County Consolidated,government,low,2833544.09,1
 NEVADA COUNTY RESOURCE,Nevada County Resource,government,medium,632933.70,1
 NEVADA DIVISION OF FORESTRY,Nevada Division of Forestry,government,medium,1613912.13,1
+NEVADA IRRIGATION DISTRICT,Nevada Irrigation District,government,medium,378941.08,1
 NEWARK ELEMENT 14,Newark element14,it,medium,36074.71,1
 NEXTGEN ALPHA UPFITTING,NextGen Alpha Upfitting,fleet,medium,16571060.48,1
+NI GOVERNMENT SERVICES,Ni Government Services,general,low,443234.46,4
 NICK BARBIERI TRUCKING,Nick Barbieri Trucking,fleet,medium,2443992.03,1
 NIELSEN CONSTRUCTION CA,Nielsen Construction CA,construction,medium,7720383.85,1
 NISSHA MEDICAL TECHNOLOGIES,Nissha Medical Technologies,ems-supplies,medium,1524667.32,1
 NOMADIC LAND CAMPS,Nomadic Land Camps,wildland,low,542176.56,1
+NORCAL CONTAINERS,Norcal Containers,unclassified,low,521927.45,1
+NORCAL FOOD EQUIPMENT,Norcal Food Equipment,general,medium,496074.84,1
 NORCAL PUMPING,Norcal Pumping,facilities,medium,28414.79,1
+NORM PAUL WATER TRUCKS,Norm Paul Water Trucks,wildland,medium,427533.52,1
 NORTH BAY FIRE,North Bay Fire,government,low,1391996.88,1
 NORTH BAY PETROLEUM,North Bay Petroleum,fleet,medium,1649700.65,1
 NORTH CENTRAL FPD,North Central FPD,government,medium,1017342.48,1
@@ -1218,9 +1501,11 @@ NORTH CNTY FIRE PROT DIST,North CNTY Fire Prot Dist,government,medium,3226466.20
 NORTH COAST RESOURCE CONS AND,North Coast Resource Cons &,government,medium,1103563.52,1
 NORTH COUNTY FIRE AUTHORITY,North County Fire Authority,government,medium,6882271.98,1
 NORTH EAST TREES,North East Trees,government,medium,3497069.86,1
+NORTH FORK LUMBER,North Fork Lumber,facilities,medium,492500.00,1
 NORTH LAKE TAHOE FIRE PROT DIST,North Lake Tahoe Fire Prot Dist,government,medium,900613.08,1
 NORTH SAN JUAN FIRE,North San Juan Fire,government,low,2262871.82,1
 NORTH SONOMA COAST FIRE,North Sonoma Coast Fire,government,low,578916.52,1
+NORTH STATE SECURITY,North State Security,facilities,medium,386702.70,1
 NORTH TAHOE FIRE PROT DIST,North Tahoe Fire Prot Dist,government,medium,2351453.84,1
 NORTH TREE ENTERPRISES,North Tree Enterprises,wildland,low,1430462.87,1
 NORTH ZONE FALLERS,North Zone Fallers,wildland,low,1268978.63,1
@@ -1251,6 +1536,7 @@ OCCIDENTAL ARTS AND ECOLOGY CTR,Occidental Arts & Ecology CTR,government,low,100
 OCCIDENTAL COMMUNITY SVCS DIST,Occidental Community SVCS Dist,government,low,532465.57,1
 OFF VINE CATERING,Off the Vine Catering,general,medium,1399484.54,1
 OFFICE OF EMERGENCY SERVICES,California Governor's Office of Emergency Services,government,high,103944432.10,1
+OHD LLLP,Ohd Lllp,it,low,459781.47,3
 OILARS AG SERVICES,Oilars Ag Services,wildland,low,1228809.21,1
 OJAI VALLEY LAND CONSERVANCY,Ojai Valley Land Conservancy,government,medium,2905477.13,1
 OLD DURHAM WOOD,Old Durham Wood,government,low,1279504.66,1
@@ -1268,6 +1554,7 @@ ORANGE COVE FIRE PROT DIST OF,Orange Cove Fire Prot Dist of,government,medium,19
 ORBIC AIR,Orbic Air,wildland,low,2261780.06,1
 ORCHARD CITY RV,Orchard City RV,wildland,low,749176.40,1
 OREGON STATE UNIVERSITY,Oregon State University,training,medium,1540683.89,1
+ORLAND CABINET SHOP,Orland Cabinet Shop,general,low,513328.44,1
 ORLAND FIRE PROTECTION DIST,Orland Fire Protection Dist,government,medium,1255584.51,1
 ORNESS DESIGN GROUP,Orness Design Group,general,low,620061.97,1
 OROVILLE FIRE DEPARTMENT,Oroville Fire Department,government,medium,669042.80,1
@@ -1275,15 +1562,19 @@ OROVILLE PRODUCTS,Oroville Products,wildland,low,2416348.96,1
 OUR CITY FOREST,Our City Forest,unclassified,low,834588.72,1
 OUTLAW FOODS,Outlaw Foods,general,low,2426212.10,1
 OUTLOOK ZONE,Outlook Zone,unclassified,low,3056100.00,1
+OWENS WATER TENDERS,Owens Water Tenders,wildland,medium,516009.76,1
 OXNARD FIRE DEPARTMENT,Oxnard Fire Department,government,medium,1219778.73,1
 PAC WEST OFFICE EQUITIES LP,Pac West Office Equities,general,medium,1541395.44,1
 PACE ENGINEERING,Pace Engineering,construction,medium,616990.70,1
 PACIFIC COAST PETROLEUM,Pacific Coast Petroleum,fleet,medium,927066.89,1
 PACIFIC EQUIPMENT SERVICES,Pacific Equipment Services,wildland,low,1408251.03,1
+PACIFIC FOREST TRUST,The Pacific Forest Trust,wildland,low,418068.57,1
 PACIFIC GAS AND ELECTRIC,Pacific Gas & Electric,utilities,high,47585728.01,1
+PACIFIC LAND DESIGN,Pacific Land Design,wildland,low,506950.94,1
 PACIFICO CONSTRUCTION,Pacifico Construction,construction,medium,743189.74,1
 PACK RAT,Pack Rat,unclassified,low,30002.50,1
 PACKWAY MATERIALS,Packway Materials,wildland,low,684045.06,1
+PAJARO VALLEY FIRE PROT DIST,Pajaro Valley Fire Prot Dist,government,medium,424885.80,1
 PALA BAND OF MISSION INDIANS,Pala Band of Mission Indians,government,medium,569073.28,1
 PALA FIRE DEPARTMENT,Pala Fire Department,government,medium,815292.06,1
 PALISADES,The Palisades,unclassified,low,41037.01,1
@@ -1291,6 +1582,7 @@ PALMER TRACTOR,Palmer Tractor,fleet,medium,1713515.64,1
 PAN AMERICAN BRUSH CLEARANCE,Pan American Brush Clearance,wildland,low,801115.00,1
 PANINI TIME,Panini Time,general,low,6076191.05,1
 PAPE MACHINERY,Pape Machinery,apparatus,low,1052341.93,2
+PAPE MATERIAL HANDLING,Pape Material Handling,fleet,low,407103.13,4
 PARADISE FIRE DEPT,Paradise Fire Dept,government,medium,975728.00,1
 PARAGON TAX AND ACCOUNTING,Paragon Tax & Accounting,professional,medium,3877642.25,1
 PARAGON WEALTH MANAGEMENT,Paragon Wealth Management,unclassified,low,541440.00,1
@@ -1298,20 +1590,26 @@ PARDINI APPLIANCE,Pardini Appliance,general,medium,18756.02,1
 PARKHOUSE TIRE,Parkhouse Tire,fleet,medium,3112686.95,2
 PARMETER LOGGING AND EXCAVATION,Parmeter Logging & Excavation,construction,medium,989367.45,1
 PASADENA FD,Pasadena FD,government,medium,3431026.99,1
+PASTOR OF ST KATHARINE DREXEL,Pastor of ST Katharine Drexel,facilities,low,483113.06,1
 PAT DENIS EQUIPMENT,Pat Denis Equipment,wildland,low,1281566.24,1
 PATHFINDER AVIATION,Pathfinder Aviation,apparatus,medium,2850396.00,1
 PATRIOT PAVING,Patriot Paving,construction,medium,780257.96,1
 PATRIOT RESTORATION OPS,Patriot Restoration Ops,wildland,low,2820110.70,1
+PATTERSON FD,Patterson FD,government,low,427108.62,1
 PATTERSON LIFT TRUCKS,Patterson Lift Trucks,fleet,medium,838719.20,1
+PAUMA BAND OF LUISENO MISSION,Pauma Band of Luiseno Mission,government,medium,479282.28,1
 PAUMA FIRE DEPARTMENT,Pauma Fire Department,government,medium,660141.82,1
 PAVEWEST,Pavewest,facilities,low,2372120.56,1
 PAYTON DAVIS TRUCKING AND,Payton Davis Trucking &,fleet,medium,660112.53,1
+PCD,PCD,radios,low,397859.32,1
 PCP MOTORSPORTS,PCP Motorsports,apparatus,low,580422.38,1
 PEARDALE CHICAGO PARK FPD,Peardale Chicago Park FPD,government,medium,1141635.38,2
 PEARSON EXCAVATING,Pearson Excavating,construction,medium,706062.50,1
 PEARSON WOOD SERVICE,Pearson Wood Service,unclassified,low,546511.31,1
+PEBBLE BEACH COMM SVCS DIST,Pebble Beach Comm Svcs Dist,government,medium,381934.41,1
 PECHANGA FIRE DEPT,Pechanga Fire Dept,government,medium,2866907.77,1
 PENINSULA FIRE PROTECTION DIST,Peninsula Fire Protection Dist,government,medium,750438.50,1
+PENN VALLEY FIRE PROTECT DIST,Penn Valley Fire Protect Dist,government,medium,455837.15,1
 PEPSI COLA,Pepsi Cola,general,medium,68629.85,1
 PERATON,Peraton,it,medium,36380408.03,2
 PERIMETER 1 FENCING,Perimeter 1 Fencing,facilities,medium,67025.00,1
@@ -1323,10 +1621,13 @@ PETERSON TRACTOR,Peterson Tractor,fleet,medium,1567327.16,1
 PETERSON TRUCKS,Peterson Trucks,fleet,medium,622920.78,1
 PFIRE SAFE SAN MATEO CNTY,Pfire Safe San Mateo CNTY,government,medium,524972.86,1
 PHOENIX FARMS,Phoenix Farms,wildland,low,693199.56,1
+PIA,Pia,facilities,low,415819.31,1
 PIERCE MANUFACTURING,Pierce Manufacturing,apparatus,medium,11098389.00,1
 PINNACLE PETROLEUM,Pinnacle Petroleum,fleet,medium,1269207.10,1
 PIONEER FPD,Pioneer FPD,government,medium,1172843.95,1
 PIT RESOURCE CONSERVATION DISTRICT,Pit Resource Conservation District,government,medium,12356431.21,1
+PIT RIVER CONTRACTING,Pit River Contracting,facilities,low,440729.08,1
+PITNEY BOWES RESERVE ACCOUNT,Pitney Bowes Reserve Account,unclassified,low,375983.17,1
 PITTSBURG UNIFIED SCHOOL DIST,Pittsburg Unified School Dist,government,medium,1242831.69,1
 PJ HELICOPTERS,PJ Helicopters,apparatus,medium,92289375.66,1
 PLACER CNTY AUDITOR CONTROLLER,Placer CNTY Auditor-controller,professional,medium,1156867.75,1
@@ -1340,6 +1641,7 @@ PLANTING JUSTICE,Planting Justice,unclassified,low,1453495.73,1
 PLATINUM SECURITY,Platinum Security,facilities,low,1013448.52,1
 PLUMAS,Plumas Corporation,government,low,5291953.06,1
 PLUMAS COUNTY FIRE SAFE CNCL,Plumas County Fire Safe CNCL,government,medium,9254836.45,1
+PLUMAS EUREKA COMM SVC DIST,Plumas Eureka Comm SVC Dist,government,medium,425342.87,1
 PO BAHN AND SONS,Po Bahn & Sons,wildland,low,592355.85,1
 PORTA KLEEN,Porta Kleen,wildland,low,9416698.00,1
 PORTERVILLE UNIF SCHOOL DIST,Porterville Unif School Dist,government,medium,1771624.90,1
@@ -1352,6 +1654,8 @@ PRIMARY SOURCE,The Primary Source,general,low,4604674.39,1
 PRIME EMERGENCY SERVICES,Prime Emergency Services,wildland,low,1641096.64,1
 PRIORITY DISPATCH,Priority Dispatch,dispatch,medium,1436922.63,3
 PRISON INDUSTRY AUTHORITY,Prison Industry Authority,fire-equipment,low,2050979.50,1
+PRIVACY FIRE,Privacy-fire,placeholder,medium,11611914.17,1
+PRO BUILDERS,Pro Builders,construction,medium,403345.39,1
 PRO DUMP AND EXCAVATING,Pro-Dump and Excavating,construction,medium,2516297.09,1
 PRODIGY CONSULTING,Prodigy Consulting,professional,medium,1255436.90,1
 PRODUMP AND EXCAVATING,Prodump and Excavating,construction,medium,1765011.16,1
@@ -1373,9 +1677,13 @@ R AND R QUALITY MEATS,R & R Quality Meats,general,low,538783.17,1
 RAC CONST AND ENGINEERING,Rac Const & Engineering,construction,medium,1178056.00,1
 RACEWAY FORD,Raceway Ford,fleet,medium,527804.44,2
 RADIO GUYS,The Radio Guys,radios,medium,3169384.34,1
+RADIO MOBILE,Radio Mobile,radios,medium,474152.60,1
 RADIOMOBILE,Radiomobile,it,medium,46658619.19,2
+RAE PACE TRUCKING,Rae Pace Trucking,fleet,medium,449850.12,1
+RAINBOW MUNICIPAL WATER DIST,Rainbow Municipal Water Dist,government,medium,427235.40,1
 RAINCROSS HOSPITALITY MGMT,Raincross Hospitality MGMT,unclassified,low,739878.35,1
 RAMSAY BLIESE,Ramsay-bliese,general,low,707433.66,2
+RANCH HQ GP,Ranch HQ GP,wildland,medium,396000.00,1
 RANCHO ADOBE FIRE PROT DIST,Rancho Adobe Fire Prot Dist,government,medium,2429799.00,1
 RANCHO CUCAMONGA FPD,Rancho Cucamonga FPD,government,medium,3970360.07,2
 RANCHO SANTA FE FPD,Rancho Santa Fe FPD,government,medium,2293813.37,1
@@ -1388,6 +1696,7 @@ RASIX COMPUTER CENTER,Rasix Computer Center,it,medium,3008568.72,1
 RAYGOZA TRUCK SERVICES,Raygoza Truck Services,fleet,medium,1079934.66,1
 RAYMOND L MILLER EQUIPMENT,Raymond L Miller Equipment,wildland,low,554702.16,1
 RB EQUIPMENT,RB Equipment Co,wildland,low,1488932.72,1
+RB PETROLEUM SERVICES,R B Petroleum Services,fleet,medium,520984.13,1
 RBI,Rbi,wildland,low,983618.46,1
 RCD OF MONTEREY COUNTY,RCD of Monterey County,government,medium,6115839.50,1
 RCD OF TEHAMA COUNTY,RCD of Tehama County,government,medium,24385445.65,1
@@ -1398,21 +1707,29 @@ RECOLOGY MARIPOSA,Recology,utilities,medium,174206.75,1
 RECOLOGY SAN FRANCISCO,Recology San Francisco,facilities,low,793254.40,1
 RECOLOGY SUNSET SCAVENGER,Recology Sunset Scavenger Company,facilities,low,1858907.89,1
 RECOLOGY YUBA SUTTER,Recology,utilities,medium,56542.22,1
+RED HELMET TRAINING,Red Helmet Training,training,medium,463750.13,3
 RED MOUNTAIN LAND MGMT,Red Mountain Land MGMT,wildland,low,1092210.31,1
 REDDING AIR SERVICE,Redding Air Service,apparatus,medium,3539898.36,1
 REDDING FD,Redding FD,government,medium,1363927.79,1
+REDDING OIL,Redding Oil,fleet,medium,428827.21,1
 REDSKY EMERGENCY VEHICLES,RedSky Emergency Vehicles,apparatus,low,2767247.00,1
 REDWOOD CITY FIRE DEPARTMENT,Redwood City Fire Department,government,medium,1919079.46,1
 REDWOOD COAST FIRE PROTECTION,Redwood Coast Fire Protection,government,low,1722237.78,1
 REDWOOD COAST FUELS,Redwood Coast Fuels,fleet,medium,2862657.12,1
+REDWOOD EMPIRE FAIR,Redwood Empire Fair,facilities,low,402370.68,1
 REDWOOD EMPIRE TITLE,Redwood Empire Title Company,finance,medium,4609758.00,1
+REDWOOD FOREST FOUNDATION,Redwood Forest Foundation,wildland,low,390572.81,1
 REDWOOD VALLEY CALPELLA FD,Redwood Valley-calpella FD,government,medium,796994.40,1
+REDWOOD WASTE SOLUTIONS,Redwood Waste Solutions,utilities,medium,400112.39,1
 REEDLEY COLLEGE,Reedley College,training,medium,2166072.91,1
+REGENTS OF UC SANTA BARBARA,Regents of UC Santa Barbara,government,medium,428930.00,1
 REGENTS OF UNIV OF CA,Regents of the Univ of CA,government,medium,22859916.36,2
 REGENTS OF UNIV OF CA DAVIS,Regents of Univ of CA Davis,government,medium,23351880.96,1
 REGENTS OF UNIV OF CA SD,Regents of the Univ of CA SD,government,medium,8096013.83,1
+REGENTS OF UNIVERSITY OF,Regents of the University of,government,medium,503907.59,1
 REGENTS OF UNIVERSITY OF CA,Regents of University of CA,government,medium,2220651.11,1
 REGENTS OF UNIVERSITY OF CALIFORNIA AT LOS ANGELES,Regents of the University of California at Los Angeles,government,medium,3834427.42,1
+REGENTS OF UNIVERSITY OF CALIFORNIA DAVIS,"Regents of the University of California, Davis",government,medium,429981.17,1
 REGENTS OF UNIVERSITY OF CALIFORNIA UC DAVIS,"Regents of the University of California, UC Davis",government,medium,3430000.00,1
 REGENTS UNIVERSITY OF CALIFORNIA SAN DIEGO,Regents University of California San Diego,government,medium,660000.00,1
 RELATIVITY ODA,Relativity Oda,software,low,1491201.05,1
@@ -1424,15 +1741,20 @@ RESILIENCE FORCE CA,Resilience Force CA,unclassified,low,784054.02,1
 RESILIO,Resilio,software,low,973968.58,1
 RESORT IMPROVEMENT DIST NO 1,Resort Improvement Dist No 1,training,low,1054640.76,1
 RESOURCE CONSERVATION DIST OF,Resource Conservation Dist of,government,medium,10053700.36,1
+RESOURCES LEGACY FUND,Resources Legacy Fund,wildland,low,394825.15,1
 RESTAD GENERAL ENGINEERING,Restad General Engineering,construction,medium,2765128.80,1
 REZEK ENGINEERING,Rezek Engineering,construction,medium,2548160.93,2
 REZEK EQUIPMENT,Rezek Equipment,general,low,38923411.13,1
+RHOME PROFILE CONSTRUCTION,Rhome Profile Construction,construction,medium,390672.00,1
+RICKY A LOGUE,Ricky A Logue,wildland,low,2093529.03,1
+RICOH USA,Ricoh USA,general,low,387189.78,2
 RIDGE EQUIPMENT,Ridge Equipment,wildland,low,1018502.14,1
 RIDGE LOGGING,Ridge Logging,wildland,low,4737748.36,1
 RINCON BAND OF LUISENO INDIANS,Rincon Band of Luiseno Indians,government,medium,542062.23,1
 RINCON RESERVATION FIRE DEPT,Rincon Reservation Fire Dept,government,medium,667799.94,1
 RIO DELL FIRE PROTECTION DIST,Rio Dell Fire Protection Dist,government,medium,1524685.24,1
 RIVCOMM,Rivcomm,radios,low,3075487.07,3
+RIVER OAK WATER,River Oak Water,general,medium,382916.21,1
 RIVER ROCK FIRE,River Rock Fire,general,low,625728.24,1
 RIVERSIDE COUNTY FIRE DEPT,Riverside County Fire Dept,government,medium,7079971.17,1
 RIVERVIEW INTERNATIONAL TRUCKS,Riverview International Trucks,fleet,medium,2168344.63,1
@@ -1440,26 +1762,38 @@ RIVERVIEW INTL TRUCKS,Riverview Intl Trucks,fleet,medium,28319963.05,1
 RJW ENTERPRISES,RJW Enterprises,wildland,low,1818113.75,1
 RK AND SON,RK & Son,wildland,low,2352555.19,1
 RKU DISTRIBUTING,Rku Distributing,apparatus,low,9152396.04,1
+RMB JR GENERAL ENGINEERING,RMB JR General Engineering,professional,medium,476890.17,1
+ROAD RUNNER WATER TRUCKING,Road Runner Water Trucking,fleet,medium,405602.46,1
+ROADRUNNER CONSTRUCTION,Roadrunner Construction,construction,medium,492362.22,1
 ROBERT E BOYER CONSTR,Robert E Boyer Constr,facilities,low,735413.00,1
 ROBINSON ENT INVESTMENT,Robinson Ent Investment Co,wildland,low,3509047.34,1
 ROBINSON ENTERPRISES,Robinson Enterprises,unclassified,low,804144.37,1
 ROBINSON RANCHERIA OF POMO,Robinson Rancheria of Pomo,government,medium,1401724.92,1
+ROBLES HAWKLEY AND BROWN,Robles Hawkley & Brown,facilities,low,435514.83,1
+RODGERS WATER TRUCKS,Rodgers Water Trucks,wildland,medium,472156.62,1
 RODRIGUEZ TREE SERVICE,Rodriguez Tree Service,wildland,low,704603.80,1
 ROGERS HELICOPTERS,Rogers Helicopters,apparatus,medium,10001398.24,1
+ROMANS TRUCK BODY AND PAINT,Romans Truck Body & Paint,fleet,medium,469094.58,1
 RON DUPRATT FORD,Ron Dupratt Ford,fleet,medium,3403236.95,1
+RONALD ALAN BISHOP,Ronald Alan Bishop,wildland,low,585295.20,1
 ROSELAND PAINTING,Roseland Painting,facilities,low,748385.91,1
 ROSS VALLEY FD,Ross Valley FD,government,medium,888868.10,1
+ROTAIR AEROSPACE,Rotair Aerospace,apparatus,medium,492503.19,1
 ROTORCRAFT SUPPORT,Rotorcraft Support,apparatus,medium,813061.88,2
 ROUND VALLEY INDIAN TRIBES,Round Valley Indian Tribes,unclassified,low,590953.03,1
+ROWE SOLUTIONS,Rowe Solutions,general,low,417642.02,1
 ROYAL TRUCK BODY,Royal Truck Body,fleet,medium,619272.97,1
 RRF WESTWOOD,RRF Westwood,professional,low,7048246.08,1
+RS HUGHES,R S Hughes Company,fire-equipment,medium,517601.57,4
 RUNNING SPRINGS ESCROW,Running Springs Escrow,finance,medium,1000000.00,1
 RUNNING SPRINGS WATER DIST,Running Springs Water Dist,utilities,medium,1618881.16,1
 RUSH TRUCK CENTER OF CA,Rush Truck Center of CA,fleet,medium,1896406.37,1
 RUSS BASSETT,Russ Bassett,dispatch,low,2185801.22,2
+RV STRIPING,RV Striping,facilities,low,417504.07,1
 RYCO HELI,Ryco Heli,apparatus,medium,2366711.01,1
 S AND K GRADING,S&K Grading,wildland,low,806801.84,1
 S KIRKLAND CONSTRUCTION,S Kirkland Construction,construction,medium,1117581.80,1
+S3 AERO DEFENSE,S3 Aero Defense,apparatus,medium,437318.61,1
 S3 DVBE,S3 DVBE,uniforms,low,537671.08,1
 SACRAMENTO COPIERS,Sacramento Copiers,general,medium,28328.69,1
 SACRAMENTO ELECTRONIC SUPPLY,Sacramento Electronic Supply,general,medium,595321.51,1
@@ -1470,14 +1804,21 @@ SACRAMENTO MUNICIPAL UTIL DIST,Sacramento Municipal Util Dist,utilities,low,1069
 SACRAMENTO TREE FOUNDATION,Sacramento Tree Foundation,government,medium,2219973.37,1
 SACTOWN LOGISTICS,Sactown Logistics,wildland,low,729284.78,1
 SAFE BOATS INTERNATIONAL,Safe Boats International,fleet,low,709101.98,1
+SAFE ENVIRONMENT ENGINEERING,Safe Environment Engineering,professional,medium,470670.56,1
+SAFETY KLEEN SYSTEMS,Safety Kleen Systems,it,medium,406726.76,3
 SAGENT,Sagent,professional,low,11353836.23,1
 SAINT HELENA FIRE DEPARTMENT,Saint Helena Fire Department,government,medium,1319441.92,1
 SALINAS AND SON TRUCKING,Salinas & Son Trucking,fleet,medium,977931.92,1
 SALINAS FIRE DEPARTMENT,Salinas Fire Department,government,medium,757165.99,1
 SAM CLAR OFFICE FURNITURE,Sam Clar Office Furniture,facilities,medium,768931.52,1
+SAM COOKSON TRUCKING,Sam Cookson Trucking,fleet,medium,463922.06,1
+SAM THOMPSON ENT,Sam Thompson Ent,wildland,low,1164836.17,1
+SAMBASAFETY,Sambasafety,it,low,427060.00,1
 SAN ANDREAS FIRE PROTEC DIST,San Andreas Fire Protec Dist,government,medium,1224998.54,1
+SAN BERNARDINO REGIONAL TR CTR,San Bernardino Regional TR CTR,professional,low,442185.00,1
 SAN DIEGO FIRE RESCUE DEPT,San Diego Fire Rescue Dept,government,low,2222448.12,1
 SAN DIEGO GAS AND ELECTRIC,San Diego Gas & Electric,utilities,medium,4004886.99,1
+SAN DIEGO MESA COLLEGE,San Diego Mesa College,government,medium,453269.39,1
 SAN DIEGO POLICE EQUIP,San Diego Police Equip Co,general,low,1348443.97,2
 SAN FRANCISCO DELI,San Francisco Deli,general,low,1022581.00,1
 SAN FRANCISCO USD,San Francisco Unified School District,government,medium,2020739.30,1
@@ -1492,6 +1833,7 @@ SAN MANUEL BAND OF MSN IND FD,San Manuel Band of MSN Ind FD,government,medium,16
 SAN MATEO CONS FIRE DEPT,San Mateo Cons Fire Dept,government,medium,4686002.83,1
 SAN MATEO RESOURCE,San Mateo Resource,government,medium,8837581.58,1
 SAN MIGUEL CONSOLIDATED FD,San Miguel Consolidated FD,government,medium,2955494.49,1
+SAN PATRICIO CONSTRUCTION,San Patricio Construction,construction,medium,464689.89,1
 SAN RAMON VLLY FIRE PROT DIST,San Ramon VLLY Fire Prot Dist,government,medium,4049161.15,1
 SANDIS CIVIL ENG SURVEYORS,Sandis Civil Eng Surveyors,facilities,low,1324762.42,1
 SANSIO,Sansio,unclassified,low,628543.35,1
@@ -1506,6 +1848,7 @@ SANTA CRUZ FD,Santa Cruz FD,government,medium,2941502.03,1
 SANTA FE SPRINGS FIRE DEPT,Santa Fe Springs Fire Dept,government,medium,2271759.39,1
 SANTA LUCIA CONSERVANCY,Santa Lucia Conservancy,government,medium,1052309.05,1
 SANTA MARIA FIRE DEPARTMENT,Santa Maria Fire Department,government,medium,3852091.55,1
+SANTA MONICA MOUNTAINS REG,Santa Monica Mountains Reg,wildland,low,460638.12,1
 SANTA PAULA USD,Santa Paula Unified School District,government,medium,986404.37,1
 SANTA ROSA FIRE DEPARTMENT,Santa Rosa Fire Department,government,medium,6506476.76,1
 SANTA YNEZ BAND OF CHUMASH,Santa Ynez Band of Chumash,government,medium,557873.53,1
@@ -1523,11 +1866,14 @@ SCOTT RIVER WATERSHED COUNCIL,Scott River Watershed Council,government,medium,62
 SCOTT VALLEY FIRE PROT DIST,Scott Valley Fire Prot Dist,government,medium,952382.06,1
 SCOTTS PPE RECON,Scott's Ppe Recon,uniforms,low,742607.77,2
 SCOTTS VALLEY FIRE PROTECTION,Scotts Valley Fire Protection,government,low,2472593.84,1
+SEAL TRUCKING,Seal Trucking,fleet,medium,403740.00,1
+SEAN D HIGGS,Sean D. Higgs,professional,low,451534.41,1
 SEBASTOPOL FIRE DEPARTMENT,Sebastopol Fire Department,government,medium,620636.21,1
 SEC NATURAL RESOURCES,Sec Natural Resources,professional,low,1078500.00,1
 SECRETARY FOR ENVIRONMENTAL,California Environmental Protection Agency,government,medium,5740501.34,1
 SEHI COMPUTER PRODUCTS,Sehi Computer Products,it,medium,895229.58,1
 SEP TECHNOLOGY CONSULTING,Sep Technology Consulting,it,medium,784472.33,1
+SEQUOIA FOUNDATION,Sequoia Foundation,wildland,low,504485.98,1
 SERRAMONTE FORD,Serramonte Ford,fleet,medium,16166.34,1
 SERVICE CONNECTED,Service Connected,wildland,low,1213044.71,1
 SGS CONSTRUCTION,SGS Construction,construction,medium,554721.68,1
@@ -1539,11 +1885,16 @@ SHASTA COUNTY FIRE DEPARTMENT,Shasta County Fire Department,government,medium,80
 SHASTA DISTRICT FAIR,Shasta District Fair,facilities,low,958776.58,1
 SHASTA LAKE FIRE PROTECT DIST,Shasta Lake Fire Protect Dist,government,medium,1186560.71,1
 SHASTA SISKIYOU TRANSPORT,Shasta Siskiyou Transport,fleet,low,2044367.10,1
+SHASTA TEHAMA TRINITY JOINT,Shasta Tehama-trinity Joint,government,low,421348.40,1
 SHASTA VALLEY RESOURCE CONSERV,Shasta Valley Resource Conserv,unclassified,low,10226863.23,1
 SHELTERWOOD COLLECTIVE,Shelterwood Collective,government,low,4874355.92,1
+SHERATON REDDING HOTEL AT,Sheraton Redding Hotel AT the,training,medium,447290.07,1
 SHERLOCK SURVEILLANCE,Sherlock Surveillance,unclassified,low,92254.88,1
 SHIELD REG TRAINING CONSORTIUM,Shield Reg Training Consortium,training,medium,830926.02,1
+SHUMAS FIRE AND EQUIPMENT,Shumas Fire & Equipment,wildland,low,435119.66,1
 SHUSTER OIL,Shuster Oil Co.,fleet,medium,591705.90,1
+SIDETRAX EMS,Sidetrax Ems,wildland,low,421504.01,1
+SIERRA ARMY DEPOT,Sierra Army Depot,government,low,481603.29,1
 SIERRA CONE,Sierra Cone,general,low,1245424.54,1
 SIERRA DIESEL,Sierra Diesel,fleet,medium,22647.24,1
 SIERRA FIRE SERVICES,Sierra Fire Services,wildland,low,1140555.51,1
@@ -1558,8 +1909,12 @@ SIERRA NEVADA FOREST MGMT,Sierra Nevada Forest MGMT,wildland,low,678170.68,1
 SIERRA PACIFIC INDUSTRIES,Sierra Pacific Industries,professional,low,9096925.36,1
 SIERRA PACIFIC WEST,Sierra Pacific West,facilities,low,7798055.70,1
 SIERRA RES CONSERVATION DIST,Sierra Res Conservation Dist,unclassified,low,813417.88,1
+SIERRA RESOURCE MANAGEMENT,Sierra Resource Management,wildland,low,410000.00,1
+SIERRA SANITATION,Sierra Sanitation,wildland,medium,405223.60,1
 SIERRA SITE SERVICES,Sierra Site Services,wildland,low,2944634.70,1
+SIG SAUER,Sig Sauer,wildland,low,436928.25,1
 SIGN HERE,Sign Here,general,medium,247529.05,1
+SIGTRONICS,Sigtronics,general,low,441972.21,4
 SIKORSKY COMMERCIAL,Sikorsky,apparatus,medium,4655034.75,1
 SILENT FIRE,Silent Fire,unclassified,low,836601.00,1
 SILLER AND SILLER CONST,Siller & Siller Const,wildland,low,1044056.20,1
@@ -1572,6 +1927,7 @@ SIMPSON UNIVERISTY,Simpson Univeristy,training,low,1540551.60,1
 SINGLE PAYMENT PAYEES,Single Payment Payees (unspecified),placeholder,medium,4874683.91,1
 SISKIYOU DISTRIBUTING,Siskiyou Distributing,unclassified,low,18672.63,1
 SISKIYOU GOLDEN FAIRGROUNDS,Siskiyou Golden Fairgrounds,facilities,low,560525.48,1
+SISKIYOU LAND TRUST,Siskiyou Land Trust,wildland,low,476670.77,1
 SKC,SKC Company,construction,low,3925094.59,1
 SKC WEST,SKC West,unclassified,low,83266.59,3
 SKINNERS ROADSIDE TRK REP,Skinners Roadside TRK Rep,wildland,low,666402.25,1
@@ -1580,6 +1936,7 @@ SKYLARK NORTH,Skylark North,unclassified,low,99400.00,1
 SKYLIGHT FORESTRY,Skylight Forestry,government,low,2324119.14,1
 SLAIGHT HEAVY HAUL,Slaight Heavy Haul,wildland,low,688486.07,1
 SLO MOW,Slo Mow,wildland,low,1439457.60,1
+SM TIRE,SM Tire,fleet,medium,410495.43,1
 SMARTSVILLE FIRE PROT DISTRICT,Smartsville Fire Prot District,government,medium,1750726.74,1
 SMILE BUSINESS PRODUCTS,Smile Business Products,general,medium,3009796.07,1
 SMITH FORESTRY,Smith Forestry,wildland,low,1208594.52,1
@@ -1592,6 +1949,9 @@ SOCAL PPE,SoCal PPE,ppe,low,1075623.90,3
 SOCAL WRAPS,Socal Wraps,fleet,medium,21700.07,1
 SOCALGAS,Socalgas,utilities,low,530450.89,1
 SOCIAL AND ENVIR ENTREPRENEURS,Social and Environmental Entrepreneurs,government,low,4767958.55,1
+SOFTCHOICE,Softchoice,software,low,396000.00,1
+SOFTWARE ONE,Software One,software,medium,466154.78,1
+SOLID WASTES OF WILLITS,Solid Wastes of Willits,facilities,low,449688.83,1
 SOLUTIONS SIMPLIFIED,Solutions Simplified,software,low,1434464.79,1
 SONOMA COUNTY FAIR AND EXPO,Sonoma County Fair & Expo,facilities,low,550000.00,1
 SONOMA COUNTY FIRE DISTRICT,Sonoma County Fire District,government,medium,6969161.95,1
@@ -1608,17 +1968,25 @@ SOUTH COAST FIRE EQUIPMENT,South Coast Fire Equipment,fire-equipment,medium,2492
 SOUTH COAST FIRE PROTECTION,South Coast Fire Protection,government,low,1092495.28,1
 SOUTH COAST SHIPYARD,South Coast Shipyard,unclassified,low,948479.12,1
 SOUTH LAKE CNTY FIRE PROT DIST,South Lake CNTY Fire Prot Dist,government,medium,2142670.05,1
+SOUTH MONTEREY COUNTY FIRE,South Monterey County Fire,government,low,508679.62,1
+SOUTH PLACER FIRE DISTRICT,South Placer Fire District,government,medium,505907.98,2
 SOUTH SAN JOAQUIN FIRE AUTH,South San Joaquin Co Fire Auth,government,medium,1811124.06,1
 SOUTH SANTA CLARA CNTY FIRE,South Santa Clara CNTY Fire,government,low,1053972.15,1
+SOUTH YREKA FIRE PROTECTION,South Yreka Fire Protection,government,medium,462809.46,1
 SOUTHERN CA EDISON,Southern CA Edison,utilities,medium,5520681.44,1
 SOUTHERN CA MOUNTAIN FDN,Southern CA Mountain FDN,government,medium,1592558.52,1
+SOUTHERN CALIFORNIA BARRICADES,Southern California Barricades,general,low,405635.50,1
 SOUTHERN CALIFORNIA FLEET SERVICES,Southern California Fleet Services,fleet,medium,1119484.75,2
 SOUTHERN MARIN FPD,Southern Marin FPD,government,medium,3433631.18,1
+SPARKS FD,Sparks FD,government,low,452877.03,1
+SPATIAL INFORMATICS GROUP,Spatial Informatics Group,software,low,425102.00,1
 SPECIALIST TIG TECHNOLOGY INTEGRATION GROUP,PC Specialist Inc dba TIG (Technology Integration Group),it,medium,529477.31,1
 SPECIALISTS,PC Specialists,it,low,1641101.25,1
 SPRING VALLEY VOL FIRE DEPT,Spring Valley Vol Fire Dept,government,medium,1760735.54,1
 SSI TRANCHE 1,Ssi Tranche 1,utilities,low,907286.55,1
 ST VINCENTS DAY HOME,ST Vincents Day Home,unclassified,low,750000.00,1
+STANDARDAERO BUSINESS AVIATION,Standardaero Business Aviation,apparatus,medium,450561.15,1
+STANISLAUS CNTY OFFICE OF EDUC,Stanislaus Cnty Office of Educ,wildland,low,411881.63,1
 STANISLAUS CONS FIRE PROTECT,Stanislaus Cons Fire Protect,government,medium,667698.92,1
 STAPLES BUSINESS ADVANTAGE,Staples,general,medium,2384754.65,2
 STATE COMPENSATION INSURNCE FD,State Compensation Insurnce FD,government,medium,848968.00,1
@@ -1628,29 +1996,40 @@ STATE OF CALIFORNIA DEPT OF FORESTRY,CAL FIRE (State of California),government,h
 STATE OF CALIFORNIA EMERGENCY MEDICAL SERVICES AUTHORITY,State of California Emergency Medical Services Authority,government,medium,1266839.20,1
 STATE OF WASHINGTON,State of Washington,government,medium,690980.34,1
 STATE WATER RESOURCES CNTRL BD,State Water Resources Cntrl BD,government,medium,794710.32,1
+STC CIVIL,STC Civil,wildland,low,393959.00,1
 STELLAR RESTAURANTS,Stellar Restaurants,general,low,2037639.50,1
 STERLING MAY EQUIPMENT,Sterling May Equipment Co,apparatus,low,796188.07,1
+STEVE WILLS TRUCKING,Steve Wills Trucking,fleet,medium,405292.00,1
 STEVEN ARCIAGA INSPECTION SVCS,Steven Arciaga Inspection SVCS,construction,low,1962508.40,1
+STEVEN D GARNER,Steven D Garner,wildland,low,695785.25,1
+STEVEN HILL,Steven Hill,wildland,low,2111920.62,1
 STEVES CHRISTMAS TREES AAA EMERGENCY SERVICES,Steve's Christmas Trees Inc Dba Aaa Emergency Services,government,medium,615433.77,1
 STEWARDSHIP WEST,Stewardship West,unclassified,low,2050178.72,1
 STEWART TITLE OF CA,Stewart Title of CA,construction,low,1321001.00,1
+STOCKDALE INCIDENT SUPPORT,Stockdale Incident Support,wildland,low,379858.48,1
+STOREY AND SONS,Storey and Sons,wildland,low,377895.76,1
 STORM SERVICES,Storm Services,general,low,12403090.10,2
 STRATEGIC OPERATIONS,Strategic Operations,training,medium,23145.63,2
 STRATO COMMUNICATIONS,Strato Communications,it,low,863436.53,1
 SUBURBAN PROPANE,Suburban Propane,utilities,medium,1286960.05,1
 SUMMIT LAND MANAGEMENT,Summit Land Management,wildland,low,1020289.93,1
+SUN BADGE,Sun Badge,unclassified,low,380257.43,3
 SUNNYVALE DPS FD,Sunnyvale DPS FD,government,medium,1037742.24,1
 SUNRISE EXCAVATING,Sunrise Excavating,construction,medium,1512543.57,1
 SUNSTONEIT,Sunstoneit,software,low,2273001.00,1
+SUSAN RIVER FPD,Susan River FPD,government,medium,475923.25,1
 SUSANVILLE FIRE DEPARTMENT,Susanville Fire Department,government,medium,1105666.75,1
 SUSANVILLE FORD,Susanville Ford,fleet,medium,21600.00,1
+SUZANNE VAN METER,Suzanne Van Meter,general,low,1357749.45,1
 SW MAINTENANCE,SW Maintenance,wildland,low,1976820.10,1
 SWANSON GROUP AVIATION,Swanson Group Aviation,apparatus,medium,603736.17,1
 SWIFT SUPPORT,Swift Support,wildland,low,681164.80,1
 SWS VIDMARLISTA,SWS Vidmarlista,unclassified,low,114196.11,1
 SYMSOFT SOLUTIONS,Symsoft Solutions,it,low,4013151.96,1
 SYSCO FOOD SERVICES,Sysco Food Services,general,low,826856.42,1
+SYSCO FOODS,Sysco Foods,general,medium,915914.23,1
 SYSCO OF CENTRAL CA,Sysco of Central CA,general,low,2635881.48,1
+SYSCO OF CENTRAL CALIFORNIA,Sysco of Central California,general,medium,412483.55,1
 SYSCO SACRAMENTO,Sysco Sacramento,general,low,2740472.12,1
 SYSCO VENTURA,Sysco,general,medium,55579.12,1
 SYSTEM SOLUTIONS,System Solutions,software,low,942881.50,1
@@ -1660,8 +2039,10 @@ TABLET COMMAND,Tablet Command,rms,medium,6723447.09,3
 TACKLE BOX,The Tackle Box,general,low,3606811.40,1
 TAHOE DOUGLAS FIRE PROTECTION,Tahoe Douglas Fire Protection,government,low,697723.50,1
 TAHOE TRUCKEE COMM FOUNDATION,Tahoe Truckee Comm Foundation,government,medium,1953682.12,1
+TARGETSAFETY COM,Targetsafety.com,general,low,415282.50,1
 TAYLORS TINS,Taylors Tins,unclassified,low,33699.23,1
 TBS CONTRACTORS,TBS Contractors,construction,medium,1256920.85,1
+TC FABRICATION AND WELDING,TC Fabrication and Welding,fleet,low,397800.54,1
 TCHERKOYAN FAMILY TRUST,The Tcherkoyan Family Trust,facilities,low,791358.44,1
 TD FALLERS,TD Fallers,wildland,medium,107938.00,1
 TEAMSOS,Teamsos,it,low,4640886.74,1
@@ -1672,11 +2053,19 @@ TEHAMA COUNTY FIRE DEPT,Tehama County Fire Dept,government,medium,6038290.29,1
 TELL STEEL,Tell Steel,general,medium,315415.54,1
 TELSTAR INSTRUMENTS,Telstar Instruments,unclassified,low,51265.40,1
 TENAX AEROSPACE AQUISITION,Tenax Aerospace Aquisition,apparatus,medium,3616395.81,1
+TERRA ALTA DEVELOPMENT,Terra Alta Development,wildland,low,384334.64,1
+TESLA INDUSTRIES,Tesla Industries,general,low,475833.24,1
+TETRA TECH,Tetra Tech,wildland,low,458752.65,1
 TEXAS TREES FOUNDATION,Texas Trees Foundation,government,low,10723957.26,1
 TF INVESTMENT GROUP,TF Investment Group,facilities,low,577325.00,1
+THOMAS J FERGUSON MD PH D,"Thomas J. Ferguson, M.D., PH.D.",medical-exams,medium,866600.00,1
+THOMAS J FERGUSON MD PHD,Thomas J Ferguson MD PHD,medical-exams,medium,1054623.50,1
 THOMAS TRANSPORTING,Thomas Transporting,fleet,medium,82927.00,1
 THOMPSON BUILDERS,Thompson Builders,construction,medium,889130.72,1
 TIBURON FIRE PROTECTION DIST,Tiburon Fire Protection Dist,government,medium,1276976.84,1
+TICOR TITLE OF CALIFORNIA,Ticor Title Company of California,unclassified,low,438405.50,1
+TIENKEN HEAVY EQUIPMENT,Tienken Heavy Equipment,wildland,low,467909.92,1
+TIGER PERFORMANCE PRODUCTS,Tiger Performance Products,unclassified,low,463961.35,1
 TIMBERLINE HELICOPTERS,Timberline Helicopters,apparatus,medium,606868.68,1
 TIMBERSMITH TREE AND FORESTRY,Timbersmith Tree & Forestry,wildland,low,1197656.77,1
 TIMBERWORKS,Timberworks,construction,low,3371000.00,1
@@ -1685,6 +2074,7 @@ TITAN EMERGENCY SERVICES,Titan Emergency Services,wildland,low,809106.50,1
 TJ EQUIPMENT,TJ Equipment,wildland,low,898554.26,1
 TOLOWA DEE NI NATION,Tolowa Dee-ni Nation,government,medium,2877150.93,1
 TOM BOHNA RANCH,Tom Bohna Ranch,wildland,low,719810.38,1
+TOM GRANT,Tom Grant,wildland,low,392263.45,1
 TOMASINI EXCAVATION,Tomasini Excavation,construction,medium,525478.20,1
 TOMS EARTH MOVING AND EXCAVATING,Toms Earth Moving & Excavating,construction,medium,2615224.09,1
 TOMS EQUIPMENT RENTAL,Tom's Equipment Rental,general,low,30993637.70,1
@@ -1695,6 +2085,7 @@ TOTALPLAN BUSINESS INTERIORS,Totalplan Business Interiors,unclassified,low,65564
 TOUGH FIRE,Tough Company Fire,wildland,low,1572282.69,1
 TOWER TECH,Tower Tech,wildland,low,2388137.00,1
 TOWER WORKS,Tower Works,radios,low,4082675.29,1
+TOWNE FORD SALES,Towne Ford Sales,fleet,medium,519324.34,1
 TOZIERS FIRE SUPPORT,Toziers Fire Support,fire-equipment,medium,11892513.43,2
 TRACPLUS USA,Tracplus USA,it,low,2673791.61,1
 TRAHAN BROTHERS,Trahan Brothers,facilities,low,543582.57,1
@@ -1712,6 +2103,8 @@ TREEPEOPLE,TreePeople,government,low,12686241.09,1
 TRESSLERS TIRE AND PERFORMANCE,Tresslers Tire & Performance,fleet,medium,694456.75,1
 TRESSLERS TRUCKING,Tresslers Trucking,fleet,medium,2442071.25,1
 TRG EQUIPMENT SERVICES,TRG Equipment Services,wildland,low,613675.56,1
+TRI 3 CHEMICAL SYSTEMS,TRI-3 Chemical Systems,it,medium,412800.11,1
+TRIBAL ECO RESTORATION,Tribal Eco Restoration,wildland,low,503569.22,1
 TRINITY COUNTY RCD,Trinity County RCD,government,medium,8390357.41,1
 TRINITY COUNTY TITLE,Trinity County Title Company,finance,medium,2850000.00,1
 TRIVAN AND TRUCK BODY,Trivan and Truck Body,fleet,medium,8277543.45,1
@@ -1725,6 +2118,8 @@ TRUST ONE COMPONENTS,Trust One Components,apparatus,low,28960685.47,1
 TUBIT ENTERPRISES,Tubit Enterprises,wildland,low,837376.00,1
 TULARE COUNTY FIRE DEPT,Tulare County Fire Dept,government,medium,5508205.80,1
 TULARE COUNTY RESOURCE,Tulare County Resource,government,medium,5424995.22,1
+TULE RIVER INDIAN TRIBE OF,Tule River Indian Tribe of the,government,medium,382929.90,1
+TUOLUMNE BAND OF ME WUK INDIAN,Tuolumne Band of Me-wuk Indian,government,medium,420076.84,1
 TUOLUMNE BIOMASS,Tuolumne Biomass,government,low,2000000.00,1
 TUOLUMNE FIRE SAFE COUNCIL,Tuolumne Fire Safe Council,government,medium,3678808.21,1
 TUOLUMNE RESOURCE,Tuolumne Co Resource,government,low,2162881.63,1
@@ -1744,9 +2139,11 @@ UCSF SFGH MEDICAL GROUP,UCSF / SFGH Medical Group,medical-exams,low,3913944.40,1
 UNION DOOR,Union Door,facilities,medium,490464.60,1
 UNITED AERONAUTICAL,United Aeronautical,apparatus,low,3506706.62,1
 UNITED ENGINEERING AND CONST,United Engineering & Const,construction,medium,3815181.80,1
-UNITED FIREFIGHTERS OF LOS ANGELES CITY LOCAL 112 IAFF AFL,United Firefighters of Los Angeles City-local 112-iaff- Afl-,payroll,medium,2281118.85,1
+UNITED FIREFIGHTERS OF LOS ANGELES CITY LOCAL 112 IAFF AFL,United Firefighters of Los Angeles City-local 112-iaff- Afl-,payroll,medium,2358098.85,1
 UNITED PROPERTY ADVOCATES,United Property Advocates,uniforms,low,1074468.90,1
 UNITED RENTALS N AMERICA,United Rentals N America,general,low,741329.27,1
+UNITED SYNERGY,United Synergy,wildland,low,468136.75,1
+UNIVERSITY AT MONTEREY,University Corp AT Monterey,government,medium,495791.43,1
 UNIVERSITY ENTERPRISES,University Enterprises,training,medium,2026205.88,1
 UNIVERSITY OF CA MERCED,University of CA Merced,training,medium,561434.97,1
 UNIVERSITY OF CA SANTA BARBARA,University of CA Santa Barbara,training,medium,524476.60,1
@@ -1756,6 +2153,7 @@ UNKNOWN,Unknown,placeholder,medium,70804611.64,1
 UPPER MOKELUMNE RIVER,Upper Mokelumne River Watershed Authority,government,low,9351256.30,1
 UPPER SALINAS LAS TABLAS RCD,Upper Salinas Las Tablas RCD,government,medium,3383784.37,1
 URBAN CORPS SAN DIEGO COUNTY,Urban Corps San Diego County,government,medium,2615081.11,1
+URBAN DREAMER EQUIP,Urban Dreamer Equip,wildland,low,489241.42,1
 URBAN SALVAGED AND RECLAIMED,Urban Salvaged and Reclaimed,government,low,1172656.91,1
 URBAN TILTH,Urban Tilth,government,medium,198000.00,1
 US BANK,U.S. Bank,finance,high,605919981.35,3
@@ -1766,8 +2164,10 @@ US DEPT OF AGRICULTURE,US Dept of Agriculture,government,medium,5945628.62,1
 US DOI BUREAU OF LAND MGMT,US DOI Bureau of Land MGMT,government,medium,12745255.96,1
 US FOOD SERVICE,US Food Service,general,low,1508074.95,1
 US FOODS,US Foods,general,medium,50753046.85,1
+US FOODSERVICE,US Foodservice,general,medium,868461.31,1
 US FOODSERVICE LOS ANGELES,US Foodservice/los Angeles,general,low,2321233.66,1
 US FOREST SERVICE,USDA Forest Service,government,high,33376359.89,1
+US TANK AND MECHANIC SVCS,US Tank & Mechanic Svcs,facilities,low,427600.00,1
 US TREASURY,US Treasury,government,low,890421.62,1
 USCG FINANCE CENTER,Uscg Finance Center,wildland,low,635106.64,1
 USDA FOREST SERVICE,USDA Forest Service,government,high,197384359.79,3
@@ -1795,26 +2195,34 @@ VENTURA COUNTY RCD,Ventura County RCD,government,medium,3179309.21,1
 VENTURA FIRE DEPARTMENT,Ventura Fire Department,government,medium,1521665.16,1
 VERITRUE COMPONENTS,Veritrue Components,fleet,low,1118814.89,1
 VERIZON BUSINESS NETWORK SVCS,Verizon Business Network SVCS,telecom,medium,5428014.53,1
+VERIZON BUSINESS SERVICES,Verizon Business Services,telecom,medium,498045.90,1
 VERIZON WIRELESS SVCS,Verizon,telecom,high,579670.78,1
+VESTIS UNIFORMS AND WORKPLACE,Vestis Uniforms & Workplace,uniforms,medium,414970.93,1
 VESTRA RESOURCES,Vestra Resources,it,low,1090685.89,1
+VETERAN PROCUREMENT SOLUTIONS,Veteran Procurement Solutions,general,low,424991.55,1
 VETERANS SERVICE SOLUTIONS,Veterans Service Solutions,general,low,658497.45,1
 VIBRANT PLANET PBC,Vibrant Planet PBC,software,low,8491384.00,1
 VICTOR TREATMENT CENTERS,Victor Treatment Centers,facilities,low,993875.06,1
 VIEJAS RESERVATION FIRE DEPT,Viejas Reservation Fire Dept,government,medium,931821.16,1
+VIERAS FIRELINE SUPPORT,Vieras Fireline Support,wildland,low,462310.55,1
 VILLAIN BAITS,Villain Baits,wildland,low,535243.00,2
 VINCENT COMMUNICATIONS,Vincent Communications,radios,low,10335055.92,2
 VISALIA REPAIR CENTER,Visalia Repair Center,wildland,low,2183855.57,1
 VISION COMMUNICATIONS,Vision Communications Company,radios,low,986226.54,1
 VISIONARY INTEGRATION PROF,Visionary Integration Prof,it,low,1166508.84,1
 VISTA AVIATION,Vista Aviation,apparatus,medium,2913238.97,2
+VOLCANO CREEK ENTERPRISES,Volcano Creek Enterprises,wildland,low,391067.82,1
 VOLTAGE SPECIALISTS,Voltage Specialists,unclassified,low,31680.00,1
 VOLVO CONST EQUIP AND SVCS,Volvo Const Equip & SVCS,general,low,586210.65,1
+VORTEX INDUSTRIES,Vortex Industries,unclassified,low,430858.24,2
 VP DATA COMMONS,VP Data Commons,it,low,2159770.77,1
 VYGON US,Vygon,ems-supplies,medium,201380.00,1
 VYVE BROADBAND,Vyve Broadband,telecom,medium,39418.89,1
 WALBERG,Walberg,wildland,low,1360820.17,1
+WALTON RANCH,Walton Ranch,wildland,medium,476147.43,1
 WARD APPARATUS,Ward Apparatus,apparatus,medium,4284033.04,1
 WARNER ENTERPRISE,Warner Enterprise,wildland,low,4034198.40,1
+WATERBOYS,Waterboys,wildland,low,409088.88,1
 WATERDOGG,Waterdogg,wildland,low,541983.25,1
 WATERLOO MORADA RURAL FPD,Waterloo Morada Rural Co FPD,government,medium,1141406.13,1
 WATERSHED RES AND TRAINING CNTR,Watershed Res & Training CNTR,government,medium,7410283.93,1
@@ -1822,6 +2230,8 @@ WATERWORKFORCE,Waterworkforce,facilities,low,610365.76,1
 WATSONVILLE DIESEL,Watsonville Diesel,fleet,medium,132058.52,1
 WATSONVILLE FIRE DEPARTMENT,Watsonville Fire Department,government,medium,737642.70,1
 WATSONVILLE FLEET GROUP,Watsonville Fleet Group,fleet,medium,37916927.25,2
+WATSONVILLE WETLANDS WATCH,Watsonville Wetlands Watch,wildland,low,479011.99,1
+WATTCO,Wattco,fleet,low,407658.54,1
 WAVE BUSINESS,Wave Business,telecom,medium,43817.71,1
 WAYNE ELECTRIC,Wayne Electric Company,facilities,medium,536068.84,1
 WD HEAVY EQUIPMENT,WD Heavy Equipment,wildland,low,1647425.24,1
@@ -1834,16 +2244,21 @@ WELLNESS SOLUTIONS,Wellness Solutions,medical-exams,medium,799323.96,1
 WEST ALMANOR CSD FIRE DEPT,West Almanor CSD Fire Dept,government,medium,1042655.66,1
 WEST COAST LIGHTS AND SIRENS,West Coast Lights & Sirens,radios,low,754285.29,3
 WEST COVINA FIRE DEPARTMENT,West Covina Fire Department,government,medium,2951992.26,1
+WEST FOREST,West Forest,wildland,low,480000.00,1
 WEST MARK,West Mark,fleet,medium,64059.40,1
 WEST MARK SERVICE CENTER,West Mark Service Center,fleet,low,1508406.38,1
+WEST MOUNTAIN TIMBER,West Mountain Timber,wildland,medium,493413.75,1
 WEST POINT FIRE DISTRICT,West Point Fire District,government,medium,974131.37,1
 WEST STANISLAUS CNTY FIRE PROT,West Stanislaus CNTY Fire Prot,government,medium,691048.37,1
 WESTERN BLUE AN NWN,"Western Blue, an NWN Company",it,low,1304854.48,1
 WESTERN BLUE INSIGHT HEWLETT PACKARD,Western Blue/Insight/Hewlett Packard,it,low,1426218.06,1
 WESTERN EXTRICATION SPEC,Western Extrication Spec,fire-equipment,medium,5297905.44,1
-WESTERN EXTRICATION SPECIALISTS,Western Extrication Specialists,fire-equipment,medium,3433509.02,2
+WESTERN EXTRICATION SPECIALISTS,Western Extrication Specialists,fire-equipment,medium,3655063.44,3
+WESTERN FIRE EQUIPMENT,Western Fire Equipment,fire-equipment,medium,437999.63,1
+WESTERN MUNICIPAL WATER DIST,Western Municipal Water Dist,government,medium,405519.56,1
 WESTERN SHASTA RCD,Western Shasta RCD,government,medium,5430841.00,1
 WESTERN SHELTER SYSTEMS,Western Shelter Systems,fire-equipment,low,1913983.08,2
+WESTERN STATE DESIGN,Western State Design,facilities,low,435830.55,4
 WESTERN STATES OIL,Western States Oil,fleet,medium,3091834.43,1
 WESTERN TRUCK EXCHANGE,Western Truck Exchange,fleet,medium,1671042.45,1
 WESTERN WATERS,Western Waters,wildland,low,914237.04,1
@@ -1873,9 +2288,14 @@ WILLOWS RURAL FPD,Willows Rural FPD,government,medium,882953.98,1
 WILSONS CAMP,Wilsons Camp,unclassified,low,54400.00,1
 WINNER CHEVROLET,Winner Chevrolet,fleet,medium,14074085.07,3
 WITHROTOR AVIATION,Withrotor Aviation,apparatus,medium,1580116.42,1
+WITTMAN ENTERPRISES,Wittman Enterprises,medical-exams,low,378621.56,1
+WM CORPORATE SERVICES,WM Corporate Services,utilities,low,376239.53,1
 WONDRIES FLEET GROUP,Wondries Fleet Group,fleet,medium,1455603.99,1
+WOODBRIDGE FIRE DISTRICT,Woodbridge Fire District,government,medium,503405.10,1
 WOODLAKE FIRE DEPARTMENT,Woodlake Fire Department,government,medium,697282.22,1
+WOODLAND EXPANSION,Woodland Expansion,wildland,low,442889.10,1
 WOODLAND FD,Woodland FD,government,medium,597467.38,1
+WOODS COMMERCIAL DOOR,Woods Commercial Door,facilities,medium,438131.50,2
 WOODSIDE FIRE PROTECTION DIST,Woodside Fire Protection Dist,government,medium,4917452.37,1
 WORCESTER POLYTECHNIC INSTITUTE,Worcester Polytechnic Institute,training,medium,534856.91,1
 WORK CARE,Work Care,professional,low,2121926.96,1
@@ -1887,6 +2307,7 @@ WR JAMES,W R James,wildland,low,554208.08,1
 WRIGHT ELECTRIC,Wright Electric,facilities,medium,913917.27,1
 WRIGHT SEPTIC,Wright Septic,facilities,medium,48867.00,1
 WS DARLEY AND,W.S. Darley & Co.,fire-equipment,high,623459.34,2
+WU YEE CHILDRENS SERVICES,Wu Yee Childrens Services,wildland,low,516708.04,1
 WURLITZER FARMS,Wurlitzer Farms,wildland,low,4405313.75,1
 WW GRAINGER,Grainger,general,medium,9644732.41,1
 WYATT,Wyatt,wildland,low,670298.00,1
@@ -1897,6 +2318,7 @@ YANKEE HILL FIRE SAFE COUNCIL,Yankee Hill Fire Safe Council,government,medium,35
 YOCHA DEHE FIRE DEPARTMENT,Yocha Dehe Fire Department,government,medium,1554722.10,1
 YOLO COUNTY,Yolo County,government,medium,3488653.61,1
 YOLO COUNTY RCD,Yolo County RCD,government,medium,815192.31,1
+YOSEMITE CLEAN ENERGY,Yosemite Clean Energy,utilities,medium,500000.00,1
 YOSEMITE SEQUOIA RES CON AND DEV,Yosemite Sequoia Res Con & Dev,government,medium,7918711.55,1
 YOUNG LIFE,Young Life,unclassified,low,280636.29,1
 YOUNG MENS CHRISTIAN ASSOC OF,Young Mens Christian Assoc of,training,medium,656935.00,1
@@ -1905,8 +2327,11 @@ YUBA CITY FIRE DEPTARTMENT,Yuba City Fire Deptartment,government,low,1600647.68,
 YUBA COUNTY WATER AGENCY,Yuba County Water Agency,government,medium,6512611.48,1
 YUBA WATERSHED PROTECTION AND,Yuba Watershed Protection &,government,medium,839193.93,1
 YUROK TRIBE,Yurok Tribe,government,medium,1209930.12,1
+ZACKS RESTAURANT AND CATERING,Zacks Restaurant & Catering,wildland,medium,507287.35,1
+ZAYANTE FIRE PROTECTION DIST,Zayante Fire Protection Dist,government,medium,429802.25,1
 ZECO SYSTEMS,Zeco Systems,unclassified,low,603629.97,1
 ZEE MEDICAL,Zee Medical,ems-supplies,medium,20891.50,1
 ZETRON A CODAN,Zetron A Codan Company,radios,low,855287.70,1
 ZONES,Zones,unclassified,low,659990.31,3
+ZP ABREGO CONSTRUCTION,ZP Abrego Construction,construction,medium,421200.00,1
 ZX AG SOLUTIONS,ZX Ag Solutions,wildland,low,878659.05,2

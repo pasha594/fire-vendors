@@ -14,7 +14,8 @@ July 2023-June 2024 = fiscal_year 2024 here). CAL FIRE is business unit 3540. Co
 and department name, document id (business unit, voucher, line and distribution), related document,
 accounting date, fiscal year begin, accounting period, vendor name, account (number, type, category,
 sub-category, description), fund, program, sub-program, budget reference, year of enactment, amount. The State
-masks individuals as "CONFIDENTIAL".
+publishes employee reimbursements (travel, per diem, training) to the payee "CONFIDENTIAL"; other payees,
+sole proprietors included, are named. Payee names are shown as published (owner decision of 2026-10-06).
 
 fetch      raw/<date>/ca/ca_fiscal/pointer.csv.gz                     the site's list of department vendor files
            raw/<date>/ca/ca_fiscal/Vendor_3540_CALFIRE_FY<yy>.csv.gz  each CAL FIRE file for fiscal years 2021 on,
@@ -163,7 +164,8 @@ def normalize():
         "fiscal_year": "California state FY, Jul-Jun", "fetched": d.parent.parent.name,
         "note": "CAL FIRE (state fire agency, business unit 3540), whole department: fire protection, State Fire "
                 "Marshal and resource management; lines summed per voucher, payee, account, fund, program and date; "
-                "CalCard purchases appear as payments to US Bank; individuals are masked by the State; "
+                "CalCard purchases appear as payments to US Bank; the State publishes employee travel and training "
+                "reimbursements to CONFIDENTIAL; "
                 f"FY{years[-1]} partial (postings through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
