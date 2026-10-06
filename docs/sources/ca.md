@@ -24,8 +24,8 @@ to June and are written as the year they end in (FY2024 = July 2023 to June 2024
 | `ca_modesto` | City of Modesto Weekly AP Transactions | - | skipped: weekly figures only; sample kept | 0 | - | - | - |
 | (none) | San Jose, Indio, West Hollywood, Marin County, others | - | skipped (see "Other candidates") | 0 | - | - | - |
 
-`data/states/ca/agencies.json` after this run: 929 agencies (853 registry rows plus 76 fire districts and fire
-authorities added from the State Controller's data), coverage tier 1: 6, tier 2: 0, tier 3: 584, tier 4: 339. CAL FIRE
+`data/states/ca/agencies.json` after this run: 926 agencies (853 registry rows plus 73 fire districts and fire
+authorities added from the State Controller's data), coverage tier 1: 6, tier 2: 0, tier 3: 584, tier 4: 336. CAL FIRE
 is tier 1 (its tier-2 SCPRS lines are older). No agency without vendor data has a $0 row: tier-3 rows are published
 totals only, and no row is written for an agency a source does not cover.
 
@@ -34,7 +34,8 @@ Checks: `python3 tests/multistate/check_ca.py` and `python3 tests/multistate/che
 
 ## Access, robots.txt and terms (all hosts used)
 
-All requests go through `common.get` (1 request per second, the project's User-Agent). Socrata hosts publish a
+Every source section below takes its terms of use and robots.txt from this table. All requests go through
+`common.get` (1 request per second, the project's User-Agent). Socrata hosts publish a
 `robots.txt` with `Crawl-delay: 1` that disallows only catalog browse filters (`/browse?...`), not the SODA API or
 `/api/views/<id>.json`; the throttle meets the crawl delay.
 
@@ -86,9 +87,14 @@ state government rows (CAL FIRE units and state institutions), 36 federal, 30 co
   JPAs); normalize stops on any fire-named entity in neither list.
 - **Matching:** 366 SCO entities link to 363 agencies (three districts filed under two names in different years, with
   no overlapping year). 186 match a registry department by exact name in the same county; 180 are manual (registry
-  name differs, or the district is missing from the registry). 76 districts and fire authorities the registry lacks
-  were added to `config/states/ca/agencies_added.csv` (68 fire districts, 8 fire authority JPAs); 77 entity links go to
-  them. The Consolidated Fire Protection District of Los Angeles County is linked to the registry's Los Angeles County
+  name differs, or the district is missing from the registry). 73 districts and fire authorities the registry lacks
+  were added to `config/states/ca/agencies_added.csv` (65 fire districts, 8 fire authority JPAs); 74 entity links go to
+  them. Review of 2026-10-06 moved three districts the registry does list under another spelling or an older name
+  from `agencies_added.csv` to their registry rows: South Lake County FPD -> CA-17040 ("South Lake Couny Fire
+  Protection District"), Humboldt Fire Protection District No. 1 -> CA-12050 ("Humboldt No. 1 Fire Protection
+  District"), Coastside FPD -> CA-41045 ("Half Moon Bay Fire Protection District"; Coastside was formed in 2007 from
+  the Half Moon Bay and Point Montara districts, and the registry row carries Coastside's website). `check_ca.py` now
+  fails if an added agency resembles a registry fire district of the same county by name. The Consolidated Fire Protection District of Los Angeles County is linked to the registry's Los Angeles County
   Fire Department (CA-19110).
 - **Rows:** 6,469 raw rows (control file agrees) -> 5,960 totals rows (agency, year, report line; zero lines dropped),
   $20.33B: FY2021 $4.57B, FY2022 $4.96B, FY2023 $5.23B, FY2024 $5.57B. 355, 354, 348 and 351 linked districts filed
@@ -110,6 +116,7 @@ state government rows (CAL FIRE units and state institutions), 36 federal, 30 co
   Capital outlay and debt service are not split by function; Emergency Medical Services is a separate line and is not
   taken. Fields: `entity_name`, `county`, `city_state_zip`, `estimated_population`, `fiscal_year`, `category`,
   `subcategory_1`, `subcategory_2`, `line_description`, `form_table`, `type`, `value`, `row_number`.
+- **Years and updates:** FY2002-03 to FY2023-24, published yearly (FY2024 is the latest); taken FY2021-FY2024.
 - **Access:** SoQL filter on the `CURR_EXP_FIRE` line and `fiscal_year >= 2021` (1,928 raw rows: 482 cities x 4 years);
   plus the list of cities with their county.
 - **Fire agencies:** the function field is clean (one line per city and year). A city's fire line is linked only to
@@ -144,7 +151,9 @@ state government rows (CAL FIRE units and state institutions), 36 federal, 30 co
 - **Fire agency:** department code FIR ("FIR Fire Department") -> San Francisco Fire Department (CA-38005). Purchases
   other City departments make for Fire are not included.
 - **Rows:** 35,749 raw lines (control agrees) -> 34,637 lines with a paid amount ($220.6M); 1,112 lines with only
-  pending or retainage amounts left out. FY2022 ($62.2M) is about twice a normal year.
+  pending or retainage amounts left out. FY2022 ($62.2M) is about twice a normal year because of one $38.8M capital
+  outlay payment to Chicago Title Company (a property purchase through escrow; $5.9M more in FY2023); FY2021 ($15.1M)
+  is about half a normal year.
 - **Data quality:** no documented payment date (`data_as_of` is undocumented and often outside the fiscal year), so
   `posting_date` is empty for every SF row.
 - **Duplicates and reversals:** lines identical in every column but the Socrata row id are kept once (0 in this
@@ -164,6 +173,8 @@ state government rows (CAL FIRE units and state institutions), 36 federal, 30 co
 - **Fire agency:** department FIRE (number 38) -> Los Angeles Fire Department (CA-19105). General Services fleet and
   fuel bought for LAFD are not included.
 - **Rows:** 175,405 lines ($696.8M), FY2021-FY2027 (FY2027 partial, payments through 2026-09-09).
+- **Data quality:** every line has a check date inside its fiscal year; item description, quantity and unit price
+  only where the payment is against a purchase order; 722 negative lines (698 cancellations, other credits).
 - **Payees:** the City publishes most refunds of ambulance charges and fire service fees to "PRIVACY-FIRE" (12,802 of
   12,808 ambulance-refund lines; $11.6M); a few refund payees are named and shown as named.
 - **Duplicates and reversals:** exact duplicates kept once (0 in this pull). Cancelled checks are their own negative
@@ -184,6 +195,10 @@ state government rows (CAL FIRE units and state institutions), 36 federal, 30 co
   under the County's cooperative agreement). The registry's second row for the same operation, "Cal Fire - Riverside
   County Fire Department" (CA-33555), is not linked. The largest payee is the State (CAL FIRE) for contract staffing.
 - **Rows:** 277,875 raw lines -> 276,946 lines, $1,666.1M, FY2021-FY2027 (FY2027 partial, to 2026-08-26).
+- **Data quality:** ledger lines with a date inside the fiscal year; vendor names as keyed (one company can appear
+  in several spellings); $1.40B of the dollars are the County's contract payments to the State (CAL FIRE), an
+  inter-agency payment rather than a purchase. One line of the department "Coachella Fire Protection Dist" exists in
+  the source and is not taken (the district is tier 3 through `ca_sco_districts`).
 - **Duplicates and reversals:** no line number, and identical lines are ordinary (one line per phone on a wireless
   bill): 25,211 lines ($9.5M, 0.6%) repeat another exactly, spread over every period with no reload burst, and in
   2,239 of 2,524 invoices concerned only some lines repeat. Only an invoice whose every line repeats the same number
@@ -201,6 +216,8 @@ state government rows (CAL FIRE units and state institutions), 36 federal, 30 co
 - **Fire agency:** department 30 -> Corona Fire Department (CA-33025). Lines include pension and benefit payments
   naming the person paid (shown, owner decision).
 - **Rows:** 14,500 raw -> 14,481 lines, $21.8M, FY2021-FY2026 (payments through 2026-06-30).
+- **Data quality:** payment dates inside the fiscal year; many small lines (pension, benefit, refund and
+  reimbursement payments name the person paid, shown as published).
 - **Duplicates and reversals:** same rule as Riverside County (per payment and invoice): 19 lines dropped as reloaded
   invoices, 925 identical lines kept as separate charges (copier and hotel invoices). 752 negative lines (voids,
   credits) kept.
@@ -219,6 +236,8 @@ state government rows (CAL FIRE units and state institutions), 36 federal, 30 co
   Services are not included.
 - **Rows:** 2,369 lines, $140.2M, FY2021-FY2026 (payments through 2026-06-24). Most dollars are the City's contract
   payments to the County of Riverside for fire staffing.
+- **Data quality:** payment dates inside the fiscal year; "Fire - Office of Emergency Mgmt" is small ($0.9M, radios,
+  satellite phones, supplies); Fire Operations ($132.2M) is mostly the County contract.
 - **Duplicates and reversals:** identified by payment id, invoice id, invoice line and distribution line; exact
   duplicates kept once (0); 3 negative lines kept.
 - **Decision:** built.
@@ -283,6 +302,9 @@ state government rows (CAL FIRE units and state institutions), 36 federal, 30 co
   the years). Lines are summed to one row per voucher, payee, account, fund, program and accounting date (keeps every
   published field but the line number): 873,016 rows, $10,127.5M (FY2021 $1,562M, FY2022 $1,480M, FY2023 $1,459M,
   FY2024 $1,295M, FY2025 $2,370M, FY2026 $1,963M to 2026-06-30). Rows summing to $0.00 are dropped (34,994).
+- **Data quality:** raw and unaudited (terms of use); accounting dates inside the fiscal year; CalCard lines name the
+  card issuer, not the merchant; much of the money is payments to other governments (contract counties, cities and
+  fire districts reimbursed for mutual aid) and grants (forest health, urban forestry), which are not purchases.
 - **Payees:** the State publishes employee travel, per diem and training reimbursements to "CONFIDENTIAL" ($35.1M);
   other payees, sole proprietors included, are named and shown as published.
 - **Duplicates and reversals:** lines identical in every column (same document id, line and distribution, amount and
@@ -310,6 +332,8 @@ state government rows (CAL FIRE units and state institutions), 36 federal, 30 co
 - **Rows:** 23,244 raw lines -> 22,766 item lines ($884.4M: FY2013 $192.3M, FY2014 $132.5M, FY2015 $559.6M), also
   rolled into `transactions.csv.gz` (payee = supplier). 443 $0.00 lines (contract-amendment text) left out.
   Amounts are purchase order amounts (commitments), not payments.
+- **Data quality:** some purchase dates are typos (1912, 2511) and are left empty; PO dates of long-running agreements
+  can precede the fiscal year the line is registered in; no brand field.
 - **Duplicates and reversals:** no line number; a PO whose every line repeats the same number of times is kept once
   (35 lines dropped, for example a $952,295 Nomex line listed twice as the only line of its PO); 270 identical lines
   inside larger POs kept. 427 negative lines kept.
@@ -373,13 +397,18 @@ sharing only `agency_sources.csv`, the redaction patterns and common's file help
    amount lines) for SF, LA, Riverside County, Corona, Moreno Valley and SCPRS; dollars per fiscal year and payee for
    FI$Cal (from the six raw files, checked against the manifest's rows and dollars); totals per agency and year for both
    SCO sources (every Fire Protection district linked);
-2. payee names as published (only redaction-pattern text cut; the old person marker never appears);
-3. every agency id exists in `agencies.json`; coverage tiers agree with the rows; no zero totals rows;
+2. payee names as published (only redaction-pattern text cut; the old person marker never appears; no payee,
+   description or account carries an email address); person-shaped names are only counted (shown, owner decision);
+3. every agency id exists in `agencies.json`; coverage tiers agree with the rows; no zero totals rows; no added agency
+   resembles a registry fire district of its county by name; a city's SCO fire line goes only to a fire department;
 4. no duplicate or empty `source_record_id` per source; SCPRS item lines equal their transaction rows;
-5. every source is registered in `sources.csv` with the years present;
+5. every source is registered in `sources.csv` with the years present and the raw folder date as `fetched`;
 6. vendor map spend and agency counts are current, categories valid, no key repeats `config/vendor_map.csv`, mapped
    share at least 90%;
-7. raw files under 50 MB each and California under 150 MB (97 MB), every source folder has a sample of at most 100 rows.
+7. raw files under 50 MB each and California under 150 MB (97 MB), every source folder has a sample of at most 100 rows;
+8. contract conformance: table, `sources.csv` and `agency_sources.csv` columns in the contract's order (read from
+   `docs/multistate/data-contract.md`), dates `YYYY-MM-DD`, amounts with two decimals, and every payment date inside
+   the fiscal year it is filed under (SCPRS purchase-order dates excepted).
 
 Normalize is deterministic: every adapter's normalize was run twice; the data files were byte-identical.
 
@@ -397,3 +426,20 @@ Normalize is deterministic: every adapter's normalize was run twice; the data fi
 - SCPRS gives only FY2013-FY2015; keep it, given FI$Cal covers CAL FIRE from FY2021?
 - LA County Open Expenditures (FY2025 on, monthly totals by expenditure class) could later replace or extend the SCO
   totals for the Los Angeles County Fire Department.
+- Fire districts and JPAs that buy their fire service from another agency (review of 2026-10-06): each is a fire
+  district or fire authority, so it is linked, but its spending is largely a payment to another listed agency. Member
+  districts and their JPA both have totals (Tracy FPD and South San Joaquin County Fire Authority; Williams FPD and
+  Williams Fire Protection Authority; Fort Bragg Rural FPD and Fort Bragg Fire Protection Authority; Big Bear Lake FPD
+  and Big Bear Fire Authority; Humboldt FPD No. 1 and Humboldt Bay Fire; Belmont FPD, Belmont-San Carlos Fire
+  Department and San Mateo Consolidated Fire Department); districts served by a city department have totals beside the
+  city's own fire line (Vista FPD, Dixon FPD, Winters FPD, Natomas and Pacific-Fruitridge FPDs with Sacramento, Lower
+  Sweetwater FPD with National City, Kensington FPD with El Cerrito, East Vallejo FPD with Vallejo). A state or
+  peer total that adds agencies would count these dollars twice; per-agency figures are as filed.
+- Sonoma County Fire District is an added agency, while the registry still lists its predecessors Rincon Valley FPD
+  (CA-49170) and Windsor FPD (CA-49215), which therefore show at tier 4. Which legal entity survived the 2019
+  consolidation is not settled here, so the district was not relinked.
+- "Nevada County Fire Agency" (a JPA of Nevada County fire agencies, $0.1M over four years) is linked as a fire
+  authority; it may be a coordination body without a department of its own.
+- `config/categories.csv` has no category for grants. CAL FIRE's forest-health and urban-forestry grantees are split
+  between `unclassified` (counted as purchasing) and `government` (not purchasing); a `grants` category (not
+  purchasing) would describe them better.
