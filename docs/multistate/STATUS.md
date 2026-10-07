@@ -9,8 +9,9 @@ Files that existed on `main` and changed: `config/vendor_map.csv` (the states' v
 Everything else is new and under `raw/2026-10-06/<st>/`, `config/states/`, `data/states/`, `pipeline/sources/`,
 `tests/multistate/`, `docs/sources/` and `docs/multistate/`.
 
-Numbers below were recomputed on 2026-10-07 from the committed files, after every normalize step was run twice with
-byte-identical output. Dollars are net (refunds and reversals negative). Years are fiscal years named for the year
+Numbers below were recomputed on 2026-10-07 from the committed files, after the owner's decisions 11 and 12 (identical
+voids fixed, SCPRS purchase-order lines kept) and after every normalize step was run twice with byte-identical
+output. Dollars are net (refunds and reversals negative). Years are fiscal years named for the year
 they end in, as each source defines them.
 
 ## Coverage
@@ -28,10 +29,10 @@ Tiers: 1 payee-level payment lines; 2 item lines (brand, quantity, unit price); 
 
 | State | Built sources | Tier 1 payment lines | Tier 1 dollars | Tier 2 item lines | Tier 2 dollars | Tier 3 totals rows | Tier 3 dollars |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| OH | 2 | 736,423 | $1,965,902,997.65 | - | - | - | - |
-| CA | 9 | 1,351,851 | $12,864,131,774.86 | 22,496 | $883,440,114.00 | 6,852 | $43,133,606,544.00 |
-| ID | 2 | 47,000 | $329,402,882.55 | - | - | 577 | $577,476,035.00 |
-| TX | 5 | 120,110 | $509,109,590.65 | 28,491 | $15,630,086.78 | 50 | $396,142,185.77 |
+| OH | 2 | 737,380 | $1,965,024,254.71 | - | - | - | - |
+| CA | 9 | 1,351,967 | $12,864,120,227.23 | 22,798 | $886,076,817.36 | 6,852 | $43,133,606,544.00 |
+| ID | 2 | 47,001 | $329,401,352.68 | - | - | 577 | $577,476,035.00 |
+| TX | 5 | 120,111 | $509,097,190.65 | 28,491 | $15,630,086.78 | 50 | $396,142,185.77 |
 
 Most Ohio dollars are payroll, pensions and benefits; purchasing is about $400M. CAL FIRE (Open FI$Cal) is the
 largest single source ($10.1B, FY2021-2026). State fire agencies (kind "State fire agency"): Ohio Division of
@@ -42,20 +43,20 @@ Lands fire program (tier 1), Texas A&M Forest Service (tier 2; a registry distri
 
 | State | Source | Name | Tier | Agencies with rows | Rows | Dollars | Years |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| OH | `oh_checkbook_local` | Ohio Checkbook, local governments | 1 | 186 | 702,661 | $1,925,866,499.97 | 2021-2026 |
+| OH | `oh_checkbook_local` | Ohio Checkbook, local governments | 1 | 186 | 703,618 | $1,924,987,757.03 | 2021-2026 |
 | OH | `oh_cincinnati` | City of Cincinnati Vendor Payments | 1 | 1 | 33,762 | $40,036,497.68 | 2021-2027 |
 | CA | `ca_fiscal` | Open FI$Cal vendor transactions (CAL FIRE) | 1 | 1 | 873,016 | $10,127,477,233.38 | 2021-2026 |
-| CA | `ca_riverside_county` | County of Riverside Check Book (Riverside County Fire) | 1 | 1 | 252,798 | $1,657,358,386.01 | 2021-2027 |
+| CA | `ca_riverside_county` | County of Riverside Check Book (Riverside County Fire) | 1 | 1 | 252,908 | $1,657,351,545.96 | 2021-2027 |
 | CA | `ca_la` | Checkbook L.A. (Los Angeles City Controller) | 1 | 1 | 175,405 | $696,804,689.78 | 2021-2027 |
 | CA | `ca_sf` | San Francisco Vendor Payments (Vouchers) | 1 | 1 | 34,637 | $220,558,400.58 | 2021-2027 |
 | CA | `ca_moreno_valley` | City of Moreno Valley Open Expenditures | 1 | 1 | 2,369 | $140,184,292.42 | 2021-2026 |
-| CA | `ca_corona` | City of Corona Open Expenditures (CorStat) | 1 | 1 | 13,626 | $21,748,772.69 | 2021-2026 |
-| CA | `ca_scprs` | SCPRS purchase orders (CAL FIRE) | 2 | 1 | 22,496 item lines | $883,440,114.00 | 2013-2015 |
+| CA | `ca_corona` | City of Corona Open Expenditures (CorStat) | 1 | 1 | 13,632 | $21,744,065.11 | 2021-2026 |
+| CA | `ca_scprs` | SCPRS purchase orders (CAL FIRE) | 2 | 1 | 22,798 item lines | $886,076,817.36 | 2013-2015 |
 | CA | `ca_sco_cities` | State Controller, city reports (fire function) | 3 | 224 | 892 totals | $22,802,615,689.00 | 2021-2024 |
 | CA | `ca_sco_districts` | State Controller, special district reports | 3 | 363 | 5,960 totals | $20,330,990,855.00 | 2021-2024 |
-| ID | `id_state` | Transparent Idaho state transactions (Department of Lands fire program) | 1 | 1 | 47,000 | $329,402,882.55 | 2021-2027 |
+| ID | `id_state` | Transparent Idaho state transactions (Department of Lands fire program) | 1 | 1 | 47,001 | $329,401,352.68 | 2021-2027 |
 | ID | `id_lgr` | Idaho Local Government Registry, fire district totals | 3 | 156 | 577 totals | $577,476,035.00 | 2021-2024 |
-| TX | `tx_houston` | City of Houston checkbook (Houston Fire Department) | 1 | 1 | 105,492 | $296,950,832.31 | 2021-2027 |
+| TX | `tx_houston` | City of Houston checkbook (Houston Fire Department) | 1 | 1 | 105,493 | $296,938,432.31 | 2021-2027 |
 | TX | `tx_austin` | City of Austin eCheckbook (Austin Fire Department) | 1 | 1 | 12,275 | $158,135,868.45 | 2021-2027 |
 | TX | `tx_dallas` | City of Dallas vendor payments (Dallas Fire-Rescue) | 1 | 1 | 2,343 | $54,022,889.89 | 2026-2027 |
 | TX | `tx_dir` | Texas DIR cooperative contract sales | 2 | 318 | 28,491 item lines | $15,630,086.78 | 2021-2026 |
@@ -73,29 +74,45 @@ spending fields), San Antonio and Fort Worth (no department field), El Paso (no 
 
 ## Duplicates removed
 
-Owner rule of 2026-10-07 as corrected the same day (decision 9 below), applied per source on the raw columns. Upload
-errors are removed first; the identical-line rule runs after them.
+Owner rule of 2026-10-07 as corrected the same day (decision 9 below), with the fix of identical voids (decision 11)
+and the SCPRS exemption (decision 12), applied per source on the raw columns. Upload errors are removed first; the
+identical-line rule runs after them.
 
-| Source | Id columns ignored | Upload-error copies dropped | Identical lines dropped (net) | Void rule kept | Published |
-| --- | --- | --- | --- | --- | --- |
-| `oh_checkbook_local` | `Id`, `TransactionId` | months uploaded twice 161 ($1,163,019.54); Perkins reload 82 ($86,589.34); 19 batch-total months 1,733 lines ($6.56B of false amounts) | 17,717 in 10,823 groups ($6,506,265.56; 3,743 negative) | 6,267 ($11,634,680.14) | 702,661, $1,925,866,499.97 |
-| `oh_cincinnati` | none | - | 0 | 0 | 33,762, $40,036,497.68 |
-| `ca_fiscal` | none | - | 1,308 distribution lines ($3,113,705.14) | 0 | 873,016 rows from 3,226,425 distribution lines |
-| `ca_riverside_county` | `:id` | - | 25,077 in 5,749 sets ($9,444,820.95) | 134 ($38,324.23) | 252,798 of 277,875 |
-| `ca_corona` | `:id` | - | 874 in 303 sets ($85,749.43) | 70 ($305,258.23) | 13,626 of 14,500 |
-| `ca_scprs` | none | - | 302 in 112 sets ($2,636,703.36) | 0 | 22,496 item lines |
-| `ca_la`, `ca_sf`, `ca_moreno_valley` | `:id` (SF also `data_as_of`, `data_loaded_at`) | - | 0 | 0 | as raw |
-| `id_state` | `unique_id`, `date_of_load`, `zz_extract_date` | later load batch 567 ($4,880,745.10); doubled blocks 116 ($75,206.33) | 26 in 25 sets ($138,820.11) | 0 | 47,000 of 47,709 payment lines |
-| `tx_houston` | none | - | 3 (-$12,174.28; one is a -$12,400 reversal) | 21 ($450,972.47) | 105,492 of 105,495 |
-| `tx_austin`, `tx_dallas` | `:id` | - | 0 | 0 | as raw |
-| `tx_dir` | exempt (decision 2) | 8 lines re-reported in a later month ($1,552.62) | - | - | 28,491 item lines |
+| Source | Id columns ignored | Upload-error copies dropped | Identical lines dropped (net) | Void rule kept | Void fix kept | Published |
+| --- | --- | --- | --- | --- | --- | --- |
+| `oh_checkbook_local` | `Id`, `TransactionId` | months uploaded twice 161 ($1,163,019.54); Perkins reload 82 ($86,589.34); 19 batch-total months 1,733 lines ($6.56B of false amounts) | 16,760 in 10,195 groups ($7,385,008.50; 2,786 negative, -$3,582,639.48) | 6,267 ($11,634,680.14) | 957 (-$878,742.94) in 603 families | 703,618, $1,924,987,757.03 |
+| `oh_cincinnati` | none | - | 0 | 0 | 0 | 33,762, $40,036,497.68 |
+| `ca_fiscal` | none | - | 1,308 distribution lines ($3,113,705.14) | 0 | 0 (no family with payments) | 873,016 rows from 3,226,425 distribution lines |
+| `ca_riverside_county` | `:id` | - | 24,967 in 5,650 sets ($9,451,661.00; 86 negative) | 134 ($38,324.23) | 110 (-$6,840.05) in 108 families | 252,908 of 277,875 |
+| `ca_corona` | `:id` | - | 868 in 299 sets ($90,457.01; 13 negative) | 70 ($305,258.23) | 6 (-$4,707.58) in 5 families | 13,632 of 14,500 |
+| `ca_scprs` | exempt (decision 12) | - | - (414 lines equal another in all 32 columns, 112 sets, all kept) | - | - | 22,798 item lines |
+| `ca_la`, `ca_sf`, `ca_moreno_valley` | `:id` (SF also `data_as_of`, `data_loaded_at`) | - | 0 | 0 | 0 | as raw |
+| `id_state` | `unique_id`, `date_of_load`, `zz_extract_date` | later load batch 567 ($4,880,745.10); doubled blocks 116 ($75,206.33) | 25 in 24 sets ($140,349.98) | 0 | 1 (-$1,529.87) in 1 family | 47,001 of 47,709 payment lines |
+| `tx_houston` | none | - | 2 ($225.72) | 21 ($450,972.47) | 1 (-$12,400.00) in 1 family | 105,493 of 105,495 |
+| `tx_austin`, `tx_dallas` | `:id` | - | 0 | 0 | 0 | as raw |
+| `tx_dir` | exempt (decision 2) | 8 lines re-reported in a later month ($1,552.62) | - | - | - | 28,491 item lines |
 
-Against the first reading of the rule (published contract columns only), the corrected rule restores Ohio local
-6,356 lines ($11,760,502.05), Cincinnati 10,894 ($1,119,873.72), California 113,059 lines ($550,465,521.51, of
-them SCPRS 842 item lines, $3,187,686.46) and Texas 3,065 ($18,657,014.66); Idaho is unchanged. Lines that differ
-only in a document number are kept, for example Cincinnati 10,841 (invoice line), LA 4,710, Houston 4,313. Walnut
-Township (Fairfield), 2021-11-24 (payment, void, payment, void, payment of $1,551,069.41) nets $1,551,069.41 as
-published. Identical voids still raise some nets (first open question).
+Against the first reading of the rule (published contract columns only), the rule as it stands restores Ohio local
+7,313 lines ($10,881,759.11), Cincinnati 10,894 ($1,119,873.72), California 113,477 lines ($553,090,677.24, of them
+SCPRS 1,144 item lines, $5,824,389.82), Idaho 1 (-$1,529.87) and Texas 3,066 ($18,644,614.66). Lines that differ only
+in a document number are kept, for example Cincinnati 10,841 (invoice line), LA 4,710, Houston 4,313.
+
+Identical voids (decision 11): a family is the lines of one agency, payee, account and the document fields the source
+repeats on a void, with the same amount up to sign, a negative line joined to the payments of its fiscal year and the
+year before (Idaho also the year after), chained. In a family that has payments an identical negative copy is dropped
+only together with an identical positive copy of the family that the void rule drops; positive lines are unchanged,
+and a family of negative lines only keeps each identical negative line once. The fix keeps 1,075 negative lines
+(-$904,220.44) in 718 families, and every family it touches nets exactly as its raw lines (each state's check asserts
+it). Checked again from the raw files: Walnut Township (Fairfield), 2021-11-24 (three payments and two voids of
+$1,551,069.41 in the raw file; two payments and one void published) nets $1,551,069.41; Hamilton Township (Franklin),
+Global Emergency Vehicles, 2025-08-26 (two $281,250 payments, two voids) nets $0, as raw; Houston's Life-Assist invoice
+1369849 family nets $12,400.00 and Idaho's -$1,529.87 credit family -$1,529.87, as raw. The review had counted 1,155
+lines; Ohio restores 957 instead of 1,037 because 17 groups of one participant, payee, account and amount
+(+$2,879.80, mostly benefit and tax deductions, such as 56 identical -$29.23 dental lines of Beavercreek Township
+(Greene) on 2021-12-01) have no payment of that amount in the same or the previous year, so they are families without
+payments and keep the old rule, while families the review missed (City of Amherst, $599, 2021) are fixed. A family
+can still net less than raw where more payment copies are dropped than there are void copies (Corona, Staples invoice
+8059495826: four $71.18 payments, two voids; $71.18 published against $142.36 raw).
 
 ## Owner decisions
 
@@ -126,6 +143,13 @@ published. Identical voids still raise some nets (first open question).
    rules stay; Texas DIR stays exempt.
 10. Ohio townships: program 220 (Public Safety, fire protection in the township chart of accounts) is counted for
     linked townships, never a line named for police.
+11. Fix the voids (decision A, latest of 2026-10-07): in a family that has payments (same agency, payee, account and
+    the document fields the source repeats on a void, amount up to sign, same or next fiscal year), an identical
+    negative copy is dropped only together with an identical positive copy of the same family. Positive lines are
+    unchanged; a family of negative lines only keeps the existing rule (identical copies once).
+12. Keep PO lines (decision B, California only): `ca_scprs` keeps identical item lines inside one purchase order, like
+    Texas DIR, and is exempt from the identical-line rule (the PO number is content, so lines of different POs are
+    never identical). Riverside County and Corona are not PO data and keep the identical-line rule.
 
 ## Vendor names
 
@@ -141,19 +165,27 @@ at least 90% in a real category (`tests/multistate/vendor_coverage.py`).
 
 | State | Purchasing dollars | Real category | Of which by rules | Unclassified | Unmapped |
 | --- | --- | --- | --- | --- | --- |
-| OH | $399,549,631 | 93.7% | 3.5% | 0.1% | 6.2% |
-| CA | $6,237,728,211 | 93.1% | 2.7% | 1.0% | 5.9% |
+| OH | $399,193,369 | 93.7% | 3.5% | 0.1% | 6.3% |
+| CA | $6,240,319,745 | 93.1% | 2.7% | 1.0% | 5.9% |
 | ID | $158,010,689 | 91.3% | 2.6% | 2.0% | 6.7% |
-| TX | $497,079,955 | 97.4% | 1.4% | 0.0% | 2.5% |
+| TX | $497,067,555 | 97.4% | 1.4% | 0.0% | 2.5% |
 
 ## Checks (2026-10-07)
 
-- `federal.py normalize` and all 18 adapters' normalize steps, run twice: the 41 files under `data/states/` and
-  `config/states/` (and `config/vendor_map.csv`) are byte-identical between the runs and to the committed files.
+- `federal.py normalize` and all 18 adapters' normalize steps, run twice after the void fix and the SCPRS exemption:
+  the 41 files under `data/states/` and `config/states/` (and `config/vendor_map.csv`) are byte-identical between the
+  runs and to the committed files.
 - `merge_vendor_maps.py --check`: 14,676 rows, 0 problems.
 - `tests/multistate/check_federal.py`, `check_oh.py`, `check_ca.py`, `check_id.py`, `check_tx.py`: all pass. They
-  recompute totals and the dedup rule from the raw files without importing the adapters; with the rule switched off
-  on a scratch copy, each failed.
+  recompute totals and the dedup rule, the void fix included, from the raw files without importing the adapters, and
+  assert that every family the void fix touches nets exactly as its raw lines and no family with payments nets above
+  them. Fault tests on scratch copies: with the rule switched off each check failed; with the void fix switched off
+  each of the four state checks failed (Ohio 671 lines against 672 raw for OH-02107 in 2024; California 110 Riverside
+  County lines missing; Idaho 1 line, source_record_id 13674118; Texas $12,400 off for TX-KA926 in 2024).
+- Independent re-check from the raw files (verification, 2026-10-07): the families with identical negative lines
+  follow the rule with no exception in Ohio local, Riverside County, Corona, Houston and Idaho; samples of 20 void
+  families per state net as raw; SCPRS publishes all 22,798 non-zero raw lines (PO CF140541: 40 lines of $6,500 in raw
+  and published); `tx_dir` rows are identical to those before the fixes.
 - `python3 pipeline/build.py`: `data/data.json` and `data/payments.json` byte-identical to the committed files (Utah
   unchanged in this step; 185 of 185 agencies match the raw file).
 
@@ -173,18 +205,16 @@ Largest file anywhere: raw/2026-10-06/transparent_utah_bigquery/fire_transaction
 ## Open questions for the owner
 
 Duplicates:
-- Identical voids. Rule 2 keeps identical negative lines once, and they count once as reversals, so where identical
-  payments were reversed by as many identical voids the family now nets more than the raw lines: Ohio local 607
-  families (+$874,766.22; Hamilton Township (Franklin), Global Emergency Vehicles, payment, void, reissue, void,
-  reissue: raw $281,250, now $562,500), Riverside County 108 (+$6,840.05), Corona 5 (+$4,707.58), Houston 1
-  (Life-Assist invoice 1369849, +$12,400), Idaho 1 (+$1,529.87). Proposed remedy that keeps every net and changes no
-  positive line: in a family that has payments, drop an identical negative copy only together with an identical
-  positive copy of the same family. It restores 1,155 negative lines; Walnut Township still nets $1,551,069.41.
-  Apply it in all four states?
-- Riverside County, Corona and SCPRS publish no line number, so equal item lines on one invoice or PO are dropped
-  (AT&T PO CF140541 with 22 x $6,500 Cisco routers; Allstar Fire Equipment, 8 x $68,722.95 on one invoice; Corona
-  P-card statements with 6 equal hotel nights). Should SCPRS, an item-line source like DIR, keep identical lines
-  inside one PO (and Riverside County and Corona inside one invoice)?
+- Family years for the void fix. Ohio, California and Texas join a negative line to the payments of its fiscal year
+  and the year before (the void rule's link); Idaho also joins the year after, which its listed case needs (two
+  FY2026 credits of -$1,529.87, one re-reversed in FY2027). With the Idaho link, Ohio would keep about 50 more
+  negative lines and still have 11 of its 17 negative-only groups above raw (+$1,083.60). Use one link for all
+  states, and which?
+- SCPRS lists every line at least twice on 26 POs (32 extra lines, $1,680,834.56, for example the $952,295 Nomex
+  line on PO 9PA1K114); with decision 12 they are kept, as the extract has no load date to tell an upload error
+  apart.
+- FI$Cal: 123 doubled distribution lines ($103,648.18, May 2021 CalCard) that face a negated sibling on another fund
+  are still dropped (not an exact reversal). Keep them dropped?
 - The contract columns leave out invoice and document numbers, so many kept rows look equal to another on the page
   (Houston 2,536, Austin 433, Dallas 96; also Cincinnati and California) although `source_record_id` differs. Add
   the invoice or document number to the description?
