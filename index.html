@@ -215,6 +215,7 @@ button.sort:hover { text-decoration: underline; }
 }
 .cov1, .cov2 { color: var(--fg); }
 .nodata { color: var(--muted); font-style: italic; }
+.dbody h3.sub { font-size: .9375rem; margin: 18px 0 4px; }
 ul.srcs { margin: 4px 0; padding-left: 18px; font-size: .8125rem; color: var(--muted); max-width: 64em; }
 ul.srcs li { margin: 3px 0; }
 ul.srcs a { font-weight: 600; }
@@ -749,16 +750,15 @@ const Core = (function () {
         return pc;
       },
     });
-    // Item lines of the scope, once every state in it that has an item file has loaded it (null before)
+    // Item lines of the scope's states that have loaded their item file (addItems); states: those states
     let xv = -1, xc = null;
     Object.defineProperty(v, 'X', {
       enumerable: true,
       get() {
         if (xv !== store.itemVersion) {
           xv = store.itemVersion;
-          const sts = itemStates(store, scope);
-          xc = sts.every(s => store.st[s].items)
-            ? { items: [].concat(...sts.map(s => store.st[s].items.items)), strings: store.istrings } : null;
+          const sts = itemStates(store, scope).filter(s => store.st[s].items);
+          xc = { items: sts.length === 1 ? store.st[sts[0]].items.items : [].concat(...sts.map(s => store.st[s].items.items)), strings: store.istrings, states: sts };
         }
         return xc;
       },
@@ -1474,6 +1474,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   let catOptsKey = null;
   const ctlFor = {};      // what the scope-dependent controls were last filled for
   const openDetails = new Set();
+  const closedDetails = new Set();   // sections open by default that the viewer closed
 
   /* ---- Formatting ---- */
   const nf = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
@@ -2070,7 +2071,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       t.foot = rows => [{ _label: totalLabel(), amount: cents(rows.reduce((s, r) => s + r[4], 0)) }];
       t.notes += utOnly() ? '<p class="note">Source: ' + tuLink() + ' transaction lines (' + A(BLOB + 'pipeline/sql/fire_transactions.sql', 'query') + '), fetched ' +
         esc(dateText(ix.meta.transactions_fetched || ix.meta.fetched)) + '. ' + A(BLOB + ix.meta.transactions_file, 'Raw data file') + ' (gzipped CSV, all agencies).</p>'
-        : '<p class="note">Sources: ' + srcList(paySources(ix.states)) + '.</p>';
+        : '<p class="note">Sources: ' + srcList(paySources(ix.states)) + '.</p>' +
+          details('d-srcn', 'Source notes (' + int(paySources(ix.states).length) + ')', srcNotes(paySources(ix.states), ix.states.length === 1 ? ix.states[0] : null));
     }
     if (g !== 'none' && !m.nodata) {
       t.notes += '<p class="note">Amounts are net of credits and corrections. Vendors and agencies are counted when the net payment is positive in at least one fiscal year and category of the range.</p>';
@@ -2116,7 +2118,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   }
 
   /* ---- Context for the selected category, vendor and agency ---- */
-  const details = (id, summary, body) => '<details id="' + id + '"' + (openDetails.has(id) ? ' open' : '') + '><summary>' + summary +
+  // dflt: open unless the viewer closed it
+  const details = (id, summary, body, dflt) => '<details id="' + id + '"' + (openDetails.has(id) || (dflt && !closedDetails.has(id)) ? ' open' : '') + '><summary>' + summary +
     '</summary><div class="dbody">' + body + '</div></details>';
   const fact = (dt, dd, full) => '<div' + (full ? ' class="full"' : '') + '><dt>' + dt + '</dt><dd>' + dd + '</dd></div>';
 
@@ -2332,6 +2335,41 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       h += details('d-exp', what, b);
     }
 
+    // Other states: published annual totals (all years published), by the source's own line names
+    if (!ut) {
+      const tots = (store.st[a.state].totals || []).filter(x => x[0] === id);   // [agency, fiscal year, line, amount, source]
+      if (tots.length) {
+        const tys = [...new Set(tots.map(x => x[1]))].sort((x, y) => x - y);
+        const byLine = new Map();
+        for (const [, y, line, amt, src] of tots) {
+          const k = src + '\t' + line;
+          let o = byLine.get(k);
+          if (!o) byLine.set(k, (o = { line, src, yr: {}, total: 0 }));
+          o.yr[y] = (o.yr[y] || 0) + amt;
+          o.total += amt;
+        }
+        const tsrc = [...new Set(tots.map(x => x[4]))].sort();
+        const yt = {};
+        for (const x of tots) yt[x[1]] = (yt[x[1]] || 0) + x[3];
+        const tspan = 'FY' + tys[0] + (tys.length > 1 ? '–' + String(tys[tys.length - 1]).slice(-2) : '');
+        b = table({
+          id: 'ag-tot', title: 'Annual totals', hideTitle: true, file: 'agency-' + id + '-annual-totals', wide: true, page: 25,
+          rows: [...byLine.values()],
+          cols: [{ key: 'line', label: 'Published line', th: true, val: o => o.line },
+            { key: 'src', label: 'Source', hidden: tsrc.length <= 1, val: o => (store.meta.sources[o.src] || {}).name || o.src }]
+            .concat(tys.map(y => ({
+              key: 'y' + y, label: fy(y), num: true,
+              val: o => (o.yr[y] == null ? null : o.yr[y]), html: o => (o.yr[y] == null ? '' : money(o.yr[y])),
+            })), [{ key: 'total', label: 'Total ' + tspan, labelHtml: 'Total <span class="nw">' + esc(tspan) + '</span>', num: true, val: o => o.total, html: o => money(o.total) }]),
+          sort: [['total', 'desc'], ['line', 'asc']],
+          foot: [Object.assign({ _label: 'Total', total: money(tots.reduce((x, t) => x + t[3], 0)) },
+            Object.fromEntries(tys.map(y => ['y' + y, money(yt[y])])))],
+        });
+        b += '<p class="note">Totals as published, one row per line of the source\'s report; the agency\'s annual expenses (the Annual expenses filter) are the median of the yearly totals of the last three fully reported fiscal years. No vendors are named. Source:</p>' + srcNotes(tsrc, a.state);
+        h += details('d-tot', 'Annual totals', b, true);
+      }
+    }
+
     // FEMA grants (all years)
     const grants = ix.grantsBy.get(id) || [];
     if (grants.length) {
@@ -2361,7 +2399,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       ? '<p class="note">Vendor payments of ' + esc(a.name) + ': ' + tuLink() + ' transaction lines, ' +
         (dl ? 'every expense line' : 'the lines coded fire') + ' except payroll, benefits and refunds (' +
         A(BLOB + 'pipeline/sql/fire_transactions.sql', 'query') + '). ' + A(BLOB + um.transactions_file, 'Raw data file') + ' (gzipped CSV, all agencies).</p>'
-      : '<p class="note">Sources for ' + esc(a.name) + ': ' + srcList(a.sources || []) + '.</p>';
+      : '<p class="note">Sources for ' + esc(a.name) + ':</p>' + srcNotes(a.sources || [], a.state);
     return h;
   }
 
@@ -2488,6 +2526,92 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     }
     return h + '</section>';
   }
+  // Item lines (brand, product type, quantity, unit price) of the selected vendor or agency, from the states that publish
+  // them (data/<st>-items.json, loaded when the section is first drawn). Lines of a fiscal year before the view's
+  // first one (California SCPRS purchase orders) are in a second table.
+  // it = [agency id, fiscal year, date, vendor index, brand, product type, description, quantity, unit price, amount,
+  //       category index, source id]; texts are indexes into ix.X.strings (-1: none)
+  const itemLoads = {};   // state -> pending or finished load
+  let itemLoad = null, itemError = null;
+  // The states whose item lines the selection needs: the selected agency's (when it has an item-line source), else
+  // those of the scope where the selected vendor was paid
+  function itemStatesFor() {
+    if (S.agency != null) {
+      const a = ix.agency.get(S.agency);
+      const has = (a.sources || []).some(id => (store.meta.sources[id] || {}).tier === 2);
+      return has && Core.itemStates(store, a.state).length ? [a.state] : [];
+    }
+    if (S.vendor == null || !ix.vendorPos.has(S.vendor)) return [];
+    const vi = ix.vendorPos.get(S.vendor);
+    return Core.itemStates(store, ix.scope).filter(st => store.st[st].vcat.has(vi));
+  }
+  function loadItems(sts) {
+    if (itemLoad) return itemLoad;
+    itemError = null;
+    itemLoad = Promise.all(sts.map(st => itemLoads[st] || (itemLoads[st] = fetchJson(store.meta.states[st].files.items)
+      .then(X => { Core.addItems(store, st, X); })
+      .catch(err => { itemLoads[st] = null; throw err; }))))
+      .catch(err => { console.error(err); itemError = err; })
+      .then(() => { itemLoad = null; if (view === 'explore' && S && $('d-items')) renderMore(true); });
+    return itemLoad;
+  }
+  const qf = new Intl.NumberFormat('en-US', { maximumFractionDigits: 3 });
+  function moreItems() {
+    const need = itemStatesFor();
+    if (!need.length) return '';
+    const title = 'Item lines';
+    const missing = need.filter(st => !store.st[st].items);
+    if (missing.length) {
+      if (itemError) {
+        return details('d-items', title + ' <span class="muted">(did not load)</span>', '<p>Item lines did not load' + (itemError.message ? ': ' + esc(itemError.message) : '') + '. Change a filter to try again.</p>');
+      }
+      loadItems(missing);
+      return details('d-items', title + ' <span class="muted">(Loading item lines...)</span>', '<p>Loading item lines...</p>');
+    }
+    const xm = Core.itemsModel(ix, S, Core.rowFilter(S));
+    if (!xm.items.length && !xm.early.length) return '';
+    const str = i => (i >= 0 ? ix.X.strings[i] || '' : '');
+    const srcName = id => String((store.meta.sources[id] || {}).name || id).replace(/\s*\(.*\)$/, '');
+    const cols = rows => {
+      const blank = k => rows.every(it => !str(it[k]));
+      const srcs = new Set(rows.map(it => it[11]));
+      return [
+        { key: 'date', label: 'Date', nw: true, val: it => it[2] || null, html: it => (it[2] ? esc(dateText(it[2])) : '') },
+        { key: 'agency', label: 'Agency', hidden: S.agency != null, val: it => agName(it[0]) },
+        { key: 'vendor', label: 'Vendor', hidden: S.vendor != null, val: it => V()[it[3]].name },
+        { key: 'brand', label: 'Brand', hidden: blank(4), val: it => str(it[4]) || null },
+        { key: 'ptype', label: 'Product type', hidden: blank(5), val: it => str(it[5]) || null },
+        { key: 'desc', label: 'Description', cls: 'desc', hidden: blank(6), val: it => str(it[6]) || null },
+        { key: 'qty', label: 'Quantity', num: true, csvDp: 6, val: it => it[7], html: it => (it[7] == null ? '' : qf.format(it[7])) },
+        { key: 'unit', label: 'Unit price', num: true, csvDp: 6, val: it => it[8], html: it => (it[8] == null ? '' : cents(it[8])) },
+        { key: 'amount', label: 'Amount', num: true, val: it => it[9], html: it => cents(it[9]) },
+        { key: 'cat', label: 'Category', opt: true, hidden: new Set(rows.map(it => it[10])).size <= 1, val: it => ix.catIds[it[10]] && ix.cat.get(ix.catIds[it[10]]).name },
+        { key: 'year', label: 'Fiscal year', nw: true, opt: true, val: it => it[1], html: it => esc(fy(it[1])) },
+        { key: 'source', label: 'Source', hidden: srcs.size <= 1, val: it => srcName(it[11]) },
+      ];
+    };
+    const base = fileName().replace(/^[a-z-]+/, 'item-lines');
+    let b = '';
+    if (xm.items.length) {
+      b += '<p>' + plural(xm.items.length, 'item line', 'item lines') + ', ' + money(xm.total) + ', ' + esc(yearSpan(S)) + '.</p>';
+      b += table({ id: 'items', title, hideTitle: true, file: base, wide: true, page: 25, rows: xm.items, cols: cols(xm.items), sort: [['amount', 'desc'], ['date', 'desc']] });
+    } else {
+      b += '<p>No item lines in ' + esc(yearSpan(S)) + '.</p>';
+    }
+    if (xm.early.length) {
+      // Purchase orders when every source of these lines publishes purchase orders, else item lines
+      const po = xm.earlySources.every(id => /purchase order/i.test((store.meta.sources[id] || {}).name || ''));
+      const eys = xm.early.map(it => it[1]);
+      const ey0 = Math.min(...eys), ey1 = Math.max(...eys);
+      const etitle = (po ? 'Purchase orders' : 'Item lines') + ' before FY' + ix.years[0] + ' (' + xm.earlySources.map(srcName).join(', ') + ', FY' + ey0 + (ey1 > ey0 ? '–FY' + ey1 : '') + ')';
+      b += '<h3 class="sub">' + esc(etitle) + '</h3><p>' + plural(xm.early.length, 'line', 'lines') + ', ' + money(xm.earlyTotal) + '. Shown apart: their fiscal years are before the years of the table above, so they are not in its amounts.</p>';
+      b += table({ id: 'items-early', title: etitle, hideTitle: true, file: base + '_before-fy' + ix.years[0], wide: true, page: 25, rows: xm.early, cols: cols(xm.early), sort: [['amount', 'desc'], ['date', 'desc']] });
+    }
+    const srcs = [...new Set(xm.sources.concat(xm.earlySources))].sort();
+    b += '<p class="note">The lines behind the payee rows above, with brand, product type, quantity and unit price as the source publishes them; each line is in the category of its transaction. ' +
+      'Fiscal year: the source\'s fiscal year, which can differ from the agency\'s own. Sources:</p>' + srcNotes(srcs, need.length === 1 ? need[0] : null);
+    return details('d-items', title + ' (' + int(xm.items.length + xm.early.length) + ')', b);
+  }
   function renderContext() {
     let h = '';
     if (!S.cat && !S.vendor && S.agency == null && ix.scope !== 'UT') h += ctxCoverage();
@@ -2508,8 +2632,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       else if (a.dataset.t && a.dataset.c != null) sel = 'button[data-t="' + a.dataset.t + '"][data-c="' + a.dataset.c + '"]';
       if (d && d.id) sel = (sel ? sel + ', ' : '') + '#' + d.id + ' > summary';
     }
+    // A section opened a moment ago may not have reported its toggle event yet: keep it open
+    for (const d of $('more').querySelectorAll('details[open]')) if (d.id) openDetails.add(d.id);
     let h = '';
     if (S.cat || S.vendor || S.agency != null) h += morePayments();
+    if (S.vendor || S.agency != null) h += moreItems();
     if (S.agency != null) h += moreAgency(S.agency);
     $('more').innerHTML = h ? '<section aria-labelledby="more-h"><h2 id="more-h">More for this selection</h2>' + h + '</section>' : '';
     if ($('tpay')) $('tpay').hidden = !$('d-pay');
@@ -2891,6 +3018,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   function drillTo(raw) {
     const v = S.g === 'year' ? Number(raw) : raw;
     openDetails.clear();                                        // a drill-down shows the new table, not sections left open
+    closedDetails.clear();
     go(Core.drill(ix, S, v));
   }
   document.addEventListener('click', e => {
@@ -2960,7 +3088,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   document.addEventListener('toggle', e => {
     const d = e.target;
     if (!d.id || d.tagName !== 'DETAILS') return;
-    if (d.open) openDetails.add(d.id); else openDetails.delete(d.id);
+    if (d.open) { openDetails.add(d.id); closedDetails.delete(d.id); } else { openDetails.delete(d.id); closedDetails.add(d.id); }
     if (d.open) fitRegions(d);
     // All states: single payments load when their section is opened
     if (d.id === 'd-pay' && d.open && view === 'explore' && !ix.P && !payLoad && !payError) { loadPayments(); renderMore(true); }
@@ -2973,6 +3101,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     for (const k in TABLES) delete TABLES[k];
     negNoted = false;
     if (!ix.P && !payLoad) payError = null;                    // a new view tries a failed payments load again
+    if (!itemLoad) itemError = null;
     const nActive = renderChips(notes);
     syncPanel(nActive);
     for (const b of document.querySelectorAll('.seg button')) b.setAttribute('aria-pressed', String(b.dataset.g === S.g));
