@@ -8,12 +8,14 @@ and 5), checked on 2026-10-06 from the cloud session on branch `multistate-sourc
 
 Two Ohio sources give vendor data for fire agencies:
 
-- **Ohio Checkbook's local-government pages** (`oh_checkbook_local`, section 2): 183 participating fire agencies
-  (1 fire district, 94 township and 88 city or village fire departments), 673,805 payment lines, $1.80 billion,
+- **Ohio Checkbook's local-government pages** (`oh_checkbook_local`, section 2): 186 participating fire agencies
+  (1 fire district, 97 township and 88 city or village fire departments), 696,305 payment lines, $1.91 billion,
   calendar years 2021 to September 2026. The first run of this note skipped it because checkbook.ohio.gov's
-  robots.txt disallows all paths; the owner allowed ignoring that robots.txt on 2026-10-06. For townships,
-  cities and villages only the lines of a fund or department named for fire are taken, so departments that book
-  their spending under general "Public Safety" lines are partial or missing.
+  robots.txt disallows all paths; the owner allowed ignoring that robots.txt on 2026-10-06. For townships the
+  lines of a fund or department named for fire and, since the owner's decision of 2026-10-07, every line of
+  program 220 (Public Safety, fire protection in the township chart of accounts) are taken, never a line named
+  for police; for cities and villages only the lines of a fund or department named for fire, so city and village
+  departments that book their spending under general "Public Safety" lines are partial or missing.
 - **The City of Cincinnati's vendor payments** (`oh_cincinnati`, section 5): the Cincinnati Fire Department.
 
 The DataOhio bulk files of Ohio Checkbook hold state agencies only, at department level, so no row belongs to a
@@ -26,19 +28,19 @@ tier 3 source for Ohio yet.
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `usfa`, `openfema` | Federal layer (done before this run) | 4 | built | 1,148 | | | |
 | `oh_checkbook_state` | Ohio Checkbook state expenditures, DataOhio bulk files | 1 | skipped: no fire agency identifiable | 0 | | | FY2022-FY2026 |
-| `oh_checkbook_local` | Ohio Checkbook local governments | 1 | **built** | 183 | 673,805 | $1,800,751,956.35 | 2021-2026 |
+| `oh_checkbook_local` | Ohio Checkbook local governments | 1 | **built** | 186 | 696,305 | $1,914,105,997.92 | 2021-2026 |
 | (in `oh_checkbook_state`) | Ohio Division of Forestry (ODNR) | 1 | kept as state fire agency, no vendor data | 1 | | | |
 | `oh_aos` | Auditor of State, Summarized Annual Financial Reports | 3 | skipped: not fire-specific | 0 | | | 2016-2025 |
-| `oh_cincinnati` | City of Cincinnati Vendor Payments | 1 | **built** | 1 | 33,762 | $40,036,497.68 | FY2021-FY2027 |
+| `oh_cincinnati` | City of Cincinnati Vendor Payments | 1 | **built** | 1 | 22,868 | $38,916,623.96 | FY2021-FY2027 |
 
 Coverage after this run (`data/states/oh/agencies.json`, 1,153 agencies: the 1,148 registry departments and 5
-in `config/states/oh/agencies_added.csv`): tier 1: 184 agencies (183 from the local checkbooks, 4 of them added
+in `config/states/oh/agencies_added.csv`): tier 1: 187 agencies (186 from the local checkbooks, 4 of them added
 because the registry lacks them, and the Cincinnati Fire Department, OH-31015); tier 2: 0; tier 3: 0; tier 4:
-969. No agency was given a $0 amount.
+966. No agency was given a $0 amount.
 
-Cincinnati's $40.0 million is the fire department codes only. The City buys fire apparatus and ambulances through
+Cincinnati's $38.9 million is the fire department codes only. The City buys fire apparatus and ambulances through
 its citywide vehicle account (981 "Motorized & Construction Equip"): $18.7 million in FY2021-FY2027 to Vogelpohl
-Fire Equipment and Halcore Group, equal to 47% of the fire codes' total. Those lines carry no fire department code,
+Fire Equipment and Halcore Group, equal to 48% of the fire codes' total. Those lines carry no fire department code,
 so they are not attributed (section 5). The page note in `sources.csv` says so.
 
 ## Federal layer (done)
@@ -182,21 +184,29 @@ checkbook.ohio.gov's robots.txt on 2026-10-06, and the source was then built as
   stopped uploading in 2019-2021 (Toledo, Akron, Lakewood, Findlay and others have no rows from 2021). Each
   participant uploads on its own schedule (most monthly); the latest payment in this pull is 2026-09-30. The
   adapter keeps calendar years 2021 on (Ohio local governments' fiscal year is the calendar year, `fy_start`
-  01); 2026 is partial. Of the 183 linked agencies, 67 have no line after 2024 and 50 have lines in 2026.
-- **What counts as fire spend:** a fire district's whole checkbook. For townships, cities and villages only the
+  01); 2026 is partial. Of the 186 linked agencies, 69 have no line after 2024 and 52 have lines in 2026.
+- **What counts as fire spend:** a fire district's whole checkbook. For townships, cities and villages the
   lines whose fund or department is named for fire (`fire`, `firefighters`, `firemen`, ..., for example "Fire
   District - 2111", "Fire Levy", "Fire and Rescue, Ambulance and EMS", departments "FIRE DEPARTMENT" and "Fire
-  Protection"; "Public Safety" or "Special Levy" is not enough: the name must contain the word fire), never the
-  government's general spending.
+  Protection"), never the government's general spending.
   Not fire: names shared with police ("Police & Fire Levy" counts only through a fire-named department),
   hydrants, fireworks, insurance, garnishments, and fire-loss insurance escrow funds (ORC 3929.86): "FIRE DAMAGE
   REMOVAL" (City of Steubenville), "FIRE LOSS RECOVERY" (Village of Gallipolis), "FIRE REPAIR/REMOVAL FUND" (City
   of Tallmadge) and "FIRE INSURANCE CLAIM CLEAN UP ESCROW" (Jackson Township (Mahoning)) pay insurance money back
   to owners of burned buildings or to demolition contractors, so such a fund or department excludes the line
-  even when the other name says fire. A township's general-fund "Public Safety" lines are never included, even
-  under program code 220 (fire protection in the township chart of accounts), and neither are EMS-only funds or
-  departments. When a fire-named department also carries lines of a police fund (City of New Franklin books
-  police, street lighting and drug fund lines under department 1 "FIRE"), only its fire funds count.
+  even when the other name says fire. EMS-only funds or departments are not fire lines. When a fire-named
+  department also carries lines of a police fund (City of New Franklin books police, street lighting and drug
+  fund lines under department 1 "FIRE"), only its fire funds count.
+  **Townships, program 220 (owner decision of 2026-10-07):** in the township chart of accounts the department
+  field is the program, and program 220 is fire protection. Most townships label it "Fire Protection - 220" (a
+  fire name, counted from the start); 31 participants label it "Public Safety - 220" and 3 "220 - 220". For a
+  linked township every line of program 220 now counts, in any fund (fire levies are often called "Special
+  Levy"), except a line whose fund or department is named for police: a township's police-named line never
+  counts. A township "also runs police" when a fund or department named for police has lines from 2021 on
+  (the dashboard's own summary totals, `program220_<id>.json.gz`); its link note then says that its mixed
+  Public Safety lines (program 220 in a police-named fund or department) were left out. "Public Safety - 210"
+  (police protection in the chart) is not police-named; it is not program 220, so this rule does not count it.
+  Cities and villages are outside this decision: their "Public Safety" lines still do not count.
 - **Screening:** all 703 participants were opened one by one (fetched 2026-10-06 22:08 to 2026-10-07 00:41 UTC,
   in runs resumed after container restarts; `screen.json.gz` keeps each participant's Fund and Department filter values and
   the decision). 248 have no transactions from 2021 on; 89 have rows from 2021 but no fund or department named
@@ -206,7 +216,7 @@ checkbook.ohio.gov's robots.txt on 2026-10-06, and the source was then built as
   twice); 329 have a fire district checkbook or fire-named lines and were fetched (`entity_<id>.json.gz`).
   Nothing was left out for access reasons: every participant page answered.
 - **Linking to the registry:** a fetched participant is linked in `config/states/oh/agency_sources.csv` when it
-  runs the fire department named in the USFA registry (place name and county, strict; 158 by exact name, 25 by
+  runs the fire department named in the USFA registry (place name and county, strict; 161 by exact name, 25 by
   a manual decision with the reason in the link's note) and its fire lines are that department's own spending.
   Four departments that are not in the registry were added to `config/states/oh/agencies_added.csv` (Craig Beach
   Volunteer Fire Department, Brunswick Hills Township Fire Department, Franklin Township Fire Department (Adams),
@@ -219,80 +229,130 @@ checkbook.ohio.gov's robots.txt on 2026-10-06, and the source was then built as
   linked: participants whose fire-named lines mostly pay another department, fire company or government by
   contract (more than about three quarters of the dollars), participants whose fire-named lines are only a
   grant, capital, debt, pension or small general fund (fewer than about 25 lines a year, or no operating lines
-  at all), and one inconsistent upload. A participant can only be linked whole. 183 linked (1 fire district, 94
-  townships, 88 cities and villages), 146 not linked.
-- **Raw kept** (`raw/2026-10-06/oh/oh_checkbook_local/`, 335 files, 53.9 MB gzipped, largest 1.5 MB):
+  at all), and one inconsistent upload. A participant can only be linked whole. 186 linked (1 fire district, 97
+  townships, 88 cities and villages), 143 not linked.
+- **Program 220 (owner decision of 2026-10-07):** 25 fetched townships have a program 220 value not named for fire
+  ("Public Safety - 220" or "220 - 220"). For each, `fetch220` (run 2026-10-07, files kept in the 2026-10-06
+  folder with the entity files) fetched the program 220 lines of every fund not named for fire (the fire funds
+  were fetched whole before, so nothing overlaps), with the dashboard's summary totals for the same filters, and
+  the summary totals of every police-named fund and department from 2021 on. 13 of the 25 were linked; 8 of them
+  gain lines: Genoa Township (Delaware) 4,888 lines ($26,813,786.70), Bainbridge Township (Geauga) 4,589
+  ($16,734,230.29), Copley Township (Summit) 15,282 ($11,207,833.53), Canton Township (Stark) 3,030
+  ($9,778,302.65), Fairfield Township (Butler) 640 ($6,232,348.88), Hamilton Township (Warren) 3 ($1,125,539.69,
+  American Rescue Plan and Coronavirus Relief lines), Springfield Township (Mahoning) 415 ($422,830.67) and
+  Jefferson Township (Montgomery) 2 ($28,055.00); Deerfield Township (Warren), Lake Township (Wood), Madison
+  Township (Franklin), Perry Township (Stark) and Pike Township (Clark) have no such line from 2021 on (counts
+  after the duplicate rules; most lines are in each township's "Special Levy" fund, the fire levy). The
+  re-check of the participants left unlinked as partial linked three townships under the existing rules (exact
+  registry name and county; payroll, Ohio Police & Fire Pension and benefits paid by the township show it runs
+  the department): Liberty Township (Butler) to Liberty Township Fire Department (OH-09107; 2,702 program 220
+  lines, $15,596,155.33, 2021 to 2023), Orange Township (Delaware) to Orange Township Fire Department (OH-21121;
+  3,788 lines, $26,798,825.36, 2021 to 2024) and Pierce Township (Clermont) to Pierce Township Fire Department
+  (OH-13115; 9,605 lines, $14,997,988.99, 2021 to 2026). In all, program 220 adds 44,944 lines and
+  $129,735,897.09. Not linked: Blendon Township (Franklin), Webster Township (Wood) and Wabash Township (Darke)
+  have no program 220 line in a fund not named for fire (and no registry department of their name); Shawnee
+  Township (Allen) has 22 such lines, all in 2021 ($6,436.92), under the 25 lines a year of the link rule; the
+  five contract townships (Jackson Township and Perry Township (Montgomery), Lake Township (Stark), Somerford
+  Township (Madison), Urbana Township (Champaign)) keep paying another
+  department and stay unlinked. Police: 10 of the 16 linked townships with a `program220_<id>.json.gz` file
+  run police by the rule (a police-named fund or department with lines from 2021 on: Bainbridge, Canton,
+  Copley, Deerfield, Fairfield (Butler), Hamilton (Warren), Jefferson (Montgomery), Lake (Wood), Madison
+  (Franklin), Perry (Stark)); none of them has a program 220 line in a police-named fund or department from 2021
+  on, so the mixed Public Safety lines left out are 0 lines, and each of their link notes says so. A township's
+  police-named line never counts: this drops 18 lines of Ross Township (Butler) ($1,931.44, its "FIRE SAFER
+  GRANT" fund booked under "Police Protection - 210"). Police is found by name only, so a township whose police
+  fund has another name (Genoa and Orange Townships run police departments, but no fund or department of theirs
+  is named for police) counts as not running police; their program 220 lines are fire protection by the chart
+  of accounts either way.
+- **Raw kept** (`raw/2026-10-06/oh/oh_checkbook_local/`, 360 files, 57.4 MB gzipped, largest 1.5 MB):
   `participants_<kind>.json.gz` (the three lists), `entity_<id>.json.gz` (329 files: the participant's filter
   values and the verbatim response of every underlying-rows and summary request with the filters that were set),
+  `program220_<id>.json.gz` (25 files, 3.5 MB, fetched 2026-10-07: program 220 rows, their summary totals and
+  the police-named funds' and departments' summary totals, with the township's filter values that day),
   `screen.json.gz`, `sample.csv.gz` (100 raw rows of the first entity file, columns as published) and
   `sectigo_ov_r36_intermediate.crt.gz`. All files of this source are in the 2026-10-06 folder, including those
   fetched after midnight UTC on 2026-10-07 (each entity file records its own fetch time). Reproduce with
   `python3 pipeline/sources/oh_checkbook_local.py fetch --date 2026-10-06 --cache <file>` (resumable: it skips
-  entity files that exist).
+  entity files that exist) and `python3 pipeline/sources/oh_checkbook_local.py fetch220 --date 2026-10-06`
+  (skips program220 files that exist).
 - **Rows** (`data/states/oh/transactions.csv.gz`, source `oh_checkbook_local`):
 
   | Year | Lines | Dollars | Agencies |
   | --- | --- | --- | --- |
-  | 2021 | 167,026 | $349,180,947.63 | 167 |
-  | 2022 | 142,772 | $360,475,561.85 | 167 |
-  | 2023 | 129,951 | $364,877,146.37 | 147 |
-  | 2024 | 122,591 | $359,107,132.98 | 134 |
-  | 2025 | 91,719 | $278,413,579.90 | 116 |
-  | 2026 (partial) | 19,746 | $88,697,587.62 | 50 |
-  | Total | 673,805 | $1,800,751,956.35 | 183 |
+  | 2021 | 168,069 | $375,195,436.89 | 170 |
+  | 2022 | 148,612 | $391,382,193.67 | 170 |
+  | 2023 | 135,048 | $389,876,337.52 | 150 |
+  | 2024 | 129,690 | $373,414,808.14 | 136 |
+  | 2025 | 95,406 | $292,966,126.65 | 117 |
+  | 2026 (partial) | 19,480 | $91,271,095.05 | 52 |
+  | Total | 696,305 | $1,914,105,997.92 | 186 |
 
-  By kind: townships 397,967 lines ($975,431,776.36, 94 agencies); cities and villages 270,563 lines
-  ($820,357,981.24, 88 agencies); fire district (Valley Fire) 5,275 lines ($4,962,198.75). The dollars include
+  By kind: townships 430,428 lines ($1,094,166,365.34, 97 agencies); cities and villages 260,711 lines
+  ($815,087,032.18, 88 agencies); fire district (Valley Fire) 5,166 lines ($4,852,600.40). The dollars include
   payroll, pensions and benefits paid through the checkbook; purchasing (by the vendor map categories) is about
-  $386 million of the Ohio total.
+  $395 million of the Ohio total.
 - **Duplicates and broken uploads:** rows are keyed by the checkbook's row `Id`; a row fetched by two
-  overlapping requests is kept once (an Id fetched twice with different values stops normalize). A line
-  re-uploaded under a new row Id (same transaction id, date, payee, fund, department, object and amount) is kept
-  once: none in this pull. Lines that match in every field but `TransactionId` are separate lines (several
-  identical invoices or benefit lines paid the same day: 15,205 groups, 37,680 lines) and are kept, except in a
-  month uploaded twice or a reload (both below): in a month of 10 or more lines where every group of identical lines has a size divisible
-  by k >= 2, size/k lines of each group are kept. Two months: Beavercreek Township (Greene), March 2023 (113
-  lines, $1,044,570.30 dropped) and City of East Liverpool, September 2022 (48 lines, $118,449.24). Reloads
-  (added in review): TransactionIds are numbered in upload order, so a participant's lines sorted by
-  TransactionId fall into uploads (a new one where the number jumps by more than 100,000); when a later upload's
-  lines of one date (3 or more, none negative) only repeat lines of that date from earlier uploads, they are a
-  reload and dropped. Perkins Township (Erie) uploaded 2025-12-18 and 2026-01-09 again about 1.1 million
-  TransactionIds later (82 lines, $86,589.34, payee "N/A"). Identical lines inside one upload are kept, in line
-  with the owner's rule for Texas DIR (decision 2: only lines re-reported later are dropped), even where every
-  line of a day appears exactly twice: 10 such days (123 extra lines, $264,476.25 net), mostly Hamilton Township
-  (Warren) on 2021-01-18, 2021-01-20 and 2021-02-01 (Paycor payroll and supplier lines twice each, $259,396.61);
-  they may be double postings in the township's own books and are left for the owner. Broken
+  overlapping requests is kept once (an Id fetched twice with different values stops normalize). Then, in this
+  order: months uploaded twice, reloads, broken uploads (each below), and last the owner's rule of 2026-10-07:
+  lines identical in every published field except the source's own ids (`TransactionId` and row `Id`; the
+  payment `Type` code is not published) are one line, so the lowest row Id is kept and the others dropped. The
+  published fields are the date (the fiscal year follows from it), the payee as published, the account (fund,
+  department and object labels), the published category (object description) and the amount; there is no
+  description. Negative lines are compared like any other line, so a reversal is never identical to the payment
+  it reverses. The rule drops 24,073 lines ($18,266,767.61 net) in 16,360 groups at 184 of the 186 agencies,
+  among them the 10 days that were doubled inside one upload (123 extra lines, $264,476.25 net, mostly Hamilton
+  Township (Warren) on 2021-01-18, 2021-01-20 and 2021-02-01: Paycor payroll and supplier lines twice each),
+  which the earlier rule had kept; largest by dollars: Walnut Township (Fairfield) 45 lines ($1,585,604.48),
+  Beavercreek Township (Greene) 3,019 ($1,291,168.40), Jackson Township (Franklin) 372 ($1,173,194.87), Violet
+  Township (Fairfield) 388 ($1,064,773.02), City of Niles 1,302 ($731,157.99). Most dropped lines are payroll and
+  benefit lines (salaries, Medicare, hospitalization, fire pension) that a participant uploads as several equal
+  lines a day. 7,566 of the dropped lines ($10,622,312.31 net) are copies of a line whose exact negative is also
+  published: a payment voided and issued again (payment, void, reissue) now nets to zero, because the reissue
+  is identical to the first payment and dropped while the void stays. The largest: Walnut Township (Fairfield)
+  published three payments and two voids of $1,551,069.41 of bond principal to Vinton County National Bank on
+  2021-11-24 (net $1,551,069.41); one payment and one void remain (net $0). Where voids and payments pair off
+  evenly the net does not change (Hamilton Township (Franklin): two $281,250 payments to Global Emergency
+  Vehicles and two voids on 2025-08-26, net $0 before and after). Open question below.
+  Months uploaded twice: a month of 10 or more lines in which every group of identical lines (date, payee, fund,
+  department, object and amount) has a size divisible by k >= 2 keeps size/k lines of each group: Beavercreek
+  Township (Greene), March 2023 (113 lines, $1,044,570.30 dropped) and City of East Liverpool, September 2022
+  (48 lines, $118,449.24). Reloads: TransactionIds are numbered in upload order, so a participant's lines sorted
+  by TransactionId fall into uploads (a new one where the number jumps by more than 100,000); when a later
+  upload's lines of one date (3 or more, none negative) only repeat lines of that date from earlier uploads,
+  they are a reload and dropped. Perkins Township (Erie) uploaded 2025-12-18 and 2026-01-09 again about 1.1
+  million TransactionIds later (82 lines, $86,589.34, payee "N/A"). These two rules run before the identical-line
+  rule (they compare codes, not labels) and their counts are reported separately. Broken
   uploads: three participants' recent months carry batch totals instead of line amounts (most lines of a day show
   the same $0.5-5.6 million for different payees and objects): Jackson Township (Stark), 2026-01, -02, -03, -05,
   -06, -09, -10; City of Dover, 2025-12 and 2026-01, -02, -03, -08, -09; City of Bellevue, 2026-01 to -06. Those
   19 months (1,733 lines, $6.56 billion of batch totals) are left out, so these three agencies have no data for
   them. The rule needs two or more payees and two or more objects to share the date and amount, so equal
   stipends paid to several firefighters (York Township (Athens), November 2022: seven $500 reimbursements) stay.
-- **Reversals:** 24,084 negative lines (-$53,443,712.60) are kept as published so they net out; 16,245 of them
-  (-$42,319,391.83) equal a positive line of the same agency, payee and amount (voids and re-issues, payroll
+- **Reversals:** 26,175 negative lines (-$54,085,701.27) are kept as published so they net out; 19,440 of them
+  (-$43,921,940.52) equal a positive line of the same agency, payee and amount (voids and re-issues, payroll
   reclassifications, note rollovers). Every fetched slice was checked against the dashboard's own summary
   totals for the same filters, per year (normalize stops on a difference over one cent).
-- **Data quality:** the payee "N/A" carries $293.6 million at 45 agencies (mostly payroll, pension and benefit
+- **Data quality:** the payee "N/A" carries $292.1 million at 45 agencies (mostly payroll, pension and benefit
   lines uploaded without a payee) and "N/A..N/A" $59.3 million at one; both are classed `placeholder`. Object
   descriptions are the participant's own and are sometimes reused across departments (City of Huber Heights'
   fire fund lines show objects such as "VEHICLES - ECONOMIC DEVELOPMENT"; City of London's tax refund objects),
   so `category_published` is the label as published, not a checked category. Where a department books much of
-  its spending under lines not named fire, the captured dollars are low for its size: Genoa Township (Delaware,
-  21 career firefighters, about $0.2 million a year), Bainbridge Township (Geauga, 35, $0.4 million), Canton
-  Township (Stark, 19, $0.4 million), Village of Dennison (20, $0.5 million), City of Oxford (13, $0.6
-  million); these are linked (their fire-named lines are the department's own operating spending) but their
-  totals are partial. Some participants upload irregularly (Marion Township (Marion): about $2.5 million in 2022
+  its spending under lines not named fire, the captured dollars are low for its size: Village of Dennison (20
+  career firefighters, about $0.5 million a year) and City of Oxford (13, $0.6 million); these are linked (their
+  fire-named lines are the department's own operating spending) but their totals are partial. Genoa Township
+  (Delaware), Bainbridge Township (Geauga) and Canton Township (Stark), listed here as partial before, now carry
+  their program 220 lines ($27.8 million, $19.2 million and $11.4 million in 2021-2026). Some participants upload irregularly (Marion Township (Marion): about $2.5 million in 2022
   and 2024 but under $0.1 million in 2021, 2023 and 2025). Perkins Township (Erie) changed its chart of accounts
   in 2025: from then on 10 lump lines without a payee under department 101 and object 0000 carry $5.2 million
   (for example $1,531,713.54 on 2025-08-29 and $1,857,269.49 on 2026-03-16) while its itemized lines nearly
-  stop, so its 2025 total ($6.4 million against $4.3 million in 2024) may include period totals; they are kept
+  stop, so its 2025 total ($6.4 million against $4.2 million in 2024) may include period totals; they are kept
   as published (payee "N/A", class `placeholder`, so they do not count as purchasing). City of Huber Heights'
   fire capital fund pays note principal every year ($1.6-3.3 million to U.S. Bank), which may be note rollovers
   rather than new spending (class `finance`). Two linked townships pay much of their fire fund to another body:
   Catawba Island Township pays 59% to the City of Port Clinton by contract and Hambden Township 69% to the
   Hambden Fire Department itself; both are linked because the rest is the registry department's own spending
   (those payees are class `government`).
-- **Payees:** 23,936 distinct payee names, published as the participants publish them, private persons
+- **Payees:** 25,186 distinct payee names, published as the participants publish them, private persons
   included (owner decision 1, 2026-10-06): the adapter calls `common.withhold_person` directly, which only
   replaces payee text with an email address or bank account text; no payee in this pull matches.
 - **Normalized:** one row per payment line; `fiscal_year` is the transaction date's year; `posting_date` is
@@ -300,13 +360,13 @@ checkbook.ohio.gov's robots.txt on 2026-10-06, and the source was then built as
   `ObjDescription`; `source_record_id` is `<participant id>-<row Id>`. Normalize is deterministic (two runs give
   byte-identical files) and ends with `common.assemble_agencies('OH')`.
 - **Decision: built** (tier 1): `pipeline/sources/oh_checkbook_local.py`.
-- **Covered (183 participants, 183 agencies):**
+- **Covered (186 participants, 186 agencies):**
   - Fire district (1): Valley Fire.
-  - Townships (94): Amanda Township (Fairfield); American Township (Allen); Ashtabula Township (Ashtabula); Auglaize Township (Paulding); Austintown Township (Mahoning); Bainbridge Township (Geauga); Bath Township (Allen); Beavercreek Township (Greene); Berlin Township (Delaware); Bethel Township (Clark); Bethel Township (Miami); Bristol Township (Trumbull); Brunswick Hills Township (Medina); Byrd Township (Brown); Canton Township (Stark); Catawba Island Township (Ottawa); Cedarville Township (Greene); Charlestown Township (Portage); Chatham Township (Medina); Chester Township (Geauga); Clinton Township (Franklin); Coitsville Township (Mahoning); Columbia Township (Lorain); Concord Township (Lake); Copley Township (Summit); Coventry Township (Summit); Deerfield Township (Warren); Delaware Township (Hancock); East Union Township (Wayne); Ellsworth Township (Mahoning); Fairfield Township (Butler); Florence Township (Erie); Franklin Township (Adams); Franklin Township (Warren); Genoa Township (Delaware); German Township (Clark); Green Township (Ross); Hambden Township (Geauga); Hamilton Township (Franklin); Hamilton Township (Warren); Harrison Township (Muskingum); Hartford Township (Licking); Hinckley Township (Medina); Huntington Township (Ross); Jackson Township (Franklin); Jackson Township (Mahoning); Jackson Township (Stark); Jefferson Township (Montgomery); Jefferson Township (Scioto); Lake Township (Wood); Liberty Township (Trumbull); Liverpool Township (Columbiana); Madison Township (Butler); Madison Township (Clark); Madison Township (Franklin); Marion Township (Marion); Miami Township (Hamilton); Milton Township (Mahoning); Monclova Township (Lucas); Norwich Township (Franklin); Osnaburg Township (Stark); Painesville Township (Lake); Perkins Township (Erie); Perry Township (Stark); Perrysburg Township (Wood); Pike Township (Clark); Plain Township (Stark); Richfield Township (Lucas); Ross Township (Butler); Russell Township (Geauga); Scioto Township (Pickaway); Sheffield Township (Ashtabula); Springfield Township (Mahoning); St. Albans Township (Licking); Stokes Township (Madison); Sullivan Township (Ashland); Sycamore Township (Hamilton); Tiffin Township (Defiance); Trumbull Township (Ashtabula); Turtlecreek Township (Warren); Union Township (Clermont); Union Township (Ross); Union Township (Warren); Upper Township (Lawrence); Vermilion Township (Erie); Violet Township (Fairfield); Walnut Township (Fairfield); Waterloo Township (Athens); Wayne Township (Adams); Wayne Township (Warren); Weathersfield Township (Trumbull); Xenia Township (Greene); York Township (Athens); York Township (Medina).
+  - Townships (97): Amanda Township (Fairfield); American Township (Allen); Ashtabula Township (Ashtabula); Auglaize Township (Paulding); Austintown Township (Mahoning); Bainbridge Township (Geauga); Bath Township (Allen); Beavercreek Township (Greene); Berlin Township (Delaware); Bethel Township (Clark); Bethel Township (Miami); Bristol Township (Trumbull); Brunswick Hills Township (Medina); Byrd Township (Brown); Canton Township (Stark); Catawba Island Township (Ottawa); Cedarville Township (Greene); Charlestown Township (Portage); Chatham Township (Medina); Chester Township (Geauga); Clinton Township (Franklin); Coitsville Township (Mahoning); Columbia Township (Lorain); Concord Township (Lake); Copley Township (Summit); Coventry Township (Summit); Deerfield Township (Warren); Delaware Township (Hancock); East Union Township (Wayne); Ellsworth Township (Mahoning); Fairfield Township (Butler); Florence Township (Erie); Franklin Township (Adams); Franklin Township (Warren); Genoa Township (Delaware); German Township (Clark); Green Township (Ross); Hambden Township (Geauga); Hamilton Township (Franklin); Hamilton Township (Warren); Harrison Township (Muskingum); Hartford Township (Licking); Hinckley Township (Medina); Huntington Township (Ross); Jackson Township (Franklin); Jackson Township (Mahoning); Jackson Township (Stark); Jefferson Township (Montgomery); Jefferson Township (Scioto); Lake Township (Wood); Liberty Township (Butler); Liberty Township (Trumbull); Liverpool Township (Columbiana); Madison Township (Butler); Madison Township (Clark); Madison Township (Franklin); Marion Township (Marion); Miami Township (Hamilton); Milton Township (Mahoning); Monclova Township (Lucas); Norwich Township (Franklin); Orange Township (Delaware); Osnaburg Township (Stark); Painesville Township (Lake); Perkins Township (Erie); Perry Township (Stark); Perrysburg Township (Wood); Pierce Township (Clermont); Pike Township (Clark); Plain Township (Stark); Richfield Township (Lucas); Ross Township (Butler); Russell Township (Geauga); Scioto Township (Pickaway); Sheffield Township (Ashtabula); Springfield Township (Mahoning); St. Albans Township (Licking); Stokes Township (Madison); Sullivan Township (Ashland); Sycamore Township (Hamilton); Tiffin Township (Defiance); Trumbull Township (Ashtabula); Turtlecreek Township (Warren); Union Township (Clermont); Union Township (Ross); Union Township (Warren); Upper Township (Lawrence); Vermilion Township (Erie); Violet Township (Fairfield); Walnut Township (Fairfield); Waterloo Township (Athens); Wayne Township (Adams); Wayne Township (Warren); Weathersfield Township (Trumbull); Xenia Township (Greene); York Township (Athens); York Township (Medina).
   - Cities and villages (88): City of Amherst; City of Barberton; City of Bellefontaine; City of Bellevue; City of Brookville; City of Chillicothe; City of Circleville; City of Clayton; City of Columbiana; City of Cortland; City of Dover; City of East Liverpool; City of Eastlake; City of Fairborn; City of Franklin; City of Germantown; City of Grandview Heights; City of Harrison; City of Highland Heights; City of Huber Heights; City of Hudson; City of Huron; City of Jackson; City of Kettering; City of Kirtland; City of Lancaster; City of Maple Heights; City of Montgomery; City of Munroe Falls; City of New Carlisle; City of New Franklin; City of Niles; City of North Canton; City of North College Hill; City of Norwalk; City of Oxford; City of Parma; City of Portsmouth; City of Reading (FY13 to FY23); City of Sandusky; City of South Euclid; City of Springdale; City of Steubenville; City of Tallmadge; City of Trenton; City of Twinsburg; City of Vermilion; City of Wapakoneta; City of Washington Court House; City of Wickliffe; City of Willoughby Hills; City of Xenia; Village of Bay View; Village of Bettsville; Village of Bradner; Village of Byesville; Village of Craig Beach; Village of Dennison; Village of East Palestine; Village of Edgerton; Village of Gallipolis; Village of Hicksville; Village of Jackson Center; Village of Jacksonville; Village of Lockland; Village of Loudonville; Village of Mechanicsburg; Village of Millersport; Village of Mount Gilead; Village of Mount Orab; Village of New Knoxville; Village of New London; Village of New Straitsville; Village of Ottawa; Village of Payne; Village of Proctorville; Village of Racine; Village of Richfield; Village of Risingsun; Village of Salineville; Village of Seven Mile; Village of South Amherst; Village of South Zanesville; Village of Swanton; Village of Syracuse; Village of Wellsville; Village of West Lafayette; Village of West Liberty.
-- **Fetched but not linked (146):**
-  - Fire fund or department with no lines from 2021 on (33): Austinburg Township (Ashtabula); Bath Township (Greene); Boston Township (Summit); Chesterfield Township (Fulton); City of Newton Falls; City of Pataskala; City of Salem; Concord Township (Delaware); Green Creek Township (Sandusky); Hartsgrove Township (Ashtabula); Jackson Township (Hardin); Liberty Township (Jackson); Paris Township (Stark); Penfield Township (Lorain); Radnor Township (Delaware); Shawnee Township (Allen); Sugar Creek Township (Allen); Vernon Township (Scioto); Village of Amelia; Village of Andover; Village of Boston Heights; Village of Bratenahl; Village of Centerburg; Village of Cumberland; Village of Mantua; Village of Marblehead; Village of McComb; Village of Mount Sterling; Village of New Lexington; Village of New Richmond; Village of West Jefferson; Village of Williamsport; Village of Windham.
-  - Partial: only a few fire-named lines, or only a grant, capital, debt or small general fund (68): Baughman Township (Wayne); Bethlehem Township (Stark); Blendon Township (Franklin); Bloom Township (Morgan); Brown Township (Carroll); Brush Creek Township (Adams); Buck Township (Hardin); Canfield Township (Mahoning); City of Cuyahoga Falls; City of Euclid; City of Nelsonville; City of Norwood; City of Reading; City of Streetsboro; City of Wellston; Eagle Township (Brown); Fox Township (Carroll); Franklin Township (Fulton); German Township (Montgomery); Grand Township (Marion); Green Township (Hocking); Hopewell Township (Muskingum); Jackson Township (Guernsey); Lake Township (Logan); Liberty Township (Butler); Liberty Township (Licking); Lincoln Township (Morrow); Mad River Township (Champaign); Madison Township (Vinton); Marion Township (Hancock); Marlboro Township (Stark); Meigs Township (Adams); North Township (Harrison); Orange Township (Delaware); Oxford Township (Coshocton); Paint Township (Madison); Perry Township (Franklin); Pierce Township (Clermont); Prairie Township (Franklin); Rose Township (Carroll); Scott Township (Sandusky); Sharon Township (Franklin); Shortcreek Township (Harrison); St. Joseph Township (Williams); Sterling Township (Brown); Stokes Township (Logan); Sugar Creek Township (Wayne); Sugarcreek Township (Greene); Tate Township (Clermont); Union Township (Carroll); Village of Carey; Village of Custar; Village of Cygnet; Village of Leesville; Village of Liberty Center; Village of Lordstown; Village of North Fairfield; Village of Rockford; Village of Shawnee Hills; Village of Sherrodsville; Village of Sugar Bush Knolls; Village of Trimble; Village of Vanlue; Village of Westfield Center; Wabash Township (Darke); Warren Township (Belmont); Webster Township (Wood); Williamsburg Township (Clermont).
+- **Fetched but not linked (143):**
+  - Fire fund or department with no lines from 2021 on (33; Shawnee Township (Allen) has 22 program 220 lines, all in 2021, too few to link): Austinburg Township (Ashtabula); Bath Township (Greene); Boston Township (Summit); Chesterfield Township (Fulton); City of Newton Falls; City of Pataskala; City of Salem; Concord Township (Delaware); Green Creek Township (Sandusky); Hartsgrove Township (Ashtabula); Jackson Township (Hardin); Liberty Township (Jackson); Paris Township (Stark); Penfield Township (Lorain); Radnor Township (Delaware); Shawnee Township (Allen); Sugar Creek Township (Allen); Vernon Township (Scioto); Village of Amelia; Village of Andover; Village of Boston Heights; Village of Bratenahl; Village of Centerburg; Village of Cumberland; Village of Mantua; Village of Marblehead; Village of McComb; Village of Mount Sterling; Village of New Lexington; Village of New Richmond; Village of West Jefferson; Village of Williamsport; Village of Windham.
+  - Partial: only a few fire-named lines, or only a grant, capital, debt or small general fund (65; Blendon, Wabash and Webster Townships have no program 220 line in a fund not named for fire): Baughman Township (Wayne); Bethlehem Township (Stark); Blendon Township (Franklin); Bloom Township (Morgan); Brown Township (Carroll); Brush Creek Township (Adams); Buck Township (Hardin); Canfield Township (Mahoning); City of Cuyahoga Falls; City of Euclid; City of Nelsonville; City of Norwood; City of Reading; City of Streetsboro; City of Wellston; Eagle Township (Brown); Fox Township (Carroll); Franklin Township (Fulton); German Township (Montgomery); Grand Township (Marion); Green Township (Hocking); Hopewell Township (Muskingum); Jackson Township (Guernsey); Lake Township (Logan); Liberty Township (Licking); Lincoln Township (Morrow); Mad River Township (Champaign); Madison Township (Vinton); Marion Township (Hancock); Marlboro Township (Stark); Meigs Township (Adams); North Township (Harrison); Oxford Township (Coshocton); Paint Township (Madison); Perry Township (Franklin); Prairie Township (Franklin); Rose Township (Carroll); Scott Township (Sandusky); Sharon Township (Franklin); Shortcreek Township (Harrison); St. Joseph Township (Williams); Sterling Township (Brown); Stokes Township (Logan); Sugar Creek Township (Wayne); Sugarcreek Township (Greene); Tate Township (Clermont); Union Township (Carroll); Village of Carey; Village of Custar; Village of Cygnet; Village of Leesville; Village of Liberty Center; Village of Lordstown; Village of North Fairfield; Village of Rockford; Village of Shawnee Hills; Village of Sherrodsville; Village of Sugar Bush Knolls; Village of Trimble; Village of Vanlue; Village of Westfield Center; Wabash Township (Darke); Warren Township (Belmont); Webster Township (Wood); Williamsburg Township (Clermont).
   - Partial: only the fire pension fund (3): City of Alliance; City of Lyndhurst; City of Massillon.
   - Contract: the fire-named lines pay another department, fire company or government (38): Adams Township (Defiance); Athens Township (Athens); Auburn Township (Geauga); Auglaize Township (Allen); Brown Township (Franklin); Burton Township (Geauga); Cambridge Township (Guernsey); Chardon Township (Geauga); City of Milford; Claridon Township (Geauga); Columbia Township (Hamilton); Defiance Township (Defiance); Fairfield Township (Columbiana); Green Township (Harrison); Jackson Township (Montgomery); Jackson Township (Sandusky); Lake Township (Stark); Loudon Township (Carroll); Miami Township (Montgomery); Muhlenberg Township (Pickaway); New London Township (Huron); Newbury Township (Geauga); Ohio Township (Clermont); Perry Township (Montgomery); Polk Township (Crawford); Somerford Township (Madison); Spencer Township (Lucas); Stock Township (Harrison); Swancreek Township (Fulton); Twinsburg Township (Summit); Urbana Township (Champaign); Village of Amesville; Village of Arlington Heights; Village of Ashville; Village of Barnhill; Village of Dalton; Village of Golf Manor; Village of Thurston.
   - Other (4): Auburn Township (Crawford); City of London; City of Loveland; Richland Township (Defiance).
@@ -314,7 +374,10 @@ checkbook.ohio.gov's robots.txt on 2026-10-06, and the source was then built as
     - City of London: inconsistent upload: from 2023 its fire-named fund (FIRE DEPARTMENT - 228) carries negative salary, street, water and taxation lines of other departments (net fire spending negative in 2023, 2025 and 2026: -$4.2 million, -$4.6 million, -$2.9 million), so its fire lines are not the fire department's spending
     - City of Loveland: fire funds pay the Loveland-Symmes Fire Department ($8.7 million, a department shared with Symmes Township) plus station construction and debt; the department's own spending is not in this checkbook
     - Richland Township (Defiance): runs its own department (apparatus, payroll, leases), probably the registry's South Richland Fire Department (OH-20119), but the names differ; left for the owner (open question)
-- **No fire-named fund or department from 2021 on (89, not fetched beyond screening):**
+- **No fire-named fund or department from 2021 on (89, not fetched beyond screening):** seven of the townships
+  label program 220 "Public Safety - 220" (Bloomfield (Logan), Concord (Ross), Jefferson (Franklin), Mead
+  (Belmont), Orange (Meigs), Pease (Belmont), Washington (Pickaway)); they were never linked, so the program 220
+  decision (for linked townships) does not reach them, and they were not fetched (open question).
   - Townships (26): Anderson Township; Bloomfield Township (Logan); Brown Township (Delaware); Concord Township (Champaign); Concord Township (Ross); Enoch Township (Noble); Hardy Township (Holmes); Jefferson Township (Franklin); Madison Township (Highland); Mead Township (Belmont); Milford Township (Knox); Oak Run Township (Madison); Ohio Township (Gallia); Orange Township (Meigs); Oxford Township (Delaware); Pease Township (Belmont); Peru Township (Huron); Pleasant Township (Madison); Poland Township (Mahoning); Porter Township (Delaware); Ross Township (Greene); Troy Township (Delaware); Vernon Township (Clinton); Washington Township (Brown); Washington Township (Pickaway); Winchester Township (Adams).
   - Cities and villages (63): City of Beavercreek; City of Canal Winchester; City of Dublin; City of Groveport; City of Hilliard; City of Pickerington; City of Powell; City of Stow; City of Sylvania; City of Tipp City; Village of Alexandria; Village of Belle Center; Village of Blanchester; Village of Buckeye Lake; Village of Burbank; Village of Camden; Village of Chippewa Lake; Village of Commercial Point; Village of Corwin; Village of Creston; Village of Doylestown; Village of Edon; Village of Elmore; Village of Fredericktown; Village of Fulton; Village of Galena; Village of Gibsonburg; Village of Grand Rapids; Village of Harbor View; Village of Harrod; Village of Haskins; Village of Hayesville; Village of Hills and Dales; Village of Jamestown; Village of Johnstown; Village of Lynchburg; Village of McClure; Village of Millersburg; Village of Mount Eaton; Village of New Holland; Village of North Lewisburg; Village of Oak Harbor; Village of Ostrander; Village of Parral; Village of Pemberville; Village of Perrysville; Village of Philo; Village of Piketon; Village of Plain City; Village of Pleasant Hill; Village of Rendville; Village of Rushville; Village of Seville; Village of Sherwood; Village of Somerset; Village of Sparta; Village of St. Paris; Village of Thornville; Village of Wakeman; Village of Waynesfield (Auglaize); Village of Waynesville (Warren); Village of West Millgrove; Village of Weston.
 - **Not fire agencies or without data from 2021 on:** 248 participants with no transactions from 2021 on
@@ -395,7 +458,7 @@ city payments dataset; Cleveland's and Columbus's open data hubs have no payment
   accounts carry those codes, so they are not attributed even when the vendor is a fire vendor. The largest is
   the citywide vehicle capital account 981 "Motorized & Construction Equip": FY2021-FY2027 it paid Vogelpohl Fire
   Equipment $16,843,685.58 (22 lines, fire apparatus) and Halcore Group $1,901,457.11 (8 lines, Horton and
-  Leader ambulances), $18.7 million, 47% of the fire codes' $40.0 million. Fleet Services (256) paid Fire Service,
+  Leader ambulances), $18.7 million, 48% of the fire codes' $38.9 million. Fleet Services (256) paid Fire Service,
   Inc. $468,531, Vogelpohl $304,157 and All American Fire Equipment $82,708 (apparatus repairs). Source:
   `vehicle_accounts.json.gz` (server-side totals by vendor for codes 981 and 256, FY2021 on; context only, added
   in the review). The `sources.csv` note states the gap with the 981 amount, so the page does not suggest that
@@ -404,27 +467,30 @@ city payments dataset; Cleveland's and Columbus's open data hubs have no payment
 
   | FY | Lines | Dollars |
   | --- | --- | --- |
-  | 2021 | 4,116 | $4,512,893.35 |
-  | 2022 | 3,583 | $5,869,147.83 |
-  | 2023 | 5,013 | $6,809,877.85 |
-  | 2024 | 6,286 | $6,409,850.08 |
-  | 2025 | 6,580 | $6,825,353.79 |
-  | 2026 | 6,121 | $7,546,646.42 |
-  | 2027 (partial) | 2,063 | $2,062,728.36 |
-  | Total | 33,762 | $40,036,497.68 |
+  | 2021 | 2,944 | $4,438,555.15 |
+  | 2022 | 3,000 | $5,777,780.12 |
+  | 2023 | 3,708 | $6,610,663.88 |
+  | 2024 | 4,046 | $6,175,817.52 |
+  | 2025 | 4,158 | $6,615,727.47 |
+  | 2026 | 3,794 | $7,332,619.01 |
+  | 2027 (partial) | 1,218 | $1,965,460.81 |
+  | Total | 22,868 | $38,916,623.96 |
 
-- **Duplicates:** (trans_id, trans_line_no) is unique; no exact duplicate lines; the adapter would keep one copy
-  of an exact duplicate. 2,580 groups (13,423 lines) share vendor, amount, date, account, department and check:
-  these are separate invoice lines of one transaction paid on one check (for example 24 identical Galls jackets
-  on one EFT, or one pest-control charge per station) and are kept; no such line appears under two transaction
-  ids, so there is no reloaded batch. 53 groups of identical vendor, amount, date and account on different
-  checks are also kept. The raw page total equals the server-side control totals per fiscal year and department
-  (checked by `tests/multistate/check_oh.py`), and a second live query in the review, filtered by department
-  name ("Fire%") instead of code, gave the same lines and dollars for every fiscal year.
-- **Reversals:** 103 negative lines (-$16,923.69), all purchasing-card credits from U.S. Bank (99) and Fifth Third
-  (4); 43 of them equal a positive line of the same bank. Kept as negative amounts so they net out.
-- **Payees:** 270 vendor names. Purchasing-card statements are paid to the bank (U.S. Bank $1.78 million,
-  Fifth Third $0.29 million), so the merchants behind them are not visible. "MISCELLANEOUS" ($393,660, account
+  Before the owner's rule of 2026-10-07 on identical lines: 33,762 lines, $40,036,497.68 (FY2021-FY2027).
+
+- **Duplicates:** (trans_id, trans_line_no) is unique; no exact duplicate lines (the adapter would keep one copy
+  of one). Owner rule of 2026-10-07: lines identical in every published field (fiscal year, record date, vendor,
+  account, category and amount) except the source's ids are one line; the check number is not published, so it
+  is not compared. 2,593 groups (13,487 lines) are identical in that sense, 2,578 of them on one check (separate
+  invoice lines of one transaction, for example 24 identical Galls jackets on one EFT, or one pest-control
+  charge per station) and 15 on different checks; one line of each is kept and 10,894 lines are dropped
+  ($1,119,873.72 net, 16 of them negative). The raw page total equals the server-side control totals per fiscal
+  year and department (checked by `tests/multistate/check_oh.py`), and a second live query in the review,
+  filtered by department name ("Fire%") instead of code, gave the same lines and dollars for every fiscal year.
+- **Reversals:** 87 negative lines (-$15,926.44), all purchasing-card credits from U.S. Bank (83) and Fifth Third
+  (4); 36 of them equal a positive line of the same bank. Kept as negative amounts so they net out.
+- **Payees:** 270 vendor names. Purchasing-card statements are paid to the bank (U.S. Bank $1.72 million,
+  Fifth Third $0.28 million), so the merchants behind them are not visible. "MISCELLANEOUS" ($393,660, account
   "Medical Services", 51 lines) names no vendor: 21 lines of $1,000 or more ($385,586, mostly $351,253 on two
   checks in July 2020, partly from the Fire Grants fund) and 30 small checks of $32.50 to $767 ($8,074), which
   look like EMS billing refunds to patients. The text "MISCELLANEOUS" names nobody, so it is published as the
@@ -452,19 +518,31 @@ city payments dataset; Cleveland's and Columbus's open data hubs have no payment
 
 ## Vendor map additions
 
-`config/states/oh/vendor_map_additions.csv`: 6,183 payees of both Ohio sources with proposed canonical name and
+`config/states/oh/vendor_map_additions.csv`: 6,186 payees of both Ohio sources with proposed canonical name and
 category, `spend` and `agencies` recomputed from the published lines, sorted by `name_key`. Payees that
 `config/vendor_map.csv` already maps are not repeated (as in the other states; the cross-state check of
-2026-10-07 removed 216 rows that repeated a `config/vendor_map.csv` row word for word), except two overrides of
-that file: KEVIN WARD (its `individuals` row, see below) and ACROSS STREET PRODUCTIONS (`unclassified` there,
-`training` here). With `config/vendor_map.csv` (324 Ohio payee keys, $55.6 million of purchasing), the file
-covers 92.8% of Ohio's purchasing dollars ($385.0 million), 78.3% on its own, as `tests/multistate/check_oh.py`
-counts it (by payee, net spend above zero; a payee in neither file, including small payroll ones, counts as
-purchasing). 2,571 purchasing payees ($301.5 million, every purchasing payee down to $4,600 by spend) are in the
-file. The other 3,612 rows are non-purchasing payees of $2,000 or more (payroll, pension, benefits and taxes
-3,152; government 297; finance 152; placeholder 11), listed so they leave the purchasing base: $1.45 billion of the local checkbooks' $1.80 billion is payroll, the Ohio Police & Fire
-Pension Fund ($131.5 million), health plans, payroll processors and banks, and the placeholder "N/A" ($293.6
-million).
+2026-10-07 removed 216 rows that repeated a `config/vendor_map.csv` row word for word, and 65 more were removed
+on 2026-10-07 after main's larger `config/vendor_map.csv` was merged into this branch), except three overrides of
+that file: KEVIN WARD and TODD SMITH (its `individuals` rows, see below) and ACROSS STREET PRODUCTIONS
+(`unclassified` there, `training` here). With `config/vendor_map.csv` (518 Ohio payee keys, $61.6 million of
+purchasing), the file covers 92.0% of Ohio's purchasing dollars ($395.2 million), 76.4% on its own, as
+`tests/multistate/check_oh.py` counts it (by payee, net spend above zero; a payee in neither file, including
+small payroll ones, counts as purchasing). 2,522 purchasing payees ($302.0 million) are in the file; the
+largest purchasing payee in neither file is Cabol, Inc ($149,207); payees in neither file hold $31.6 million.
+The other 3,664 rows are non-purchasing payees (payroll, pension, benefits and taxes 3,209; government 298;
+finance 146; placeholder 11), listed so they leave the purchasing base: $1.56 billion of the local checkbooks'
+$1.91 billion is payroll, the Ohio Police & Fire Pension Fund ($235.3 million under that canonical name), health
+plans, payroll processors and banks, and the placeholder "N/A" ($292.1 million).
+
+Update of 2026-10-07 (owner rules on identical lines and program 220): `spend` and `agencies` recomputed; the
+program 220 lines and the three new links brought new payees, so 68 rows were added, by spend, until the maps
+covered 92% again (the same name and object rules as below, plus 16 hand classifications): 59 payroll (township
+payroll accounts, health plans, a 457 plan, unions and the Pierce Township firefighters paid by name under
+salary objects), 3 fleet (Voyager Fleet Systems, Delaware County Diesel Repair, Performance Chrysler Jeep Dodge
+Ram), and one each of government (Delaware County Auditor), utilities (Brightstar Propane & Fuel), insurance
+(Rinehart-Walters-Danner), professional (Isaac Wiles Burkholder & Teetor), finance (Government Leasing and
+Finance) and fire-equipment (Municipal Emergency Services). Confidence of all rows: 56 high, 382 medium, 5,748
+low.
 
 How the categories were set: the 95 reviewed Cincinnati rows and `config/vendor_map.csv` first; then
 583 hand classifications of the largest unclassified payees by name (medium confidence when the name says what
@@ -480,7 +558,7 @@ is overridden). Payments to another fire department or government
 names reuse `config/vendor_map.csv` where it is the same company and merge spellings of the large ones
 (Atlantic Emergency Solutions, Sutphen, Stryker incl. Howmedica, Municipal Emergency Services, Ohio Police & Fire
 Pension Fund, Ohio BWC, Paychex, Paycor, AEP Ohio, Enbridge Gas Ohio and others). Unclassified payees, about
-$27.8 million (7.2% of purchasing), are left out of the file. Confidence: 60 high, 385 medium, 5,738 low.
+$27.8 million (7.2% of purchasing) at the first build, are left out of the file.
 
 Review corrections (2026-10-07): 13 categories fixed by hand (the East Union Township payments to the Apple Creek
 Volunteer Fire Department had been classed `it`; union health and welfare funds, the Police and Firemen's
@@ -502,18 +580,27 @@ only) it recomputes lines and dollars per agency, source and fiscal year and com
 
 - Cincinnati: the raw pages against the source's own server-side control totals per fiscal year and department;
   every linked department code is named as a fire department in the source (not police, insurance, pension or
-  the shared 911 center) and every fire-named department is linked or a known exclusion.
+  the shared 911 center) and every fire-named department is linked or a known exclusion; identical lines (every
+  published field equal, check number not compared) kept once, the lowest trans_id and line.
 - Ohio Checkbook local: every linked participant's raw Tableau responses (underlying rows) against the summary
   totals the dashboard gave for the same filters, per year; each row inside its request's filters and of the
   linked participant only; the fire-line rule written out independently (fire districts whole; townships,
   cities and villages by fire-named fund or department, minus the excluded names and the escrow funds; fire
   funds only where the fire department carries police fund lines); calendar years 2021 on; one line per row Id;
   re-uploads once; months uploaded k times once; reloads (a date's lines repeated in a later upload) once;
-  broken-upload months left out; attribution (the participant is
+  broken-upload months left out; then identical lines (date, payee as published, fund, department and object
+  labels, object description, amount) kept once, the lowest row Id (owner rule of 2026-10-07); townships:
+  program 220 lines counted and police-named lines never, from the entity files and the `program220_<id>`
+  files (each such file's rows checked against its summary totals; its program 220 slice must be every fund
+  not named for fire and every program 220 value not named for fire; every police-named fund and department
+  must have been checked; every linked township with such a program 220 value must have the file; its link
+  note must mention program 220 and, exactly when a police-named fund or department has lines from 2021 on,
+  that mixed Public Safety lines are left out); attribution (the participant is
   named as linked, sits in the agency's county unless a known two-county exception (Vermilion), is a fire
   district or a township, city or village, is not an EMS-only district, is linked once, has at least 25 fire
   lines a year and not only a pension fund).
 - Every published line traced to its raw line: agency, fiscal year, date, payee, account, category and amount.
+  No two published lines (either source) are identical in every field but `source_record_id`.
   Payees must equal the source's text (spaces collapsed) unless it matches `config/payee_name_redactions.csv`
   (owner decision 2026-10-06).
 - The contract's column names and order for every Ohio file; agency ids, links, `coverage_counts` and tiers (an
@@ -524,33 +611,49 @@ only) it recomputes lines and dollars per agency, source and fiscal year and com
   checkbook sample without address columns).
 - Added in review: an added agency (`agencies_added.csv`) may not share its place name with a registry
   department of the same county unless the pair is listed as reviewed; Forestry keeps kind "State fire agency";
-  `vendor_map_additions.csv` does not repeat keys of `config/vendor_map.csv` (except the two overrides).
+  `vendor_map_additions.csv` does not repeat keys of `config/vendor_map.csv` (except the three overrides).
 
-Result after the review and the cross-state check of 2026-10-07: `OH: ok (707567 transaction lines,
-$1,840,788,454.03, 184 agencies at tier 1 (oh_checkbook_local: 673805, oh_cincinnati: 33762); vendor maps cover
-92.8% of $384,958,073 purchasing dollars, vendor_map_additions alone 78.3%)`. Fault tests for the local source, on scratch copies of the repository files (never the
+Result after the owner's rules of 2026-10-07 (identical lines, program 220): `OH: ok (719173 transaction lines,
+$1,953,022,621.88, 187 agencies at tier 1 (oh_checkbook_local: 696305, oh_cincinnati: 22868); vendor maps cover
+92.0% of $395,198,185 purchasing dollars, vendor_map_additions alone 76.4%)` (before them: 707,567 lines,
+$1,840,788,454.03, 184 agencies). Fault tests for the local source, on scratch copies of the repository files (never the
 working tree), one fault each: a published amount changed by one cent, a payee changed, a link moved to an
 agency in another county, the local sample deleted, a vendor map spend changed, an extra published line with no
 raw line; the check failed on every one. The first review (Cincinnati) had done the same with ten other faults. The second review added three more, each
 failing as it should: the Proctorville duplicate put back into `agencies_added.csv`, the Perkins reload put back
 (normalize run on a scratch copy with the reload rule switched off), and a canonical name changed away from
-`config/vendor_map.csv`.
+`config/vendor_map.csv`. The 2026-10-07 update added five, each failing as it should: normalize with the
+identical-line rule switched off (local, and Cincinnati), normalize counting a township's police-named lines,
+a `program220_<id>.json.gz` file removed, and the "mixed Public Safety lines" sentence removed from the link
+note of a township that runs police.
 `python3 tests/multistate/check_federal.py OH` passes (`OH: ok (1148 registry agencies, 302 with grants,
 $110,580,051)`).
 
 ## Open questions
 
-- Ohio Checkbook local: fire spending that townships, cities and villages book under lines not named fire
-  (general "Public Safety", "Special Levy" funds) is not included, so 89 participants with rows from 2021 on have
-  no fire-named lines and some linked departments are partial (section 2). Should a township's "Public Safety"
-  program 220 (fire protection in the township chart of accounts) be accepted as fire spend when the township has
-  its own fire department and no police? That would add many townships but rests on a program code, not a name.
+- Decided 2026-10-07 (owner): identical lines and doubled days are dropped (section 2 and 5), and a linked
+  township's program 220 lines count, never its police-named lines (section 2). Questions those rules leave:
+- Identical lines: a payment voided and issued again (payment, void, reissue) now nets to zero, because the
+  reissue is identical to the first payment and dropped while the void is kept: 7,566 dropped local lines
+  ($10,622,312.31 net) are copies of a line whose exact negative is published (largest: Walnut Township
+  (Fairfield), $1,551,069.41 of bond principal on 2021-11-24, now net $0). Count a copy as identical only when no
+  void stands between the copies?
+- Identical lines, Cincinnati: 10,894 dropped lines ($1,119,873.72) are mostly separate invoice lines of one
+  transaction on one check (24 identical Galls jackets on one EFT); the check number is not published, so lines
+  on different checks are compared the same way. Keep the rule as is, or publish the check number?
+- Program 220: police is found by name only. Genoa Township (Delaware) and Orange Township (Delaware) run police
+  departments whose funds are not named for police, so they count as not running police; their program 220
+  lines are fire protection by the chart of accounts either way. Seven townships with "Public Safety - 220" and
+  no fire-named lines (Bloomfield (Logan), Concord (Ross), Jefferson (Franklin), Mead (Belmont), Orange (Meigs),
+  Pease (Belmont), Washington (Pickaway)) were never fetched or linked; Jefferson Township (Franklin) runs a
+  career department. Fetch and link them under the program 220 rule?
+- Police-named lines of cities and villages still count when the fund or department is also named for fire
+  (City of Niles "Police & Fire 1%" fund under department FIRE, City of Lancaster ".45 Police & Fire Levy"), and
+  City of Columbiana's "FIRE DEPARTMENT FUND" carries departments named "... - POLICE" (salaries, a $673,307
+  "VEHICLE PURCHASE - POLICE" line). The 2026-10-07 decision was read as covering townships only. Apply "never
+  count police-named lines" to cities and villages too?
 - Ohio Checkbook local: Richland Township (Defiance) runs its own department (apparatus, payroll, leases); the
   registry's closest row is South Richland Fire Department (OH-20119), whose name differs. Link it?
-- Ohio Checkbook local: 10 days where every line appears exactly twice inside one upload (123 lines, $264,476.25,
-  mostly Hamilton Township (Warren), January and February 2021) are kept as separate payments, following the
-  Texas rule of decision 2. Should same-upload exact doubles of a whole day be dropped in Ohio, as whole months
-  already are?
 - Ohio Checkbook local: Catawba Island Township pays 59% of its fire fund to the City of Port Clinton by contract
   and Hambden Township 69% to the Hambden Fire Department; both are linked to their registry department. Keep,
   or link only participants whose fire lines are mostly the department's own purchases?
@@ -562,7 +665,7 @@ $110,580,051)`).
   instead of line amounts for 19 months of 2025-2026 (left out). Report it to the Treasurer's office?
 - Show Cincinnati as a tier 1 agency with a note that apparatus and ambulances ($18.7 million in FY2021-FY2027
   through the citywide vehicle account 981), fleet repairs and IT bought by other city departments are missing,
-  and that $2.1 million of P-card spend shows the card banks rather than the merchants? Or attribute the 981
+  and that $2.0 million of P-card spend shows the card banks rather than the merchants? Or attribute the 981
   lines to fire apparatus vendors, which the PRD's attribution rule does not allow today?
 - Should `federal.py` link FEMA awards to "CITY OF <name>" recipients when that city has one registry fire
   department (Cincinnati: 35 awards, $41.5 million, now unmatched)?
