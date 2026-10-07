@@ -1383,6 +1383,8 @@ const Core = (function () {
   // peersData: the peers with vendor data (coverage 1 payee lines or 2 item lines). The others (3 totals only,
   // 4 directory only) are not counted; in the agency grouping (not narrowed) their items have nodata set.
   // nodata: the coverage of a selected agency without vendor data, else 0.
+  // noneData: there are peers and none has vendor data (a selected agency without it, or filters that match only
+  // agencies without it): no rows, not $0; only the agency grouping (not narrowed) lists them.
   function tableModel(ix, s) {
     const f = rowFilter(s);
     const peers = s.agency != null ? new Set([s.agency]) : peerIds(ix, s);
@@ -1390,13 +1392,14 @@ const Core = (function () {
     for (const id of peers) { const a = ix.agency.get(id); if (!(a && a.coverage > 2)) peersData.add(id); }
     const sel = s.agency != null ? ix.agency.get(s.agency) : null;
     const nodata = sel && sel.coverage > 2 ? sel.coverage : 0;
+    const noneData = peers.size > 0 && !peersData.size;
     if (ix.pre && ix.loaded === false && isDefault(ix, s)) {
       const home = new Map(ix.pre.cats.map(c => [ix.catIds[c[0]], c]));
       const pa = c => ({ key: ix.catIds[c[0]], spend: c[1], n: c[2], ag: { size: c[4] }, ve: { size: c[3] }, yr: Object.assign({}, c[6]), last: c[5] });
-      const items = !peers.size ? [] : categoriesFor(ix, s).map(c => (home.has(c.id) ? pa(home.get(c.id)) : emptyAgg(c.id)));
+      const items = !peers.size || noneData ? [] : categoriesFor(ix, s).map(c => (home.has(c.id) ? pa(home.get(c.id)) : emptyAgg(c.id)));
       const u = ix.pre.sum;
       const sum = { key: 0, spend: u[0], n: u[1], ve: { size: u[2] }, ag: { size: u[3] }, yr: Object.assign({}, u[4]), last: null };
-      return { rows: [], items, sum, peers, peersData, nodata, onlyPurch: purchOnly(ix, s, f), narrowed: false, year: fullYear(ix, rangeYears(s)), pre: true };
+      return { rows: [], items, sum, peers, peersData, nodata, noneData, onlyPurch: purchOnly(ix, s, f), narrowed: false, year: fullYear(ix, rangeYears(s)), pre: true };
     }
     const rows = selectRows(ix, s, f);
     const onlyPurch = purchOnly(ix, s, f);
@@ -1407,7 +1410,8 @@ const Core = (function () {
     let by = null;
     if (keyFn) by = agg(rows, keyFn, sum); else sum = summary(rows);
     let items;
-    if (!peers.size || nodata || (narrowed && !rows.length)) items = [];     // a selected agency without vendor data: no rows, not $0
+    // A selected agency without vendor data, or only such agencies in the filters (outside the agency grouping): no rows, not $0
+    if (!peers.size || nodata || (noneData && (s.g !== 'agency' || narrowed)) || (narrowed && !rows.length)) items = [];
     else if (s.g === 'category') {
       items = categoriesFor(ix, s).filter(c => s.vendor == null || by.has(c.id)).map(c => by.get(c.id) || emptyAgg(c.id));
     } else if (s.g === 'vendor') {
@@ -1419,7 +1423,7 @@ const Core = (function () {
     } else {
       items = rows;
     }
-    return { rows, items, sum, peers, peersData, nodata, onlyPurch, narrowed, year: fullYear(ix, rangeYears(s)), pre: false };
+    return { rows, items, sum, peers, peersData, nodata, noneData, onlyPurch, narrowed, year: fullYear(ix, rangeYears(s)), pre: false };
   }
 
   return {
@@ -1551,7 +1555,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   function srcRaw(m, st) {
     const raw = m.raw && typeof m.raw === 'object' ? (st ? m.raw[st] : null) : m.raw;
     const out = [];
-    if (raw) out.push(A(BLOB + raw, /^raw\//.test(raw) ? 'raw file' : /^data\//.test(raw) ? 'normalized file' : esc(raw.split('/').pop())));
+    // A path without a file extension is a folder (a tree link on GitHub)
+    if (raw) out.push(/\.[A-Za-z0-9]+$/.test(raw) ? A(BLOB + raw, /^raw\//.test(raw) ? 'raw file' : /^data\//.test(raw) ? 'normalized file' : esc(raw.split('/').pop()))
+      : A(REPO + '/tree/main/' + raw, /^raw\//.test(raw) ? 'raw files' : esc(raw.split('/').pop())));
     if (m.raw_dir) out.push(A(REPO + '/tree/main/' + m.raw_dir, 'raw files'));
     if (!raw && m.raw && typeof m.raw === 'object') {
       for (const k of store.order) if (m.raw[k]) out.push(A(BLOB + m.raw[k], esc(stName(k))));
@@ -1872,14 +1878,16 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const oneCat = !!S.cat && S.cat.length === 1;          // the category column would repeat one value
     const t = {
       id: 'main-' + g, file: fileName(), wide: true, labelId: 'page-h', allRows: m.items, rows: m.items, byYear, pre: m.pre,
-      hint: m.nodata ? '' : 'Select a row to filter to it and ' + then + '.',
+      hint: m.nodata || (m.noneData && !m.items.length) ? '' : 'Select a row to filter to it and ' + then + '.',
       empty: !m.peers.size ? 'No agencies match the agency filters.'
         : m.nodata ? 'No vendor data: ' + (m.nodata === 3 ? 'this agency has published annual totals only (below).' : 'this agency is in the directory only.')
+        : m.noneData ? 'No vendor data: the agencies in these filters have published annual totals only or are in the directory only' +
+          (S.g !== 'agency' ? ' (Group by Agency lists them).' : '.')
         : 'No payments match these filters.',
       notes: '',
     };
     // Nothing in the selected categories: say why when the vendor is in none of them, and offer to clear them
-    if (m.peers.size && S.cat) {
+    if (m.peers.size && S.cat && !m.noneData) {             // (clearing the categories would not help agencies without vendor data)
       let why = '';
       if (S.vendor) {
         const vcs = Core.vendorCats(ix, S.vendor);
@@ -1970,7 +1978,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         return topV.get(o.key);
       };
       // Agencies without vendor data (totals or directory only): "No vendor data" in place of an amount, never $0
-      const covCol = { key: 'cov', label: 'Coverage', nw: true, hidden: byYear, val: o => tierLabel(ag(o).coverage), html: o => tierBadge(ag(o).coverage) };
+      // Sorted by tier (payee lines first); the CSV has the label
+      const covCol = { key: 'cov', label: 'Coverage', nw: true, hidden: byYear, val: o => ag(o).coverage, csv: o => tierLabel(ag(o).coverage), html: o => tierBadge(ag(o).coverage) };
       const paidA = Object.assign({}, paid, {
         val: o => (o.nodata ? null : o.spend), html: o => (o.nodata ? '<span class="nodata">No vendor data</span>' : money(o.spend)),
       });
@@ -2015,6 +2024,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       t.foot = rows => {
         const a = total(rows);
         const gr = rows.reduce((s, o) => s + Core.grantsIn(ix, o.key, S), 0);
+        // Only agencies without vendor data in view: no amount, not $0
+        if (rows.length && rows.every(o => o.nodata)) return [{ _label: totalLabel(), paid: '<span class="nodata">No vendor data</span>', grants: money(gr) }];
         return [Object.assign({ _label: totalLabel(), vendors: int(a.ve.size), paid: money(a.spend), grants: money(gr) }, yearFoot(a))];
       };
       if (m.narrowed) t.notes += '<p class="note">Agencies with no payments in these filters are not listed.</p>';
@@ -2077,7 +2088,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         : '<p class="note">Sources: ' + srcList(paySources(ix.states)) + '.</p>' +
           details('d-srcn', 'Source notes (' + int(paySources(ix.states).length) + ')', srcNotes(paySources(ix.states), ix.states.length === 1 ? ix.states[0] : null));
     }
-    if (g !== 'none' && !m.nodata) {
+    if (g !== 'none' && !m.nodata && !(m.noneData && !m.items.length)) {
       t.notes += '<p class="note">Amounts are net of credits and corrections. Vendors and agencies are counted when the net payment is positive in at least one fiscal year and category of the range.</p>';
     }
     // Agencies whose only vendor data is item lines (Texas DIR: IT and telecom) are counted, with a note
@@ -2092,6 +2103,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       t.notes += '<p class="note">Non-purchasing payments include transfers between agencies in this list (for example Unified Fire Service Area to Unified Fire Authority), so totals can count that money twice.</p>';
     }
     if (m.nodata) t.hint = '';
+    if (m.noneData && !m.items.length) t.notes = '';          // no rows: the notes on columns and amounts do not apply
     applySearch(t);
     return t;
   }
@@ -2101,18 +2113,21 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const t = mainTable(m);
     TABLES[t.id] = t;
     let h = '';
-    if (m.nodata) t.filter = null;                             // an agency without vendor data: nothing to search, show by year or download
+    // An agency without vendor data, or filters matching only such agencies (outside the agency grouping): nothing to search,
+    // show by year or download
+    const none = !!m.nodata || (m.noneData && !m.items.length);
+    if (none) t.filter = null;
     if (t.filter) {
       h += '<div class="tsearch" role="search"><label for="tq">' + esc(SEARCH[S.g]) + '</label>' +
         '<input type="search" id="tq" autocomplete="off" spellcheck="false" placeholder="' + esc(t.searchHint) + '" value="' + esc(S.q) + '"></div>';
     }
-    if (!m.nodata && (S.g === 'category' || S.g === 'vendor' || S.g === 'agency')) {
+    if (!none && (S.g === 'category' || S.g === 'vendor' || S.g === 'agency')) {
       h += '<div class="chk"><input type="checkbox" id="tyears"' + (S.years ? ' checked' : '') + '><label for="tyears">Show amounts by year</label></div>';
     }
-    h += '<span class="tcount" id="tcount">' + (m.nodata ? '' : countText(t)) + '</span><span class="vh" id="tstatus" aria-live="polite"></span>';
+    h += '<span class="tcount" id="tcount">' + (none ? '' : countText(t)) + '</span><span class="vh" id="tstatus" aria-live="polite"></span>';
     // Shown by renderMore when the single payments section is below the table
     h += '<button type="button" class="btn" id="tpay" hidden>Largest single payments</button>';
-    if (!m.nodata) h += '<button type="button" class="btn" id="tcsv" data-csv="' + t.id + '">Download CSV</button>';
+    if (!none) h += '<button type="button" class="btn" id="tcsv" data-csv="' + t.id + '">Download CSV</button>';
     $('tbar').innerHTML = h;
     h = t.hint ? '<p class="hint">' + esc(t.hint) + '</p>' : '';
     h += '<div id="tb-' + t.id + '" class="tmain">' + tableBody(t) + '</div>' + t.notes;
@@ -3129,6 +3144,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         s += ' ' + (nd === 1 ? '1 agency' + inF + ' has' : int(nd) + ' agencies' + inF + ' have') + ' no vendor data and ' +
           (nd === 1 ? 'is' : 'are') + ' not counted.';
       }
+      if (S.agency == null && m.noneData) {                     // the filters match only agencies with totals only or in the directory only
+        s = 'No vendor data for ' + (pd.size + nd === 1 ? 'the agency' : 'the ' + int(nd) + ' agencies') + ' in these filters (' +
+          esc(andList(tierText(tierCounts([...m.peers].map(id => ix.agency.get(id)))))) + '), so nothing is counted' +
+          (S.g === 'agency' && !m.narrowed ? '; they are listed with their annual expenses and FEMA grants.' : '.');
+      }
       if (m.nodata) {                                           // a selected agency with totals only, or in the directory only
         const a = ix.agency.get(S.agency);
         const tot = (a.sources || []).filter(id => (store.meta.sources[id] || {}).tier === 3);
@@ -3219,7 +3239,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
 
     // Sources by state, then the national ones
     h += '<h2>Sources</h2>';
-    h += '<p>Every source is listed with its coverage tier, fiscal years and the files it was built from (normalized files under ' + gh('data/states') + ', raw files under ' + A(REPO + '/tree/main/raw', 'raw') + ').</p>';
+    h += '<p>Every source is listed with its coverage tier, fiscal years and the files it was built from (normalized files under ' + A(REPO + '/tree/main/data/states', 'data/states') + ', raw files under ' + A(REPO + '/tree/main/raw', 'raw') + ').</p>';
     for (const st of sts) {
       const own = (M.states[st].sources || []).filter(id => M.sources[id] && M.sources[id].state === st);
       h += '<h3>' + esc(stName(st)) + '</h3>';
