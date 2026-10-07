@@ -42,8 +42,10 @@ Socrata's :id, and the dataset has no load timestamp); trans_id (the financial s
 payments. Identical lines are kept once; void-safe, a group of n identical positive lines keeps
 min(n, reversals + 1), where reversals counts the distinct negative lines of the same department, fund, account
 and vendor with the amount negated in the same or the next fiscal year (REVERSAL; a credit does not repeat the
-document or check number of the payment it reverses). (trans_id, trans_line_no) is unique in the 2026-10-06 pull,
-so no line is dropped. Credits (mostly purchasing-card credits from U.S. Bank and Fifth Third) are negative lines
+document or check number of the payment it reverses). Identical voids (owner decision A of 2026-10-07): in a
+family with a payment (same REVERSAL fields, amount up to sign, same or next fiscal year), identical negative copies
+are dropped only together with identical positive copies of the family. (trans_id, trans_line_no) is unique in the
+2026-10-06 pull, so no line is dropped. Credits (mostly purchasing-card credits from U.S. Bank and Fifth Third) are negative lines
 and kept, so they net out.
 
 Payees: published as the source has them (owner decision, 2026-10-06), through common.withhold_person, which
@@ -214,13 +216,15 @@ def normalize():
     withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
     print(f"{ST}: {SOURCE}: {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {stats['dropped']} "
           f"identical lines dropped (${stats['dropped_dollars']:,.2f}); void rule kept {stats['void_kept']} identical "
-          f"lines (${stats['void_kept_dollars']:,.2f}); {withheld} lines with the payee withheld")
+          f"lines (${stats['void_kept_dollars']:,.2f}); identical-void fix kept {stats['void_fix']} negative lines; "
+          f"{withheld} lines with the payee withheld")
 
 
 def identical(raw):
     """Owner rule of 2026-10-07 as corrected: raw lines equal in every column but ROW_IDS are identical and kept
     once; a group of n identical positive lines keeps min(n, reversals + 1), reversals being the distinct negative
-    lines with the same REVERSAL fields, the amount negated, in the group's fiscal year or the next. Returns
+    lines with the same REVERSAL fields, the amount negated, in the group's fiscal year or the next; identical
+    negative copies of a family with a payment go only with identical positive copies of the family. Returns
     {identity: (line, copies kept)} and the counts for the report."""
     groups = collections.defaultdict(list)
     for r in raw:
@@ -230,17 +234,45 @@ def identical(raw):
         if decimal.Decimal(g[0]["amount"]) < 0:
             reversals[(tuple(g[0][c] for c in REVERSAL), -decimal.Decimal(g[0]["amount"]))].add(
                 (int(g[0]["fiscal_year"]), k))
-    kept, stats = {}, collections.Counter()
+    keep, stats = {}, collections.Counter()
     for k, g in groups.items():
-        amount, fy, keep = decimal.Decimal(g[0]["amount"]), int(g[0]["fiscal_year"]), 1
+        amount, fy, keep[k] = decimal.Decimal(g[0]["amount"]), int(g[0]["fiscal_year"]), 1
         if amount > 0 and len(g) > 1:
             n_rev = sum(y in (fy, fy + 1) for y, _ in reversals[(tuple(g[0][c] for c in REVERSAL), amount)])
-            keep = min(len(g), n_rev + 1)
-            stats["void_kept"] += keep - 1
-            stats["void_kept_dollars"] += (keep - 1) * amount
-        kept[k] = (g[0], keep)
-        stats["dropped"] += len(g) - keep
-        stats["dropped_dollars"] += (len(g) - keep) * amount
+            keep[k] = min(len(g), n_rev + 1)
+            stats["void_kept"] += keep[k] - 1
+            stats["void_kept_dollars"] += (keep[k] - 1) * amount
+    # identical voids (owner decision A of 2026-10-07): in a family (same REVERSAL fields, amount up to sign, fiscal
+    # years chained by same or next year) that has a payment, identical negative copies are dropped only as often as
+    # the family's identical positive copies (negative groups in the order of their raw columns), so the family keeps
+    # its raw net; a family without payments keeps each identical negative line once
+    by_key = collections.defaultdict(lambda: collections.defaultdict(list))
+    for k, g in groups.items():
+        if decimal.Decimal(g[0]["amount"]) != 0:
+            by_key[(tuple(g[0][c] for c in REVERSAL), abs(decimal.Decimal(g[0]["amount"])))][
+                int(g[0]["fiscal_year"])].append(k)
+    families = []
+    for key in sorted(by_key):
+        prev = None
+        for y in sorted(by_key[key]):
+            if prev is None or y > prev + 1:
+                families.append([])
+            families[-1] += by_key[key][y]
+            prev = y
+    for fam in families:
+        if not any(decimal.Decimal(groups[k][0]["amount"]) > 0 for k in fam):
+            continue
+        allowed = sum(len(groups[k]) - keep[k] for k in fam if decimal.Decimal(groups[k][0]["amount"]) > 0)
+        for k in sorted(k for k in fam if decimal.Decimal(groups[k][0]["amount"]) < 0):
+            drop_n = min(len(groups[k]) - 1, allowed)
+            allowed -= drop_n
+            stats["void_fix"] += len(groups[k]) - drop_n - keep[k]
+            keep[k] = len(groups[k]) - drop_n
+    kept = {}
+    for k, g in groups.items():
+        kept[k] = (g[0], keep[k])
+        stats["dropped"] += len(g) - keep[k]
+        stats["dropped_dollars"] += (len(g) - keep[k]) * decimal.Decimal(g[0]["amount"])
     return kept, stats
 
 

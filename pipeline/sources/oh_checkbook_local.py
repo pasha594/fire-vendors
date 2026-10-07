@@ -79,7 +79,10 @@ re-uploaded under a new row Id and days doubled inside one upload (Hamilton Town
 where reversals counts the distinct lines (identical reversals once) of the same participant, payee, fund,
 department and object with the amount negated, dated in the group's year or the next (REVERSAL); so a payment,
 its void and its identical reissue keep their net. Negative amounts (voids, refunds, reversals) are kept so they
-net out; identical negative lines are kept once. Every fetched slice is checked against the dashboard's own summary totals for the same filters, per year.
+net out. Identical voids (owner decision A of 2026-10-07): in a payment and reversal family (same REVERSAL fields,
+amount up to sign, years chained by same or next year) that has a payment, identical negative copies are dropped
+only as often as the family's identical positive copies, so the family keeps its raw net; identical negative lines
+of a family without payments are kept once. Every fetched slice is checked against the dashboard's own summary totals for the same filters, per year.
 """
 import argparse
 import collections
@@ -151,7 +154,8 @@ DOUBLED_MIN = 10  # lines in a month before the month can be judged as uploaded 
 # date (RELOAD_MIN or more, none negative) that are each an exact copy of a line of that date in an earlier upload
 # are a reload (Perkins Township (Erie): 2025-12-18 and 2026-01-09 uploaded again about 1.1 million TransactionIds
 # later). Identical lines left after these rules are kept once by unidentical (owner rule of 2026-10-07), copies
-# of a voided and reissued payment as many times as it has reversals plus one.
+# of a voided and reissued payment as many times as it has reversals plus one, identical voids of a payment family
+# as often as needed to keep its net (owner decision A of 2026-10-07).
 RELOAD_GAP = 100000
 RELOAD_MIN = 3
 # Special districts that are fire agencies (whole checkbook), and the ones whose name suggests fire or EMS but
@@ -849,42 +853,85 @@ def identity(r):
     return tuple(sorted((k, v) for k, v in r.items() if k not in ROW_IDS))
 
 
+def families(groups, year):
+    """Payment and reversal families (owner decision A of 2026-10-07): the identities of groups whose lines share
+    the REVERSAL fields and the amount up to sign, split into runs of years where each year is the same as or the
+    next after the one before (a reversal is dated in its payment's year or the next). Lines of amount 0 belong to
+    no family. Returns lists of identities, each family once, in a fixed order."""
+    by_key = collections.defaultdict(lambda: collections.defaultdict(list))
+    for k, g in groups.items():
+        if money(g[0]["Amt"]) != 0:
+            by_key[(tuple(g[0][c] for c in REVERSAL), abs(money(g[0]["Amt"])))][year(g[0])].append(k)
+    out = []
+    for key in sorted(by_key):
+        prev = None
+        for y in sorted(by_key[key]):
+            if prev is None or y > prev + 1:
+                out.append([])
+            out[-1] += by_key[key][y]
+            prev = y
+    return out
+
+
 def unidentical(entity, rows, stats):
     """Owner rule of 2026-10-07 as corrected: identical lines (identity) are kept once, the lowest row Id. A group
     of n identical positive lines keeps min(n, reversals + 1), the lowest row Ids: reversals counts the distinct
     identities (identical reversals once) of the negative lines with the same REVERSAL fields, the amount negated
     and a date in the group's year or the next, so a payment voided and reissued identically keeps its net.
-    Returns the kept rows and the dropped ones."""
+    Identical voids (owner decision A of 2026-10-07): in a family (families) that has a payment, identical negative
+    copies are dropped only as often as the family's identical positive copies are dropped (the family's negative
+    groups in order of their lowest row Id, each keeping its lowest row Ids), so the family keeps its raw net; a
+    family without payments keeps each identical negative line once. Returns the kept rows and the dropped ones."""
     groups = collections.defaultdict(list)
-    for r in rows:
+    for r in sorted(rows, key=lambda r: int(r["Id"])):
         groups[identity(r)].append(r)
     reversals = collections.defaultdict(set)  # (REVERSAL fields, amount reversed) -> {(year, identity)}
     for k, g in groups.items():
         if money(g[0]["Amt"]) < 0:
             reversals[(tuple(g[0][c] for c in REVERSAL), -money(g[0]["Amt"]))].add((int(g[0]["TransDate"][:4]), k))
-    drop = set()
+    keep = {}
     for k, g in groups.items():
-        g = sorted(g, key=lambda r: int(r["Id"]))
-        amount, year, keep = money(g[0]["Amt"]), int(g[0]["TransDate"][:4]), 1
+        amount, year, keep[k] = money(g[0]["Amt"]), int(g[0]["TransDate"][:4]), 1
         if amount > 0 and len(g) > 1:
             n_rev = sum(y in (year, year + 1) for y, _ in reversals[(tuple(g[0][c] for c in REVERSAL), amount)])
-            keep = min(len(g), n_rev + 1)
-            if keep > 1:
+            keep[k] = min(len(g), n_rev + 1)
+            if keep[k] > 1:
                 stats["void_kept_groups"] += 1
-                stats["void_kept_lines"] += keep - 1
-                stats["void_kept_dollars"] += (keep - 1) * amount
-        if len(g) > keep:
+                stats["void_kept_lines"] += keep[k] - 1
+                stats["void_kept_dollars"] += (keep[k] - 1) * amount
+    # identical voids: a family with payments drops a negative copy only together with a positive copy
+    for fam in families(groups, lambda r: int(r["TransDate"][:4])):
+        if not any(money(groups[k][0]["Amt"]) > 0 for k in fam):
+            continue  # negative lines only: each identical negative line kept once
+        allowed = sum(len(groups[k]) - keep[k] for k in fam if money(groups[k][0]["Amt"]) > 0)
+        touched = False
+        for k in sorted((k for k in fam if money(groups[k][0]["Amt"]) < 0), key=lambda k: int(groups[k][0]["Id"])):
+            drop_n = min(len(groups[k]) - 1, allowed)
+            allowed -= drop_n
+            if len(groups[k]) - drop_n != keep[k]:
+                touched = True
+                stats["void_fix_lines"] += len(groups[k]) - drop_n - keep[k]
+                stats["void_fix_dollars"] += (len(groups[k]) - drop_n - keep[k]) * money(groups[k][0]["Amt"])
+                keep[k] = len(groups[k]) - drop_n
+        if touched:
+            stats["void_fix_families"] += 1
+            assert sum(keep[k] * money(groups[k][0]["Amt"]) for k in fam) \
+                == sum(len(groups[k]) * money(groups[k][0]["Amt"]) for k in fam), f"{entity['name']}: family net"
+    drop = set()
+    for k, g in groups.items():
+        amount = money(g[0]["Amt"])
+        if len(g) > keep[k]:
             stats["identical_groups"] += 1
-            drop |= {r["Id"] for r in g[keep:]}
+            drop |= {r["Id"] for r in g[keep[k]:]}
             if amount < 0:
-                stats["identical_negative_lines"] += len(g) - keep
-                stats["identical_negative_dollars"] += (len(g) - keep) * amount
+                stats["identical_negative_lines"] += len(g) - keep[k]
+                stats["identical_negative_dollars"] += (len(g) - keep[k]) * amount
     lines = [r for r in rows if r["Id"] in drop]
     kept = [r for r in rows if r["Id"] not in drop]
     stats["identical_lines"] += len(lines)
     stats["identical_dollars"] += sum(money(r["Amt"]) for r in lines)
     # reported: payment and reversal families (REVERSAL fields and amount, both signs present) whose net the rule
-    # raised, which happens only where identical reversals were kept once
+    # raised; none since the identical-void fix (a negative copy goes only with a positive copy)
     net = collections.defaultdict(lambda: [decimal.Decimal(0), decimal.Decimal(0), set()])
     for r in rows:
         f = net[(tuple(r[c] for c in REVERSAL), abs(money(r["Amt"])))]
@@ -984,7 +1031,8 @@ def normalize():
                 "police its mixed Public Safety lines are left out. Cities and villages: only lines whose fund or "
                 "department is named for fire; fire spending they book under general 'Public Safety' lines is not "
                 "included. Lines identical in every column the checkbook publishes (row ids aside) are shown "
-                "once, a voided and identically reissued payment as often as it was voided plus one. Most of the "
+                "once, a voided and identically reissued payment as often as it was voided plus one, and identical "
+                "voids of a payment as often as needed to keep its net as published. Most of the "
                 "dollars are payroll, pensions and benefits paid through the checkbook. Participation is voluntary "
                 f"and uploads lag by entity (latest payment {last}); FY{years[-1]} partial"})
     common.assemble_agencies(ST)
@@ -999,8 +1047,10 @@ def normalize():
           f"{stats['identical_groups']} groups, {len(IDENTICAL)} agencies; of them "
           f"{stats['identical_negative_lines']} negative, ${stats['identical_negative_dollars']:,.2f}); void rule kept "
           f"{stats['void_kept_lines']} identical lines (${stats['void_kept_dollars']:,.2f}, "
-          f"{stats['void_kept_groups']} groups); {stats['net_raised_families']} payment and reversal families "
-          f"netted higher than raw (${stats['net_raised_dollars']:,.2f}, identical reversals kept once); "
+          f"{stats['void_kept_groups']} groups); identical-void fix kept {stats['void_fix_lines']} negative lines "
+          f"(${stats['void_fix_dollars']:,.2f}) in {stats['void_fix_families']} families, each at its raw net; "
+          f"{stats['net_raised_families']} payment and reversal families netted higher than raw "
+          f"(${stats['net_raised_dollars']:,.2f}); "
           f"{stats['outside']} fetched lines outside the rule or years (of them {stats['township_police_lines']} "
           f"township lines named for fire and police, ${stats['township_police_dollars']:,.2f}); {len(neg)} negative lines "
           f"(${sum(decimal.Decimal(r['amount']) for r in neg):,.2f}) kept")
