@@ -424,31 +424,26 @@ const Core = (function () {
   const decodeEntities = s => (typeof s === 'string' && s.indexOf('&') >= 0
     ? s.replace(/&(amp|lt|gt|quot|apos|#39);/g, (m, e) => ENT[e]) : s);
 
-  // Build lookup tables once after load.
-  // D.rows: [agency id, vendor index, fiscal year, category index, net amount, payee name index (-1: withheld)]
-  function buildIndex(D) {
-    const meta = D.meta;
-    for (const v of D.vendors) v.name = decodeEntities(v.name);
-    D.aliases = D.aliases.map(decodeEntities);
-    const years = meta.years.slice().sort((a, b) => a - b);
-    const partial = new Set(meta.partial_years || []);
+  // Category lookups shared by every view
+  function catIndex(categories) {
     const cat = new Map();
     const groups = [];
-    D.categories.forEach((c, i) => {
+    categories.forEach((c, i) => {
       cat.set(c.id, Object.assign({ pos: i }, c));
       if (!groups.includes(c.group)) groups.push(c.group);
     });
-    const catIds = D.categories.map(c => c.id);                // category id by category index
-    const vendorPos = new Map(D.vendors.map((v, i) => [v.id, i]));
-    // Categories each vendor's rows are in (all years and agencies), in category order
-    const vcatSets = D.vendors.map(() => new Set());
-    for (const r of D.rows) vcatSets[r[1]].add(r[3]);
-    const vcats = vcatSets.map(s => [...s].sort((a, b) => a - b).map(i => catIds[i]));
-    const agency = new Map(D.agencies.map(a => [a.id, a]));
-    // agency id -> {year: latest of the years used, years, amount}: annual expenses are the median of the last three
-    // fully reported fiscal years, so one year of capital spending does not move an agency to a larger size range
+    const catIds = categories.map(c => c.id);                  // category id by category index
+    // Category search terms ("air pack; breathing apparatus" -> ["air pack", "breathing apparatus"])
+    const catTerms = new Map(categories.map(c => [c.id, (c.terms || '').split(';').map(s => s.trim()).filter(Boolean)]));
+    return { cat, groups, catIds, catTerms };
+  }
+  // agency id -> {year: latest of the years used, years, amount}: annual expenses are the median of the last three
+  // fully reported fiscal years, so one year of capital spending does not move an agency to a larger size range.
+  // partialOf(a): the partial fiscal years of the agency's state.
+  function latestOf(agencies, partialOf) {
     const latest = new Map();
-    for (const a of D.agencies) {
+    for (const a of agencies) {
+      const partial = partialOf(a);
       const ys = Object.keys(a.budget || {}).map(Number).filter(y => !partial.has(y) && a.budget[y] != null).sort((x, y) => x - y).slice(-3);
       if (ys.length) {
         const v = ys.map(y => a.budget[y]).sort((x, y) => x - y);
@@ -456,21 +451,336 @@ const Core = (function () {
         latest.set(a.id, { year: ys[ys.length - 1], years: ys, amount: v.length % 2 ? v[mid] : (v[mid - 1] + v[mid]) / 2 });
       }
     }
+    return latest;
+  }
+  function grantsByAgency(grants) {
     const grantsBy = new Map();                                // agency id -> FEMA grants
-    for (const g of D.grants) {
+    for (const g of grants) {
       if (!grantsBy.has(g.agency)) grantsBy.set(g.agency, []);
       grantsBy.get(g.agency).push(g);
     }
-    // Lowercase name plus every reported payee name, for search
-    const vendorText = D.vendors.map(v => [v.name].concat(v.aliases.map(i => D.aliases[i])).join('\n').toLowerCase());
-    const counties = [...new Set(D.agencies.map(a => a.county).filter(Boolean))].sort();
-    // Category search terms ("air pack; breathing apparatus" -> ["air pack", "breathing apparatus"])
-    const catTerms = new Map(D.categories.map(c => [c.id, (c.terms || '').split(';').map(s => s.trim()).filter(Boolean)]));
+    return grantsBy;
+  }
+  const NONE = Object.freeze([]);
+
+  // Lookup tables for one set of rows (a view, or a legacy data.json).
+  // D.rows: [agency id, vendor index, fiscal year, category index, net amount, payee name index (-1: withheld)]
+  // o: {vendorPos (vendor id -> index, the vendors in this view), valiases(vi), vcategory(vi), latest, grantsBy, agency}
+  function indexOf(D, o) {
+    const meta = D.meta;
+    const years = meta.years.slice().sort((a, b) => a - b);
+    const partial = new Set(meta.partial_years || []);
+    const { cat, groups, catIds, catTerms } = o.cats || catIndex(D.categories);
+    const vendorPos = o.vendorPos;
+    // Categories each vendor's rows are in (all years and agencies), in category order
+    const vcatSets = new Map();
+    for (const r of D.rows) {
+      let s = vcatSets.get(r[1]);
+      if (!s) vcatSets.set(r[1], (s = new Set()));
+      s.add(r[3]);
+    }
+    const vcats = new Array(D.vendors.length).fill(NONE);
+    for (const [vi, s] of vcatSets) vcats[vi] = [...s].sort((a, b) => a - b).map(i => catIds[i]);
+    // Lowercase name plus every reported payee name, for search ('' for vendors outside the view)
+    const vendorText = new Array(D.vendors.length).fill('');
+    for (const vi of vendorPos.values()) {
+      vendorText[vi] = [D.vendors[vi].name].concat(o.valiases(vi).map(i => D.aliases[i])).join('\n').toLowerCase();
+    }
+    const counties = o.counties || [...new Set(D.agencies.map(a => a.county).filter(Boolean))].sort();
     return {
-      D, meta, years, partial, cat, groups, catIds, vcats, vendorPos, agency, latest, grantsBy, vendorText, counties, catTerms,
+      D, meta, years, partial, cat, groups, catIds, vcats, vendorPos, vendorText, counties, catTerms,
+      agency: o.agency || new Map(D.agencies.map(a => [a.id, a])),
+      latest: o.latest || latestOf(D.agencies, () => partial),
+      grantsBy: o.grantsBy || grantsByAgency(D.grants),
+      valiases: o.valiases,                                    // vendor index -> payee name indexes in this view
+      vcategory: o.vcategory,                                  // vendor index -> main category id in this view
       P: null,                                                 // single payments, set by setPayments
     };
   }
+  // Lookup tables for a legacy data/data.json (Utah only, numeric agency ids), as the page had them
+  // before the states were split. Kept for the tests.
+  function buildIndex(D) {
+    for (const v of D.vendors) v.name = decodeEntities(v.name);
+    D.aliases = D.aliases.map(decodeEntities);
+    return indexOf(D, {
+      vendorPos: new Map(D.vendors.map((v, i) => [v.id, i])),
+      valiases: vi => D.vendors[vi].aliases,
+      vcategory: vi => D.vendors[vi].category,
+    });
+  }
+
+  /* ---- Store: data/index.json plus every state file loaded so far ----
+     The page starts with data/index.json (agencies of every state, categories and the precomputed
+     default tables in home). A state's rows (data/<st>.json) and single payments (data/<st>-payments.json)
+     load when a view needs them. Vendors are shared by id: each state file's vendor indexes are mapped to
+     one global list, and payee names and descriptions are appended to global lists. */
+  function buildStore(I) {
+    const meta = I.meta;
+    if (!meta || !Array.isArray(meta.states_order) || !Array.isArray(I.agencies) || !Array.isArray(I.categories)) {
+      throw new Error('data/index.json is missing meta, agencies or categories');
+    }
+    const order = meta.states_order.slice();
+    const st = {};
+    for (const s of order) {
+      const m = meta.states[s];
+      st[s] = {
+        code: s, meta: m, name: m.name, partial: new Set(m.partial_years || []),
+        agencies: I.agencies.filter(a => a.state === s),
+        rows: null,          // set by addState: rows with global vendor and payee name indexes
+        grants: [], totals: [],
+        vmap: null,          // local vendor index -> global
+        vcat: new Map(),     // global vendor index -> the state's main category of the vendor
+        valias: new Map(),   // global vendor index -> global payee name indexes
+        aoff: 0,             // offset of the state's payee names in the global list
+        payments: null,      // set by addPayments
+        items: null,         // set by addItems
+      };
+      st[s].counties = [...new Set(st[s].agencies.map(a => a.county).filter(Boolean))].sort();
+    }
+    const store = {
+      I, meta, order, st, categories: I.categories, home: I.home || {},
+      cats: catIndex(I.categories),
+      agencies: I.agencies,
+      agency: new Map(I.agencies.map(a => [a.id, a])),
+      vendors: [], vendorPos: new Map(), aliases: [], descriptions: [],
+      grantsBy: new Map(),
+      views: new Map(),     // scope -> view, cleared when data is added
+      version: 0,           // counts addState calls
+      payVersion: 0,        // counts addPayments calls
+    };
+    store.latest = latestOf(I.agencies, a => (st[a.state] ? st[a.state].partial : new Set(meta.partial_years || [])));
+    return store;
+  }
+  const isLoaded = (store, s) => !!(store.st[s] && store.st[s].rows);
+  // data/<st>.json: {built, state, vendors, aliases, rows, grants, totals}, indexes local to the file
+  function addState(store, s, D) {
+    const S = store.st[s];
+    if (!S) throw new Error('Unknown state ' + s);
+    if (S.rows) return S;
+    const file = S.meta.files && S.meta.files.rows || s;
+    if (!D || D.state !== s || !Array.isArray(D.vendors) || !Array.isArray(D.aliases) || !Array.isArray(D.rows)) {
+      throw new Error(file + ' is not the ' + S.name + ' data file');
+    }
+    if (D.built !== store.meta.built) {
+      throw new Error(file + ' (built ' + D.built + ') is not from the same build as data/index.json (built ' + store.meta.built + ')');
+    }
+    const nc = store.categories.length, na = D.aliases.length, nv = D.vendors.length;
+    for (const r of D.rows) {
+      const a = store.agency.get(r[0]);
+      if (!a || a.state !== s || !(r[1] >= 0 && r[1] < nv) || !(r[3] >= 0 && r[3] < nc) || !(r[5] >= -1 && r[5] < na)) {
+        throw new Error(file + ' does not match data/index.json');
+      }
+    }
+    const aoff = store.aliases.length;
+    for (const x of D.aliases) store.aliases.push(decodeEntities(x));
+    const vmap = new Array(nv);
+    D.vendors.forEach((v, i) => {
+      let gi = store.vendorPos.get(v.id);
+      if (gi == null) {
+        gi = store.vendors.length;
+        store.vendors.push({ id: v.id, name: decodeEntities(v.name), method: v.method, neris: v.neris });
+        store.vendorPos.set(v.id, gi);
+      }
+      vmap[i] = gi;
+      S.vcat.set(gi, v.category);
+      S.valias.set(gi, (v.aliases || []).map(x => x + aoff));
+    });
+    for (const r of D.rows) {
+      r[1] = vmap[r[1]];
+      if (r[5] >= 0) r[5] += aoff;
+    }
+    S.vmap = vmap;
+    S.aoff = aoff;
+    S.na = na;
+    S.grants = D.grants || [];
+    S.totals = D.totals || [];
+    S.rows = D.rows;
+    const all = [];
+    for (const x of store.order) if (store.st[x].rows) for (const g of store.st[x].grants) all.push(g);
+    store.grantsBy = grantsByAgency(all);
+    store.version++;
+    store.views.clear();
+    return S;
+  }
+  // data/<st>-payments.json: {built, state, payments, descriptions}, after the state's rows.
+  // p = [agency id, posting date, vendor index, category index, amount, description index, payee name index, fiscal year]
+  function addPayments(store, s, P) {
+    const S = store.st[s];
+    if (!S || !S.rows) throw new Error('Payments of ' + s + ' before its rows');
+    if (S.payments) return S.payments;
+    const file = S.meta.files && S.meta.files.payments || s;
+    if (!P || P.state !== s || !Array.isArray(P.payments) || !Array.isArray(P.descriptions)) throw new Error(file + ' has no payments list');
+    if (P.built !== store.meta.built) {
+      throw new Error(file + ' (built ' + P.built + ') is not from the same build as data/index.json (built ' + store.meta.built + ')');
+    }
+    const nv = S.vmap.length, nc = store.categories.length, nd = P.descriptions.length, na = S.na;
+    for (const p of P.payments) {
+      const a = store.agency.get(p[0]);
+      if (!a || a.state !== s || !(p[2] >= 0 && p[2] < nv) || !(p[3] >= 0 && p[3] < nc) ||
+          !(p[5] >= 0 && p[5] < nd) || !(p[6] >= -1 && p[6] < na)) {
+        throw new Error(file + ' does not match ' + (S.meta.files && S.meta.files.rows || s));
+      }
+    }
+    const doff = store.descriptions.length;
+    for (const d of P.descriptions) store.descriptions.push(cleanDesc(d));
+    for (const p of P.payments) {
+      p[2] = S.vmap[p[2]];
+      p[5] += doff;
+      if (p[6] >= 0) p[6] += S.aoff;
+    }
+    S.payments = P.payments;
+    store.payVersion++;
+    return S.payments;
+  }
+  // Some descriptions carry control characters between items; show them as spaces
+  const cleanDesc = s => decodeEntities(String(s)).replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/ {2,}/g, ' ').trim();
+  // data/<st>-items.json: {built, state, sources, strings, items}; item = [agency id, fiscal year, date,
+  // vendor index, brand, product type, description (string indexes), quantity, unit price, amount, category index, source index]
+  function addItems(store, s, X) {
+    const S = store.st[s];
+    if (!S || !S.rows) throw new Error('Items of ' + s + ' before its rows');
+    if (S.items) return S.items;
+    const file = S.meta.files && S.meta.files.items || s;
+    if (!X || X.state !== s || !Array.isArray(X.items) || !Array.isArray(X.strings)) throw new Error(file + ' has no items list');
+    if (X.built !== store.meta.built) {
+      throw new Error(file + ' (built ' + X.built + ') is not from the same build as data/index.json (built ' + store.meta.built + ')');
+    }
+    const nv = S.vmap.length, ns = X.strings.length, nc = store.categories.length, nsrc = (X.sources || []).length;
+    const okStr = i => i === -1 || i == null || (i >= 0 && i < ns);
+    for (const it of X.items) {
+      const a = store.agency.get(it[0]);
+      if (!a || a.state !== s || !(it[3] >= 0 && it[3] < nv) || !okStr(it[4]) || !okStr(it[5]) || !okStr(it[6]) ||
+          !(it[10] >= 0 && it[10] < nc) || !(it[11] >= 0 && it[11] < nsrc)) {
+        throw new Error(file + ' does not match ' + (S.meta.files && S.meta.files.rows || s));
+      }
+    }
+    for (const it of X.items) it[3] = S.vmap[it[3]];
+    S.items = { sources: X.sources || [], strings: X.strings.map(cleanDesc), items: X.items };
+    store.views.clear();
+    return S.items;
+  }
+
+  const scopeStates = (store, scope) => (scope === 'ALL' ? store.order.slice() : [scope]);
+  const scopeYears = (store, scope) => (scope === 'ALL' ? store.meta.years : store.st[scope].meta.years).slice().sort((a, b) => a - b);
+  // A view: the lookup tables of indexOf for one scope (one state, or 'ALL'), over the rows loaded so far.
+  // For scope UT it equals the index the page built from Utah's data.json before the split.
+  // loaded: every state in the scope is loaded. pre: the precomputed default table of the scope.
+  function view(store, scope) {
+    let v = store.views.get(scope);
+    if (v) return v;
+    const sts = scopeStates(store, scope);
+    const loadedSts = sts.filter(s => isLoaded(store, s));
+    const rows = loadedSts.length === 1 ? store.st[loadedSts[0]].rows : [].concat(...loadedSts.map(s => store.st[s].rows));
+    const grants = [].concat(...loadedSts.map(s => store.st[s].grants));
+    const meta = scope === 'ALL'
+      ? Object.assign({}, store.meta, { years: scopeYears(store, scope) })
+      : Object.assign({ built: store.meta.built, state: scope }, store.st[scope].meta);
+    const agencies = scope === 'ALL' ? store.agencies : store.st[scope].agencies;
+    const D = { meta, categories: store.categories, agencies, vendors: store.vendors, aliases: store.aliases, rows, grants };
+    // The vendors of the scope's files (with rows, single payments or item lines there)
+    const vendorPos = new Map();
+    for (const s of loadedSts) for (const gi of store.st[s].vmap) if (!vendorPos.has(store.vendors[gi].id)) vendorPos.set(store.vendors[gi].id, gi);
+    const valiases = sts.length === 1
+      ? vi => store.st[sts[0]].valias.get(vi) || NONE
+      : vi => {
+        const out = [], seen = new Set();
+        for (const s of loadedSts) {
+          for (const i of store.st[s].valias.get(vi) || NONE) {
+            if (seen.has(store.aliases[i])) continue;
+            seen.add(store.aliases[i]);
+            out.push(i);
+          }
+        }
+        return out;
+      };
+    // Main category: the state file's; over several states, the category with the largest net amount
+    let mainCat = null;
+    const vcategory = sts.length === 1
+      ? vi => store.st[sts[0]].vcat.get(vi) || null
+      : vi => {
+        if (!mainCat) mainCat = catsByVendor({ catIds: store.cats.catIds }, rows);
+        const l = mainCat.get(vi);
+        if (l && l.length) return l[0];
+        for (const s of loadedSts) if (store.st[s].vcat.has(vi)) return store.st[s].vcat.get(vi);
+        return null;
+      };
+    v = indexOf(D, {
+      cats: store.cats, vendorPos, valiases, vcategory,
+      agency: store.agency, latest: store.latest, grantsBy: store.grantsBy,
+      counties: scope === 'ALL' ? [] : store.st[scope].counties,
+    });
+    v.store = store;
+    v.scope = scope;
+    v.states = sts;
+    v.loaded = loadedSts.length === sts.length;
+    v.pre = store.home[scope] || null;
+    // Single payments of the scope, once every state in it has them
+    let pv = -1, pc = null;
+    Object.defineProperty(v, 'P', {
+      enumerable: true,
+      get() {
+        if (pv !== store.payVersion) {
+          pv = store.payVersion;
+          const ps = sts.map(s => store.st[s].payments);
+          pc = ps.every(Boolean) ? { payments: ps.length === 1 ? ps[0] : [].concat(...ps), descriptions: store.descriptions } : null;
+        }
+        return pc;
+      },
+    });
+    store.views.set(scope, v);
+    return v;
+  }
+
+  // The scope of URL parameters p: the selected agency's state, else the state filter, else 'ALL'.
+  // A numeric agency id is an older Utah link (UT-<id>). A county without a state picks Utah when Utah
+  // has that county (older links were all Utah), else the one state that has it.
+  function resolve(store, p) {
+    const has = k => p[k] != null && p[k] !== '';
+    const bad = [];
+    let agency = null;
+    if (has('agency')) {
+      const raw = String(p.agency);
+      const id = /^\d+$/.test(raw) ? 'UT-' + raw : raw;
+      if (store.agency.has(id)) agency = id;
+    }
+    let state = '';
+    if (has('state')) {
+      const s = String(p.state).toUpperCase();
+      if (store.st[s]) state = s; else bad.push('state "' + p.state + '"');
+    }
+    let county = has('county') ? String(p.county) : '';
+    if (county && !state) {
+      const withC = store.order.filter(s => store.st[s].counties.includes(county));
+      if (withC.includes('UT')) state = 'UT';
+      else if (withC.length === 1) state = withC[0];
+      else if (!agency || !withC.includes(store.agency.get(agency).state)) {
+        bad.push('county "' + county + '"' + (withC.length ? ' (choose a state)' : ''));
+      }
+    }
+    const scope = agency ? store.agency.get(agency).state : state || 'ALL';
+    return { agency, state, scope, bad };
+  }
+  // The default view of a scope (no filters, all years, grouped by category) is precomputed in
+  // data/index.json, so it shows before any state file loads. Other views need the scope's states.
+  function isHome(store, p, scope) {
+    const has = k => p[k] != null && p[k] !== '';
+    if (['cat', 'group', 'purch', 'vendor', 'agency', 'year', 'county', 'size', 'np', 'q'].some(has)) return false;
+    if (has('g') && p.g !== 'category') return false;
+    if (!store.home[scope]) return false;
+    const ys = scopeYears(store, scope);
+    if (has('from') && Number(p.from) !== ys[0]) return false;
+    if (has('to') && Number(p.to) !== ys[ys.length - 1]) return false;
+    return true;
+  }
+  // What a view of URL parameters p needs: {scope, states, missing (states not loaded), pre (precomputed)}
+  function needs(store, p) {
+    p = p || {};
+    const R = resolve(store, p);
+    const states = scopeStates(store, R.scope);
+    return { scope: R.scope, states, missing: states.filter(s => !isLoaded(store, s)), pre: isHome(store, p, R.scope) };
+  }
+  // The scope a state s (from normState) is in
+  const scopeOf = (store, s) => (s.agency != null && store.agency.has(s.agency) ? store.agency.get(s.agency).state : s.state || 'ALL');
 
   // Single payments from data/payments.json, loaded when a view first needs them:
   // P.payments: [agency id, posting date, vendor index, category index, amount, description index, payee name index, fiscal year]
@@ -609,28 +919,41 @@ const Core = (function () {
   // and category (all payee names) is positive. Agencies (ag), vendors (ve) and the last year paid
   // come from those agency-vendor-year-categories only, so an agency with nothing but credits or
   // corrections from a vendor is in the spend but not in the counts. Every grouping (category, vendor,
-  // agency, year) keeps each agency-vendor-year-category whole, so grouped counts add up to the totals.
-  function agg(rows, keyFn) {
+  // agency, year) keeps each agency-vendor-year-category whole, so grouped counts add up to the totals:
+  // keyFn must depend on the agency, vendor, year and category of a row only.
+  // total (optional, an emptyAgg): also gets the totals over all rows, as summary(rows) would.
+  const AGI = new Map();                                     // agency id -> small number, for the keys below
+  function agg(rows, keyFn, total) {
     const m = new Map();
-    const net = new Map();                                   // group key -> agency|vendor|year|category -> net
+    const net = new Map();                                   // agency-vendor-year-category -> [group, agency, vendor, year, net]
     for (const r of rows) {
       const k = keyFn(r);
       let o = m.get(k);
-      if (!o) { m.set(k, (o = emptyAgg(k))); net.set(k, new Map()); }
+      if (!o) m.set(k, (o = emptyAgg(k)));
       o.spend += r[4];
       o.n++;
       o.yr[r[2]] = (o.yr[r[2]] || 0) + r[4];
-      const nm = net.get(k), nk = r[0] + '|' + r[1] + '|' + r[2] + '|' + r[3];
-      nm.set(nk, (nm.get(nk) || 0) + r[4]);
+      if (total) {
+        total.spend += r[4];
+        total.n++;
+        total.yr[r[2]] = (total.yr[r[2]] || 0) + r[4];
+      }
+      // Agency ids are strings ("UT-359"; numbers in a legacy data.json). A number key is faster than text.
+      let ai = AGI.get(r[0]);
+      if (ai === undefined) AGI.set(r[0], (ai = AGI.size));
+      const y = r[2] - 1950;
+      const nk = r[1] < 1048576 && y >= 0 && y < 128 && r[3] >= 0 && r[3] < 128
+        ? ((ai * 1048576 + r[1]) * 128 + y) * 128 + r[3] : r[0] + '|' + r[1] + '|' + r[2] + '|' + r[3];
+      let e = net.get(nk);
+      if (!e) net.set(nk, (e = [o, r[0], r[1], r[2], 0]));
+      e[4] += r[4];
     }
-    for (const [k, nm] of net) {
-      const o = m.get(k);
-      for (const [nk, v] of nm) {
-        if (!(v > 0.005)) continue;                          // positive to the cent
-        const [a, ve, y] = nk.split('|').map(Number);
-        o.ag.add(a);
-        o.ve.add(ve);
-        if (o.last == null || y > o.last) o.last = y;
+    for (const e of net.values()) {
+      if (!(e[4] > 0.005)) continue;                         // positive to the cent
+      for (const o of total ? [e[0], total] : [e[0]]) {
+        o.ag.add(e[1]);
+        o.ve.add(e[2]);
+        if (o.last == null || e[3] > o.last) o.last = e[3];
       }
     }
     return m;
@@ -828,9 +1151,16 @@ const Core = (function () {
   }
 
   // URL parameters (strings) -> state. Ids that do not match the data are dropped and listed in bad.
-  function normState(ix, p) {
+  // With the store (the page), the state also has state (the state filter, '' for all states) and scope
+  // (see resolve); everything else is checked against the scope's view. With a legacy index (tests), as before.
+  function normState(store, p) {
     p = p || {};
-    const bad = [];
+    let ix = store, R = null;
+    if (store.views) {
+      R = resolve(store, p);
+      ix = view(store, R.scope);
+    }
+    const bad = R ? R.bad.slice() : [];
     const gp = Object.assign({}, p);
     const has = k => p[k] != null && p[k] !== '';
     if (has('year')) {
@@ -849,9 +1179,15 @@ const Core = (function () {
     for (const id of pc.bad) bad.push('category "' + id + '"');
     take('group', 'category group', ix.groups.includes(p.group), p.group);
     take('purch', 'purchasing flag', p.purch === 'yes' || p.purch === 'no', p.purch);
-    take('vendor', 'vendor', ix.vendorPos.has(p.vendor), p.vendor);
-    const ag = Number(p.agency);
-    take('agency', 'agency', /^\d+$/.test(String(p.agency)) && ix.agency.has(ag), ag);
+    if (R && has('vendor') && !ix.vendorPos.has(p.vendor) && store.vendorPos.has(p.vendor)) {
+      s.vendor = null;                                         // a vendor of another state
+      bad.push('vendor "' + p.vendor + '" (no payments in ' + (R.scope === 'ALL' ? 'these states' : store.st[R.scope].name) + ')');
+    } else take('vendor', 'vendor', ix.vendorPos.has(p.vendor), p.vendor);
+    if (R) take('agency', 'agency', R.agency != null, R.agency);
+    else {
+      const ag = Number(p.agency);
+      take('agency', 'agency', /^\d+$/.test(String(p.agency)) && ix.agency.has(ag), ag);
+    }
     // Category and vendor together are an intersection (it can be empty). The category group and
     // purchasing flag from older links are dropped when they contradict every category of the
     // vendor's rows, or every selected category.
@@ -873,17 +1209,27 @@ const Core = (function () {
     s.q = s.g !== 'year' && typeof p.q === 'string' ? p.q : '';
     s.years = p.years === '1';
     if (has('type') || has('staff')) bad.push('agency type and staffing filters (no longer available)');
+    if (R) { s.state = R.state; s.scope = R.scope; }
     s.bad = bad;
     return s;
   }
-  // State -> URL parameters, in a fixed order, leaving out defaults.
+  // The default view of its scope (see isHome), whose table is precomputed
+  function isDefault(ix, s) {
+    return s.g === 'category' && s.cat == null && s.group == null && s.purch == null && s.vendor == null && s.agency == null &&
+      !s.county && !s.size && !s.np && !s.q && s.from === ix.years[0] && s.to === ix.years[ix.years.length - 1];
+  }
+  // State -> URL parameters, in a fixed order, leaving out defaults. ix is the view the state was made in;
+  // the years are left out when they are the ends of that view's range or of the range the state leads to,
+  // so the full range stays the full range when the state filter or the agency moves to another state.
   function stateParams(ix, s) {
     const out = [['g', s.g]];
+    if (s.state) out.push(['state', s.state]);
     for (const k of ['cat', 'group', 'purch', 'vendor', 'agency']) {
       if (s[k] != null) out.push([k, Array.isArray(s[k]) ? s[k].join(',') : String(s[k])]);
     }
-    if (s.from !== ix.years[0]) out.push(['from', String(s.from)]);
-    if (s.to !== ix.years[ix.years.length - 1]) out.push(['to', String(s.to)]);
+    const ys = ix.years, ts = ix.store ? scopeYears(ix.store, scopeOf(ix.store, s)) : ys;
+    if (s.from !== ys[0] && s.from !== ts[0]) out.push(['from', String(s.from)]);
+    if (s.to !== ys[ys.length - 1] && s.to !== ts[ts.length - 1]) out.push(['to', String(s.to)]);
     for (const k of ['county', 'size']) if (s[k]) out.push([k, s[k]]);
     if (s.np) out.push(['np', '1']);
     if (s.q) out.push(['q', s.q]);
@@ -959,38 +1305,58 @@ const Core = (function () {
   // rows); vendors are listed when they have rows. Agencies: every agency in the filters, or only
   // those with rows when a category or vendor filter is set. When category, vendor or other row
   // filters match no rows, every grouping is empty.
+  //
+  // Before the scope's states are loaded, the default view (isDefault) comes from the precomputed table in
+  // data/index.json (pre: true): ag and ve are {size} only, rows is empty and sum has no last year.
+  // peersData: the peers with vendor data (coverage 1 payee lines or 2 item lines); the others are in
+  // nodata, and in the agency grouping (not narrowed) their items have nodata set.
   function tableModel(ix, s) {
     const f = rowFilter(s);
     const peers = s.agency != null ? new Set([s.agency]) : peerIds(ix, s);
+    const peersData = new Set(), nodata = new Set();
+    for (const id of peers) {
+      const a = ix.agency.get(id);
+      if (a && a.coverage > 2) nodata.add(id); else peersData.add(id);
+    }
+    if (ix.pre && ix.loaded === false && isDefault(ix, s)) {
+      const home = new Map(ix.pre.cats.map(c => [ix.catIds[c[0]], c]));
+      const pa = c => ({ key: ix.catIds[c[0]], spend: c[1], n: c[2], ag: { size: c[4] }, ve: { size: c[3] }, yr: Object.assign({}, c[6]), last: c[5] });
+      const items = !peers.size ? [] : categoriesFor(ix, s).map(c => (home.has(c.id) ? pa(home.get(c.id)) : emptyAgg(c.id)));
+      const u = ix.pre.sum;
+      const sum = { key: 0, spend: u[0], n: u[1], ve: { size: u[2] }, ag: { size: u[3] }, yr: Object.assign({}, u[4]), last: null };
+      return { rows: [], items, sum, peers, peersData, nodata, onlyPurch: purchOnly(ix, s, f), narrowed: false, year: fullYear(ix, rangeYears(s)), pre: true };
+    }
     const rows = selectRows(ix, s, f);
-    const sum = summary(rows);
     const onlyPurch = purchOnly(ix, s, f);
     const narrowed = f.cat != null || f.group != null || f.purch != null || f.vendor != null;
+    // The grouping and the totals in one pass
+    const keyFn = { category: r => rowCat(ix, r), vendor: r => r[1], agency: r => r[0], year: r => r[2] }[s.g];
+    let sum = emptyAgg(0);
+    let by = null;
+    if (keyFn) by = agg(rows, keyFn, sum); else sum = summary(rows);
     let items;
     if (!peers.size || (narrowed && !rows.length)) items = [];
     else if (s.g === 'category') {
-      const by = agg(rows, r => rowCat(ix, r));
       items = categoriesFor(ix, s).filter(c => s.vendor == null || by.has(c.id)).map(c => by.get(c.id) || emptyAgg(c.id));
     } else if (s.g === 'vendor') {
-      items = [...agg(rows, r => r[1]).values()];
+      items = [...by.values()];
     } else if (s.g === 'agency') {
-      const by = agg(rows, r => r[0]);
-      items = narrowed ? [...by.values()] : [...peers].map(id => by.get(id) || emptyAgg(id));
+      items = narrowed ? [...by.values()] : [...peers].map(id => by.get(id) || (nodata.has(id) ? Object.assign(emptyAgg(id), { nodata: true }) : emptyAgg(id)));
     } else if (s.g === 'year') {
-      const by = agg(rows, r => r[2]);
       items = rangeYears(s).map(y => by.get(y) || emptyAgg(y));
     } else {
       items = rows;
     }
-    return { rows, items, sum, peers, onlyPurch, narrowed, year: fullYear(ix, rangeYears(s)) };
+    return { rows, items, sum, peers, peersData, nodata, onlyPurch, narrowed, year: fullYear(ix, rangeYears(s)), pre: false };
   }
 
   return {
-    SIZES, buildIndex, setPayments, normGlobal, peerIds, rowCat, payCat, purchOnly, catFilter, selectRows, vendorCats, catsByVendor, emptyAgg, agg, summary, grantsIn,
+    SIZES, decodeEntities, buildIndex, setPayments, normGlobal, peerIds, rowCat, payCat, purchOnly, catFilter, selectRows, vendorCats, catsByVendor, emptyAgg, agg, summary, grantsIn,
     selectPayments, paymentsModel, fullYear, rangeYears, staffModel, revenueModel, peopleIn, revenueIn, fyStarts,
     searchRe, searchCategories,
     homeModel, categoryModel, vendorModel, agencyModel, vendorsModel, agenciesModel, rowsModel,
-    GROUPS, parseCats, normState, stateParams, fromPath, rowFilter, nextGroup, drill, categoriesFor, tableModel,
+    GROUPS, parseCats, normState, isDefault, stateParams, fromPath, rowFilter, nextGroup, drill, categoriesFor, tableModel,
+    buildStore, addState, addPayments, addItems, isLoaded, view, resolve, isHome, needs, scopeOf, scopeStates, scopeYears,
   };
 })();
 
