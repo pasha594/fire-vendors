@@ -16,7 +16,9 @@
    - item lines: one per line_items.csv.gz line, in file order, with its agency, year, date, brand, product type,
      description, quantity, unit price and amount; each in-year item's agency, vendor, year and category is a row;
    - totals rows equal totals.csv in the years; budget per agency and year is their sum;
-   - grants equal grants.csv; payments are lines of $1,000 or more in purchasing categories and the years.
+   - grants equal grants.csv; payments are lines of $1,000 or more in purchasing categories and the years, each
+     one its own transaction line (agency, year, date, payee name, amount, description), and none is missing for
+     payees whose rows are in one purchasing category (fewer only by credits of the same amount to the vendor).
 4. Coverage: every agency at tier 1 or 2 has rows, except the Utah agencies with no raw lines (kept at $0, owner
    decision); no agency at tier 3 or 4 has rows, payments or items; coverage counts agree with the agencies.
 5. Files: every file carries the same built date; data/index.json is under 1,000,000 bytes gzipped and every data
@@ -163,6 +165,7 @@ def check_state(st, I, S, P, IT, states_cfg, cat_ids, purchasing):
     shown_of = {}
     want, lines = collections.defaultdict(list), collections.Counter()
     out_of_years = 0
+    big = []                                                  # lines of $1,000 or more (or credits) in the years
     for r in lines_of(d / "transactions.csv.gz"):
         fy = int(r["fiscal_year"])
         if fy not in years:
@@ -171,8 +174,11 @@ def check_state(st, I, S, P, IT, states_cfg, cat_ids, purchasing):
         p = r["payee_name"]
         if p not in shown_of:
             shown_of[p] = build.payee_name(p)[0]
-        want[(r["agency_id"], fy, shown_of[p])].append(float(r["amount"] or 0))
+        amount = float(r["amount"] or 0)
+        want[(r["agency_id"], fy, shown_of[p])].append(amount)
         lines[r["agency_id"]] += 1
+        if abs(amount) >= build.PAYMENT_MIN:
+            big.append((r["agency_id"], fy, r["posting_date"], shown_of[p], round(amount, 2), r["description"]))
     got, n = collections.defaultdict(list), collections.Counter()
     for r in S["rows"]:
         check(r[0] in ids and r[2] in years and 0 <= r[1] < len(S["vendors"]) and 0 <= r[3] < len(cat_ids)
@@ -199,6 +205,32 @@ def check_state(st, I, S, P, IT, states_cfg, cat_ids, purchasing):
     nv, na, nd = len(S["vendors"]), len(S["aliases"]), len(P["descriptions"])
     check(all(p[0] in ids and 0 <= p[2] < nv and 0 <= p[5] < nd and 0 <= p[6] < na and p[7] in years
               and p[4] >= build.PAYMENT_MIN and cat_ids[p[3]] in purchasing for p in P["payments"]), f"{st}: bad payment")
+    # Each payment is its own transaction line: agency, fiscal year, date, payee name, amount and description as published
+    desc = lambda s: (lambda t: t.strip('"').replace('""', '"') if '""' in t else t)(build.clean_payee(s))  # noqa: E731
+    lines_big = collections.Counter((a, fy, dt, who, x, desc(ds)) for a, fy, dt, who, x, ds in big if x > 0)
+    pays = collections.Counter((p[0], p[7], p[1], S["aliases"][p[6]], p[4], P["descriptions"][p[5]]) for p in P["payments"])
+    extra = pays - lines_big
+    check(not extra, f"{st}: {sum(extra.values())} payments are no transaction line of their own, e.g. {list(extra)[:2]}")
+    # None is missing: per agency, vendor and amount, the payments are at least the lines of payees whose rows that year
+    # are all in one purchasing category, less the credits of that amount to the same vendor
+    cats_of, vendor_of = collections.defaultdict(set), {}
+    for a, v, y, c, x, al in S["rows"]:
+        cats_of[(a, S["aliases"][al], y)].add(c)
+        vendor_of[(a, S["aliases"][al])] = v
+    need, credit = collections.Counter(), collections.Counter()
+    for a, fy, _, who, x, _ in big:
+        if (a, who) in vendor_of:
+            k = (a, vendor_of[(a, who)], round(abs(x) * 100))
+            cs = cats_of[(a, who, fy)]
+            if x < 0:
+                credit[k] += 1
+            elif len(cs) == 1 and cat_ids[next(iter(cs))] in purchasing:
+                need[k] += 1
+    got = collections.Counter((p[0], p[2], round(p[4] * 100)) for p in P["payments"])
+    short = [k for k, n in need.items() if got[k] < n - credit[k]]
+    check(not short, f"{st}: {len(short)} agency-vendor-amounts with fewer payments than lines, e.g. {short[:2]}")
+    print(f"   {len(P['payments']):,} payments are distinct transaction lines; none missing among"
+          f" {sum(need.values()):,} lines of single-category purchasing payees")
 
     # Item lines, one per line_items.csv.gz line in file order
     path = d / "line_items.csv.gz"
