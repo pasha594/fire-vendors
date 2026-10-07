@@ -156,9 +156,11 @@ A state adds vendors the same way as before, then merges:
    catches), restore `config/vendor_map.csv` and run it again until the report reads right.
 3. Delete the additions file, rebuild Utah (`python3 pipeline/build.py`) and compare: a state row for a person's
    name shows a Utah payee with the same key under that name, and every Utah change must be intended.
-4. `tests/multistate/check_<st>.py` fails while an additions file is left, and requires `config/vendor_map.csv`
-   with the rules to give a real category (not `unclassified`) to at least 90% of the state's purchasing dollars
-   (net spend per payee key above zero, in a purchasing category or unmapped).
+4. `tests/multistate/check_<st>.py` fails while an additions file is left or when `config/vendor_map.csv` is
+   broken (a repeated or unsorted `name_key`, an unknown category or confidence, an empty vendor:
+   `tests/multistate/vendor_coverage.py`), and requires `config/vendor_map.csv` with the rules to give a real
+   category (not `unclassified`) to at least 90% of the state's purchasing dollars (net spend per payee key above
+   zero, in a purchasing category or unmapped).
 
 `python3 pipeline/sources/merge_vendor_maps.py --check` checks the map alone (sorted unique keys, known
 categories, no name that `config/vendor_name_merges.csv` renames).
