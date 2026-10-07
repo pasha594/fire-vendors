@@ -13,30 +13,34 @@ to June and are written as the year they end in (FY2024 = July 2023 to June 2024
 | `ca_sco_cities` | State Controller, City - Expenditures (Fire function) | 3 | **built** | 224 | 892 totals rows | $22.80B | FY2021-FY2024 |
 | `ca_sf` | San Francisco Vendor Payments (Vouchers) | 1 | **built** | 1 (San Francisco Fire Department) | 34,637 lines | $220.6M | FY2021-FY2027 (FY2027 partial) |
 | `ca_la` | Checkbook L.A. (Los Angeles City Controller) | 1 | **built** | 1 (Los Angeles Fire Department) | 175,405 lines | $696.8M | FY2021-FY2027 (FY2027 partial) |
-| `ca_riverside_county` | County of Riverside Check Book | 1 | **built** | 1 (Riverside County Fire Department) | 252,798 lines | $1,657.4M | FY2021-FY2027 (FY2027 partial) |
-| `ca_corona` | City of Corona Open Expenditures (CorStat) | 1 | **built** | 1 (Corona Fire Department) | 13,626 lines | $21.7M | FY2021-FY2026 |
+| `ca_riverside_county` | County of Riverside Check Book | 1 | **built** | 1 (Riverside County Fire Department) | 252,908 lines | $1,657.4M | FY2021-FY2027 (FY2027 partial) |
+| `ca_corona` | City of Corona Open Expenditures (CorStat) | 1 | **built** | 1 (Corona Fire Department) | 13,632 lines | $21.7M | FY2021-FY2026 |
 | `ca_moreno_valley` | City of Moreno Valley Open Expenditures | 1 | **built** | 1 (Moreno Valley Fire Service) | 2,369 lines | $140.2M | FY2021-FY2026 |
 | `ca_fiscal` | Open FI$Cal department vendor transactions (CAL FIRE) | 1 | **built** | 1 (CAL FIRE, state fire agency) | 873,016 rows (3,226,425 source lines) | $10,127.5M | FY2021-FY2026 (FY2026 to 2026-06-30) |
-| `ca_scprs` | SCPRS Purchase Order Data (CAL FIRE purchase orders) | 2 | **built** (old years only) | 1 (CAL FIRE) | 22,496 item lines | $883.4M | FY2013-FY2015 only |
+| `ca_scprs` | SCPRS Purchase Order Data (CAL FIRE purchase orders) | 2 | **built** (old years only) | 1 (CAL FIRE) | 22,798 item lines | $886.1M | FY2013-FY2015 only |
 | `ca_sandiego` | City of San Diego Operating Actuals | - | skipped: no payee; sample kept | 0 | - | - | - |
 | `ca_sacramento` | City of Sacramento Checks Issued, Purchase Orders | - | skipped: no department field; samples kept | 0 | - | - | - |
 | `ca_lacounty` | County of Los Angeles Open Expenditures | - | skipped: no payee; sample kept | 0 | - | - | - |
 | `ca_modesto` | City of Modesto Weekly AP Transactions | - | skipped: weekly figures only; sample kept | 0 | - | - | - |
 | (none) | San Jose, Indio, West Hollywood, Marin County, others | - | skipped (see "Other candidates") | 0 | - | - | - |
 
-**Owner dedup rule of 2026-10-07 ("drop identical lines, drop identical days"), as corrected the same day, applied
-to every line source above:** two raw lines are identical when every column the source publishes in its raw file is
-equal except the columns that only identify the row or the load (Socrata `:id`; in San Francisco also `data_as_of`
-and `data_loaded_at`; Open FI$Cal and SCPRS have none). Voucher, invoice, payment, PO and line numbers are content, so
-lines that differ in one are different payments and are kept. Identical lines are kept once, except that a set of n
-identical positive lines keeps min(n, reversals + 1) copies, so a payment, its void and an identical reissue keep
-their net. It drops 27,561 lines and $15.3M (tier 1: 27,259 lines, $12.6M, 0.10% of tier-1 dollars; SCPRS 302 item
-lines, $2.6M); the void part keeps 204 copies ($343,582.46). Lines that repeat inside one invoice or PO are dropped
-only where the source has no line number (Riverside County, Corona, SCPRS) and in FI$Cal, whose repeated lines carry
-the same document id, line and distribution number. The first version of the rule (published columns only, run
-earlier on 2026-10-07) dropped 139,312 lines and $562.6M, most of them separate payments; this version restores
-112,217 tier-1 lines ($547.3M) and 842 SCPRS lines ($3.2M). Numbers per source: "Duplicates and reversals: summary"
-below.
+**Owner dedup rule of 2026-10-07 ("drop identical lines, drop identical days"), as corrected the same day, with the
+owner's decisions A ("fix the voids") and B ("keep PO lines") of the same day, applied to every tier-1 line source
+above:** two raw lines are identical when every column the source publishes in its raw file is equal except the
+columns that only identify the row or the load (Socrata `:id`; in San Francisco also `data_as_of` and
+`data_loaded_at`; Open FI$Cal has none). Voucher, invoice, payment, PO and line numbers are content, so lines that
+differ in one are different payments and are kept. Identical lines are kept once, except that a set of n identical
+positive lines keeps min(n, reversals + 1) copies, so a payment, its void and an identical reissue keep their net,
+and that in a family that has payments an identical negative copy is dropped only together with an identical
+positive copy of the family, so identical voids no longer raise a family's net. SCPRS purchase-order item lines are
+exempt (decision B, like Texas DIR): every line is kept. The rule drops 27,143 tier-1 lines and $12,655,823.15 (0.10%
+of tier-1 dollars); the void rule keeps 204 copies ($343,582.46) and the void fix 116 negative copies (-$11,547.63)
+in 113 families, each back at its raw net. Lines that repeat inside one invoice are dropped only where the source has
+no line number (Riverside County, Corona: invoice data, not PO data, so the rule stays) and in FI$Cal, whose repeated
+lines carry the same document id, line and distribution number. The first version of the rule (published columns
+only, run earlier on 2026-10-07) dropped 139,312 lines and $562.6M, most of them separate payments; the current rule
+keeps 112,333 more tier-1 lines ($547.3M) and 1,144 more SCPRS lines ($5.8M). Numbers per source: "Duplicates and
+reversals: summary" below.
 
 `data/states/ca/agencies.json` after this run: 926 agencies (853 registry rows plus 73 fire districts and fire
 authorities added from the State Controller's data), coverage tier 1: 6, tier 2: 0, tier 3: 584, tier 4: 336. CAL FIRE
@@ -225,7 +229,7 @@ and universities), 36 federal, 31 county fire departments, and others; kinds as 
 - **Fire agency:** department "Fire Protection" = Riverside County Fire Department (CA-33090; operated by CAL FIRE
   under the County's cooperative agreement). The registry's second row for the same operation, "Cal Fire - Riverside
   County Fire Department" (CA-33555), is not linked. The largest payee is the State (CAL FIRE) for contract staffing.
-- **Rows:** 277,875 raw lines ($1,666.8M) -> 252,798 lines, $1,657.4M, after the owner's dedup rule, FY2021-FY2027
+- **Rows:** 277,875 raw lines ($1,666.8M) -> 252,908 lines, $1,657.4M, after the owner's dedup rule, FY2021-FY2027
   (FY2027 partial, to 2026-08-26).
 - **Data quality:** ledger lines with a date inside the fiscal year; vendor names as keyed (one company can appear
   in several spellings); $1.32B of the dollars are the County's contract payments to the State (CAL FIRE), an
@@ -238,14 +242,18 @@ and universities), 36 federal, 31 county fire departments, and others; kinds as 
   (reversal fields: department, vendor, business unit, fund, account, expense category, invoice id, payment id,
   description; amount negated; same or next fiscal year): 134 copies ($38,324.23, 127 sets) are kept because the
   line was reversed and paid again, for example Balance Industrial Scale invoice 16271 (two lines of $24,479.72 and
-  two of $220 on 2022-01-13, each reversed once on 2022-02-01). Dropped: **25,077 lines, $9,444,820.95 (0.57%)**,
-  5,749 sets, 196 of them negative (-$59,939.07); the largest are item lines of one price on one invoice that may
-  be real (Allstar Fire Equipment protective gear, 8 lines of $68,722.95 on invoice 253471 of 2024-02-14, $481,061
-  dropped; Bauer Compressors, 24 lines of $10,032.60 on one invoice of 2024-09-16, $230,750 dropped), plus wireless
-  bills with one line per phone. The two CAL FIRE contract invoices of 2026-03-16 (176557 and 176845, each with lines
-  of $36,159,244.27 and $36,227,427.80) are different invoices and both kept ($72.4M that the first version of the
-  rule dropped); whether one quarter was paid twice needs the County's answer. The first version dropped 40,647
-  lines ($86.2M). 5,446 negative lines (credits, reversals) kept.
+  two of $220 on 2022-01-13, each reversed once on 2022-02-01). Void fix (decision A): in 108 families where
+  identical payments were reversed by identical reversals, 110 negative copies (-$6,840.05) are kept, so each family
+  nets its raw lines again (for example "State of California Office of Emergency" invoice CSTI7617-24, two $2,610
+  lines on 2025-04-21, both reversed on 2025-06-02: net $0 as in the raw lines); 27 sets of identical negative lines
+  with no payment in their family are kept once. Dropped: **24,967 lines, $9,451,661.00 (0.57%)**, 5,650 sets, 36 of
+  them negative (86 lines, -$53,099.02); the largest are item lines of one price on one invoice that may be real
+  (Allstar Fire Equipment protective gear, 8 lines of $68,722.95 on invoice 253471 of 2024-02-14, $481,061 dropped;
+  Bauer Compressors, 24 lines of $10,032.60 on one invoice of 2024-09-16, $230,750 dropped), plus wireless bills
+  with one line per phone. The two CAL FIRE contract invoices of 2026-03-16 (176557 and 176845, each with lines of
+  $36,159,244.27 and $36,227,427.80) are different invoices and both kept ($72.4M that the first version of the rule
+  dropped); whether one quarter was paid twice needs the County's answer. The first version dropped 40,647 lines
+  ($86.2M). 5,556 negative lines (credits, reversals) kept.
 - **Decision:** built.
 
 ## `ca_corona`: City of Corona Open Expenditures (tier 1, built)
@@ -257,7 +265,7 @@ and universities), 36 federal, 31 county fire departments, and others; kinds as 
   state and zip, payment id and date, invoice id, expense category, description, amount.
 - **Fire agency:** department 30 -> Corona Fire Department (CA-33025). Lines include pension and benefit payments
   naming the person paid (shown, owner decision).
-- **Rows:** 14,500 raw ($21.8M) -> 13,626 lines, $21.7M, after the owner's dedup rule, FY2021-FY2026 (payments
+- **Rows:** 14,500 raw ($21.8M) -> 13,632 lines, $21.7M, after the owner's dedup rule, FY2021-FY2026 (payments
   through 2026-06-30).
 - **Data quality:** payment dates inside the fiscal year; many small lines (pension, benefit, refund and
   reimbursement payments name the person paid, shown as published).
@@ -267,10 +275,14 @@ and universities), 36 federal, 31 county fire departments, and others; kinds as 
   department, vendor, department activity, fund, expense category, invoice id, description; a void can carry a new
   payment id and date): 70 copies ($305,258.23, 70 sets) kept, for example L.N. Curtis invoice PINV893372 (GPS
   globe, $92,905.95 paid, reversed and paid again on payment 00017309 of 2024-08-15) and Jacob Green and Associates
-  invoice 2876 ($54,050). Dropped: **874 lines, $85,749.43 (0.39%)**, 303 sets, 19 of them negative (-$7,420.74);
-  largest: two $3,720 background investigation lines (Truview BSI) and six $619.56 hotel nights on one statement.
+  invoice 2876 ($54,050). Void fix (decision A): 6 negative copies (-$4,707.58) kept in 5 families, each back at its
+  raw net (JEROMES FURNITURE WAREHOUSE invoice 0111407WE59D, two $4,416.72 payments and two reversals: $0; DOUBLETREE
+  HOTEL FRESNO, $200.82 charged once and refunded twice: -$200.82); 8 sets of identical negative lines with no
+  payment in their family are kept once. Dropped: **868 lines, $90,457.01 (0.41%)**, 299 sets, 10 of them negative
+  (13 lines, -$2,713.16); largest: two $3,720 background investigation lines (Truview BSI) and six $619.56 hotel
+  nights on one statement.
   The $690,075.97 KME custom pumper lines of 2020-09-25 are on two invoices (G11148001, G11149001) and both kept.
-  The first version of the rule dropped 1,145 lines ($1.14M). 734 negative lines (voids, credits) kept.
+  The first version of the rule dropped 1,145 lines ($1.14M). 740 negative lines (voids, credits) kept.
 - **Decision:** built.
 
 ## `ca_moreno_valley`: City of Moreno Valley Open Expenditures (tier 1, built)
@@ -366,18 +378,20 @@ and universities), 36 federal, 31 county fire departments, and others; kinds as 
   **1,308 lines, $3,113,705.14 (0.03%)**, all pairs (FY2021 134, FY2022 398, FY2023 411, FY2024 22, FY2025 54,
   FY2026 289; 1,171 on distribution 0001, 136 on 0002, 1 on 0003; 141 negative). This is the same set the adapter
   dropped before the owner's rule. Void rule (reversal fields: business unit, vendor, document id, account, fund,
-  program; amount negated; same or next fiscal year): keeps nothing. 123 of the doubled lines ($103,648.18; 122 of
-  them CalCard lines of May 2021) are distribution 0002 lines whose sibling distribution 0001 of the same voucher
-  line carries the negated amount on another fund (fund 0001 against fund 9752 in the cases checked); that sibling has another distribution
-  number, fund and program, so it is not an exact reversal of the doubled line and the copy is dropped (net $0 for
-  those voucher lines; $103,648.18 more if the doubling is real). The summed rows are not compared with each other:
-  rows on different vouchers are different payments even with equal date, payee, account and amount (83,757
-  published rows share every published column with another row). The first version of the rule, on the summed rows,
-  dropped 54,312 rows ($400.1M: cooperative fire protection installments to contract counties, Holt of California
-  vehicles of $617,325.88, seven on 2024-04-02, Air Methods aircraft, CONFIDENTIAL reimbursements); all are kept
-  again. Source lines inside one voucher that differ only in line or distribution number are summed into the
-  voucher's row, not dropped. Lines repeating a document id with another date or amount are later postings
-  (corrections, reversals) and are kept, negative where published so (5,739 negative rows).
+  program; amount negated; same or next fiscal year): keeps nothing. Void fix (decision A): none of the 141 sets of
+  identical negative lines has a payment in its family, so each stays kept once. 123 of the doubled lines
+  ($103,648.18; 122 of them CalCard lines of May 2021) are distribution 0002 lines whose sibling distribution 0001
+  of the same voucher line carries the negated amount on another fund (fund 0001 against fund 9752 in the cases
+  checked); that sibling has another distribution number, fund and program, so it is not an exact reversal of the
+  doubled line and the copy is dropped (net $0 for those voucher lines; $103,648.18 more if the doubling is real).
+  The summed rows are not compared with each other: rows on different vouchers are different payments even with
+  equal date, payee, account and amount (83,757 published rows share every published column with another row). The
+  first version of the rule, on the summed rows, dropped 54,312 rows ($400.1M: cooperative fire protection
+  installments to contract counties, Holt of California vehicles of $617,325.88, seven on 2024-04-02, Air Methods
+  aircraft, CONFIDENTIAL reimbursements); all are kept again. Source lines inside one voucher that differ only in
+  line or distribution number are summed into the voucher's row, not dropped. Lines repeating a document id with
+  another date or amount are later postings (corrections, reversals) and are kept, negative where published so
+  (5,739 negative rows).
 - **Decision:** built. It is the current source for CAL FIRE that the PRD asked for under SCPRS ("bulk access to
   current data").
 
@@ -397,21 +411,20 @@ and universities), 36 federal, 31 county fire departments, and others; kinds as 
   search with no bulk export; the host answers 403 to `/robots.txt`. Not scraped. Current CAL FIRE payments come from
   `ca_fiscal` instead.
 - **Fire agency:** department "Forestry and Fire Protection, Department of" -> CA-00555 (CAL FIRE).
-- **Rows:** 23,244 raw lines -> 22,496 item lines after the owner's dedup rule ($883.4M: FY2013 $192.3M, FY2014
-  $132.5M, FY2015 $558.7M), also rolled into `transactions.csv.gz` (payee = supplier). 446 $0.00 lines
-  (contract-amendment text) left out.
+- **Rows:** 23,244 raw lines -> 22,798 item lines ($886.1M: FY2013 $194.0M, FY2014 $132.5M, FY2015 $559.6M), also
+  rolled into `transactions.csv.gz` (payee = supplier). 446 $0.00 lines (contract-amendment text) left out.
   Amounts are purchase order amounts (commitments), not payments.
 - **Data quality:** some purchase dates are typos (1912, 2511) and are left empty; PO dates of long-running agreements
   can precede the fiscal year the line is registered in; no brand field.
-- **Duplicates and reversals:** owner rule of 2026-10-07 as corrected, on the raw lines: the file has no row id and
-  no load date, so a line is identical to another only when all 32 columns are equal (PO, requisition and LPA
-  numbers are content); the transaction copy of a dropped item line is dropped with it. There is no line number, so
-  a line repeated inside one PO with the same item, quantity and price is identical: **302 lines, $2,636,703.36
-  (0.30%)**, 112 sets, none negative; largest: a $952,295 Prison Industry Authority Nomex line listed twice on PO
-  9PA1K114, a $454,469 mobile kitchen unit (Tom's Equipment Rental) twice on PO 1ui2e861, AT&T network equipment on
-  PO CF140541 (22 lines of $6,500, 24 of $4,500). Void rule (reversal fields: department, supplier code and name,
-  PO, requisition and LPA number): keeps nothing (no identical positive set has a negated line on its PO). The first
-  version of the rule dropped 1,144 lines ($5.8M). 427 negative lines kept.
+- **Duplicates and reversals:** exempt from the owner's identical-line rule (decision B of 2026-10-07, "keep PO
+  lines", like Texas DIR): every item line is kept as published. Lines in different POs are never identical, since
+  the PO number is content; inside one PO, lines with the same item, quantity and price are separate items (the file
+  has no line number). 414 raw lines equal another in all 32 columns (112 sets; the corrected rule had dropped 302 of
+  them, $2,636,703.36, until this decision), for example AT&T network equipment on PO CF140541 (22 lines of $6,500,
+  24 of $4,500). 26 POs list every line twice (32 extra lines, $1,680,834.56; mostly one-line POs, for example a
+  $952,295 Prison Industry Authority Nomex line on PO 9PA1K114 and a $454,469 mobile kitchen unit on PO 1ui2e861);
+  the static extract has no load date that would show an upload error, so they are kept too. The first version of
+  the rule dropped 1,144 lines ($5.8M). 427 negative lines kept.
 - **Decision:** built with years labelled 2013-2015 in `sources.csv`; tier 2 (brand is absent; product type is the
   UNSPSC commodity).
 
@@ -426,13 +439,20 @@ Owner decision of 2026-10-07: "drop identical lines, drop identical days", as co
 3. Void-safe: a set of n identical positive lines keeps min(n, reversals + 1) copies, where a reversal is a negative
    line with the same reversal fields (agency, payee, account and the document fields the source repeats on a void),
    the amount negated and the same or the next fiscal year; reversals identical among themselves count once.
+4. Identical voids (owner decision A of 2026-10-07, "fix the voids"): a family is the lines with the same reversal
+   fields and the same amount up to sign, a payment of fiscal year y being linked to the negative lines of y and
+   y + 1 (lines linked through a chain are one family). In a family that has payments, an identical negative copy is
+   dropped only together with an identical positive copy of the family that rule 3 drops (sets taking them in order
+   of fiscal year and lowest row id); positive lines are not changed. A family without payments keeps its identical
+   negative lines once (rule 2).
 
-A doubled day is a set of identical lines, so it is covered. Applied by `ca_common.keep_identical` (FI$Cal:
-`ca_common.copies_to_keep` on the raw distribution lines, before they are summed per voucher; SCPRS: the item lines,
-transaction copies follow) and mirrored independently in `check_ca.py`. The totals sources (`ca_sco_*`) are not
-affected. No California source needs an upload-error rule of its own: control queries and manifests match the raw
-files, and the adapters' earlier rule (an invoice or PO loaded twice in full: Riverside County 929 lines, Corona 19,
-SCPRS 35) is covered by rule 1, because such copies are equal in every raw column.
+SCPRS purchase-order item lines are exempt (owner decision B of 2026-10-07, like Texas DIR). A doubled day is a set
+of identical lines, so it is covered. Applied by `ca_common.keep_identical` (FI$Cal: `ca_common.copies_to_keep` and
+`ca_common.negative_copies_to_keep` on the raw distribution lines, before they are summed per voucher) and mirrored
+independently in `check_ca.py`. The totals sources (`ca_sco_*`) are not affected. No California source needs an
+upload-error rule of its own: control queries and manifests match the raw files, and the adapters' earlier rule (an
+invoice loaded twice in full: Riverside County 929 lines, Corona 19) is covered by rule 1, because such copies are
+equal in every raw column; SCPRS POs listed twice are kept under decision B (see the source).
 
 Columns ignored as row or load ids, per source (every other raw column is compared):
 
@@ -444,38 +464,41 @@ Columns ignored as row or load ids, per source (every other raw column is compar
 | `ca_sf` | `:id`, `data_as_of`, `data_loaded_at` | department, vendor, PO, contract, program, character, object, sub-object, fund |
 | `ca_corona` | `:id` | department, vendor, department activity, fund, expense category, invoice id, description |
 | `ca_moreno_valley` | `:id` | department, vendor, program, fund, expense category, invoice id, invoice line, distribution line |
-| `ca_scprs` | none (no row id or load date in the file) | department, supplier code and name, PO, requisition and LPA number |
+| `ca_scprs` | exempt (decision B): every item line is kept | - |
 
 Numbers (2026-10-06 raw files). "Before" is the raw lines with an amount (SF: with a paid amount; SCPRS: not $0;
 FI$Cal: distribution lines, which are then summed to 873,016 rows); "first version" is the published-columns rule
 run earlier on 2026-10-07.
 
-| Source | Lines before | Dollars before | Lines dropped | Dollars dropped | Share | Sets | Negative lines dropped | Void rule kept | Lines after | Dollars after | First version: lines, dollars |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `ca_fiscal` | 3,226,425 | $10,130,590,938.52 | 1,308 | $3,113,705.14 | 0.03% | 1,308 | 141 (-$13,302.00) | 0 | 873,016 rows | $10,127,477,233.38 | 818,704 rows, $9,727,334,191.20 |
-| `ca_riverside_county` | 277,875 | $1,666,803,206.96 | 25,077 | $9,444,820.95 | 0.57% | 5,749 | 196 (-$59,939.07) | 134 ($38,324.23, 127 sets) | 252,798 | $1,657,358,386.01 | 237,228, $1,580,559,165.01 |
-| `ca_la` | 175,405 | $696,804,689.78 | 0 | $0.00 | 0% | 0 | 0 | 0 | 175,405 | $696,804,689.78 | 141,106, $645,783,065.81 |
-| `ca_sf` | 34,637 | $220,558,400.58 | 0 | $0.00 | 0% | 0 | 0 | 0 | 34,637 | $220,558,400.58 | 26,903, $202,316,391.78 |
-| `ca_corona` | 14,500 | $21,834,522.12 | 874 | $85,749.43 | 0.39% | 303 | 19 (-$7,420.74) | 70 ($305,258.23, 70 sets) | 13,626 | $21,748,772.69 | 13,355, $20,692,320.71 |
-| `ca_moreno_valley` | 2,369 | $140,184,292.42 | 0 | $0.00 | 0% | 0 | 0 | 0 | 2,369 | $140,184,292.42 | 2,338, $140,168,805.30 |
-| `ca_scprs` (item lines) | 22,798 | $886,076,817.36 | 302 | $2,636,703.36 | 0.30% | 112 | 0 | 0 | 22,496 | $883,440,114.00 | 21,654, $880,252,427.54 |
-| Tier 1 (six sources) | | | 27,259 | $12,644,275.52 | 0.10% | 7,360 | 356 | 204 ($343,582.46) | 1,351,851 | $12,864,131,774.86 | 1,239,634, $12,316,853,939.81 |
+| Source | Lines before | Dollars before | Lines dropped | Dollars dropped | Share | Sets | Negative lines dropped | Void rule kept | Void fix kept (negative copies) | Lines after | Dollars after | First version: lines, dollars |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `ca_fiscal` | 3,226,425 | $10,130,590,938.52 | 1,308 | $3,113,705.14 | 0.03% | 1,308 | 141 (-$13,302.00) | 0 | 0 | 873,016 rows | $10,127,477,233.38 | 818,704 rows, $9,727,334,191.20 |
+| `ca_riverside_county` | 277,875 | $1,666,803,206.96 | 24,967 | $9,451,661.00 | 0.57% | 5,650 | 86 (-$53,099.02) | 134 ($38,324.23, 127 sets) | 110 (-$6,840.05, 108 families) | 252,908 | $1,657,351,545.96 | 237,228, $1,580,559,165.01 |
+| `ca_la` | 175,405 | $696,804,689.78 | 0 | $0.00 | 0% | 0 | 0 | 0 | 0 | 175,405 | $696,804,689.78 | 141,106, $645,783,065.81 |
+| `ca_sf` | 34,637 | $220,558,400.58 | 0 | $0.00 | 0% | 0 | 0 | 0 | 0 | 34,637 | $220,558,400.58 | 26,903, $202,316,391.78 |
+| `ca_corona` | 14,500 | $21,834,522.12 | 868 | $90,457.01 | 0.41% | 299 | 13 (-$2,713.16) | 70 ($305,258.23, 70 sets) | 6 (-$4,707.58, 5 families) | 13,632 | $21,744,065.11 | 13,355, $20,692,320.71 |
+| `ca_moreno_valley` | 2,369 | $140,184,292.42 | 0 | $0.00 | 0% | 0 | 0 | 0 | 0 | 2,369 | $140,184,292.42 | 2,338, $140,168,805.30 |
+| `ca_scprs` (item lines) | 22,798 | $886,076,817.36 | exempt | - | - | - | - | - | - | 22,798 | $886,076,817.36 | 21,654, $880,252,427.54 |
+| Tier 1 (six sources) | | | 27,143 | $12,655,823.15 | 0.10% | 7,257 | 240 | 204 ($343,582.46) | 116 (-$11,547.63, 113 families) | 1,351,967 | $12,864,120,227.23 | 1,239,634, $12,316,853,939.81 |
 
-Where lines are still dropped, the source has no line number (Riverside County, Corona, SCPRS) and the copies are
-equal in every published column, invoice or PO included; some are probably separate items of one price on one
-invoice (Riverside County: Allstar Fire Equipment protective gear, 8 lines of $68,722.95 on one invoice; SCPRS: a
-$952,295 Nomex line listed twice on one PO). FI$Cal's copies carry the same document id, line and distribution
-number. Every adapter keeps credits, voids and reversals as published (negative lines), so totals are net.
+Where lines are still dropped, the source has no line number (Riverside County, Corona) and the copies are equal in
+every published column, invoice included; some are probably separate items of one price on one invoice (Riverside
+County: Allstar Fire Equipment protective gear, 8 lines of $68,722.95 on one invoice); the owner kept the rule for
+these invoice sources (decision B applies to PO data only). FI$Cal's copies carry the same document id, line and
+distribution number. Every adapter keeps credits, voids and reversals as published (negative lines), so totals are net.
 
-Where the rule raises a net (review of 2026-10-07): identical negative lines are kept once (rule 2) and count once
-as reversals, so where two identical payments were reversed by two identical reversals, both payments stay and one
-reversal goes. Payment and reversal families (same reversal fields and amount, both signs present) that now net more
-than the raw lines: Riverside County 108 (+$6,840.05; for example "State of California Office of Emergency"
-invoice CSTI7617-24, two lines of $2,610 on 2025-04-21, both reversed on 2025-06-02: raw net $0, now $2,610) and
-Corona 5 (+$4,707.58; for example JEROMES FURNITURE WAREHOUSE invoice 0111407WE59D, two $4,416.72 payments and two
-reversals on 2024-02-15, raw net $0, now $4,416.72; DOUBLETREE HOTEL FRESNO, $200.82 "mistakenly charged" twice and
-refunded twice, raw net $0, now $200.82). FI$Cal, LA, SF, Moreno Valley and SCPRS: none. Open question below; Ohio,
-Idaho and Texas have the same case.
+Identical voids (review of 2026-10-07, fixed by owner decision A the same day): before rule 4, identical negative
+lines were kept once and counted once as reversals, so where identical payments were reversed by as many identical
+reversals the family netted more than its raw lines: Riverside County 108 families (+$6,840.05; "State of
+California Office of Emergency" invoice CSTI7617-24, two $2,610 lines on 2025-04-21, both reversed on 2025-06-02,
+netted $2,610) and Corona 5 (+$4,707.58; JEROMES FURNITURE WAREHOUSE invoice 0111407WE59D netted $4,416.72;
+DOUBLETREE HOTEL FRESNO netted $0 against a raw -$200.82). Rule 4 keeps 116 negative copies (-$11,547.63) and every
+one of these 113 families nets its raw lines again (all lie inside one fiscal year); the check asserts this and that
+no family with payments nets above its raw lines. FI$Cal's 141 sets of identical negative lines have no payment in
+their family (rule 2 stays); LA, SF and Moreno Valley have no identical negative lines. A family can still net less
+than its raw lines where rule 3 drops identical payments, which the fix does not change: Corona, STAPLES ADVANTAGE
+invoice 8059495826, four identical $71.18 payments and two identical voids keep two payments and one void ($71.18;
+raw $142.36).
 
 ## Payee names
 
@@ -520,7 +543,9 @@ excluding keys whose category is not purchasing; payees classified the way `pipe
 `config/vendor_map.csv` first and then the vendor and keyword rules): a real category for **92.9%** of
 $5,927,730,905 purchasing dollars (90.1% by map rows, 2.8% by rules; 1.1% `unclassified`, mostly CAL FIRE
 forest-health and urban-forestry grantees). After the corrected dedup rule (more lines kept): **93.1%** of
-$6,237,728,211 (90.4% by map rows, 2.7% by rules; 1.0% `unclassified`); the map was not changed. Before the merge the two files mapped 91.3% of $5.93B (real category
+$6,237,728,211 (90.4% by map rows, 2.7% by rules; 1.0% `unclassified`); after the void fix and the SCPRS exemption:
+93.1% of $6,240,319,745 (same shares); the map was not changed. Before the merge the two files mapped 91.3% of $5.93B
+(real category
 90.2%; by source: FI$Cal 91.9%, LA 94.5%, SF 89.2%, Riverside County 86.7%, SCPRS 87.1%, Moreno Valley 75.3%,
 Corona 69.2%).
 
@@ -544,10 +569,12 @@ sharing only `agency_sources.csv`, the redaction patterns and common's file help
 
 1. per source, agency and fiscal year, line counts and dollars to the cent (the multiset of agency, fiscal year,
    date, payee and amount lines) after the owner's dedup rule as corrected, whose identity (every raw column but the
-   row and load ids), reversal fields and void rule the check builds from the raw files itself, for SF, LA,
-   Riverside County, Corona, Moreno Valley, SCPRS and FI$Cal (the rule on the raw distribution lines, then rows
-   summed per voucher from the six raw files, checked against the manifest's rows and dollars); it reports the lines
-   dropped, the copies the void rule keeps, and the published rows that share every published column with another
+   row and load ids), reversal fields, void rule and void fix (rule 4, with its own union-find of families) the check
+   builds from the raw files itself, for SF, LA, Riverside County, Corona, Moreno Valley and FI$Cal (the rule on the
+   raw distribution lines, then rows summed per voucher from the six raw files, checked against the manifest's rows
+   and dollars); SCPRS with every line (exempt); it asserts that every family where the void fix keeps a negative
+   copy nets its raw lines and that no family with payments nets above them, and reports the lines dropped, the
+   copies the void rule and the void fix keep, and the published rows that share every published column with another
    row (kept: different documents); totals per agency and year for both SCO sources (every Fire Protection district
    linked);
 2. payee names as published (only redaction-pattern text cut; the old person marker never appears; no payee,
@@ -563,13 +590,16 @@ sharing only `agency_sources.csv`, the redaction patterns and common's file help
    `docs/multistate/data-contract.md`), dates `YYYY-MM-DD`, amounts with two decimals, and every payment date inside
    the fiscal year it is filed under (SCPRS purchase-order dates excepted).
 
-Normalize is deterministic: every adapter's normalize was run twice; the data files were byte-identical (re-run in the
-review of 2026-10-06 after its changes: all nine normalizes twice, every file in `data/states/ca/` and
+Normalize is deterministic: every adapter's normalize was run twice; the data files were byte-identical (re-run in
+the review of 2026-10-06 after its changes: all nine normalizes twice, every file in `data/states/ca/` and
 `config/states/ca/` byte-identical between the runs; again on 2026-10-07 after the first version of the dedup rule;
-and on 2026-10-07 after the corrected rule: the seven line adapters twice, every file in `data/states/ca/` and
-`config/states/ca/` byte-identical). The check was fault-tested with faults injected into the rows it reads (no file
-changed): a removed Riverside County row that repeats another's published columns, an extra FI$Cal row under a new
-record id, and an LA row moved by one day each fail the line multiset.
+and on 2026-10-07 after the corrected rule, and again after the void fix and the SCPRS exemption: the seven line
+adapters twice, every file in `data/states/ca/` and `config/states/ca/` byte-identical). The check was fault-tested
+with faults injected into the rows it reads (no file changed): a removed Riverside County row that repeats another's
+published columns, an extra FI$Cal row under a new record id, and an LA row moved by one day each fail the line
+multiset. The void fix was fault-tested on a scratch copy: with the fix switched off in `ca_common` and Riverside
+County and Corona normalized again, the check fails (110 Riverside County negative lines missing); with the check's
+own pairing switched off, its family-net assertion fails (9 Riverside County families).
 
 ## Open questions
 
@@ -580,21 +610,8 @@ record id, and an LA row moved by one day each fail the line multiset.
   runs ambulances?
 - Moreno Valley fire-station costs booked to Fleet & Facilities (about $4.1M) are excluded; include them?
 - San Francisco has no payment date; should the page show SF rows by fiscal year only?
-- Dedup rule of 2026-10-07 as corrected: in California it drops 27,561 lines ($15.3M), all copies equal in every
-  raw column. Riverside County, Corona and SCPRS publish no line number, so equal item lines on one invoice or PO are
-  dropped although some are probably separate items (Riverside County: Allstar Fire Equipment protective gear, 8
-  lines of $68,722.95 on invoice 253471, $481,061 dropped; Bauer Compressors, 24 lines of $10,032.60, $230,750
-  dropped; SCPRS: a $952,295 Nomex line twice on one PO). Keep them dropped, or keep identical lines inside one
-  invoice where the source has no line number? FI$Cal: 123 doubled distribution lines ($103,648.18, May 2021
-  CalCard) face a negated sibling distribution on another fund; the rule drops the copy (not an exact reversal).
-- Identical voids (same question in Ohio, Idaho and Texas): rule 2 keeps identical negative lines once, so 113
-  payment and reversal families net more than the raw lines (Riverside County 108, +$6,840.05; Corona 5, +$4,707.58;
-  see Duplicates and reversals: summary), against rule 3's "must not change the net of a payment, void and reissue
-  sequence". Keeping identical negative lines as often as the payments they reverse are kept would break the
-  owner's own example (Walnut Township (Fairfield), Ohio: three identical payments and two identical voids, net one
-  payment, would net $0). A remedy that keeps every such net and changes no positive line: in a family that has
-  payments, drop an identical negative copy only together with an identical positive copy of the family. In
-  California it would keep 116 more negative lines (Riverside County 110, -$6,840.05; Corona 6, -$4,707.58).
+- FI$Cal: 123 doubled distribution lines ($103,648.18, May 2021 CalCard) face a negated sibling distribution on
+  another fund; the rule drops the copy (not an exact reversal). Keep it dropped?
 - Riverside County's two CAL FIRE contract invoices of 2026-03-16 (176557 and 176845, $72.4M each) are both counted;
   whether one quarter was paid twice needs the County's answer.
 - SCPRS gives only FY2013-FY2015; keep it, given FI$Cal covers CAL FIRE from FY2021?
