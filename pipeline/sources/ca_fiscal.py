@@ -39,15 +39,16 @@ and distribution numbers), payee, account, fund, program and accounting date, wh
 field but the line number (about 142,000 rows a year). source_record_id is the voucher plus a running number
 in the sorted order of its rows. Rows that sum to $0.00 are dropped.
 
-Duplicates and reversals: source lines identical in every column (same document id, line and distribution,
-amount and date) are kept once (22 in FY2023-24) before lines are summed. Then the owner rule of 2026-10-07
-(ca_common.drop_identical): summed rows identical in every published column but the voucher number are kept
-once: accounting date, payee, program, sub-program, fund, account, account category and amount. Open FI$Cal has
-no description field, so vouchers of one amount paid to one payee on one day from one account count once
-(several vehicles or aircraft bought at one price, cooperative fire protection installments to a county, and
-employee reimbursements paid to CONFIDENTIAL); normalize prints the count and docs/sources/ca.md gives the
-numbers. Lines that repeat a document id with a different date or amount are later postings to the same line
-(corrections, reversals) and are kept, as negative amounts where published so.
+Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day, on the raw distribution lines
+before they are summed. The files have no row id and no load or extract date, so two lines are identical only when
+all 26 columns are equal, the document id (voucher, line and distribution number) included; vouchers and their line
+numbers are content, so lines of different vouchers or lines are always kept. Identical lines are kept once (1,308
+copies in the 2026-10-06 files, every one a repeated distribution line). Void-safe (ca_common.copies_to_keep): a
+set of n identical positive lines keeps min(n, reversals + 1), where a reversal is a negative line with the same
+business unit, vendor, document id, account, fund and program (REVERSAL), the amount negated and the same or next
+fiscal year. The summed rows are not deduplicated again: rows of different vouchers are different payments even
+when date, payee, account and amount are equal. Lines that repeat a document id with a different date or amount
+are later postings to the same line (corrections, reversals) and are kept, as negative amounts where published so.
 """
 import collections
 import csv
@@ -73,6 +74,7 @@ COLUMNS = ["business_unit", "agency_name", "department_name", "document_id", "re
            "program_code", "program_description", "sub_program_description", "budget_reference",
            "budget_reference_category", "budget_reference_sub_category", "budget_reference_description",
            "year_of_enactment", "monetary_amount"]
+REVERSAL = ["business_unit", "VENDOR_NAME", "document_id", "account", "fund_code", "program_code"]
 
 
 def files(pointer_body):
@@ -125,8 +127,17 @@ def normalize():
     agency = link[0]["agency_id"]
     manifest = json.loads(common.read_gz(d / "manifest.json.gz"))
     ix = {c: i for i, c in enumerate(COLUMNS)}
+    rev_ix = [ix[c] for c in REVERSAL]
+
+    def sum_key(r, fy):
+        return (fy, voucher(r[ix["document_id"]]), r[ix["VENDOR_NAME"]], r[ix["accounting_date"]], r[ix["account"]],
+                r[ix["account_category"]], r[ix["account_description"]], r[ix["fund_code"]], r[ix["fund_description"]],
+                r[ix["program_description"]], r[ix["sub_program_description"]])
+
     groups = collections.defaultdict(decimal.Decimal)
-    dropped = lines = 0
+    extra = {}  # digest of a line seen more than once -> [line, copies after the first]
+    reversals = collections.defaultdict(set)  # (REVERSAL fields, -amount, fiscal year) -> digests of negative lines
+    lines = 0
     for entry in manifest:
         seen = set()
         n = 0
@@ -134,17 +145,26 @@ def normalize():
             n += 1
             h = hashlib.blake2b("\x1f".join(r).encode(), digest_size=16).digest()
             if h in seen:
-                dropped += 1
+                extra.setdefault(h, [r, 0])[1] += 1
                 continue
             seen.add(h)
             fy = int(r[ix["fiscal_year_begin"]]) + 1
             assert fy == entry["fiscal_year"] and r[ix["business_unit"]] == link[0]["source_entity_id"], r
-            key = (fy, voucher(r[ix["document_id"]]), r[ix["VENDOR_NAME"]], r[ix["accounting_date"]],
-                   r[ix["account"]], r[ix["account_category"]], r[ix["account_description"]], r[ix["fund_code"]],
-                   r[ix["fund_description"]], r[ix["program_description"]], r[ix["sub_program_description"]])
-            groups[key] += decimal.Decimal(r[ix["monetary_amount"]] or "0")
+            amount = decimal.Decimal(r[ix["monetary_amount"]] or "0")
+            if amount < 0:
+                reversals[(tuple(r[i] for i in rev_ix), -amount, fy)].add(h)
+            groups[sum_key(r, fy)] += amount
         assert n == entry["rows"], f"{entry['file']}: {n} rows, manifest says {entry['rows']}"
         lines += n
+    # identical lines are kept once, except copies the void rule keeps (each file is one fiscal year, and the
+    # fiscal year is a column, so identical lines are always in one file)
+    identical = ca_common.new_stats()
+    for h in sorted(extra):
+        r, copies = extra[h]
+        fy, amount = int(r[ix["fiscal_year_begin"]]) + 1, decimal.Decimal(r[ix["monetary_amount"]] or "0")
+        keep = ca_common.copies_to_keep(copies + 1, amount, tuple(r[i] for i in rev_ix), fy, reversals)
+        groups[sum_key(r, fy)] += (keep - 1) * amount
+        ca_common.count(identical, copies + 1, keep, amount)
     seq, rows, zero = collections.Counter(), [], 0
     for key in sorted(groups):
         fy, vch, vendor, date, acct, acat, adesc, fund, fdesc, prog, sub = key
@@ -160,7 +180,6 @@ def normalize():
             "category_published": f"{acat}: {adesc}", "amount": str(amount),
             "source_record_id": f"{vch}/{seq[vch]}",
         })
-    rows, identical = ca_common.drop_identical(rows, "transactions.csv.gz")
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
 
     years = sorted({int(r["fiscal_year"]) for r in rows})
@@ -172,15 +191,14 @@ def normalize():
         "note": "CAL FIRE (state fire agency, business unit 3540), whole department: fire protection, State Fire "
                 "Marshal and resource management; lines summed per voucher, payee, account, fund, program and date; "
                 "CalCard purchases appear as payments to US Bank; the State publishes employee travel and training "
-                "reimbursements to CONFIDENTIAL; no description field, so identical rows (same date, payee, account, "
-                "fund, program and amount) are kept once and equal payments on one day count once; "
+                "reimbursements to CONFIDENTIAL; raw lines identical in every column (document id included) kept "
+                "once; "
                 f"FY{years[-1]} partial (postings through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
     withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
     print(f"{ST}: {SOURCE}: {lines} source lines -> {len(rows)} rows (${total:,.2f}), FY{years[0]}-FY{years[-1]}; "
-          f"{dropped} exact duplicate source lines dropped; {zero} rows summing to $0 dropped; "
-          f"{ca_common.dropped_text(identical)}; {withheld} rows withheld")
+          f"{ca_common.dropped_text(identical)}; {zero} rows summing to $0 dropped; {withheld} rows withheld")
 
 
 if __name__ == "__main__":

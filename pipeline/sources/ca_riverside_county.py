@@ -25,14 +25,16 @@ county's cooperative agreement), linked to CA-33090 in agency_sources.csv. The r
 operation a second time as "Cal Fire - Riverside County Fire Department" (CA-33555), which is not linked.
 The department's largest payee is the State (CAL FIRE) for contract staffing.
 
-Duplicates and reversals: owner rule of 2026-10-07 (ca_common.drop_identical): lines identical in every
-published column but the source's ids (invoice and payment id) are kept once: date, payee, description,
-business unit, fund, account, expense category and amount. The source has no line number, and identical lines
-are ordinary in it (one line per phone on a wireless bill, per vehicle at a car wash, per seat of a licence,
-several items at one price), so the rule also drops repeat charges that were probably real (normalize prints
-the count; docs/sources/ca.md gives the numbers). Credits and reversals are their own negative lines and are
-kept. The record id is the invoice id plus a running number in the sorted order of the invoice's lines (before
-identical lines are dropped).
+Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day (ca_common.keep_identical): raw
+lines equal in every published column but the portal's row id (:id, the only row or load id in the raw file) are
+kept once; invoice and payment ids are content, so lines of different invoices or payments are always kept. The
+source has no line number, so lines repeated inside one invoice (same business unit, account, date and amount;
+for example one line per phone on a wireless bill) are identical and kept once. Void-safe: a set of n identical
+positive lines keeps min(n, reversals + 1), where a reversal is a negative line with the same department, vendor,
+business unit, fund, account, expense category, invoice id, payment id and description, the amount negated and
+the same or next fiscal year (REVERSAL). Credits and reversals are their own negative lines and are kept; normalize
+prints the counts and docs/sources/ca.md gives the numbers. The record id is the invoice id plus a running number
+in the sorted order of the invoice's raw lines (before identical lines are dropped).
 """
 import collections
 import decimal
@@ -71,6 +73,9 @@ def fetch():
 COLUMNS = ["fiscal_year", "fiscal_period", "date", "department", "fund_type", "account_category", "account",
            "expense_category", "fund", "business_unit", "description", "amount", "vendor_name", "vendor_id",
            "invoice_id", "payment_id"]
+ROW_IDS = {":id"}  # Socrata row id; every other raw column is content
+REVERSAL = ["department", "vendor_name", "business_unit", "fund_type", "fund", "account_category", "account",
+            "expense_category", "invoice_id", "payment_id", "description"]
 
 
 def read_raw(d):
@@ -92,11 +97,17 @@ def normalize():
     raw = read_raw(d)
     for r in raw:
         assert r["department"] in links and int(r["fiscal_year"]) >= FIRST_FY and r.get("vendor_name"), r
-    seq, rows = collections.Counter(), []
-    for key in sorted(line_key(r) for r in raw):
-        r = dict(zip(COLUMNS, key))
+    raw = sorted(raw, key=lambda r: (line_key(r), r[":id"]))
+    seq, ids = collections.Counter(), {}
+    for r in raw:
         base = r.get("invoice_id") or r.get("payment_id") or "noinvoice"
         seq[base] += 1
+        ids[r[":id"]] = f"{base}-{seq[base]}"
+    kept, dropped = ca_common.keep_identical(
+        raw, ca_common.socrata_ident(ROW_IDS), lambda r: tuple(r.get(c) or "" for c in REVERSAL),
+        lambda r: decimal.Decimal(r["amount"]), lambda r: int(r["fiscal_year"]), lambda r: r[":id"])
+    rows = []
+    for r in kept:
         rows.append({
             "agency_id": links[r["department"]], "fiscal_year": str(int(r["fiscal_year"])),
             "posting_date": (r.get("date") or "")[:10],
@@ -105,9 +116,8 @@ def normalize():
             "account": " / ".join(x for x in [r.get("business_unit"), r.get("fund"), r.get("account")] if x),
             "category_published": r.get("expense_category") or "",
             "amount": ca_common.money(r["amount"]),
-            "source_record_id": f"{base}-{seq[base]}",
+            "source_record_id": ids[r[":id"]],
         })
-    rows, dropped = ca_common.drop_identical(rows, "transactions.csv.gz")
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
 
     years = sorted({int(r["fiscal_year"]) for r in rows})
@@ -118,8 +128,9 @@ def normalize():
         "fiscal_year": "County of Riverside FY, Jul-Jun", "fetched": d.parent.parent.name,
         "note": "County Fire Department (department Fire Protection) accounts-payable lines with a vendor; payroll, "
                 "journal entries and internal charges are not included; the largest payee is the State (CAL FIRE) "
-                "for contract staffing; identical lines (same date, payee, description, account and amount) kept "
-                f"once; FY{years[-1]} partial (lines through {last})"})
+                "for contract staffing; raw lines identical in every column but the row id kept once (no line "
+                "number, so equal lines inside one invoice count once; payment, void and reissue keep their net); "
+                f"FY{years[-1]} partial (lines through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
     withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)

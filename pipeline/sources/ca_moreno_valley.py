@@ -32,11 +32,14 @@ spending booked to other departments (Fleet & Facilities, Technology Services) i
 Payees: shown as published (owner decision of 2026-10-06); common.withhold_person cuts only email and bank
 account text.
 
-Duplicates and reversals: owner rule of 2026-10-07 (ca_common.drop_identical): lines identical in every
-published column but the source's ids (payment id, invoice id, invoice line and distribution line) are kept
-once: payment date, payee, description, department, program, fund, expense category and amount (normalize prints
-the count). Voids and credits are their own negative lines and are kept. The record id is payment id, invoice
-id, invoice line and distribution line (plus a running number if one still repeats).
+Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day (ca_common.keep_identical): raw
+lines equal in every published column but the portal's row id (:id, the only row or load id in the raw file) are
+kept once; payment id, invoice id, invoice line and distribution line are content, so lines that differ in one are
+kept. Void-safe: a set of n identical positive lines keeps min(n, reversals + 1), where a reversal is a negative
+line with the same department, vendor, program, fund, expense category, invoice id, invoice line and distribution
+line, the amount negated and the same or next fiscal year (REVERSAL). In the 2026-10-06 pull no two raw lines are
+identical, so the rule drops nothing. Voids and credits are their own negative lines and are kept. The record id is
+payment id, invoice id, invoice line and distribution line (plus a running number if one still repeats).
 """
 import collections
 import decimal
@@ -57,6 +60,9 @@ CONTROL_WHERE = f"upper(department) like '%FIRE%' AND fiscal_year >= {FIRST_FY}"
 COLUMNS = ["fiscal_year", "fiscal_year_period", "service", "department", "program", "expense_category", "fund",
            "vendor", "vendor_id", "vendor_zip", "payment_id", "payment_method", "payment_date", "invoice_id",
            "invoice_line", "invoice_distribution_line", "invoice_date", "amount", "description"]
+ROW_IDS = {":id"}  # Socrata row id; every other raw column is content
+REVERSAL = ["department", "vendor", "program", "fund", "expense_category", "invoice_id", "invoice_line",
+            "invoice_distribution_line"]
 
 
 def fetch():
@@ -101,12 +107,17 @@ def normalize():
     raw = read_raw(d)
     for r in raw:
         assert r["department"] in links and int(r["fiscal_year"]) >= FIRST_FY, f"row outside the filter: {r}"
-    ids, rows = collections.Counter(), []
-    for r in sorted(raw, key=line_key):
-        rid = line_id(r)
-        ids[rid] += 1
-        if ids[rid] > 1:
-            rid += f"#{ids[rid]}"
+    raw = sorted(raw, key=lambda r: (line_key(r), r[":id"]))
+    ids, rid = collections.Counter(), {}
+    for r in raw:
+        base = line_id(r)
+        ids[base] += 1
+        rid[r[":id"]] = base + (f"#{ids[base]}" if ids[base] > 1 else "")
+    kept, dropped = ca_common.keep_identical(
+        raw, ca_common.socrata_ident(ROW_IDS), lambda r: tuple(r.get(c) or "" for c in REVERSAL),
+        lambda r: decimal.Decimal(r.get("amount") or "0"), lambda r: int(r["fiscal_year"]), lambda r: r[":id"])
+    rows = []
+    for r in kept:
         rows.append({
             "agency_id": links[r["department"]], "fiscal_year": str(int(r["fiscal_year"])),
             "posting_date": (r.get("payment_date") or "")[:10],
@@ -115,9 +126,8 @@ def normalize():
             "account": " / ".join(x for x in [r.get("department"), r.get("program"), r.get("fund")] if x),
             "category_published": r.get("expense_category") or "",
             "amount": ca_common.money(r.get("amount")),
-            "source_record_id": rid,
+            "source_record_id": rid[r[":id"]],
         })
-    rows, dropped = ca_common.drop_identical(rows, "transactions.csv.gz")
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
 
     years = sorted({int(r["fiscal_year"]) for r in rows})
@@ -128,8 +138,8 @@ def normalize():
         "fiscal_year": "City of Moreno Valley FY, Jul-Jun", "fetched": d.parent.parent.name,
         "note": "Moreno Valley Fire Department (departments Fire Operations, Fire Prevention and Fire - Office of "
                 "Emergency Mgmt) invoice lines; most dollars are the City's contract payments to the County of "
-                "Riverside for fire staffing (CAL FIRE operated); identical lines (same date, payee, description, "
-                "account and amount) kept once; purchases other City departments make for Fire are "
+                "Riverside for fire staffing (CAL FIRE operated); raw lines identical in every column but the row "
+                "id kept once; purchases other City departments make for Fire are "
                 f"not included; FY{years[-1]} partial (payments through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)

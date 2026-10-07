@@ -29,16 +29,20 @@ ambulance charges, fire department services and plan checking fees to "PRIVACY-F
 12,802 of 12,808 ambulance-charge refund lines); the few refund payees it names are shown as named.
 common.withhold_person cuts only email and bank account text.
 
-Duplicates and reversals: owner rule of 2026-10-07 (ca_common.drop_identical): lines identical in every
-published column but the source's ids (transaction id, invoice number, invoice line and distribution line,
-purchase order number and line) are kept once: payment date, payee, description, program, fund, account,
-expenditure type and amount. Invoices that bill several identical items on separate lines (for example
-several ambulances or engines at one price) therefore keep one line; normalize prints the count and
-docs/sources/ca.md gives the numbers. Cancelled checks appear as their own negative lines (payment_status
-CANCELLED) and are kept, so a cancelled payment nets to zero (in the 2026-10-06 pull 677 of the 698 cancellation
-lines carry the same transaction id, invoice line and distribution line as the payment they cancel). The record
-id is transaction id, invoice line and distribution line, with "-cancelled" on a cancellation (plus a running
-number if one still repeats).
+Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day (ca_common.keep_identical): raw
+lines equal in every published column but the portal's row id (:id, the only row or load id in the raw file) are
+kept once. Transaction id, invoice number, invoice line and distribution line, purchase order number and line are
+content, so lines that differ in one are different payments and are kept (several ambulances at one price on
+separate invoice lines are all kept). Void-safe: a set of n identical positive lines keeps min(n, reversals + 1),
+where a reversal is a negative line with the same department, vendor, program, fund, account, invoice number and
+line, distribution line and PO number and line, the amount negated and the same or next fiscal year (REVERSAL).
+In the 2026-10-06 pull no two raw lines are identical, so the rule drops nothing. The raw file keeps the columns in
+COLUMNS; 17 portal columns were not fetched (calendar helpers, links, due dates, receiver id, buyer name and
+others), so lines equal in the fetched columns are treated as identical. Cancelled checks appear as their own
+negative lines (payment_status CANCELLED) and are kept, so a cancelled payment nets to zero (in the 2026-10-06 pull
+677 of the 698 cancellation lines carry the same transaction id, invoice line and distribution line as the payment
+they cancel). The record id is transaction id, invoice line and distribution line, with "-cancelled" on a
+cancellation (plus a running number if one still repeats).
 """
 import collections
 import decimal
@@ -63,6 +67,9 @@ COLUMNS = ["fiscal_year", "department_name", "department_number", "vendor_name",
            "po_date", "po_line_number", "description", "detailed_item_description", "unit_price", "unit_of_measure",
            "quantity", "sales_tax", "discount", "item_code", "item_code_name", "procurement_organization",
            "supplier_city", "zip"]
+ROW_IDS = {":id"}  # Socrata row id; every other raw column is content
+REVERSAL = ["department_name", "vendor_name", "program", "fund", "account_code", "inv_num", "inv_line",
+            "inv_dist_line", "po_num", "po_line_number"]
 
 
 def fetch():
@@ -104,16 +111,19 @@ def normalize():
     raw = read_raw(d)
     for r in raw:
         assert r["department_name"] in links and int(r["fiscal_year"]) >= FIRST_FY, f"row outside the filter: {r}"
-    ids, rows = collections.Counter(), []
-    for r in sorted(raw, key=line_key):
-        if r.get("dollar_amount") in (None, ""):
-            continue
-        rid = f"{r.get('transaction_id', '')}-{r.get('inv_line', '')}-{r.get('inv_dist_line', '')}"
+    raw = [r for r in sorted(raw, key=lambda r: (line_key(r), r[":id"])) if r.get("dollar_amount") not in (None, "")]
+    ids, rid = collections.Counter(), {}
+    for r in raw:
+        base = f"{r.get('transaction_id', '')}-{r.get('inv_line', '')}-{r.get('inv_dist_line', '')}"
         if r.get("payment_status") == "CANCELLED":
-            rid += "-cancelled"
-        ids[rid] += 1
-        if ids[rid] > 1:
-            rid += f"#{ids[rid]}"
+            base += "-cancelled"
+        ids[base] += 1
+        rid[r[":id"]] = base + (f"#{ids[base]}" if ids[base] > 1 else "")
+    kept, dropped = ca_common.keep_identical(
+        raw, ca_common.socrata_ident(ROW_IDS), lambda r: tuple(r.get(c) or "" for c in REVERSAL),
+        lambda r: decimal.Decimal(r["dollar_amount"]), lambda r: int(r["fiscal_year"]), lambda r: r[":id"])
+    rows = []
+    for r in kept:
         rows.append({
             "agency_id": links[r["department_name"]], "fiscal_year": str(int(r["fiscal_year"])),
             "posting_date": (r.get("transaction_date") or "")[:10],
@@ -123,9 +133,8 @@ def normalize():
                                                f"{r.get('account_code', '')} {r.get('account_name', '')}".strip()] if x),
             "category_published": r.get("expenditure_type") or "",
             "amount": ca_common.money(r["dollar_amount"]),
-            "source_record_id": rid,
+            "source_record_id": rid[r[":id"]],
         })
-    rows, dropped = ca_common.drop_identical(rows, "transactions.csv.gz")
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
 
     years = sorted({int(r["fiscal_year"]) for r in rows})
@@ -136,8 +145,8 @@ def normalize():
         "fiscal_year": "City of Los Angeles FY, Jul-Jun", "fetched": d.parent.parent.name,
         "note": "Los Angeles Fire Department (department 38) invoice lines; cancelled checks are negative lines; "
                 "the City publishes most refunds of ambulance and fire service charges to PRIVACY-FIRE instead of "
-                "the payee; identical lines (same date, payee, description, account and amount) kept once, so "
-                "several identical items on one invoice count once; purchases other City "
+                "the payee; raw lines identical in every column but the row id kept once (invoice, line and PO "
+                "numbers are content, so separate invoice lines are all kept); purchases other City "
                 f"departments make for Fire are not included; FY{years[-1]} partial (payments through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)

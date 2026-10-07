@@ -34,12 +34,13 @@ Amounts: "Total Price" as published ("$1,234.56", negatives in parentheses). The
 purchase date, else the creation date, when it falls between 2000 and the end of the fiscal year (a few
 purchase dates are typos such as 1912 or 2511); otherwise empty.
 
-Duplicates and reversals: owner rule of 2026-10-07 (ca_common.drop_identical) on the item lines: lines
-identical in every published column but the source's ids (purchase order and requisition number) are kept once:
-date, supplier, product type, description, quantity, unit price and amount; the transaction copy of a dropped
-item line is dropped with it. There is no line number, so identical lines inside one PO (one line per circuit
-on a network maintenance order, several identical licences) and repeat orders of the same item on the same day
-count once; normalize prints the count and docs/sources/ca.md gives the numbers. Negative lines are kept.
+Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day (ca_common.keep_identical): raw
+lines equal in all 32 published columns are kept once (the file has no row id and no load date, so every column
+counts; PO, requisition and LPA numbers are content); the transaction copy of a dropped item line is dropped with
+it. There is no line number, so a line repeated inside one PO with the same item, quantity and price counts once.
+Void-safe: a set of n identical positive lines keeps min(n, reversals + 1), where a reversal is a negative line with
+the same department, supplier, PO, requisition and LPA number, the amount negated and the same or next fiscal year
+(REVERSAL). Negative lines are kept; normalize prints the counts and docs/sources/ca.md gives the numbers.
 """
 import collections
 import csv
@@ -60,6 +61,8 @@ URL = ("https://data.ca.gov/dataset/ae343670-f827-4bc8-9d44-2af937d60190/resourc
        "download/purchase-order-data-2012-2015-.csv")
 PAGE = "https://data.ca.gov/dataset/purchase-order-data"
 DEPARTMENT = "Forestry and Fire Protection, Department of"
+REVERSAL = ["Department Name", "Supplier Code", "Supplier Name", "Purchase Order Number", "Requisition Number",
+            "LPA Number"]
 
 
 def money(s):
@@ -133,16 +136,23 @@ def normalize():
     c = {name: i for i, name in enumerate(header)}
     assert all(r[c["Department Name"]] == DEPARTMENT for r in raw)
     po = lambda r: (r[c["Purchase Order Number"]], r[c["Fiscal Year"]])
-    seq, items, txns, zero = collections.Counter(), [], [], 0
-    for r in sorted(raw):
+    seq, rids, lines, zero = collections.Counter(), {}, [], 0
+    for i, r in enumerate(sorted(raw)):
         fy = r[c["Fiscal Year"]]
         assert re.fullmatch(r"20\d\d-20\d\d", fy), fy
         number, year = po(r)
         seq[(number, year)] += 1
-        rid = f"{year[:4]}/{number}/{seq[(number, year)]}"
         if money(r[c["Total Price"]]) == 0:
             zero += 1  # $0 lines are amendment text ("Removes and replaces Exhibit B ..."), not purchases
             continue
+        rids[i] = f"{year[:4]}/{number}/{seq[(number, year)]}"
+        lines.append((i, r))
+    lines, dropped = ca_common.keep_identical(
+        lines, lambda x: x[1], lambda x: tuple(x[1][c[k]] for k in REVERSAL),
+        lambda x: money(x[1][c["Total Price"]]), lambda x: int(x[1][c["Fiscal Year"]][5:]), lambda x: x[0])
+    items, txns = [], []
+    for i, r in lines:
+        fy, rid = r[c["Fiscal Year"]], rids[i]
         vendor = common.withhold_person(r[c["Supplier Name"]])
         date = day(r[c["Purchase Date"]], int(fy[5:])) or day(r[c["Creation Date"]], int(fy[5:]))
         description = " ".join((r[c["Item Description"]] or r[c["Item Name"]]).split())
@@ -157,9 +167,6 @@ def normalize():
                      "account": " / ".join(x for x in [r[c["Acquisition Type"]], r[c["Acquisition Method"]],
                                                        r[c["Sub-Acquisition Method"]]] if x),
                      "category_published": r[c["Segment Title"]], "amount": amount, "source_record_id": rid})
-    items, dropped = ca_common.drop_identical(items, "line_items.csv.gz")
-    kept = {r["source_record_id"] for r in items}
-    txns = [r for r in txns if r["source_record_id"] in kept]
     common.upsert_rows(ST, "line_items.csv.gz", SOURCE, items)
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, txns)
 
@@ -170,8 +177,8 @@ def normalize():
         "fetched": d.parent.parent.name,
         "note": "CAL FIRE (state fire agency) purchase order lines with quantity, unit price and UNSPSC commodity; "
                 "FY2012-13 to FY2014-15 only (the State publishes no later bulk extract); purchase order amounts, "
-                "not payments; no brand field; identical lines (same date, supplier, item, quantity, unit price and "
-                "amount) kept once"})
+                "not payments; no brand field; raw lines identical in every column kept once (no line number, so a "
+                "line repeated inside one PO counts once)"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in items)
     print(f"{ST}: {SOURCE}: {len(raw)} source lines -> {len(items)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; "

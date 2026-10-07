@@ -28,12 +28,15 @@ included.
 Amounts: `vouchers_paid`. Lines with nothing paid yet (only pending or retainage) are left out; pending amounts
 are not counted.
 
-Duplicates and reversals: owner rule of 2026-10-07 (ca_common.drop_identical): lines identical in every
-published column but the source's ids (voucher and purchase order number) are kept once: fiscal year, payee,
-contract title, program, character, object, sub-object, fund and amount paid. The source has no payment date,
-so lines compare on fiscal year, and payments of one amount to one payee on the same account and contract in
-one fiscal year (several engines or ambulances at one price, equal monthly payments) count once; normalize
-prints the count and docs/sources/ca.md gives the numbers. The voucher number is not unique per line (a voucher
+Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day (ca_common.keep_identical): raw
+lines equal in every published column but the row and load ids are kept once. Row and load ids here: :id (Socrata
+row id), data_loaded_at (when the portal loaded the data) and data_as_of (documented as "Timestamp the data was
+updated in the source system"). Voucher and purchase order numbers are content, so payments on different vouchers
+are always kept, also without a payment date (several engines at one price, equal monthly payments). Void-safe: a
+set of n identical positive lines keeps min(n, reversals + 1), where a reversal is a negative line with the same
+department, vendor, purchase order, contract, program, character, object, sub-object and fund, the amount paid
+negated and the same or next fiscal year (REVERSAL). In the 2026-10-06 pull no two raw lines are identical, so the
+rule drops nothing. The voucher number is not unique per line (a voucher
 can pay several objects or funds), so the record id is the voucher number plus a running number. Negative lines
 (credits) are kept.
 """
@@ -73,6 +76,9 @@ FIELDS = ["fiscal_year", "organization_group_code", "department_code", "program_
           "fund_category_code", "purchase_order", "vendor", "vouchers_paid", "vouchers_pending",
           "vouchers_pending_retainage", "voucher", "data_as_of", "non_profit_indicator", "contract_number",
           "contract_title", "purchasing_authority_title"]
+ROW_IDS = {":id", "data_as_of", "data_loaded_at"}  # row id, source-system update and portal load timestamps
+REVERSAL = ["department_code", "vendor", "purchase_order", "contract_number", "program_code", "character_code",
+            "object_code", "sub_object_code", "fund_code"]
 
 
 def read_raw(d):
@@ -93,13 +99,18 @@ def normalize():
     raw = read_raw(d)
     for r in raw:
         assert r["department_code"] in links and int(r["fiscal_year"]) >= FIRST_FY, f"row outside the filter: {r}"
-    seq, rows, pending_only = collections.Counter(), [], 0
-    for r in sorted(raw, key=line_key):
-        paid = decimal.Decimal(r.get("vouchers_paid") or "0")
-        if paid == 0:
-            pending_only += 1
-            continue
+    raw = sorted(raw, key=lambda r: (line_key(r), r[":id"]))
+    paid = [r for r in raw if decimal.Decimal(r.get("vouchers_paid") or "0") != 0]
+    pending_only = len(raw) - len(paid)
+    seq, ids = collections.Counter(), {}
+    for r in paid:
         seq[r["voucher"]] += 1
+        ids[r[":id"]] = f"{r['voucher']}-{seq[r['voucher']]}"
+    kept, dropped = ca_common.keep_identical(
+        paid, ca_common.socrata_ident(ROW_IDS), lambda r: tuple(r.get(c) or "" for c in REVERSAL),
+        lambda r: decimal.Decimal(r["vouchers_paid"]), lambda r: int(r["fiscal_year"]), lambda r: r[":id"])
+    rows = []
+    for r in kept:
         rows.append({
             "agency_id": links[r["department_code"]], "fiscal_year": r["fiscal_year"],
             "posting_date": "",
@@ -109,10 +120,9 @@ def normalize():
                                                f"{r['object_code']} {r['object']}",
                                                f"{r['sub_object_code']} {r['sub_object']}", r.get("fund")] if x),
             "category_published": r["sub_object"],
-            "amount": ca_common.money(paid),
-            "source_record_id": f"{r['voucher']}-{seq[r['voucher']]}",
+            "amount": ca_common.money(r["vouchers_paid"]),
+            "source_record_id": ids[r[":id"]],
         })
-    rows, dropped = ca_common.drop_identical(rows, "transactions.csv.gz")
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
 
     years = sorted({int(r["fiscal_year"]) for r in rows})
@@ -122,9 +132,9 @@ def normalize():
         "url": f"{DOMAIN}/d/{DATASET}", "years": f"{years[0]}-{years[-1]}",
         "fiscal_year": "City and County of San Francisco FY, Jul-Jun", "fetched": d.parent.parent.name,
         "note": "Fire Department (FIR) voucher lines, amounts paid; the Controller removes payments to employees, "
-                "jurors, witnesses, refunds, judgments and claims before publishing; no payment date, so identical "
-                "lines (same fiscal year, payee, contract, account and amount) are kept once and repeat payments of "
-                "one amount in a year count once; purchases other departments make "
+                "jurors, witnesses, refunds, judgments and claims before publishing; no payment date; raw lines "
+                "identical in every column but the row and load ids kept once (vouchers are content, so payments on "
+                "different vouchers are all kept); purchases other departments make "
                 f"for Fire are not included; FY{years[-1]} partial (data loaded {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
