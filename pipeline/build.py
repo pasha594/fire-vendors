@@ -1,9 +1,20 @@
-"""Build data/data.json and data/payments.json from the newest raw/<date>/ folders and the config/*.csv files.
+"""Build the site's data files from the newest raw/<date>/ folders, data/states/<st>/ and the config/*.csv files.
 
-    python3 pipeline/build.py                      # write data/data.json and data/payments.json
-    python3 pipeline/build.py --worklist out.csv   # also list payees that need a manual vendor_map row
+    python3 pipeline/build.py                    # write data/index.json and the per-state files
+    python3 pipeline/build.py --worklist DIR     # also write DIR/worklist_<st>.csv: payees that need a vendor_map row
 
-Vendor payments come from the Transparent Utah BigQuery transaction lines
+Output (all compact JSON, deterministic; every file carries the same "built" date):
+  data/index.json          meta (per state and per source), categories, every agency of every state, and the
+                           precomputed default table per scope (home): the first load, under 1 MB gzipped
+  data/<st>.json           vendors, payee names, rows, grants and published totals of one state (ut, oh, ca, id, tx)
+  data/<st>-payments.json  single payments of one state
+  data/<st>-items.json     item lines (tier 2: Texas DIR, California SCPRS)
+  data/data.json, data/payments.json   Utah only, in the format the page read before the multi-state split
+States, their fiscal years and partial years are in config/states.csv. Other states are read from the normalized
+files of docs/multistate/data-contract.md (data/states/<st>/) and classified with the same rules as Utah, but with
+no person grouping and no withholding: their payee names and descriptions are shown as published.
+
+Utah: vendor payments come from the Transparent Utah BigQuery transaction lines
 (raw/<date>/transparent_utah_bigquery/fire_transactions_*.csv.gz) for every agency in config/agencies.csv with
 include=yes. Fire districts and interlocal agencies also get details, expenses, revenue and staff from the public
 Transparent Utah query service (raw/<date>/transparent_utah/); every agency gets USFA registry data and FEMA grants
@@ -51,8 +62,28 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CONFIG = ROOT / "config"
-YEARS = list(range(2021, 2027))
-PARTIAL_YEARS = [2026]
+DATA = ROOT / "data"
+STATE_DATA = DATA / "states"
+INDEX_MAX_GZ = 1_000_000                                    # data/index.json, gzipped
+FILE_MAX = 50_000_000                                       # any written file
+
+
+def read_states():
+    """config/states.csv: {state: {"name", "years", "partial_years"}} in the file's order (Utah first)."""
+    out = {}
+    with open(CONFIG / "states.csv", newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            y0, y1 = (int(x) for x in r["years"].split("-"))
+            partial = sorted(int(x) for x in r["partial_years"].split(";") if x.strip())
+            assert set(partial) <= set(range(y0, y1 + 1)), f"config/states.csv: partial years of {r['state']}"
+            out[r["state"]] = {"name": r["name"], "years": list(range(y0, y1 + 1)), "partial_years": partial}
+    assert next(iter(out)) == "UT", "config/states.csv: Utah must be the first state"
+    return out
+
+
+STATES = read_states()
+YEARS = STATES["UT"]["years"]
+PARTIAL_YEARS = STATES["UT"]["partial_years"]
 TU_SITE = "https://transparent.utah.gov/"
 BQ_DIR = "transparent_utah_bigquery"
 
@@ -339,7 +370,20 @@ def transactions(path):
 
 
 def agency_id(a):
-    return int(a["id"]) if a["id"].isdigit() else a["id"]
+    """Utah agency id: 'UT-' and the Transparent Utah entity id ('UT-359')."""
+    return f"UT-{a['id']}"
+
+
+def ut_sort_key(aid):
+    """Today's Utah order: numeric ids in number order, then any slug ids."""
+    t = aid[3:]
+    return (0, int(t), "") if t.isdigit() else (1, 0, t)
+
+
+def legacy_id(aid):
+    """The id data/data.json used before the multi-state split: the number ('UT-359' -> 359)."""
+    t = aid[3:]
+    return int(t) if t.isdigit() else t
 
 
 class Rules:
@@ -524,16 +568,109 @@ def load_agencies(raw, rows_cfg, fy_counts, fire_expenses):
     return agencies
 
 
-def main(worklist_path=None):
+# --- Shared by every state -----------------------------------------------------------------------------------
+
+def classify_key(rules, k, display):
+    """(vendor name, category, method, named) of a payee key: named is True when config names the vendor
+    (vendor_map, or a rule with a vendor name); otherwise the vendor is shown under display, the payee's own name."""
+    if k in rules.vendor_map:
+        return rules.vendor_map[k][0], rules.vendor_map[k][1], "map", True
+    if not k:
+        return "No vendor named", "placeholder", "rule", True
+    for cat, rx, vendor in rules.vendor_rules:
+        if rx.search(k):
+            return vendor or display, cat, "rule", bool(vendor)
+    return display, "unclassified", "none", False
+
+
+def cancel_credits(pay_lines, credits):
+    """Single payments a credit cancels: a payment is left out when a credit or reversal of the same amount to the
+    same payee cancels it (the latest payment on or before the credit date, else the earliest after it).
+    pay_lines: (agency, date, vendor, category, amount, ...); credits: (agency, vendor, cents) -> credit dates."""
+    by_key = collections.defaultdict(list)
+    for i, p in enumerate(pay_lines):
+        by_key[(p[0], p[2], round(p[4] * 100))].append(i)
+    dropped = set()
+    for key, dates in credits.items():
+        cands = sorted(by_key.get(key, []), key=lambda i: pay_lines[i][1])
+        for d in sorted(dates):
+            left = [i for i in cands if i not in dropped]
+            if not left:
+                break
+            before = [i for i in left if pay_lines[i][1] <= d]
+            dropped.add(before[-1] if before else left[0])
+    return dropped
+
+
+def finish_vendors(rows, payments, vendors, aliases, categories, neris, sort_key, used=()):
+    """Keep vendors and payee names that appear in a row, a payment or `used` (vendor indexes of item lines), renumber
+    them, sort rows and payments, and set each vendor's main category (largest net spend), payee names and NERIS flag.
+    rows: {(agency, vendor, year, category, alias): net}. Returns (rows, payments, vendors, aliases, old -> new vendor)."""
+    rows = [[a, v, y, c, round(x, 2), al] for (a, v, y, c, al), x in rows.items() if round(x, 2) != 0]
+    used_v = {r[1] for r in rows} | {p[2] for p in payments} | set(used)
+    used_a = {r[5] for r in rows} | {p[6] for p in payments}
+    used_a.discard(-1)
+    v_new = {vi: n for n, vi in enumerate(vi for vi in range(len(vendors)) if vi in used_v)}
+    a_new = {ai: n for n, ai in enumerate(ai for ai in range(len(aliases)) if ai in used_a)}
+    remap_a = lambda ai: a_new[ai] if ai >= 0 else -1  # noqa: E731
+    rows = sorted(([a, v_new[v], y, c, x, remap_a(al)] for a, v, y, c, x, al in rows), key=lambda r: (sort_key(r[0]), r[1:]))
+    payments = sorted([[a, d, v_new[v], c, x, di, remap_a(al), fy] for a, d, v, c, x, di, al, fy in payments],
+                      key=lambda p: (sort_key(p[0]), p[1], -p[4], p[2]))
+    vendors = [vendors[vi] for vi in sorted(v_new)]
+    aliases = [aliases[ai] for ai in sorted(a_new)]
+    cat_net = collections.defaultdict(collections.Counter)
+    names_of = collections.defaultdict(set)
+    for a, v, y, c, x, al in rows:
+        cat_net[v][categories[c]["id"]] += x
+        names_of[v].add(al)
+    for p in payments:
+        names_of[p[2]].add(p[6])
+    for vi, v in enumerate(vendors):
+        net = cat_net[vi]
+        if net:
+            pos = {c: x for c, x in net.items() if x > 0}
+            v["category"] = max(pos, key=lambda c: (pos[c], c)) if pos else max(net, key=lambda c: (abs(net[c]), c))
+        v["aliases"] = sorted(al for al in names_of[vi] if al >= 0)
+        v["neris"] = None if v["id"] == "individuals" else (any(rx.search(norm(v["name"])) for _, rx in neris) or None)
+    return rows, payments, vendors, aliases, v_new
+
+
+def coverage_numbers(rows, categories, cov):
+    """(purchasing total, unclassified, meta coverage by method) of a state's rows."""
+    buy = sum(r[4] for r in rows if categories[r[3]]["purchasing"] == "yes")
+    unclassified = sum(r[4] for r in rows if categories[r[3]]["id"] == "unclassified")
+    by_method = {m: {"purchasing": round(cov[m]["purchasing"]), "all": round(cov[m]["all"]), "lines": cov[m]["lines"]}
+                 for m in METHODS}
+    return buy, unclassified, by_method
+
+
+def rel(p):
+    return p.relative_to(ROOT).as_posix() if p else None
+
+
+def write_worklist(path, key_spend, key_names, key_agencies, key_class, names, pick, method_of=None):
+    """Payees to review in config/vendor_map.csv: name key, most common names, net spend, agencies, category."""
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["name_key", "raw_names", "spend", "agencies", "agency_names", "current_category", "method"])
+        for k in sorted(key_spend):
+            _, cat, method, named = key_class[k]
+            if pick(k):
+                w.writerow([k, " | ".join(n for n, _ in key_names[k].most_common(4)), round(key_spend[k]),
+                            len(key_agencies[k]), " | ".join(sorted(names[t] for t in key_agencies[k])[:4]),
+                            cat, method_of(k, method) if method_of else method])
+
+
+# --- Utah ------------------------------------------------------------------------------------------------------
+
+def build_utah(rules, categories, cat_pos, neris):
+    """Utah from the Transparent Utah BigQuery lines and query service files, as the single-state build did; only
+    the agency ids changed ('UT-359'). Returns the state's tables, today's meta and what the report needs."""
     raw = latest_raw()
     tx_path = latest_bq("fire_transactions*.csv.gz")
     assert tx_path, f"no raw/<date>/{BQ_DIR}/fire_transactions*.csv.gz file"
     fx_path = latest_bq("fire_expenses_by_year.csv.gz") or latest_bq("fire_expenses_by_year.csv")
-    categories = read_csv("categories.csv")
-    cat_pos = {c["id"]: i for i, c in enumerate(categories)}
-    rules = Rules(categories)
     purchasing = rules.purchasing
-    neris = [(r["vendor"], re.compile(r["match"])) for r in read_csv("neris_partners.csv")]
 
     cfg = [a for a in read_csv("agencies.csv") if a["include"] == "yes"]
     aid_by_name = {a["name"]: agency_id(a) for a in cfg}
@@ -602,12 +739,10 @@ def main(worklist_path=None):
 
     # Vendors
     def classify(k):
-        """(vendor name, category, method, named): named is True when config names the vendor (vendor_map,
-        or a rule with a vendor name); otherwise the vendor is shown under the payee's own name."""
-        if k in rules.vendor_map:
-            return rules.vendor_map[k][0], rules.vendor_map[k][1], "map", True
-        if not k:
-            return "No vendor named", "placeholder", "rule", True
+        """classify_key with Utah's clean-up of the payee's own name: a person's name after a business name is cut
+        off, and payee text matching config/payee_name_redactions.csv is not shown."""
+        if k in rules.vendor_map or not k:
+            return classify_key(rules, k, None)
         display = key_names[k].most_common(1)[0][0].strip()
         if rules.person_segment(display):                     # 'ZIONS BANK - FIRST LAST' -> 'ZIONS BANK'
             display = SEGMENT.split(display)[0].strip(" ()-,") or display
@@ -615,10 +750,7 @@ def main(worklist_path=None):
             display = re.sub(r"\S+@\S+", "", display).strip(" ()-,")
             if not display or any(rx.search(display) for rx in rules.redactions):
                 display = "Payee name withheld"
-        for cat, rx, vendor in rules.vendor_rules:
-            if rx.search(k):
-                return vendor or display, cat, "rule", bool(vendor)
-        return display, "unclassified", "none", False
+        return classify_key(rules, k, display)
 
     key_class = {k: classify(k) for k in key_spend}
 
@@ -711,19 +843,8 @@ def main(worklist_path=None):
             credits[(aid, vi, round(-amount * 100))].append(r["posting_date"])
 
     # Single payments: a payment is left out when a credit or reversal of the same amount to the same payee
-    # cancels it (the latest payment on or before the credit date, else the earliest after it).
-    by_key = collections.defaultdict(list)
-    for i, p in enumerate(pay_lines):
-        by_key[(p[0], p[2], round(p[4] * 100))].append(i)
-    dropped = set()
-    for key, dates in credits.items():
-        cands = sorted(by_key.get(key, []), key=lambda i: pay_lines[i][1])
-        for d in sorted(dates):
-            left = [i for i in cands if i not in dropped]
-            if not left:
-                break
-            before = [i for i in left if pay_lines[i][1] <= d]
-            dropped.add(before[-1] if before else left[0])
+    # cancels it (cancel_credits). Descriptions that may identify a person are withheld.
+    dropped = cancel_credits(pay_lines, credits)
     descriptions, desc_index = [""], {"": 0}
     payments, withheld = [], 0
     for i, (aid, date, vi, ci, amount, desc, al, fy) in enumerate(pay_lines):
@@ -741,33 +862,7 @@ def main(worklist_path=None):
         payments.append([aid, date, vi, ci, amount, desc_index[shown], al, fy])
 
     # Keep vendors and payee names that appear in a row or payment; primary category = largest net spend
-    rows = [[a, v, y, c, round(x, 2), al] for (a, v, y, c, al), x in rows.items() if round(x, 2) != 0]
-    used_v = {r[1] for r in rows} | {p[2] for p in payments}
-    used_a = {r[5] for r in rows} | {p[6] for p in payments}
-    used_a.discard(-1)
-    v_new = {vi: n for n, vi in enumerate(vi for vi in range(len(vendors)) if vi in used_v)}
-    a_new = {ai: n for n, ai in enumerate(ai for ai in range(len(aliases)) if ai in used_a)}
-    remap_a = lambda ai: a_new[ai] if ai >= 0 else -1  # noqa: E731
-    ak = lambda a: (isinstance(a, str), a)  # noqa: E731  (numeric ids, then any slug ids)
-    rows = sorted(([a, v_new[v], y, c, x, remap_a(al)] for a, v, y, c, x, al in rows), key=lambda r: (ak(r[0]), r[1:]))
-    payments = sorted([[a, d, v_new[v], c, x, di, remap_a(al), fy] for a, d, v, c, x, di, al, fy in payments],
-                      key=lambda p: (ak(p[0]), p[1], -p[4], p[2]))
-    vendors = [vendors[vi] for vi in sorted(v_new)]
-    aliases = [aliases[ai] for ai in sorted(a_new)]
-    cat_net = collections.defaultdict(collections.Counter)
-    names_of = collections.defaultdict(set)
-    for a, v, y, c, x, al in rows:
-        cat_net[v][categories[c]["id"]] += x
-        names_of[v].add(al)
-    for p in payments:
-        names_of[p[2]].add(p[6])
-    for vi, v in enumerate(vendors):
-        net = cat_net[vi]
-        if net:
-            pos = {c: x for c, x in net.items() if x > 0}
-            v["category"] = max(pos, key=lambda c: (pos[c], c)) if pos else max(net, key=lambda c: (abs(net[c]), c))
-        v["aliases"] = sorted(al for al in names_of[vi] if al >= 0)
-        v["neris"] = None if v["id"] == "individuals" else (any(rx.search(norm(v["name"])) for _, rx in neris) or None)
+    rows, payments, vendors, aliases, _ = finish_vendors(rows, payments, vendors, aliases, categories, neris, ut_sort_key)
 
     # Agencies, with annual fire expenses for cities, towns and counties when the file is there
     fire_expenses = collections.defaultdict(dict)
@@ -780,17 +875,26 @@ def main(worklist_path=None):
     # FEMA firefighter grants matched to agencies through config/grant_recipients.csv
     recipient_map = {r["fema_recipient"]: agency_id({"id": r["agency_id"]}) for r in read_csv("grant_recipients.csv")}
     grants = []
-    for g in json.loads(read_gz(raw / "openfema" / "firefighter_grants_ut.json.gz")):
+    grants_path = raw / "openfema" / "firefighter_grants_ut.json.gz"
+    for g in json.loads(read_gz(grants_path)):
         aid = recipient_map.get(g["vendorName"])
         if aid in agency_ids:
             grants.append({"agency": aid, "recipient": g["vendorName"], "year": g["fiscalYear"],
                            "program": g["programName"], "amount": g["awardAmount"], "award": g["awardNumber"]})
     grants.sort(key=lambda g: (-g["year"], g["award"]))
 
+    # Multi-state fields: every Utah agency is tier 1 (payee lines), also the two without lines (owner decision)
+    with_grants = {g["agency"] for g in grants}
+    tu_ids = {agency_id(a): int(a["tu_id"]) if a["tu_id"].isdigit() else None for a in cfg}
+    for i, a in enumerate(agencies):
+        u = a["usfa"]
+        sources = {"ut_transparent_utah"} | ({"ut_query_service"} if a["kind"] in API_KINDS else set()) | (
+            {"usfa"} if u else set()) | ({"openfema"} if a["id"] in with_grants else set())
+        agencies[i] = {"id": a["id"], "state": "UT", **{k: v for k, v in a.items() if k != "id"},
+                       "coverage": 1, "sources": sorted(sources), "tu_id": tu_ids[a["id"]], "lines": raw_lines[a["id"]]}
+
     # Coverage numbers for the About section
-    buy = sum(r[4] for r in rows if categories[r[3]]["purchasing"] == "yes")
-    unclassified = sum(r[4] for r in rows if categories[r[3]]["id"] == "unclassified")
-    rel = lambda p: p.relative_to(ROOT).as_posix() if p else None  # noqa: E731
+    buy, unclassified, by_method = coverage_numbers(rows, categories, cov)
     meta = {
         "built": datetime.date.today().isoformat(),
         "fetched": raw.name,
@@ -812,31 +916,55 @@ def main(worklist_path=None):
                          " Descriptions that may identify a person are withheld.",
         "purchasing_total": round(buy),
         "purchasing_classified_share": round(1 - unclassified / buy, 4) if buy else None,
-        "coverage": {m: {"purchasing": round(cov[m]["purchasing"]), "all": round(cov[m]["all"]), "lines": cov[m]["lines"]}
-                     for m in METHODS},
+        "coverage": by_method,
     }
-    out = {"meta": meta, "categories": categories, "agencies": agencies, "vendors": vendors,
-           "aliases": aliases, "rows": rows, "grants": grants}
-    (ROOT / "data").mkdir(exist_ok=True)
-    body = json.dumps(out, separators=(",", ":"), ensure_ascii=False).encode()
-    (ROOT / "data" / "data.json").write_bytes(body)
-    pbody = json.dumps({"built": meta["built"], "payments": payments, "descriptions": descriptions},
-                       separators=(",", ":"), ensure_ascii=False).encode()
-    (ROOT / "data" / "payments.json").write_bytes(pbody)
+    usfa_path = raw / "usfa" / "registry_ut.csv.gz"
+    sources = {
+        "ut_transparent_utah": {
+            "state": "UT", "name": "Transparent Utah transaction lines", "tier": 1, "url": TU_SITE,
+            "years": f"{YEARS[0]}-{YEARS[-1]}", "fiscal_year": "Each entity's own fiscal year (cities, towns and districts"
+            " mostly July-June, counties January-December), the year it ends in", "fetched": meta["transactions_fetched"],
+            "note": "Every expense line the agencies reported to Transparent Utah (BigQuery database), payroll, benefit and"
+                    " refund accounts left out; city, town and county lines coded fire. Lines uploaded again in a later"
+                    " batch are counted once, police lines of Lone Peak Public Safety District are left out.",
+            "raw": meta["transactions_file"]},
+        "ut_query_service": {
+            "state": "UT", "name": "Transparent Utah public query service", "tier": None, "url": TU_SITE,
+            "years": f"{YEARS[0]}-{YEARS[-1]}", "fiscal_year": "Each entity's own fiscal year", "fetched": raw.name,
+            "note": "Fire district and interlocal agency details, total expenses, revenue and compensation (employee"
+                    " names replaced by numbers); not a documented API.",
+            "raw": f"raw/{raw.name}/transparent_utah"},
+    }
+    return {"state": "UT", "agencies": agencies, "vendors": vendors, "aliases": aliases, "rows": rows,
+            "payments": payments, "descriptions": descriptions, "grants": grants, "totals": [], "items": None,
+            "meta": meta, "sources": sources, "registry_raw": rel(usfa_path), "grants_raw": rel(grants_path),
+            "report": dict(person_keys=person_keys, key_class=key_class, key_spend=key_spend, withheld_names=withheld_names,
+                           payments=len(payments), dropped=len(dropped), descriptions=len(descriptions), withheld=withheld,
+                           raw_lines=raw_lines, tx_path=tx_path, skipped=skipped, acct_hits=acct_hits, left_out=left_out,
+                           buy=buy, unclassified=unclassified, cov=cov, raw_total=raw_total),
+            "worklist": dict(key_spend=key_spend, key_names=key_names, key_agencies=key_agencies, key_class=key_class,
+                             pick=lambda k: in_worklist(k) or (k in person_keys and key_class[k][1] != "individuals"
+                                                               and not key_class[k][3]),
+                             method_of=lambda k, m: "withheld" if k in person_keys and key_class[k][1] != "individuals"
+                             else m)}
 
-    # Report
-    mb = lambda b: f"{len(b) / 1e6:.2f} MB ({len(gzip.compress(b)) / 1e6:.2f} MB gzipped)"  # noqa: E731
-    print(f"data/data.json: {mb(body)}; {len(agencies)} agencies, {len(vendors)} vendors, {len(aliases)} payee names,"
-          f" {len(rows)} rows, {len(grants)} grants")
+
+def report_utah(ut):
+    R = ut["report"]
+    agencies, vendors, rows = ut["agencies"], ut["vendors"], ut["rows"]
+    key_class, key_spend, person_keys = R["key_class"], R["key_spend"], R["person_keys"]
+    print(f"Utah: {len(agencies)} agencies, {len(vendors)} vendors, {len(ut['aliases'])} payee names,"
+          f" {len(rows)} rows, {len(ut['grants'])} grants")
     hidden = [k for k in person_keys if key_class[k][1] != "individuals"]
     print(f"Payees grouped as {INDIVIDUALS} without a vendor_map row: {len(hidden)} names,"
-          f" ${sum(key_spend[k] for k in hidden):,.0f}; payee texts withheld under a named vendor: {withheld_names}")
-    print(f"data/payments.json: {mb(pbody)}; {len(payments)} payments ({len(dropped)} cancelled by a credit left out),"
-          f" {len(descriptions) - 1} distinct descriptions, {withheld} descriptions withheld")
-    print(f"Lines: {sum(raw_lines.values()):,} used from {rel(tx_path)}; {sum(skipped.values()):,} lines of"
+          f" ${sum(key_spend[k] for k in hidden):,.0f}; payee texts withheld under a named vendor: {R['withheld_names']}")
+    print(f"Utah payments: {R['payments']} payments ({R['dropped']} cancelled by a credit left out),"
+          f" {R['descriptions'] - 1} distinct descriptions, {R['withheld']} descriptions withheld")
+    raw_lines, acct_hits, skipped = R["raw_lines"], R["acct_hits"], R["skipped"]
+    print(f"Lines: {sum(raw_lines.values()):,} used from {rel(R['tx_path'])}; {sum(skipped.values()):,} lines of"
           f" {len(skipped)} entities not included. Account rules: {acct_hits['exact']:,} lines exact,"
           f" {acct_hits['loose']:,} ignoring case, {acct_hits[None]:,} without a rule")
-    for why, (n, dollars) in sorted(left_out.items()):
+    for why, (n, dollars) in sorted(R["left_out"].items()):
         print(f"Left out, {why}: {n:,} lines, ${dollars:,.2f}")
     # Payee names shown under their own name with a part shaped like a person's name: review them in vendor_map.csv
     review = sorted({v["name"] for v in vendors if v["method"] != "map" and v["id"] != "individuals"
@@ -845,6 +973,7 @@ def main(worklist_path=None):
     print(f"Vendor names with a '/' part shaped like a person's name (not in vendor_map.csv): {len(review)}")
     for name in review[:40]:
         print("   ", name)
+    buy, unclassified, cov = R["buy"], R["unclassified"], R["cov"]
     print(f"\nPurchasing ${buy:,.0f}; unclassified ${unclassified:,.0f} ({unclassified / buy:.1%})")
     print(f"{'method':12} {'purchasing $':>16} {'share':>7} {'all lines $':>16} {'lines':>9}")
     for m in METHODS:
@@ -853,6 +982,7 @@ def main(worklist_path=None):
     net = collections.defaultdict(float)
     for r in rows:
         net[r[0]] += r[4]
+    raw_total = R["raw_total"]
     print(f"\n{'agency':58} {'lines':>7} {'raw file $':>15} {'data.json $':>15} {'diff':>6}")
     bad = 0
     for a in sorted(agencies, key=lambda a: -abs(raw_total.get(a["id"], 0))):
@@ -861,19 +991,496 @@ def main(worklist_path=None):
         print(f"{a['name'][:58]:58} {raw_lines[a['id']]:7,} {raw_total.get(a['id'], 0):15,.2f} {net.get(a['id'], 0):15,.2f}"
               f" {diff:6.2f}" + ("" if raw_lines[a["id"]] else "  (no lines)"))
     print(f"{len(agencies) - bad} of {len(agencies)} agencies match the raw file")
+    return bad
 
-    if worklist_path:
-        names = {a["id"]: a["name"] for a in agencies}
-        with open(worklist_path, "w", newline="", encoding="utf-8") as f:
-            w = csv.writer(f)
-            w.writerow(["name_key", "raw_names", "spend", "agencies", "agency_names", "current_category", "method"])
-            for k in sorted(key_spend):
-                _, cat, method, named = key_class[k]
-                if in_worklist(k) or (k in person_keys and cat != "individuals" and not named):
-                    method = "withheld" if k in person_keys and cat != "individuals" else method
-                    w.writerow([k, " | ".join(n for n, _ in key_names[k].most_common(4)), round(key_spend[k]),
-                                len(key_agencies[k]), " | ".join(sorted(names[t] for t in key_agencies[k])[:4]),
-                                cat, method])
+
+def legacy_files(ut, categories, built):
+    """Today's data/data.json and data/payments.json bodies for Utah (numeric agency ids, no multi-state fields)."""
+    added = {"state", "coverage", "sources", "tu_id", "lines"}
+    agencies = [{"id": legacy_id(a["id"]), **{k: v for k, v in a.items() if k not in added and k != "id"}}
+                for a in ut["agencies"]]
+    rows = [[legacy_id(r[0])] + r[1:] for r in ut["rows"]]
+    grants = [{**g, "agency": legacy_id(g["agency"])} for g in ut["grants"]]
+    payments = [[legacy_id(p[0])] + p[1:] for p in ut["payments"]]
+    out = {"meta": {**ut["meta"], "built": built}, "categories": categories, "agencies": agencies,
+           "vendors": ut["vendors"], "aliases": ut["aliases"], "rows": rows, "grants": grants}
+    body = json.dumps(out, separators=(",", ":"), ensure_ascii=False).encode()
+    pbody = json.dumps({"built": built, "payments": payments, "descriptions": ut["descriptions"]},
+                       separators=(",", ":"), ensure_ascii=False).encode()
+    return body, pbody
+
+
+# --- Other states (data/states/<st>/, docs/multistate/data-contract.md) -----------------------------------------
+
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+          "November", "December"]
+FEDERAL = {
+    "usfa": {"name": "USFA National Fire Department Registry", "url": "https://apps.usfa.fema.gov/registry/",
+             "note": "Every registered fire department: type, stations and firefighter counts."},
+    "openfema": {"name": "OpenFEMA firefighter grants",
+                 "url": "https://www.fema.gov/openfema-data-page/non-disaster-assistance-firefighter-grants-v1",
+                 "note": "Assistance to Firefighters, SAFER and related grant awards, matched to agencies by recipient name."},
+    "neris": {"name": "NERIS integration partner list", "url": "https://neris.fsri.org/integration-partners",
+              "note": "Vendors certified to integrate with NERIS, the National Emergency Response Information System."},
+}
+
+
+def month_names(fy_start):
+    """'07' -> 'July'; ['07', '09'] -> 'July and September'; None -> None."""
+    if not fy_start:
+        return None
+    ms = [MONTHS[int(m) - 1] for m in ([fy_start] if isinstance(fy_start, str) else fy_start)]
+    return ms[0] if len(ms) == 1 else ", ".join(ms[:-1]) + " and " + ms[-1]
+
+
+def number(s):
+    """A published quantity or price as a number: int when whole, None when empty."""
+    s = (s or "").strip()
+    if not s:
+        return None
+    x = float(s)
+    return int(x) if x == int(x) and "." not in s and "e" not in s.lower() else x
+
+
+def latest_state_raw(st, source, pattern):
+    """Newest raw/<date>/<st>/<source>/ file matching pattern, or None."""
+    for d in reversed(raw_dirs()):
+        found = sorted((d / st.lower() / source).glob(pattern)) if (d / st.lower() / source).is_dir() else []
+        if found:
+            return found[-1]
+    return None
+
+
+def state_agency(a, budget, budget_source, lines):
+    """An agency of data/states/<st>/agencies.json in the shape of a Utah agency."""
+    u = a.get("usfa")
+    dept = u.get("dept_type") if u else None
+    return {
+        "id": a["id"], "state": a["state"], "name": a["name"], "type": None, "kind": a.get("kind"),
+        "county": a.get("county"), "city": a.get("city"),
+        "staffing": dept, "staffing_group": STAFFING_GROUPS.get(dept) if dept else None,
+        "usfa": {"fdid": a.get("usfa_fdid"), "name": a["name"], "stations": u.get("stations") or 0,
+                 "career": u.get("career") or 0, "volunteer": u.get("volunteer") or 0,
+                 "paid_per_call": u.get("paid_per_call") or 0} if u else None,
+        "budget": budget, "budget_source": budget_source, "fy_start": month_names(a.get("fy_start")),
+        "notes": None, "coverage": a["coverage"], "sources": list(a["sources"]), "lines": lines,
+    }
+
+
+def build_state(st, rules, categories, cat_pos, neris):
+    """One state from data/states/<st>/: the same vendor and category rules as Utah (config/vendor_map.csv,
+    vendor_rules.csv, keyword_rules.csv, then classify_line), but payee names and descriptions as published: no
+    person grouping and no withholding. A vendor_map row for a group of people ('Individuals (names withheld)')
+    gives the category only; the vendor is the payee under its published name.
+
+    Rows and single payments come from the lines in the state's fiscal years (config/states.csv); lines outside them
+    (California SCPRS purchase orders, FY2013-FY2015) only name the vendor and category of their item lines."""
+    cfg = STATES[st]
+    years = set(cfg["years"])
+    d = STATE_DATA / st.lower()
+    aj = json.loads((d / "agencies.json").read_text(encoding="utf-8"))
+    assert aj["state"] == st, f"{d}/agencies.json: state {aj['state']}"
+    src_list = aj["sources"]
+    tier = {s["source"]: int(s["tier"]) for s in src_list}
+    ids = {a["id"] for a in aj["agencies"]}
+    assert len(ids) == len(aj["agencies"]), f"{st}: repeated agency ids"
+    tx_path, items_path, totals_path = d / "transactions.csv.gz", d / "line_items.csv.gz", d / "totals.csv"
+    purchasing = rules.purchasing
+
+    def payee_parts(raw_name):
+        """(payee name as shown, vendor key, text that names the vendor), as Utah's payee_parts with no person check."""
+        shown, text = payee_name(raw_name)
+        k, kt = norm(shown), norm(text)
+        if k in rules.vendor_map:
+            return shown, k, text
+        if kt in rules.vendor_map:
+            return shown, kt, text
+        return shown, (kt if text != shown else k), text
+
+    # Pass 1, every line (also those outside the years): payee statistics and the accounts named payees are paid from
+    payee_of = {}
+    key_spend = collections.defaultdict(float)
+    key_names = collections.defaultdict(collections.Counter)
+    key_agencies = collections.defaultdict(set)
+    account_keys = collections.defaultdict(set)
+    raw_total = collections.defaultdict(float)
+    raw_lines = collections.Counter()
+    out_of_range = collections.Counter()                      # source -> lines outside the state's years
+    for r in transactions(tx_path):
+        aid = r["agency_id"]
+        assert aid in ids, f"{rel(tx_path)}: unknown agency {aid}"
+        assert r["source"] in tier, f"{rel(tx_path)}: unknown source {r['source']}"
+        amount = float(r["amount"] or 0)
+        if int(r["fiscal_year"]) in years:
+            raw_total[aid] += amount
+            raw_lines[aid] += 1
+        else:
+            out_of_range[r["source"]] += 1
+        parts = payee_of.get(r["payee_name"])
+        if parts is None:
+            parts = payee_of[r["payee_name"]] = payee_parts(r["payee_name"])
+        _, k, text = parts
+        key_spend[k] += amount
+        key_names[k][text] += abs(amount)
+        key_agencies[k].add(aid)
+        account_keys[(aid, r["account"])].add(k)
+
+    # Vendors: one per canonical name (slug), shown under the payee's most common name when config names none
+    def classify(k):
+        if k in rules.vendor_map and "(names withheld)" in rules.vendor_map[k][0]:
+            return key_names[k].most_common(1)[0][0].strip(), rules.vendor_map[k][1], "map", True
+        if k in rules.vendor_map or not k:
+            return classify_key(rules, k, None)
+        return classify_key(rules, k, key_names[k].most_common(1)[0][0].strip())
+
+    key_class = {k: classify(k) for k in key_spend}
+    vendor_accounts = {ak for ak, ks in account_keys.items() if any(key_class[k][1] != "placeholder" for k in ks)}
+    vendors, vendor_index, key_vendor = [], {}, {}
+    for k in sorted(key_spend, key=lambda k: (-abs(key_spend[k]), k)):
+        name, cat, method, _ = key_class[k]
+        vid = slug(name) or "unnamed"
+        if vid not in vendor_index:
+            vendor_index[vid] = len(vendors)
+            vendors.append({"id": vid, "name": name, "category": cat, "method": method, "aliases": []})
+        key_vendor[k] = vendor_index[vid]
+
+    aliases, alias_index, payee_info = [], {}, {}
+
+    def payee(raw_name):
+        """(vendor index, vendor name, vendor category, payee name index) of a published payee name."""
+        if raw_name not in payee_info:
+            shown, k, _ = payee_of[raw_name]
+            if shown not in alias_index:
+                alias_index[shown] = len(aliases)
+                aliases.append(shown)
+            payee_info[raw_name] = (key_vendor[k], key_class[k][0], key_class[k][1], alias_index[shown])
+        return payee_info[raw_name]
+
+    # Pass 2: category of each line; rows, coverage and single payments from the lines in the years; the vendor and
+    # category of every tier-2 line for its item line
+    rows = collections.defaultdict(float)
+    cov = {m: {"purchasing": 0.0, "all": 0.0, "lines": 0} for m in METHODS}
+    acct_hits = collections.Counter()
+    pay_lines, credits = [], collections.defaultdict(list)
+    item_of = {}                                              # (source, source_record_id) -> (vendor, category)
+    for r in transactions(tx_path):
+        aid, fy, amount = r["agency_id"], int(r["fiscal_year"]), float(r["amount"] or 0)
+        vi, vname, vcat, al = payee(r["payee_name"])
+        accounts = r["account"]
+        cat, method = classify_line(rules, vname, vcat, accounts, r["description"], (aid, accounts) in vendor_accounts,
+                                    payee_of[r["payee_name"]][0])
+        if tier[r["source"]] == 2:
+            key = (r["source"], r["source_record_id"])
+            assert key not in item_of, f"{rel(tx_path)}: tier-2 line {key} twice"
+            item_of[key] = (vi, cat)
+        if fy not in years:
+            continue
+        acct_hits[rules.account(accounts)[3]] += 1
+        rows[(aid, vi, fy, cat_pos[cat], al)] += amount
+        c = cov[method]
+        c["all"] += amount
+        c["lines"] += 1
+        if cat in purchasing:
+            c["purchasing"] += amount
+            if amount >= PAYMENT_MIN:
+                pay_lines.append((aid, r["posting_date"], vi, cat_pos[cat], round(amount, 2), r["description"], al, fy))
+        if amount <= -PAYMENT_MIN:
+            credits[(aid, vi, round(-amount * 100))].append(r["posting_date"])
+
+    # Single payments as Utah's, descriptions as published (owner decision: nothing withheld)
+    dropped = cancel_credits(pay_lines, credits)
+    descriptions, desc_index = [""], {"": 0}
+    payments = []
+    for i, (aid, date, vi, ci, amount, desc, al, fy) in enumerate(pay_lines):
+        if i in dropped:
+            continue
+        shown = clean_payee(desc)
+        if '""' in shown:
+            shown = shown.strip('"').replace('""', '"')
+        if shown not in desc_index:
+            desc_index[shown] = len(descriptions)
+            descriptions.append(shown)
+        payments.append([aid, date, vi, ci, amount, desc_index[shown], al, fy])
+
+    # Item lines (tier 2), joined one to one to their transaction line for vendor and category
+    items, strings, string_index, item_sources = [], [""], {"": 0}, []
+
+    def si(s):
+        s = " ".join((s or "").split())
+        if s not in string_index:
+            string_index[s] = len(strings)
+            strings.append(s)
+        return string_index[s]
+
+    if items_path.exists():
+        for r in read_table(items_path):
+            key = (r["source"], r["source_record_id"])
+            assert key in item_of, f"{rel(items_path)}: item line {key} has no tier-2 transaction line"
+            vi, cat = item_of.pop(key)
+            if r["source"] not in item_sources:
+                item_sources.append(r["source"])
+            items.append([r["agency_id"], int(r["fiscal_year"]), r["date"], vi, si(r["brand"]), si(r["product_type"]),
+                          si(r["description"]), number(r["quantity"]), number(r["unit_price"]), round(float(r["amount"]), 2),
+                          cat_pos[cat], item_sources.index(r["source"])])
+    assert not item_of, f"{st}: {len(item_of)} tier-2 transaction lines have no item line, e.g. {next(iter(item_of))}"
+
+    rows, payments, vendors, aliases, v_new = finish_vendors(rows, payments, vendors, aliases, categories, neris,
+                                                             lambda a: a, {it[3] for it in items})
+    for it in items:
+        it[3] = v_new[it[3]]
+
+    # Published annual totals (tier 3) in the years: rows, and the agency's annual expenses (size filter)
+    totals, budget = [], collections.defaultdict(dict)
+    budget_src = collections.defaultdict(set)
+    for r in read_table(totals_path) if totals_path.exists() else []:
+        assert r["agency_id"] in ids, f"{rel(totals_path)}: unknown agency {r['agency_id']}"
+        fy = int(r["fiscal_year"])
+        if fy not in years:
+            continue
+        amount = float(r["amount"])
+        totals.append([r["agency_id"], fy, r["category_published"], amount, r["source"]])
+        budget[r["agency_id"]][fy] = budget[r["agency_id"]].get(fy, 0.0) + amount
+        budget_src[r["agency_id"]].add(r["source"])
+
+    # FEMA firefighter grants (federal.py matched them to agencies)
+    grants = []
+    for r in read_table(d / "grants.csv"):
+        if r["agency_id"] in ids:
+            amount = float(r["amount"])
+            grants.append({"agency": r["agency_id"], "recipient": r["recipient"], "year": int(r["fiscal_year"]),
+                           "program": r["program"], "amount": int(amount) if amount == int(amount) else amount,
+                           "award": r["award_number"]})
+    grants.sort(key=lambda g: (-g["year"], g["award"]))
+
+    agencies = []
+    for a in aj["agencies"]:
+        b = budget.get(a["id"], {})
+        agencies.append(state_agency(
+            a, {str(y): round(b[y]) for y in sorted(b)},
+            "totals:" + ";".join(sorted(budget_src[a["id"]])) if b else None, raw_lines[a["id"]]))
+    coverage_counts = {str(t): sum(a["coverage"] == t for a in agencies) for t in (1, 2, 3, 4)}
+    assert coverage_counts == {str(k): v for k, v in aj["coverage_counts"].items()}, f"{st}: coverage counts differ"
+
+    buy, unclassified, by_method = coverage_numbers(rows, categories, cov)
+    registry, grants_raw = latest_state_raw(st, "usfa", "*.csv.gz"), latest_state_raw(st, "openfema", "*.json.gz")
+    sources = {}
+    for s in src_list:
+        tbl = {1: "transactions.csv.gz", 2: "line_items.csv.gz", 3: "totals.csv"}[int(s["tier"])]
+        raw_dir = next((p / st.lower() / s["source"] for p in reversed(raw_dirs())
+                        if (p / st.lower() / s["source"]).is_dir()), None)
+        sources[s["source"]] = {"state": st, "name": s["name"], "tier": int(s["tier"]), "url": s["url"],
+                                "years": s["years"], "fiscal_year": s["fiscal_year"], "fetched": s["fetched"],
+                                "note": s["note"], "raw": rel(d / tbl), "raw_dir": rel(raw_dir)}
+    meta = {
+        "name": cfg["name"], "years": cfg["years"], "partial_years": cfg["partial_years"],
+        "fetched": max([s["fetched"] for s in src_list] + [p.parent.parent.parent.name for p in (registry, grants_raw) if p]),
+        "counts": {"agencies": len(agencies), "vendors": len(vendors), "rows": len(rows), "grants": len(grants),
+                   "payments": len(payments), "lines": sum(raw_lines.values()), "items": len(items), "totals": len(totals)},
+        "payments_rule": f"Transaction lines of ${PAYMENT_MIN:,} or more in purchasing categories, as published. A line"
+                         " is left out when a credit or reversal of the same amount to the same payee cancels it; smaller"
+                         " credits are not matched, so the lines can add up to more than the net yearly total.",
+        "purchasing_total": round(buy),
+        "purchasing_classified_share": round(1 - unclassified / buy, 4) if buy else None,
+        "coverage": by_method,
+        "coverage_counts": coverage_counts,
+        "lines_out_of_range": sum(out_of_range.values()),
+        "lines_out_of_range_by_source": dict(sorted(out_of_range.items())),
+    }
+    report = dict(raw_total=raw_total, raw_lines=raw_lines, acct_hits=acct_hits, buy=buy, unclassified=unclassified,
+                  cov=cov, dropped=len(dropped), renamed=0)
+    names = {a["id"]: a["name"] for a in agencies}
+    return {"state": st, "agencies": agencies, "vendors": vendors, "aliases": aliases, "rows": rows,
+            "payments": payments, "descriptions": descriptions, "grants": grants, "totals": totals,
+            "items": {"sources": item_sources, "strings": strings, "items": items} if items else None,
+            "meta": meta, "sources": sources, "registry_raw": rel(registry), "grants_raw": rel(grants_raw),
+            "report": report,
+            "worklist": dict(key_spend=key_spend, key_names=key_names, key_agencies=key_agencies, key_class=key_class,
+                             names=names, pick=lambda k: len(key_agencies[k]) >= 2 or abs(key_spend[k]) >= 10000)}
+
+
+def report_state(b):
+    R, st, m = b["report"], b["state"], b["meta"]
+    buy, unclassified, cov = R["buy"], R["unclassified"], R["cov"]
+    print(f"\n{m['name']}: {len(b['agencies'])} agencies (tiers 1/2/3/4: "
+          f"{'/'.join(str(m['coverage_counts'][t]) for t in '1234')}), {len(b['vendors'])} vendors"
+          f" ({R['renamed']} named as in an earlier state), {len(b['aliases'])} payee names, {len(b['rows'])} rows,"
+          f" {len(b['payments'])} payments ({R['dropped']} cancelled by a credit left out), {m['counts']['items']} item"
+          f" lines, {len(b['totals'])} totals rows, {len(b['grants'])} grants")
+    print(f"Lines: {m['counts']['lines']:,} in FY{m['years'][0]}-FY{m['years'][-1]}; outside: "
+          + (", ".join(f"{s} {n:,}" for s, n in m["lines_out_of_range_by_source"].items()) or "none")
+          + f". Account rules: {R['acct_hits']['exact']:,} lines exact, {R['acct_hits']['loose']:,} ignoring case")
+    if buy:
+        print(f"Purchasing ${buy:,.0f}; unclassified ${unclassified:,.0f} ({unclassified / buy:.1%})")
+        print(f"{'method':12} {'purchasing $':>16} {'share':>7} {'all lines $':>16} {'lines':>9}")
+        for meth in METHODS:
+            c = cov[meth]
+            print(f"{meth:12} {c['purchasing']:16,.0f} {c['purchasing'] / buy:7.1%} {c['all']:16,.0f} {c['lines']:9,}")
+    net = collections.defaultdict(float)
+    for r in b["rows"]:
+        net[r[0]] += r[4]
+    raw_total, raw_lines = R["raw_total"], R["raw_lines"]
+    bad = []
+    for a in b["agencies"]:
+        diff = net.get(a["id"], 0) - raw_total.get(a["id"], 0)
+        if abs(diff) >= 0.01 * max(1, raw_lines[a["id"]]):
+            bad.append((a, diff))
+    with_lines = [a for a in b["agencies"] if raw_lines[a["id"]]]
+    print(f"{'agency':58} {'lines':>9} {'raw file $':>17} {'rows $':>17}")
+    for a in sorted(with_lines, key=lambda a: (-abs(raw_total[a["id"]]), a["id"]))[:8]:
+        print(f"{a['name'][:58]:58} {raw_lines[a['id']]:9,} {raw_total[a['id']]:17,.2f} {net.get(a['id'], 0):17,.2f}")
+    for a, diff in bad:
+        print(f"  DIFFERS: {a['id']} {a['name']}: rows - raw = {diff:,.2f}")
+    print(f"{len(with_lines) - sum(1 for a, _ in bad if raw_lines[a['id']])} of {len(with_lines)} agencies with lines"
+          f" match {rel(STATE_DATA / st.lower() / 'transactions.csv.gz')}")
+    return len(bad)
+
+
+# --- All states ---------------------------------------------------------------------------------------------------
+
+def merge_vendor_ids(builds):
+    """A vendor id names one vendor in every state: the first state with the id (Utah, then the order of
+    config/states.csv) gives its display name, method and NERIS flag; each state keeps its own main category."""
+    first = {}
+    for b in builds:
+        renamed = 0
+        for v in b["vendors"]:
+            w = first.setdefault(v["id"], v)
+            if w is not v and (v["name"], v["method"], v["neris"]) != (w["name"], w["method"], w["neris"]):
+                v["name"], v["method"], v["neris"] = w["name"], w["method"], w["neris"]
+                renamed += 1
+        b["report"]["renamed"] = renamed
+
+
+def home_tables(builds, categories):
+    """The default view (category grouping, no filters, every agency, purchasing categories, the scope's full year
+    range) per scope, ALL and each state, with the page's rules (Core.agg): spend, rows and spend per year per
+    category; vendors and agencies counted where an agency's net with a vendor (by id) in a year and category is
+    positive to the cent; the last such year. Rows are summed in the page's order: states in config/states.csv
+    order, each state's rows in file order."""
+    purch = [i for i, c in enumerate(categories) if c["purchasing"] == "yes"]
+    ok = set(purch)
+    out = {}
+    for scope in ["ALL"] + [b["state"] for b in builds]:
+        bs = builds if scope == "ALL" else [b for b in builds if b["state"] == scope]
+        ys = sorted({y for b in bs for y in STATES[b["state"]]["years"]})
+        agg = {c: [0.0, 0, collections.defaultdict(float)] for c in purch}
+        net = collections.defaultdict(float)                  # (agency, vendor id, year, category) -> net
+        tot = [0.0, 0, collections.defaultdict(float)]
+        for b in bs:
+            vid = [v["id"] for v in b["vendors"]]
+            for a, v, y, c, x, _ in b["rows"]:
+                if c not in ok or not ys[0] <= y <= ys[-1]:
+                    continue
+                o = agg[c]
+                o[0] += x
+                o[1] += 1
+                o[2][y] += x
+                tot[0] += x
+                tot[1] += 1
+                tot[2][y] += x
+                net[(a, vid[v], y, c)] += x
+        ve, ag, last = collections.defaultdict(set), collections.defaultdict(set), {}
+        for (a, v, y, c), x in net.items():
+            if x > 0.005:
+                ve[c].add(v)
+                ag[c].add(a)
+                last[c] = max(last.get(c, y), y)
+        yr = lambda d: {str(y): round(d[y], 2) for y in sorted(d)}  # noqa: E731
+        out[scope] = {
+            "from": ys[0], "to": ys[-1],
+            "cats": [[c, round(agg[c][0], 2), agg[c][1], len(ve[c]), len(ag[c]), last.get(c), yr(agg[c][2])] for c in purch],
+            "sum": [round(tot[0], 2), tot[1], len(set().union(*ve.values())), len(set().union(*ag.values())), yr(tot[2])],
+        }
+    return out
+
+
+def dumps(obj):
+    return json.dumps(obj, separators=(",", ":"), ensure_ascii=False).encode()
+
+
+def gz_size(body):
+    return len(gzip.compress(body, compresslevel=9, mtime=0))
+
+
+def write_outputs(builds, categories, home):
+    """Serialize every file, check the size limits, then write: data/index.json, data/<st>.json,
+    data/<st>-payments.json, data/<st>-items.json and Utah's legacy data/data.json and data/payments.json."""
+    built = datetime.date.today().isoformat()
+    files = {}                                                # path relative to data/ -> body
+    states_meta, sources = {}, {}
+    for b in builds:
+        st, low = b["state"], b["state"].lower()
+        body = dumps({"built": built, "state": st, "vendors": b["vendors"], "aliases": b["aliases"], "rows": b["rows"],
+                      "grants": b["grants"], "totals": b["totals"]})
+        pbody = dumps({"built": built, "state": st, "payments": b["payments"], "descriptions": b["descriptions"]})
+        files[f"{low}.json"], files[f"{low}-payments.json"] = body, pbody
+        ibody = None
+        if b["items"]:
+            ibody = dumps({"built": built, "state": st, **b["items"]})
+            files[f"{low}-items.json"] = ibody
+        m = b["meta"]
+        if st == "UT":
+            keep = ["fetched", "transactions_fetched", "raw_path", "transactions_file", "fire_expenses_file",
+                    "transparent_utah", "counts", "payments_rule", "purchasing_total", "purchasing_classified_share",
+                    "coverage"]
+            m = {"name": STATES[st]["name"], "years": m["years"], "partial_years": m["partial_years"],
+                 **{k: m[k] for k in keep}, "coverage_counts": {"1": len(b["agencies"]), "2": 0, "3": 0, "4": 0}}
+        used = {s for a in b["agencies"] for s in a["sources"]}
+        states_meta[st] = {
+            **m, "sources": list(b["sources"]) + [s for s in ("usfa", "openfema") if s in used],
+            "files": {"rows": f"data/{low}.json", "payments": f"data/{low}-payments.json",
+                      "items": f"data/{low}-items.json" if ibody else None},
+            "bytes_gz": {"rows": gz_size(body), "payments": gz_size(pbody), "items": gz_size(ibody) if ibody else 0},
+            "registry_raw": b["registry_raw"], "grants_raw": b["grants_raw"]}
+        sources.update(b["sources"])
+    for sid, s in FEDERAL.items():
+        raw = {b["state"]: b[{"usfa": "registry_raw", "openfema": "grants_raw"}[sid]] for b in builds} if sid != "neris" \
+            else "config/neris_partners.csv"
+        sources[sid] = {"state": None, **s, "tier": 4 if sid != "neris" else None, "raw": raw}
+    all_years = sorted({y for s in STATES.values() for y in s["years"]})
+    meta = {"built": built, "site": "Fire Agency Vendor Finances", "states_order": list(STATES), "years": all_years,
+            "partial_years": sorted({y for s in STATES.values() for y in s["partial_years"]}),
+            "states": states_meta, "sources": sources}
+    index = dumps({"meta": meta, "categories": categories, "agencies": [a for b in builds for a in b["agencies"]],
+                   "home": home})
+    legacy, legacy_pay = legacy_files(builds[0], categories, built)
+    out = {"index.json": index, **files, "data.json": legacy, "payments.json": legacy_pay}
+    problems = [f"data/index.json is {gz_size(index):,} bytes gzipped, over {INDEX_MAX_GZ:,}"] if gz_size(index) > INDEX_MAX_GZ else []
+    problems += [f"data/{p} is {len(body):,} bytes, over {FILE_MAX:,}" for p, body in out.items() if len(body) > FILE_MAX]
+    if problems:
+        sys.exit("build failed, nothing written: " + "; ".join(problems))
+    DATA.mkdir(exist_ok=True)
+    print()
+    for p, body in out.items():
+        (DATA / p).write_bytes(body)
+        print(f"data/{p}: {len(body) / 1e6:.2f} MB ({gz_size(body) / 1e6:.2f} MB gzipped)")
+
+
+def main(worklist_dir=None):
+    categories = read_csv("categories.csv")
+    cat_pos = {c["id"]: i for i, c in enumerate(categories)}
+    rules = Rules(categories)
+    neris = [(r["vendor"], re.compile(r["match"])) for r in read_csv("neris_partners.csv")]
+    ut = build_utah(rules, categories, cat_pos, neris)
+    report_utah(ut)
+    builds = [ut]
+    for st in list(STATES)[1:]:
+        builds.append(build_state(st, rules, categories, cat_pos, neris))
+    merge_vendor_ids(builds)
+    bad = sum(report_state(b) for b in builds[1:])
+    home = home_tables(builds, categories)
+    write_outputs(builds, categories, home)
+    if worklist_dir:
+        out = pathlib.Path(worklist_dir)
+        out.mkdir(parents=True, exist_ok=True)
+        for b in builds:
+            w = b["worklist"]
+            names = w.get("names") or {a["id"]: a["name"] for a in b["agencies"]}
+            write_worklist(out / f"worklist_{b['state'].lower()}.csv", w["key_spend"], w["key_names"],
+                           w["key_agencies"], w["key_class"], names, w["pick"], w.get("method_of"))
+        print(f"Worklists: {out}/worklist_<st>.csv")
+    if bad:
+        print(f"\n{bad} agencies of other states do not match their transaction lines")
 
 
 if __name__ == "__main__":
