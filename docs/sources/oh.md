@@ -326,7 +326,9 @@ checkbook.ohio.gov's robots.txt on 2026-10-06, and the source was then built as
     payments (identical or not) were reversed by two identical voids, one void goes while both payments stay: 607
     payment and reversal families (same participant, payee, account and amount, both signs present) net $874,766.22
     more than as published. Largest: Hamilton Township (Franklin), two $281,250 payments to Global Emergency
-    Vehicles and two voids on 2025-08-26 (net $0 as published, now $281,250, beside the payment of 2025-08-17);
+    Vehicles and two voids on 2025-08-26 (net $0 as published, now $281,250, beside the payment of 2025-08-17; in
+    upload order (TransactionId) the five lines are payment, void, reissue, void, reissue, so the family nets one
+    payment, $281,250, as published and $562,500 now);
     Scioto Township (Pickaway), two $44,974.46 payroll lines and two voids on 2022-03-08 ($44,974.46); City of
     Amherst, two $599 payments to Almur Construction on 2021-05-19, both voided on 2021-06-09 and reissued once on
     2021-06-16 (net $599 as published, now $1,198). Open question below.
@@ -680,8 +682,17 @@ $110,580,051)`).
   of payment and reversal lines (same participant, payee, account and amount) now net $874,766.22 more than as
   published (largest: Hamilton Township (Franklin), $281,250 to Global Emergency Vehicles on 2025-08-26, net $0 as
   published, now $281,250; Scioto Township (Pickaway) $44,974.46; Liverpool Township (Columbiana) $40,200; City of
-  Trenton $33,425 and $31,850). Keep identical negative lines as often as the identical payments they reverse are
-  kept? 3,743 identical negative lines (-$4,461,382.42) are dropped in all.
+  Trenton $33,425 and $31,850). This goes against rule 3's "must not change the net of a payment, void and reissue
+  sequence" (Hamilton Township (Franklin) is payment, void, reissue, void, reissue in upload order). 3,743 identical
+  negative lines (-$4,461,382.42) are dropped in all. Keeping identical negative lines as often as the identical
+  payments they reverse are kept would break the owner's own example: Walnut Township (Fairfield) on 2021-11-24 has
+  three identical $1,551,069.41 payments and two identical voids (payment, void, payment, void, payment); the void
+  rule keeps two payments, and keeping both voids would net $0 instead of $1,551,069.41. A remedy that keeps every
+  such net and changes no positive line (review of 2026-10-07): in a family that has payments, drop an identical
+  negative copy only together with an identical positive copy of the family (Walnut: one payment copy and one void
+  copy go, net $1,551,069.41; Hamilton Township (Franklin): no payment copy goes, so both voids stay, net $281,250).
+  It would keep 1,037 more negative lines (-$874,766.22) and bring all 607 families back to their published net.
+  Apply it (in all four states)?
 - Program 220: police is found by name only. Genoa Township (Delaware) and Orange Township (Delaware) run police
   departments whose funds are not named for police, so they count as not running police; their program 220
   lines are fire protection by the chart of accounts either way. Seven townships with "Public Safety - 220" and

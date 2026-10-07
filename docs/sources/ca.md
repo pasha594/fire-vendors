@@ -467,6 +467,16 @@ invoice (Riverside County: Allstar Fire Equipment protective gear, 8 lines of $6
 $952,295 Nomex line listed twice on one PO). FI$Cal's copies carry the same document id, line and distribution
 number. Every adapter keeps credits, voids and reversals as published (negative lines), so totals are net.
 
+Where the rule raises a net (review of 2026-10-07): identical negative lines are kept once (rule 2) and count once
+as reversals, so where two identical payments were reversed by two identical reversals, both payments stay and one
+reversal goes. Payment and reversal families (same reversal fields and amount, both signs present) that now net more
+than the raw lines: Riverside County 108 (+$6,840.05; for example "State of California Office of Emergency"
+invoice CSTI7617-24, two lines of $2,610 on 2025-04-21, both reversed on 2025-06-02: raw net $0, now $2,610) and
+Corona 5 (+$4,707.58; for example JEROMES FURNITURE WAREHOUSE invoice 0111407WE59D, two $4,416.72 payments and two
+reversals on 2024-02-15, raw net $0, now $4,416.72; DOUBLETREE HOTEL FRESNO, $200.82 "mistakenly charged" twice and
+refunded twice, raw net $0, now $200.82). FI$Cal, LA, SF, Moreno Valley and SCPRS: none. Open question below; Ohio,
+Idaho and Texas have the same case.
+
 ## Payee names
 
 Owner decision of 2026-10-06: payee names are shown as published, private persons included. Every adapter calls
@@ -577,6 +587,14 @@ record id, and an LA row moved by one day each fail the line multiset.
   dropped; SCPRS: a $952,295 Nomex line twice on one PO). Keep them dropped, or keep identical lines inside one
   invoice where the source has no line number? FI$Cal: 123 doubled distribution lines ($103,648.18, May 2021
   CalCard) face a negated sibling distribution on another fund; the rule drops the copy (not an exact reversal).
+- Identical voids (same question in Ohio, Idaho and Texas): rule 2 keeps identical negative lines once, so 113
+  payment and reversal families net more than the raw lines (Riverside County 108, +$6,840.05; Corona 5, +$4,707.58;
+  see Duplicates and reversals: summary), against rule 3's "must not change the net of a payment, void and reissue
+  sequence". Keeping identical negative lines as often as the payments they reverse are kept would break the
+  owner's own example (Walnut Township (Fairfield), Ohio: three identical payments and two identical voids, net one
+  payment, would net $0). A remedy that keeps every such net and changes no positive line: in a family that has
+  payments, drop an identical negative copy only together with an identical positive copy of the family. In
+  California it would keep 116 more negative lines (Riverside County 110, -$6,840.05; Corona 6, -$4,707.58).
 - Riverside County's two CAL FIRE contract invoices of 2026-03-16 (176557 and 176845, $72.4M each) are both counted;
   whether one quarter was paid twice needs the County's answer.
 - SCPRS gives only FY2013-FY2015; keep it, given FI$Cal covers CAL FIRE from FY2021?

@@ -30,7 +30,7 @@ Attribution: CAL FIRE as a whole (state fire agency, PRD open question), linked 
 agency_sources.csv. Fiscal year 2012-2013 is written as 2013 (the year it ends in).
 
 Amounts: "Total Price" as published ("$1,234.56", negatives in parentheses). These are purchase order amounts
-(commitments), not payments. Lines of $0.00 (443, mostly contract-amendment text) are left out. Date: the
+(commitments), not payments. Lines of $0.00 (446, mostly contract-amendment text) are left out. Date: the
 purchase date, else the creation date, when it falls between 2000 and the end of the fiscal year (a few
 purchase dates are typos such as 1912 or 2511); otherwise empty.
 

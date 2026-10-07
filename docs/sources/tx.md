@@ -368,8 +368,14 @@ purchasing dollars = positive net spend of payees not mapped to a non-purchasing
   voided and reissued copies kept (corrected the same day; Houston 3 lines dropped, Austin and Dallas none).
 - Identical voids: identical negative lines are kept once and count once as reversals, so where two identical payments were
   reversed by two identical reversals, both payments stay and one reversal goes. In Texas this happens once: Life-Assist invoice
-  1369849 on 2024-03-29 (Houston) nets $24,800.00 instead of $12,400.00 as published. Keep identical negative lines as often as the
-  identical payments they reverse are kept? Then Houston would drop only the two `*` lines ($225.72) and match the published net.
+  1369849 on 2024-03-29 (Houston) nets $24,800.00 instead of $12,400.00 as published, against rule 3's "must not change the net
+  of a payment, void and reissue sequence". Keeping identical negative lines as often as the identical payments they reverse are
+  kept would fix Houston but break the owner's own Ohio example (Walnut Township (Fairfield): three identical payments and two
+  identical voids, payment, void, payment, void, payment; the void rule keeps two payments, and two voids would net $0 instead of
+  one payment). A remedy that keeps every such net and changes no positive line (review of 2026-10-07): in a family that has
+  payments, drop an identical negative copy only together with an identical positive copy of the family. Houston would then drop
+  only the two `*` lines ($225.72) and keep the second -$12,400.00 reversal (net $12,400.00 as published); Ohio, California and
+  Idaho have the same case (see their notes). Apply it in all four states?
 - The contract columns leave out Houston's vendor invoice and payment document numbers, so 2,536 Houston rows (Austin 433, Dallas
   96) look equal to another row on the page although they are different payments (`source_record_id` differs). Add the invoice or
   document number to the description?

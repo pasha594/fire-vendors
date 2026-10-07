@@ -345,5 +345,11 @@ merging. Low-confidence rows were inferred from the account the payment was code
 - Yellow Pine: one district registered twice in the Local Government Registry, or two? (see `id_lgr` data quality)
 - Identical credits: the void rule protects identical payments only, so identical negative lines are kept once even
   when a later line reverses one of them. In `id_state` this raises one family's net from $0 to $1,529.87 (see
-  `id_state`, Duplicates). Count re-reversals for identical credits the same way (keep min(n, re-reversals + 1))?
-  Ohio raises the same question.
+  `id_state`, Duplicates). Counting re-reversals for identical credits the same way (keep min(n, re-reversals + 1))
+  would fix this family but break the owner's own Ohio example (Walnut Township (Fairfield): three identical payments
+  and two identical voids, payment, void, payment, void, payment; the void rule keeps two payments, and two voids
+  would net $0 instead of one payment). A remedy that keeps every such net and changes no positive line (review of
+  2026-10-07): in a family that has payments, drop an identical negative copy only together with an identical
+  positive copy of the family. Here it keeps the second -$1,529.87 credit (the family has the +$1,529.87 line and
+  no payment copy is dropped), so the four lines net $0 as published. Ohio, California and Texas have the same case.
+  Apply it in all four states?
