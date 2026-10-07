@@ -7,11 +7,13 @@ rules (written from the rules in docs/sources/ca.md, not imported). Shared with 
 config/states/ca/agency_sources.csv (the hand-reviewed attribution), config/payee_name_redactions.csv (the owner's
 redaction rule) and common's file helpers and norm(). Checks:
   1. per source, agency and fiscal year: dollars (to the cent) and line counts equal the raw files after the owner's
-     dedup rule of 2026-10-07 (lines equal in every published field but the source's own ids are kept once; a
-     doubled day is such a set; lines without a date compare on fiscal year; negative lines compare like any
-     other), and the multiset of (agency, fiscal year, payee, amount) lines is equal too; for ca_fiscal the rule
-     applies to the rows summed per voucher; no two published rows of one source are equal in every column but
-     source_record_id
+     dedup rule of 2026-10-07 as corrected the same day: raw lines equal in every column the source publishes but its
+     row and load ids (Socrata :id; SF also data_as_of and data_loaded_at; FI$Cal and SCPRS have none) are kept once,
+     document numbers (voucher, invoice, payment, PO and their line numbers) being content; void-safe: n identical
+     positive lines keep min(n, r + 1) copies, r = distinct negative lines with the same reversal fields (agency,
+     payee, account and the document fields the source repeats on a void), the amount negated and the same or next
+     fiscal year. The multiset of (agency, fiscal year, date, payee, amount) lines is equal too; for ca_fiscal the rule
+     applies to the raw distribution lines before they are summed per voucher
   2. payee names are shown as published (owner decision of 2026-10-06): every published payee is a raw payee
      name (whitespace collapsed), or "Payee name withheld" where the raw name matches a redaction pattern; the
      old person marker never appears; no published payee matches a redaction pattern; no payee, description or
@@ -76,24 +78,43 @@ def ws(text):
     return " ".join((text or "").split())
 
 
-DROPPED = {}  # source -> (identical sets, lines dropped, cents dropped), for the report
+DROPPED = {}  # source -> (sets with a dropped copy, copies dropped, cents dropped, copies kept by the void rule, cents)
 
 
-def keep_one(source, lines):
-    """Owner rule of 2026-10-07: of lines whose identity (every published field but the source's own row,
-    voucher, invoice, payment or PO ids, built per source from the raw columns) is equal, keep one.
-    lines: (identity, (agency, fiscal year, payee, cents)) pairs. Returns the kept tuples."""
-    seen, sets, out, n, dropped = set(), set(), [], 0, 0
-    for ident, line in lines:
-        if ident in seen:
-            sets.add(ident)
-            n += 1
-            dropped += line[-1]
-            continue
-        seen.add(ident)
-        out.append(line)
-    DROPPED[source] = (len(sets), n, dropped)
-    return out
+def identical_rule(source, lines):
+    """The owner's rule of 2026-10-07 as corrected, written here from docs/sources/ca.md (not imported).
+    lines: (identity, reversal fields, fiscal year, cents, published tuple) per raw line; identity is every raw column
+    but the row and load ids. Copies of one identity are kept once; a positive identity keeps min(n, r + 1) copies,
+    r = how many distinct negative identities have its reversal fields, the negated amount and the same or the next
+    fiscal year. Returns the kept published tuples (a list, one entry per kept line)."""
+    n = collections.Counter(ident for ident, *_ in lines)
+    first = {}
+    for ident, rev, fy, c, out in lines:
+        first.setdefault(ident, (rev, fy, c, out))
+    voids = collections.Counter((rev, -c, fy) for rev, fy, c, _ in first.values() if c < 0)
+    kept, sets, dropped, cents_dropped, void_kept, void_cents = [], 0, 0, 0, 0, 0
+    for ident, (rev, fy, c, out) in first.items():
+        copies = 1
+        if c > 0:
+            copies = min(n[ident], voids[(rev, c, fy)] + voids[(rev, c, fy + 1)] + 1)
+        kept += [out] * copies
+        if copies < n[ident]:
+            sets += 1
+            dropped += n[ident] - copies
+            cents_dropped += (n[ident] - copies) * c
+        void_kept += copies - 1
+        void_cents += (copies - 1) * c
+    DROPPED[source] = (sets, dropped, cents_dropped, void_kept, void_cents)
+    return kept
+
+
+def socrata(r, ids=(":id",)):
+    """Identity of a Socrata raw line: every column it carries but the row and load ids (null columns are absent)."""
+    return tuple(sorted((k, v) for k, v in r.items() if k not in ids and v not in (None, "")))
+
+
+def fields(r, names):
+    return tuple(r.get(f) or "" for f in names)
 
 
 # --- 1. expected lines per source, from raw -----------------------------------------------------------------
@@ -107,13 +128,13 @@ def expect_sf():
     for r in raw:
         if r["department_code"] != "FIR" or cents(r.get("vouchers_paid")) == 0:
             continue
-        fy, payee, c = str(int(r["fiscal_year"])), published(r["vendor"]), cents(r["vouchers_paid"])
-        # no payment date in the source: lines compare on fiscal year
-        ident = (fy, payee, r.get("contract_title") or "", r.get("program") or "",
-                 *(r.get(f) or "" for f in ("character_code", "character", "object_code", "object", "sub_object_code",
-                                           "sub_object", "fund")), c)
-        lines.append((ident, (agency, fy, payee, c)))
-    return keep_one("ca_sf", lines)
+        fy, payee, c = int(r["fiscal_year"]), published(r["vendor"]), cents(r["vouchers_paid"])
+        # row and load ids: :id, data_as_of ("updated in the source system"), data_loaded_at; no payment date
+        lines.append((socrata(r, (":id", "data_as_of", "data_loaded_at")),
+                      fields(r, ("department_code", "vendor", "purchase_order", "contract_number", "program_code",
+                                 "character_code", "object_code", "sub_object_code", "fund_code")),
+                      fy, c, (agency, str(fy), "", payee, c)))
+    return identical_rule("ca_sf", lines)
 
 
 def expect_la():
@@ -125,12 +146,12 @@ def expect_la():
     for r in raw:
         if r["department_name"] != "FIRE" or r.get("dollar_amount") in (None, ""):
             continue
-        fy, payee, c = str(int(r["fiscal_year"])), published(r.get("vendor_name")), cents(r["dollar_amount"])
-        ident = (fy, (r.get("transaction_date") or "")[:10], payee,
-                 ws(r.get("detailed_item_description") or r.get("description")),
-                 *(r.get(f) or "" for f in ("program", "fund_name", "account_code", "account_name", "expenditure_type")), c)
-        lines.append((ident, (agency, fy, payee, c)))
-    return keep_one("ca_la", lines)
+        fy, payee, c = int(r["fiscal_year"]), published(r.get("vendor_name")), cents(r["dollar_amount"])
+        lines.append((socrata(r),
+                      fields(r, ("department_name", "vendor_name", "program", "fund", "account_code", "inv_num",
+                                 "inv_line", "inv_dist_line", "po_num", "po_line_number")),
+                      fy, c, (agency, str(fy), (r.get("transaction_date") or "")[:10], payee, c)))
+    return identical_rule("ca_la", lines)
 
 
 def expect_riverside():
@@ -142,11 +163,12 @@ def expect_riverside():
     for r in raw:
         if r["department"] != "Fire Protection" or not r.get("vendor_name"):
             continue
-        fy, payee, c = str(int(r["fiscal_year"])), published(r["vendor_name"]), cents(r["amount"])
-        ident = (fy, (r.get("date") or "")[:10], payee, ws(r.get("description")),
-                 *(r.get(f) or "" for f in ("business_unit", "fund", "account", "expense_category")), c)
-        lines.append((ident, (agency, fy, payee, c)))
-    return keep_one("ca_riverside_county", lines)
+        fy, payee, c = int(r["fiscal_year"]), published(r["vendor_name"]), cents(r["amount"])
+        lines.append((socrata(r),
+                      fields(r, ("department", "vendor_name", "business_unit", "fund_type", "fund", "account_category",
+                                 "account", "expense_category", "invoice_id", "payment_id", "description")),
+                      fy, c, (agency, str(fy), (r.get("date") or "")[:10], payee, c)))
+    return identical_rule("ca_riverside_county", lines)
 
 
 def expect_corona():
@@ -158,11 +180,13 @@ def expect_corona():
     for r in raw:
         if r["department_code"] != "30":
             continue
-        fy, payee, c = str(int(r["fiscal_year"])), published(r["vendor"]), cents(r["amount"])
-        ident = (fy, (r.get("payment_date") or "")[:10], payee, ws(r.get("description")),
-                 *(r.get(f) or "" for f in ("department_activity", "fund_name", "expense_category")), c)
-        lines.append((ident, (agency, fy, payee, c)))
-    return keep_one("ca_corona", lines)
+        fy, payee, c = int(r["fiscal_year"]), published(r["vendor"]), cents(r["amount"])
+        # a void can carry its own payment id and date, so those are not reversal fields
+        lines.append((socrata(r),
+                      fields(r, ("department_code", "vendor", "department_activity", "fund_name", "expense_category",
+                                 "invoice_id", "description")),
+                      fy, c, (agency, str(fy), (r.get("payment_date") or "")[:10], payee, c)))
+    return identical_rule("ca_corona", lines)
 
 
 def expect_moreno_valley():
@@ -173,11 +197,12 @@ def expect_moreno_valley():
     assert {c["department"] for c in control} == set(link), "ca_moreno_valley: a fire-named department is not linked"
     lines = []
     for r in raw:
-        agency, fy, payee, c = link[r["department"]], str(int(r["fiscal_year"])), published(r.get("vendor")), cents(r["amount"])
-        ident = (agency, fy, (r.get("payment_date") or "")[:10], payee, ws(r.get("description")),
-                 *(r.get(f) or "" for f in ("department", "program", "fund", "expense_category")), c)
-        lines.append((ident, (agency, fy, payee, c)))
-    return keep_one("ca_moreno_valley", lines)
+        agency, fy, payee, c = link[r["department"]], int(r["fiscal_year"]), published(r.get("vendor")), cents(r["amount"])
+        lines.append((socrata(r),
+                      fields(r, ("department", "vendor", "program", "fund", "expense_category", "invoice_id",
+                                 "invoice_line", "invoice_distribution_line")),
+                      fy, c, (agency, str(fy), (r.get("payment_date") or "")[:10], payee, c)))
+    return identical_rule("ca_moreno_valley", lines)
 
 
 def scprs_money(s):
@@ -202,59 +227,79 @@ def expect_scprs():
     assert len(rows) == manifest["kept_rows"], "ca_scprs: raw rows differ from manifest"
     dept = manifest["kept_department"]
     assert all(r["Department Name"] == dept for r in rows) and dept in link
+    raw = list(csv.reader(io.StringIO(gzip.decompress((d / "calfire.csv.gz").read_bytes()).decode("utf-8"))))[1:]
+    assert len(raw) == len(rows)
     lines = []
-    for r in rows:
+    for r, line in zip(rows, raw):
         c = scprs_money(r["Total Price"])
         if c == 0:
             continue
         fy_end = int(r["Fiscal Year"][5:])
         payee = published(r["Supplier Name"])
-        unit = r["Unit Price"].replace("$", "").replace(",", "").strip()
-        unit = (-Decimal(unit.strip("()")) if unit.startswith("(") else Decimal(unit)) if unit else ""
-        # item-line identity: date, vendor, product type, description, quantity, unit price, amount (no brand field)
-        ident = (str(fy_end), scprs_day(r["Purchase Date"], fy_end) or scprs_day(r["Creation Date"], fy_end), payee,
-                 next((r[k] for k in ("Commodity Title", "Class Title", "Family Title", "Segment Title") if r[k]), ""),
-                 ws(r["Item Description"] or r["Item Name"]), r["Quantity"].strip(), unit, c)
-        lines.append((ident, (link[dept], str(fy_end), payee, c)))
-    return keep_one("ca_scprs", lines)
+        # no row id or load date in the file: every one of its columns is part of the identity
+        lines.append((tuple(line),
+                      tuple(r[k] for k in ("Department Name", "Supplier Code", "Supplier Name", "Purchase Order Number",
+                                           "Requisition Number", "LPA Number")),
+                      fy_end, c, (link[dept], str(fy_end),
+                                  scprs_day(r["Purchase Date"], fy_end) or scprs_day(r["Creation Date"], fy_end),
+                                  payee, c)))
+    return identical_rule("ca_scprs", lines)
 
 
 def expect_fiscal():
-    """[(agency, fy, payee, cents)] rows of the Open FI$Cal files: exact duplicate lines dropped within a file, lines
-    summed per voucher, payee, accounting date, program, sub-program, fund and account, $0 sums left out, then the
-    owner rule on the summed rows (equal but for the voucher: one kept)."""
+    """[(agency, fy, date, payee, cents)] rows of the Open FI$Cal files: the owner rule on the raw distribution lines
+    (no row id or load date in the files, so a line is identical to another only when all its columns are, document
+    id included; void-safe as identical_rule), then lines summed per voucher, payee, accounting date, program,
+    sub-program, fund and account, $0 sums left out. The summed rows are not compared with each other."""
     agency = links("ca_fiscal", "source_entity_id")["3540"]
     d = common.latest_raw(ST, "ca_fiscal")
     manifest = json.loads(gzip.decompress((d / "manifest.json.gz").read_bytes()))
     sums = collections.Counter()
+    repeated = {}  # raw line seen more than once -> (sum key, reversal fields, fy, cents, copies)
+    voids = collections.Counter()  # (reversal fields, cents negated, fy) -> distinct negative lines
     for entry in manifest:
         reader = csv.reader(io.StringIO(gzip.decompress((d / (entry["file"] + ".gz")).read_bytes()).decode("utf-8-sig")))
         header = next(reader)
         ix = {c: i for i, c in enumerate(header)}
-        fields = [ix[c] for c in ("program_description", "sub_program_description", "fund_code", "fund_description",
-                                  "account", "account_description", "account_category")]
+        fields_ = [ix[c] for c in ("program_description", "sub_program_description", "fund_code", "fund_description",
+                                   "account", "account_description", "account_category")]
+        rev_ix = [ix[c] for c in ("business_unit", "VENDOR_NAME", "document_id", "account", "fund_code", "program_code")]
         seen, n, total = set(), 0, 0
         for r in reader:
             n += 1
-            total += cents(r[ix["monetary_amount"]])
+            c = cents(r[ix["monetary_amount"]])
+            total += c
             key = "\x1f".join(r)
+            fy = int(r[ix["fiscal_year_begin"]]) + 1
+            voucher = r[ix["document_id"]].rsplit(".", 2)[0]
+            sum_key = (str(fy), voucher, r[ix["VENDOR_NAME"]], r[ix["accounting_date"]][:10], *(r[i] for i in fields_))
             if key in seen:
+                k = repeated.get(key)
+                repeated[key] = (sum_key, tuple(r[i] for i in rev_ix), fy, c, (k[4] if k else 1) + 1)
                 continue
             seen.add(key)
             assert r[ix["business_unit"]] == "3540", r
-            fy = str(int(r[ix["fiscal_year_begin"]]) + 1)
-            assert fy == str(entry["fiscal_year"]), (entry["file"], fy)
-            voucher = r[ix["document_id"]].rsplit(".", 2)[0]
-            sums[(fy, voucher, r[ix["VENDOR_NAME"]], r[ix["accounting_date"]][:10], *(r[i] for i in fields))] += \
-                cents(r[ix["monetary_amount"]])
+            assert fy == entry["fiscal_year"], (entry["file"], fy)
+            if c < 0:
+                voids[(tuple(r[i] for i in rev_ix), -c, fy)] += 1
+            sums[sum_key] += c
         assert n == entry["rows"] and total == cents(entry["dollars"]), f"ca_fiscal {entry['file']}: differs from manifest"
         del seen
+    sets = dropped = cents_dropped = void_kept = void_cents = 0
+    for sum_key, rev, fy, c, copies in repeated.values():
+        keep = min(copies, voids[(rev, c, fy)] + voids[(rev, c, fy + 1)] + 1) if c > 0 else 1
+        sums[sum_key] += (keep - 1) * c
+        sets += copies > keep
+        dropped += copies - keep
+        cents_dropped += (copies - keep) * c
+        void_kept += keep - 1
+        void_cents += (keep - 1) * c
+    DROPPED["ca_fiscal"] = (sets, dropped, cents_dropped, void_kept, void_cents)
     lines = []
     for (fy, _voucher, vendor, day, *acct), c in sorted(sums.items()):
         if c:
-            payee = published(vendor)
-            lines.append(((fy, day, payee, *acct, c), (agency, fy, payee, c)))
-    return keep_one("ca_fiscal", lines)
+            lines.append((agency, fy, day, published(vendor), c))
+    return lines
 
 
 def expect_sco(source, name_field, year_field):
@@ -318,41 +363,34 @@ def main():
     sources = {s["source"]: s for s in common.read_config(ST, "sources.csv")}
     report = []
 
-    # 1. line-level sources: lines, dollars and payees per agency and fiscal year
+    # 1. line-level sources: lines, dollars, dates and payees per agency and fiscal year (ca_fiscal: rows summed per
+    #    voucher after the rule on its raw lines)
     expect = {"ca_sf": expect_sf, "ca_la": expect_la, "ca_riverside_county": expect_riverside,
-              "ca_corona": expect_corona, "ca_moreno_valley": expect_moreno_valley, "ca_scprs": expect_scprs}
+              "ca_corona": expect_corona, "ca_moreno_valley": expect_moreno_valley, "ca_scprs": expect_scprs,
+              "ca_fiscal": expect_fiscal}
     for source, fn in expect.items():
         want = collections.Counter(fn())
-        got = collections.Counter((r["agency_id"], r["fiscal_year"], r["payee_name"], cents(r["amount"]))
-                                  for r in tx if r["source"] == source)
+        got = collections.Counter((r["agency_id"], r["fiscal_year"], r["posting_date"], r["payee_name"],
+                                   cents(r["amount"])) for r in tx if r["source"] == source)
         assert got == want, (f"{source}: lines differ from raw: {sorted((want - got).items())[:3]} missing, "
                              f"{sorted((got - want).items())[:3]} extra")
         per = collections.Counter()
-        for (a, fy, _, c), n in want.items():
+        for (a, fy, _, _, c), n in want.items():
             per[(a, fy)] += c * n
         report.append(f"{source}: {sum(want.values())} lines, ${sum(per.values()) / 100:,.2f}, "
                       f"{len({a for a, _ in per})} agencies, FY{min(fy for _, fy in per)}-FY{max(fy for _, fy in per)}")
-
-    # ca_fiscal: rows summed per voucher (then the owner rule), as a multiset of (agency, fy, payee, amount) rows
-    want = collections.Counter(expect_fiscal())
-    got = collections.Counter((r["agency_id"], r["fiscal_year"], r["payee_name"], cents(r["amount"]))
-                              for r in tx if r["source"] == "ca_fiscal")
-    assert got == want, (f"ca_fiscal: rows differ from raw: {sorted((want - got).items())[:3]} missing, "
-                         f"{sorted((got - want).items())[:3]} extra")
     assert all(cents(r["amount"]) != 0 for r in tx if r["source"] == "ca_fiscal"), "ca_fiscal: a $0 row"
-    years = sorted({k[1] for k in want})
-    report.append(f"ca_fiscal: {sum(want.values())} rows, ${sum(k[3] * n for k, n in want.items()) / 100:,.2f}, "
-                  f"FY{years[0]}-FY{years[-1]}")
 
-    # the owner rule on the published rows: no two rows of one source equal in every column but source_record_id.
-    # SCPRS transaction rows are copies of its item lines, which the rule compares (with quantity, unit price and
-    # product type), so two SCPRS transaction rows may be equal where their item lines differ
-    for table, rows in [("transactions.csv.gz", [r for r in tx if r["source"] != "ca_scprs"]), ("line_items.csv.gz", li)]:
+    # published rows equal in every column but source_record_id are different payments (their document numbers
+    # differ in the raw file; the published columns leave voucher, invoice and line numbers out), so they stay;
+    # count them for the report
+    for source, (sets, n, dropped, void_kept, void_cents) in sorted(DROPPED.items()):
+        rows = [r for r in tx if r["source"] == source]
         same = collections.Counter(tuple(v for k, v in r.items() if k != "source_record_id") for r in rows)
-        twice = [k for k, n in same.items() if n > 1]
-        assert not twice, f"{table}: {len(twice)} sets of identical rows remain, e.g. {twice[:2]}"
-    for source, (sets, n, dropped) in sorted(DROPPED.items()):
-        report.append(f"{source}: {n} identical lines dropped (${dropped / 100:,.2f}, {sets} sets; owner rule of 2026-10-07)")
+        alike = sum(n_ for n_ in same.values() if n_ > 1)
+        report.append(f"{source}: {n} identical raw lines dropped (${dropped / 100:,.2f}, {sets} sets); void rule kept "
+                      f"{void_kept} copies (${void_cents / 100:,.2f}); {alike} published rows share every published "
+                      "column with another row (kept: different documents or void-kept copies)")
 
     # tier 3 totals
     for source, name_field, year_field in [("ca_sco_districts", "entityname", "fiscalyear"),
@@ -369,7 +407,7 @@ def main():
     both = ({r["agency_id"] for r in tot if r["source"] == "ca_sco_districts"}
             & {r["agency_id"] for r in tot if r["source"] == "ca_sco_cities"})
     assert not both, f"agencies with both a district and a city filing: {sorted(both)[:5]}"
-    assert {r["source"] for r in tx} == set(expect) | {"ca_fiscal"}, f"unexpected sources {sorted({r['source'] for r in tx})}"
+    assert {r["source"] for r in tx} == set(expect), f"unexpected sources {sorted({r['source'] for r in tx})}"
     assert {r["source"] for r in tot} == {"ca_sco_districts", "ca_sco_cities"}
     assert {r["source"] for r in li} == {"ca_scprs"}
 
