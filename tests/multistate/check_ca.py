@@ -170,6 +170,9 @@ def identical_rule(source, lines):
             kept_net[find(node[ident])] += copies[ident] * c
     off = [(root, raw_net[root], kept_net[root]) for root in touched if raw_net[root] != kept_net[root]]
     assert not off, f"{source}: {len(off)} families touched by the void fix do not net their raw lines: {off[:3]}"
+    paid = {find(node[i]) for i, (_, _, _, c, _) in first.items() if c > 0}
+    above = [root for root in paid if kept_net[root] > raw_net[root]]
+    assert not above, f"{source}: {len(above)} families with payments net above their raw lines: {above[:3]}"
     DROPPED[source] = (sets, dropped, cents_dropped, void_kept, void_cents)
     FIXED[source] = (fix_kept, fix_cents, len(touched))
     return kept
@@ -388,6 +391,10 @@ def expect_fiscal():
                 touched.add(root)
     off = [root for root in touched if gone[root]]
     assert not off, f"ca_fiscal: {len(off)} families touched by the void fix do not net their raw lines: {off[:3]}"
+    # only a dropped negative copy can raise a net, and those are all in these families
+    paid_roots = {find(node) for node in nodes if node[3] > 0}
+    above = [root for root in gone if gone[root] < 0 and root in paid_roots]
+    assert not above, f"ca_fiscal: {len(above)} families with payments net above their raw lines: {above[:3]}"
     DROPPED["ca_fiscal"] = (sets, dropped, cents_dropped, void_kept, void_cents)
     FIXED["ca_fiscal"] = (fix_kept, fix_cents, len(touched))
     lines = []
