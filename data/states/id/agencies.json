@@ -1,0 +1,5695 @@
+{
+ "state": "ID",
+ "sources": [
+  {
+   "source": "id_lgr",
+   "name": "Idaho Local Government Registry (Transparent Idaho): fire district totals",
+   "tier": "3",
+   "url": "https://transparent.idaho.gov/local-district",
+   "years": "2021-2024",
+   "fiscal_year": "District FY, Oct-Sep or Jan-Dec (Idaho Code 31-1422), the year it ends in",
+   "fetched": "2026-10-06",
+   "note": "Total actual expenditures (all funds) each fire district files with the State Controller; no vendor detail; the newest year has budgets only, so no row"
+  },
+  {
+   "source": "id_state",
+   "name": "Transparent Idaho state transactions (Idaho Department of Lands fire program)",
+   "tier": "1",
+   "url": "https://idaho.opengov.com/transparency-reporting/idaho/2b17eed6-3282-4416-ab38-656795512745/9711ec09-4057-47c6-8ebc-1f27ee4261d3?savedViewId=79113c65-e697-4dd8-a78a-9e92aca0d6d8",
+   "years": "2021-2027",
+   "fiscal_year": "Idaho state FY, Jul-Jun",
+   "fetched": "2026-10-06",
+   "note": "Idaho Department of Lands Forest and Range Fire Protection program (agency 320, function 07H), including fire suppression paid from deficiency warrants; payroll left out; state fire agency"
+  }
+ ],
+ "coverage_counts": {
+  "1": 1,
+  "2": 0,
+  "3": 156,
+  "4": 101
+ },
+ "agencies": [
+  {
+   "id": "ID-01100",
+   "state": "ID",
+   "name": "Boise City Fire Department",
+   "kind": "Local fire department",
+   "county": "Ada",
+   "city": "Boise",
+   "usfa_fdid": "01100",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 17,
+    "career": 246,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-01236",
+   "state": "ID",
+   "name": "North Ada County Fire & Rescue District",
+   "kind": "Fire district",
+   "county": "Ada",
+   "city": "Garden City",
+   "usfa_fdid": "01236",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 22,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-01246",
+   "state": "ID",
+   "name": "Kuna Rural Fire District",
+   "kind": "Fire district",
+   "county": "Ada",
+   "city": "Kuna",
+   "usfa_fdid": "01246",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 9,
+    "volunteer": 0,
+    "paid_per_call": 30
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-01313",
+   "state": "ID",
+   "name": "Meridian Fire Department",
+   "kind": "Local fire department",
+   "county": "Ada",
+   "city": "Meridian",
+   "usfa_fdid": "01313",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 5,
+    "career": 69,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-01342",
+   "state": "ID",
+   "name": "Star Fire Protection District",
+   "kind": "Fire district",
+   "county": "Ada",
+   "city": "Star",
+   "usfa_fdid": "01342",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 13,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-01344",
+   "state": "ID",
+   "name": "Eagle Fire Protection District",
+   "kind": "Fire district",
+   "county": "Idaho",
+   "city": "Eagle",
+   "usfa_fdid": "01344",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 42,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 4
+  },
+  {
+   "id": "ID-03320",
+   "state": "ID",
+   "name": "Council Valley Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Adams",
+   "city": "Council",
+   "usfa_fdid": "03320",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 16,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-03324",
+   "state": "ID",
+   "name": "Brundage Mountain Fire Protection Associations",
+   "kind": "Private or industrial fire brigade",
+   "county": "Adams",
+   "city": "McCall",
+   "usfa_fdid": "03324",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Private or industrial fire brigade",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 1,
+    "paid_per_call": 15
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-03334",
+   "state": "ID",
+   "name": "Indian Valley Rural Fire District",
+   "kind": "Fire district",
+   "county": "Adams",
+   "city": "Indian Valley",
+   "usfa_fdid": "03334",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 0,
+    "volunteer": 20,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-03340",
+   "state": "ID",
+   "name": "Meadows Valley Fire Protection District",
+   "kind": "Fire district",
+   "county": "Adams",
+   "city": "New Meadows",
+   "usfa_fdid": "03340",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 15,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-05101",
+   "state": "ID",
+   "name": "Pocatello Fire Department",
+   "kind": "Local fire department",
+   "county": "Bannock",
+   "city": "Pocatello",
+   "usfa_fdid": "05101",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 5,
+    "career": 80,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-05207",
+   "state": "ID",
+   "name": "Chubbuck Fire Department",
+   "kind": "Local fire department",
+   "county": "Bannock",
+   "city": "Chubbuck",
+   "usfa_fdid": "05207",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 13,
+    "volunteer": 1,
+    "paid_per_call": 35
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-05322",
+   "state": "ID",
+   "name": "Arimo Fire Department",
+   "kind": "Local fire department",
+   "county": "Bannock",
+   "city": "Arimo",
+   "usfa_fdid": "05322",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 13
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-05323",
+   "state": "ID",
+   "name": "North Bannock Fire District",
+   "kind": "Fire district",
+   "county": "Bannock",
+   "city": "Chubbuck",
+   "usfa_fdid": "05323",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 1,
+    "volunteer": 41,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-05326",
+   "state": "ID",
+   "name": "Downey Fire District",
+   "kind": "Fire district",
+   "county": "Bannock",
+   "city": "Downey",
+   "usfa_fdid": "05326",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 12,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-05328",
+   "state": "ID",
+   "name": "Inkom Fire Department",
+   "kind": "Local fire department",
+   "county": "Bannock",
+   "city": "Inkom",
+   "usfa_fdid": "05328",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 12
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-05329",
+   "state": "ID",
+   "name": "Lava Hot Springs Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Bannock",
+   "city": "Lava Hot Springs",
+   "usfa_fdid": "05329",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 15,
+    "paid_per_call": 2
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-05340",
+   "state": "ID",
+   "name": "McCammon Fire Department",
+   "kind": "Local fire department",
+   "county": "Bannock",
+   "city": "McCammon",
+   "usfa_fdid": "05340",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 16,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-07301",
+   "state": "ID",
+   "name": "Montpelier Fire Department",
+   "kind": "Local fire department",
+   "county": "Bear Lake",
+   "city": "Montpelier",
+   "usfa_fdid": "07301",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 20
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-09302",
+   "state": "ID",
+   "name": "Gateway Fire Protection District",
+   "kind": "Fire district",
+   "county": "Benewah",
+   "city": "Plummer",
+   "usfa_fdid": "09302",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 1,
+    "volunteer": 17,
+    "paid_per_call": 0
+   },
+   "grants": 2
+  },
+  {
+   "id": "ID-09320",
+   "state": "ID",
+   "name": "Emida Fire Protection District",
+   "kind": "Fire district",
+   "county": "Benewah",
+   "city": "St Maries",
+   "usfa_fdid": "09320",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 12,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-09330",
+   "state": "ID",
+   "name": "Fernwood Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Benewah",
+   "city": "Fernwood",
+   "usfa_fdid": "09330",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 15,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-09335",
+   "state": "ID",
+   "name": "Tensed Fire Protection District",
+   "kind": "Fire district",
+   "county": "Benewah",
+   "city": "Tensed",
+   "usfa_fdid": "09335",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 14,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-09366",
+   "state": "ID",
+   "name": "Saint Maries Fire Protection District",
+   "kind": "Fire district",
+   "county": "Benewah",
+   "city": "Saint Maries",
+   "usfa_fdid": "09366",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 1,
+    "volunteer": 35,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-11101",
+   "state": "ID",
+   "name": "Blackfoot Fire Department",
+   "kind": "Local fire department",
+   "county": "Bingham",
+   "city": "Blackfoot",
+   "usfa_fdid": "11101",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 23,
+    "volunteer": 3,
+    "paid_per_call": 20
+   },
+   "grants": 3
+  },
+  {
+   "id": "ID-11301",
+   "state": "ID",
+   "name": "Shelley Firth Fire District",
+   "kind": "Fire district",
+   "county": "Bingham",
+   "city": "Firth",
+   "usfa_fdid": "11301",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 40
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-11303",
+   "state": "ID",
+   "name": "Aberdeen/Springfield Fire District",
+   "kind": "Fire district",
+   "county": "Bingham",
+   "city": "Aberdeen",
+   "usfa_fdid": "11303",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 25
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-11334",
+   "state": "ID",
+   "name": "Fort Hall Fire & EMS District",
+   "kind": "Fire district",
+   "county": "Bingham",
+   "city": "Fort Hall",
+   "usfa_fdid": "11334",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly career",
+    "organization_type": "Tribal government (includes Native American and Alaska Native tribal fire departments)",
+    "stations": 1,
+    "career": 16,
+    "volunteer": 0,
+    "paid_per_call": 5
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-11355",
+   "state": "ID",
+   "name": "Shelley Firth Rural Fire Department",
+   "kind": "Local fire department",
+   "county": "Bingham",
+   "city": "Shelley",
+   "usfa_fdid": "11355",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 16
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-13203",
+   "state": "ID",
+   "name": "Ketchum Fire Department",
+   "kind": "Local fire department",
+   "county": "Blaine",
+   "city": "Ketchum",
+   "usfa_fdid": "13203",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 13,
+    "volunteer": 0,
+    "paid_per_call": 37
+   },
+   "grants": 3
+  },
+  {
+   "id": "ID-13301",
+   "state": "ID",
+   "name": "Hailey Fire Department",
+   "kind": "Local fire department",
+   "county": "Blaine",
+   "city": "Hailey",
+   "usfa_fdid": "13301",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 4,
+    "volunteer": 0,
+    "paid_per_call": 25
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-13302",
+   "state": "ID",
+   "name": "Bellevue Fire Department",
+   "kind": "Local fire department",
+   "county": "Blaine",
+   "city": "Bellevue",
+   "usfa_fdid": "13302",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 1,
+    "volunteer": 0,
+    "paid_per_call": 17
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-13306",
+   "state": "ID",
+   "name": "Sun Valley Fire Department",
+   "kind": "Local fire department",
+   "county": "Blaine",
+   "city": "Sun Valley",
+   "usfa_fdid": "13306",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 3,
+    "volunteer": 0,
+    "paid_per_call": 26
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-13354",
+   "state": "ID",
+   "name": "Carey Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Clearwater",
+   "city": "Carey",
+   "usfa_fdid": "13354",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 20,
+    "paid_per_call": 20
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-15301",
+   "state": "ID",
+   "name": "Placerville Fire Protection District",
+   "kind": "Fire district",
+   "county": "Boise",
+   "city": "Placerville",
+   "usfa_fdid": "15301",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 10,
+    "paid_per_call": 0
+   },
+   "grants": 3
+  },
+  {
+   "id": "ID-15309",
+   "state": "ID",
+   "name": "Centerville Fire District, Inc.",
+   "kind": "Fire district",
+   "county": "Boise",
+   "city": "Centerville",
+   "usfa_fdid": "15309",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 9,
+    "paid_per_call": 0
+   },
+   "grants": 2
+  },
+  {
+   "id": "ID-15311",
+   "state": "ID",
+   "name": "Garden Valley Fire Protection District",
+   "kind": "Fire district",
+   "county": "Boise",
+   "city": "Garden Valley",
+   "usfa_fdid": "15311",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 2,
+    "volunteer": 16,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-15313",
+   "state": "ID",
+   "name": "Robie Creek Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Boise",
+   "city": "Boise",
+   "usfa_fdid": "15313",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 12,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-15324",
+   "state": "ID",
+   "name": "Idaho City Fire Protection District",
+   "kind": "Fire district",
+   "county": "Boise",
+   "city": "Idaho City",
+   "usfa_fdid": "15324",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 20,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-15330",
+   "state": "ID",
+   "name": "Clear Creek Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Boise",
+   "city": "Boise",
+   "usfa_fdid": "15330",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 15,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-15335",
+   "state": "ID",
+   "name": "Valley of the Pines / Thorn Creek Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Boise",
+   "city": "Boise",
+   "usfa_fdid": "15335",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 10,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-15342",
+   "state": "ID",
+   "name": "Lowman Volunteer Fire District, Inc.",
+   "kind": "Fire district",
+   "county": "Boise",
+   "city": "Lowman",
+   "usfa_fdid": "15342",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 0,
+    "volunteer": 14,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-15345",
+   "state": "ID",
+   "name": "Horseshoe Bend Fire Department",
+   "kind": "Local fire department",
+   "county": "Boise",
+   "city": "Horseshoe Bend",
+   "usfa_fdid": "15345",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 18,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-17201",
+   "state": "ID",
+   "name": "Sandpoint Fire Department",
+   "kind": "Local fire department",
+   "county": "Bonner",
+   "city": "Sandpoint",
+   "usfa_fdid": "17201",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 10,
+    "volunteer": 0,
+    "paid_per_call": 10
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-17314",
+   "state": "ID",
+   "name": "Clark Fork Valley Fire Department",
+   "kind": "Local fire department",
+   "county": "Bonner",
+   "city": "Clark Fork",
+   "usfa_fdid": "17314",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 12,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-17319",
+   "state": "ID",
+   "name": "West Priest Lake Fire Department",
+   "kind": "Local fire department",
+   "county": "Bonner",
+   "city": "Priest Lake",
+   "usfa_fdid": "17319",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 25,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-17333",
+   "state": "ID",
+   "name": "Northside Fire District",
+   "kind": "Fire district",
+   "county": "Bonner",
+   "city": "Ponderay",
+   "usfa_fdid": "17333",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 4,
+    "career": 2,
+    "volunteer": 21,
+    "paid_per_call": 0
+   },
+   "grants": 4
+  },
+  {
+   "id": "ID-17335",
+   "state": "ID",
+   "name": "Westside Fire District",
+   "kind": "Fire district",
+   "county": "Bonner",
+   "city": "Sandpoint",
+   "usfa_fdid": "17335",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 4,
+    "volunteer": 0,
+    "paid_per_call": 4
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-17337",
+   "state": "ID",
+   "name": "West Pend Oreille Fire District",
+   "kind": "Fire district",
+   "county": "Bonner",
+   "city": "Priest River",
+   "usfa_fdid": "17337",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 4,
+    "career": 1,
+    "volunteer": 44,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-17339",
+   "state": "ID",
+   "name": "North of the Narrows Fire District",
+   "kind": "Fire district",
+   "county": "Bonner",
+   "city": "Coolin",
+   "usfa_fdid": "17339",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 2,
+    "volunteer": 10,
+    "paid_per_call": 0
+   },
+   "grants": 3
+  },
+  {
+   "id": "ID-17341",
+   "state": "ID",
+   "name": "Sagle Fire District",
+   "kind": "Fire district",
+   "county": "Bonner",
+   "city": "Sandpoint",
+   "usfa_fdid": "17341",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 5,
+    "career": 13,
+    "volunteer": 0,
+    "paid_per_call": 5
+   },
+   "grants": 9
+  },
+  {
+   "id": "ID-17344",
+   "state": "ID",
+   "name": "Coolin-Cavanaugh Bay Fire Protection District",
+   "kind": "Fire district",
+   "county": "Bonner",
+   "city": "Coolin",
+   "usfa_fdid": "17344",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 33,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-17349",
+   "state": "ID",
+   "name": "Schweitzer Fire/Rescue District",
+   "kind": "Local fire department",
+   "county": "Bonner",
+   "city": "Sandpoint",
+   "usfa_fdid": "17349",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 2,
+    "volunteer": 14,
+    "paid_per_call": 8
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-17360",
+   "state": "ID",
+   "name": "Sam Owen Fire District",
+   "kind": "Fire district",
+   "county": "Bonner",
+   "city": "Hope",
+   "usfa_fdid": "17360",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 2,
+    "volunteer": 20,
+    "paid_per_call": 0
+   },
+   "grants": 2
+  },
+  {
+   "id": "ID-19101",
+   "state": "ID",
+   "name": "Idaho Falls Fire Department",
+   "kind": "Local fire department",
+   "county": "Bonneville",
+   "city": "Idaho Falls",
+   "usfa_fdid": "19101",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 5,
+    "career": 130,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-19315",
+   "state": "ID",
+   "name": "Ammon Fire Department",
+   "kind": "Local fire department",
+   "county": "Bonneville",
+   "city": "Ammon",
+   "usfa_fdid": "19315",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 5,
+    "volunteer": 0,
+    "paid_per_call": 35
+   },
+   "grants": 2
+  },
+  {
+   "id": "ID-19317",
+   "state": "ID",
+   "name": "Ucon Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Bonneville",
+   "city": "Ucon",
+   "usfa_fdid": "19317",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 18,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-19340",
+   "state": "ID",
+   "name": "Greater Swan Valley Fire Protection District #2",
+   "kind": "Fire district",
+   "county": "Bonneville",
+   "city": "Swan Valley",
+   "usfa_fdid": "19340",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 1,
+    "volunteer": 27,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-21301",
+   "state": "ID",
+   "name": "Bonners Ferry Fire Department",
+   "kind": "Local fire department",
+   "county": "Boundary",
+   "city": "Bonners Ferry",
+   "usfa_fdid": "21301",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 1,
+    "volunteer": 0,
+    "paid_per_call": 24
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-21315",
+   "state": "ID",
+   "name": "Moyie Springs Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Boundary",
+   "city": "Moyie Springs",
+   "usfa_fdid": "21315",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 12,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-21333",
+   "state": "ID",
+   "name": "Curley Creek Volunteer Fire District, Inc.",
+   "kind": "Fire district",
+   "county": "Boundary",
+   "city": "Moyie Springs",
+   "usfa_fdid": "21333",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Other",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 8,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-21341",
+   "state": "ID",
+   "name": "North Bench Volunteer Fire District, Inc.",
+   "kind": "Fire district",
+   "county": "Boundary",
+   "city": "Bonners Ferry",
+   "usfa_fdid": "21341",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 0,
+    "volunteer": 16,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-21344",
+   "state": "ID",
+   "name": "Hall Mountain Volunteer Fire Association",
+   "kind": "Other",
+   "county": "Idaho",
+   "city": "Bonners Ferry",
+   "usfa_fdid": "21344",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Other",
+    "stations": 3,
+    "career": 0,
+    "volunteer": 20,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-21346",
+   "state": "ID",
+   "name": "South Boundary Fire Protection District",
+   "kind": "Fire district",
+   "county": "Boundary",
+   "city": "Naples",
+   "usfa_fdid": "21346",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 1,
+    "volunteer": 14,
+    "paid_per_call": 0
+   },
+   "grants": 8
+  },
+  {
+   "id": "ID-21348",
+   "state": "ID",
+   "name": "Paradise Valley Fire District",
+   "kind": "Fire district",
+   "county": "Boundary",
+   "city": "Bonners Ferry",
+   "usfa_fdid": "21348",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 1,
+    "volunteer": 0,
+    "paid_per_call": 10
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-23316",
+   "state": "ID",
+   "name": "City of Arco Fire Department",
+   "kind": "Local fire department",
+   "county": "Butte",
+   "city": "Arco",
+   "usfa_fdid": "23316",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 15,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-23320",
+   "state": "ID",
+   "name": "Ineel Fire Department",
+   "kind": "Contract fire department",
+   "county": "Butte",
+   "city": "Central Facilities Area",
+   "usfa_fdid": "23320",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Contract fire department",
+    "stations": 3,
+    "career": 87,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-23341",
+   "state": "ID",
+   "name": "Lost River Fire Protection District",
+   "kind": "Fire district",
+   "county": "Butte",
+   "city": "Moore",
+   "usfa_fdid": "23341",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 12,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-25340",
+   "state": "ID",
+   "name": "West Magic Fire District",
+   "kind": "Fire district",
+   "county": "Blaine",
+   "city": "West Magic",
+   "usfa_fdid": "25340",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 7,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-27101",
+   "state": "ID",
+   "name": "Nampa Fire Department",
+   "kind": "Local fire department",
+   "county": "Canyon",
+   "city": "Nampa",
+   "usfa_fdid": "27101",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 6,
+    "career": 90,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-27211",
+   "state": "ID",
+   "name": "Caldwell Fire Department",
+   "kind": "Local fire department",
+   "county": "Canyon",
+   "city": "Caldwell",
+   "usfa_fdid": "27211",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 39,
+    "volunteer": 0,
+    "paid_per_call": 12
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-27307",
+   "state": "ID",
+   "name": "Wilder Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Canyon",
+   "city": "Wilder",
+   "usfa_fdid": "27307",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 6,
+    "volunteer": 9,
+    "paid_per_call": 2
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-27336",
+   "state": "ID",
+   "name": "Middleton Rural Fire District",
+   "kind": "Fire district",
+   "county": "Canyon",
+   "city": "Middleton",
+   "usfa_fdid": "27336",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 3,
+    "volunteer": 0,
+    "paid_per_call": 48
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-27338",
+   "state": "ID",
+   "name": "Parma Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Canyon",
+   "city": "Parma",
+   "usfa_fdid": "27338",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 1,
+    "volunteer": 24,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-27339",
+   "state": "ID",
+   "name": "Upper Deer Flat Fire Department",
+   "kind": "Local fire department",
+   "county": "Canyon",
+   "city": "Nampa",
+   "usfa_fdid": "27339",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 20,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-27344",
+   "state": "ID",
+   "name": "Melba Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Canyon",
+   "city": "Melba",
+   "usfa_fdid": "27344",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 25,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-29301",
+   "state": "ID",
+   "name": "Soda Springs Fire Department",
+   "kind": "Local fire department",
+   "county": "Caribou",
+   "city": "Soda Springs",
+   "usfa_fdid": "29301",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 17,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-31201",
+   "state": "ID",
+   "name": "City of Burley Fire Department",
+   "kind": "Local fire department",
+   "county": "Cassia",
+   "city": "Burley",
+   "usfa_fdid": "31201",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 10,
+    "volunteer": 0,
+    "paid_per_call": 25
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-31340",
+   "state": "ID",
+   "name": "Oakley Fire Department",
+   "kind": "Local fire department",
+   "county": "Cassia",
+   "city": "Oakley",
+   "usfa_fdid": "31340",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 10,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-31342",
+   "state": "ID",
+   "name": "Albion Fire Protection District",
+   "kind": "Fire district",
+   "county": "Cassia",
+   "city": "Albion",
+   "usfa_fdid": "31342",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 10,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-31343",
+   "state": "ID",
+   "name": "Ace Fire Protection Association",
+   "kind": "Local fire department",
+   "county": "Cassia",
+   "city": "Malta",
+   "usfa_fdid": "31343",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 11,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-35301",
+   "state": "ID",
+   "name": "Elk River Fire Department",
+   "kind": "Local fire department",
+   "county": "Clearwater",
+   "city": "Elk River",
+   "usfa_fdid": "35301",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 10,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-35303",
+   "state": "ID",
+   "name": "Orofino Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Clearwater",
+   "city": "Orofino",
+   "usfa_fdid": "35303",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 29,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-35305",
+   "state": "ID",
+   "name": "Twin Ridge Rural Fire District",
+   "kind": "Fire district",
+   "county": "Clearwater",
+   "city": "Orofino",
+   "usfa_fdid": "35305",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 15,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-35309",
+   "state": "ID",
+   "name": "Pierce Fire Department",
+   "kind": "Local fire department",
+   "county": "Clearwater",
+   "city": "Pierce",
+   "usfa_fdid": "35309",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 11,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-35312",
+   "state": "ID",
+   "name": "Weippe Rural Fire District",
+   "kind": "Fire district",
+   "county": "Clearwater",
+   "city": "Weippe",
+   "usfa_fdid": "35312",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 12,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-35338",
+   "state": "ID",
+   "name": "Sunnyside Rural Fire District",
+   "kind": "Fire district",
+   "county": "Clearwater",
+   "city": "Lenore",
+   "usfa_fdid": "35338",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 25,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-35341",
+   "state": "ID",
+   "name": "Evergreen Rural Fire Department",
+   "kind": "Local fire department",
+   "county": "Clearwater",
+   "city": "Lenore",
+   "usfa_fdid": "35341",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 26,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-37301",
+   "state": "ID",
+   "name": "Sawtooth Valley Rural Fire District",
+   "kind": "Fire district",
+   "county": "Custer",
+   "city": "Stanley",
+   "usfa_fdid": "37301",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 19,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-37305",
+   "state": "ID",
+   "name": "Mackay Fire Department",
+   "kind": "Local fire department",
+   "county": "Custer",
+   "city": "Mackay",
+   "usfa_fdid": "37305",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 4,
+    "career": 0,
+    "volunteer": 20,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-37315",
+   "state": "ID",
+   "name": "Clayton Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Custer",
+   "city": "Clayton",
+   "usfa_fdid": "37315",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 23,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-37334",
+   "state": "ID",
+   "name": "North Custer Rural Fire Department",
+   "kind": "Local fire department",
+   "county": "Custer",
+   "city": "Challis",
+   "usfa_fdid": "37334",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 4,
+    "career": 0,
+    "volunteer": 52,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-39301",
+   "state": "ID",
+   "name": "Mountain Home City Fire Department",
+   "kind": "Local fire department",
+   "county": "Elmore",
+   "city": "Mountain Home",
+   "usfa_fdid": "39301",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 2,
+    "volunteer": 0,
+    "paid_per_call": 31
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-39303",
+   "state": "ID",
+   "name": "Glenns Ferry Fire Department",
+   "kind": "Local fire department",
+   "county": "Elmore",
+   "city": "Glenns Ferry",
+   "usfa_fdid": "39303",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 18,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-39334",
+   "state": "ID",
+   "name": "Mountain Home Rural Fire District",
+   "kind": "Fire district",
+   "county": "Elmore",
+   "city": "Mountain Home",
+   "usfa_fdid": "39334",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 33
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-39336",
+   "state": "ID",
+   "name": "King Hill Rural Fire District",
+   "kind": "Fire district",
+   "county": "Elmore",
+   "city": "Glenns Ferry",
+   "usfa_fdid": "39336",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 22,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-39338",
+   "state": "ID",
+   "name": "Atlanta Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Elmore",
+   "city": "Atlanta",
+   "usfa_fdid": "39338",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 1,
+    "volunteer": 15,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-41301",
+   "state": "ID",
+   "name": "Franklin County Fire Protection District",
+   "kind": "Fire district",
+   "county": "Franklin",
+   "city": "Preston",
+   "usfa_fdid": "41301",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 1,
+    "volunteer": 0,
+    "paid_per_call": 30
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-43334",
+   "state": "ID",
+   "name": "Island Park Fire District",
+   "kind": "Fire district",
+   "county": "Fremont",
+   "city": "Macks Inn",
+   "usfa_fdid": "43334",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 4,
+    "career": 0,
+    "volunteer": 20,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-43336",
+   "state": "ID",
+   "name": "North Fremont Fire District, Inc.",
+   "kind": "Fire district",
+   "county": "Fremont",
+   "city": "Ashton",
+   "usfa_fdid": "43336",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 21
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-43338",
+   "state": "ID",
+   "name": "South Fremont Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Fremont",
+   "city": "Saint Anthony",
+   "usfa_fdid": "43338",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 25,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-45301",
+   "state": "ID",
+   "name": "Emmett Fire Department",
+   "kind": "Local fire department",
+   "county": "Gem",
+   "city": "Emmett",
+   "usfa_fdid": "45301",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 1,
+    "volunteer": 0,
+    "paid_per_call": 16
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-45334",
+   "state": "ID",
+   "name": "Gem County Fire Protection District #1",
+   "kind": "Fire district",
+   "county": "Gem",
+   "city": "Emmett",
+   "usfa_fdid": "45334",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 4,
+    "career": 2,
+    "volunteer": 0,
+    "paid_per_call": 43
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-45339",
+   "state": "ID",
+   "name": "Gem County Fire Protection District #2",
+   "kind": "Fire district",
+   "county": "Gem",
+   "city": "Sweet",
+   "usfa_fdid": "45339",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 35,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-47301",
+   "state": "ID",
+   "name": "Gooding City Rural Fire Department",
+   "kind": "Local fire department",
+   "county": "Gooding",
+   "city": "Gooding",
+   "usfa_fdid": "47301",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 1,
+    "volunteer": 0,
+    "paid_per_call": 24
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-47303",
+   "state": "ID",
+   "name": "Wendell City Fire Department",
+   "kind": "Local fire department",
+   "county": "Gooding",
+   "city": "Wendell",
+   "usfa_fdid": "47303",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 2,
+    "volunteer": 15,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-47323",
+   "state": "ID",
+   "name": "Hagerman Fire Protection District",
+   "kind": "Fire district",
+   "county": "Gooding",
+   "city": "Hagerman",
+   "usfa_fdid": "47323",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 2,
+    "volunteer": 0,
+    "paid_per_call": 21
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-47335",
+   "state": "ID",
+   "name": "Wendell Rural Fire District",
+   "kind": "Fire district",
+   "county": "Idaho",
+   "city": "Wendell",
+   "usfa_fdid": "47335",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 2,
+    "volunteer": 16,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-47341",
+   "state": "ID",
+   "name": "Bliss Fire District",
+   "kind": "Fire district",
+   "county": "Gooding",
+   "city": "Bliss",
+   "usfa_fdid": "47341",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 1,
+    "volunteer": 8,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-49308",
+   "state": "ID",
+   "name": "Grangeville Fire Department",
+   "kind": "Local fire department",
+   "county": "Idaho",
+   "city": "Grangeville",
+   "usfa_fdid": "49308",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 22
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-49310",
+   "state": "ID",
+   "name": "Cottonwood Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Idaho",
+   "city": "Cottonwood",
+   "usfa_fdid": "49310",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 22,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-49316",
+   "state": "ID",
+   "name": "Elk City Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Idaho",
+   "city": "Elk City",
+   "usfa_fdid": "49316",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 17,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-49327",
+   "state": "ID",
+   "name": "Ferdinand Fire Department",
+   "kind": "Local fire department",
+   "county": "Idaho",
+   "city": "Ferdinand",
+   "usfa_fdid": "49327",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 12,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-49329",
+   "state": "ID",
+   "name": "Stites Fire Department",
+   "kind": "Local fire department",
+   "county": "Idaho",
+   "city": "Stites",
+   "usfa_fdid": "49329",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 10,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-49330",
+   "state": "ID",
+   "name": "Kooskia Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Idaho",
+   "city": "Kooskia",
+   "usfa_fdid": "49330",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 18,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-49335",
+   "state": "ID",
+   "name": "Cottonwood Rural Fire Department",
+   "kind": "Local fire department",
+   "county": "Idaho",
+   "city": "Cottonwood",
+   "usfa_fdid": "49335",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 23,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-49336",
+   "state": "ID",
+   "name": "Ridge Runner Fire Department",
+   "kind": "Local fire department",
+   "county": "Idaho",
+   "city": "Kooskia",
+   "usfa_fdid": "49336",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 18,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-49338",
+   "state": "ID",
+   "name": "Salmon River Rural Fire Department Incorporated",
+   "kind": "Local fire department",
+   "county": "Idaho",
+   "city": "Riggins",
+   "usfa_fdid": "49338",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 6,
+    "career": 0,
+    "volunteer": 31,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-49350",
+   "state": "ID",
+   "name": "Riggins City Fire Department",
+   "kind": "Local fire department",
+   "county": "Idaho",
+   "city": "Riggins",
+   "usfa_fdid": "49350",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 10,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-49352",
+   "state": "ID",
+   "name": "BPC Volunteer Rural Fire Department, Inc.",
+   "kind": "Volunteer fire department",
+   "county": "Idaho",
+   "city": "Clearwater",
+   "usfa_fdid": "49352",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 15,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-49362",
+   "state": "ID",
+   "name": "Harpster Fire Protection District",
+   "kind": "Fire district",
+   "county": "Idaho",
+   "city": "Harpster",
+   "usfa_fdid": "49362",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 16,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-49370",
+   "state": "ID",
+   "name": "Secesh Meadows Fire Department",
+   "kind": "Local fire department",
+   "county": "Idaho",
+   "city": "Star",
+   "usfa_fdid": "49370",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 8,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-51334",
+   "state": "ID",
+   "name": "Central Fire District",
+   "kind": "Fire district",
+   "county": "Jefferson",
+   "city": "Rigby",
+   "usfa_fdid": "51334",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 4,
+    "career": 2,
+    "volunteer": 0,
+    "paid_per_call": 80
+   },
+   "grants": 2
+  },
+  {
+   "id": "ID-53201",
+   "state": "ID",
+   "name": "Jerome City Fire Department",
+   "kind": "Local fire department",
+   "county": "Jerome",
+   "city": "Jerome",
+   "usfa_fdid": "53201",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 16,
+    "volunteer": 0,
+    "paid_per_call": 12
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-53353",
+   "state": "ID",
+   "name": "First Segregation Fire District",
+   "kind": "Fire district",
+   "county": "Jerome",
+   "city": "Eden",
+   "usfa_fdid": "53353",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 1,
+    "volunteer": 0,
+    "paid_per_call": 11
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-55201",
+   "state": "ID",
+   "name": "Coeur d'Alene Fire Department",
+   "kind": "Local fire department",
+   "county": "Kootenai",
+   "city": "Coeur d'Alene",
+   "usfa_fdid": "55201",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 4,
+    "career": 58,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-55234",
+   "state": "ID",
+   "name": "Kootenai County Fire and Rescue",
+   "kind": "County fire department",
+   "county": "Kootenai",
+   "city": "Post Falls",
+   "usfa_fdid": "55234",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 5,
+    "career": 65,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 4
+  },
+  {
+   "id": "ID-55336",
+   "state": "ID",
+   "name": "Worley Fire Protection District",
+   "kind": "Fire district",
+   "county": "Kootenai",
+   "city": "Worley",
+   "usfa_fdid": "55336",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 6,
+    "career": 9,
+    "volunteer": 13,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-55338",
+   "state": "ID",
+   "name": "Spirit Lake Fire Protection District",
+   "kind": "Fire district",
+   "county": "Kootenai",
+   "city": "Spirit Lake",
+   "usfa_fdid": "55338",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 9,
+    "volunteer": 5,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-55342",
+   "state": "ID",
+   "name": "Northern Lakes Fire Protection District",
+   "kind": "Fire district",
+   "county": "Kootenai",
+   "city": "Hayden",
+   "usfa_fdid": "55342",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 7,
+    "career": 41,
+    "volunteer": 10,
+    "paid_per_call": 0
+   },
+   "grants": 6
+  },
+  {
+   "id": "ID-55346",
+   "state": "ID",
+   "name": "Hauser Lake Fire Protection District",
+   "kind": "Fire district",
+   "county": "Kootenai",
+   "city": "Hauser",
+   "usfa_fdid": "55346",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 1,
+    "volunteer": 18,
+    "paid_per_call": 0
+   },
+   "grants": 4
+  },
+  {
+   "id": "ID-55352",
+   "state": "ID",
+   "name": "Timberlake Fire Protection District",
+   "kind": "Fire district",
+   "county": "Kootenai",
+   "city": "Athol",
+   "usfa_fdid": "55352",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 6,
+    "career": 7,
+    "volunteer": 25,
+    "paid_per_call": 0
+   },
+   "grants": 4
+  },
+  {
+   "id": "ID-55354",
+   "state": "ID",
+   "name": "Mica Kidd Island Fire Protection District",
+   "kind": "Fire district",
+   "county": "Kootenai",
+   "city": "Coeur d' Alene",
+   "usfa_fdid": "55354",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 2,
+    "volunteer": 18,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-55360",
+   "state": "ID",
+   "name": "East Side Fire Protection District",
+   "kind": "Fire district",
+   "county": "Kootenai",
+   "city": "Harrison",
+   "usfa_fdid": "55360",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 30
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-57301",
+   "state": "ID",
+   "name": "Moscow Fire Department",
+   "kind": "Local fire department",
+   "county": "Latah",
+   "city": "Moscow",
+   "usfa_fdid": "57301",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 4,
+    "volunteer": 100,
+    "paid_per_call": 7
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-57303",
+   "state": "ID",
+   "name": "Genesee City Fire Department",
+   "kind": "Local fire department",
+   "county": "Latah",
+   "city": "Genesee",
+   "usfa_fdid": "57303",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 25,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-57306",
+   "state": "ID",
+   "name": "Kendrick Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Latah",
+   "city": "Kendrick",
+   "usfa_fdid": "57306",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 9,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-57307",
+   "state": "ID",
+   "name": "Juliaetta Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Latah",
+   "city": "Juliaetta",
+   "usfa_fdid": "57307",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 6,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-57309",
+   "state": "ID",
+   "name": "Bovill Fire Protection District",
+   "kind": "Fire district",
+   "county": "Latah",
+   "city": "Bovill",
+   "usfa_fdid": "57309",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "State government (includes state forest fire agencies and state institution fire departments)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 18,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-57338",
+   "state": "ID",
+   "name": "Genesee Rural Fire District",
+   "kind": "Fire district",
+   "county": "Latah",
+   "city": "Genesee",
+   "usfa_fdid": "57338",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 24,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-57340",
+   "state": "ID",
+   "name": "Troy Fire Department",
+   "kind": "Contract fire department",
+   "county": "Latah",
+   "city": "Troy",
+   "usfa_fdid": "57340",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Contract fire department",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 44,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-57342",
+   "state": "ID",
+   "name": "Deary Rural Fire District",
+   "kind": "Fire district",
+   "county": "Latah",
+   "city": "Deary",
+   "usfa_fdid": "57342",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 30,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-59310",
+   "state": "ID",
+   "name": "Elk Bend Fire Protection District",
+   "kind": "Fire district",
+   "county": "Lemhi",
+   "city": "Salmon",
+   "usfa_fdid": "59310",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 22,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-59315",
+   "state": "ID",
+   "name": "Leadore Community Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Lemhi",
+   "city": "Leadore",
+   "usfa_fdid": "59315",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 35,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-59330",
+   "state": "ID",
+   "name": "Lemhi County Fire Protection District #1/ Fire Department",
+   "kind": "Fire district",
+   "county": "Lemhi",
+   "city": "Salmon",
+   "usfa_fdid": "59330",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 31,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-59333",
+   "state": "ID",
+   "name": "North Fork Fire Protection District 1",
+   "kind": "Fire district",
+   "county": "Lemhi",
+   "city": "North Fork",
+   "usfa_fdid": "59333",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 25,
+    "paid_per_call": 25
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-59351",
+   "state": "ID",
+   "name": "Williams Lake Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Lemhi",
+   "city": "Salmon",
+   "usfa_fdid": "59351",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 4,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-61308",
+   "state": "ID",
+   "name": "Winchester Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Lewis",
+   "city": "Winchester",
+   "usfa_fdid": "61308",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 10,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-61310",
+   "state": "ID",
+   "name": "City of Nezperce Fire Department",
+   "kind": "Local fire department",
+   "county": "Lewis",
+   "city": "Nezperce",
+   "usfa_fdid": "61310",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 10,
+    "paid_per_call": 5
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-61334",
+   "state": "ID",
+   "name": "Kamiah Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Lewis",
+   "city": "Kamiah",
+   "usfa_fdid": "61334",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 30,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-61335",
+   "state": "ID",
+   "name": "Kamiah Fire Protection District",
+   "kind": "Fire district",
+   "county": "Lewis",
+   "city": "Kamiah",
+   "usfa_fdid": "61335",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 30,
+    "paid_per_call": 0
+   },
+   "grants": 2
+  },
+  {
+   "id": "ID-63301",
+   "state": "ID",
+   "name": "Shoshone City-Rural Fire District",
+   "kind": "Fire district",
+   "county": "Lincoln",
+   "city": "Shoshone",
+   "usfa_fdid": "63301",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 24,
+    "paid_per_call": 24
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-63306",
+   "state": "ID",
+   "name": "Dietrich Fire District",
+   "kind": "Fire district",
+   "county": "Lincoln",
+   "city": "Dietrich",
+   "usfa_fdid": "63306",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 20,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-65234",
+   "state": "ID",
+   "name": "Madison Fire Department",
+   "kind": "Local fire department",
+   "county": "Madison",
+   "city": "Rexburg",
+   "usfa_fdid": "65234",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 21,
+    "volunteer": 0,
+    "paid_per_call": 40
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-67301",
+   "state": "ID",
+   "name": "Rupert City Fire/ Rescue",
+   "kind": "Local fire department",
+   "county": "Minidoka",
+   "city": "Rupert",
+   "usfa_fdid": "67301",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 1,
+    "volunteer": 0,
+    "paid_per_call": 24
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-67334",
+   "state": "ID",
+   "name": "West End Fire Protection District",
+   "kind": "Fire district",
+   "county": "Minidoka",
+   "city": "Paul",
+   "usfa_fdid": "67334",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 1,
+    "volunteer": 0,
+    "paid_per_call": 18
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-67336",
+   "state": "ID",
+   "name": "Minidoka County Fire Protection District",
+   "kind": "Fire district",
+   "county": "Minidoka",
+   "city": "Heyburn",
+   "usfa_fdid": "67336",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 1,
+    "volunteer": 0,
+    "paid_per_call": 36
+   },
+   "grants": 2
+  },
+  {
+   "id": "ID-69201",
+   "state": "ID",
+   "name": "Lewiston Fire Department",
+   "kind": "Local fire department",
+   "county": "Nez Perce",
+   "city": "Lewiston",
+   "usfa_fdid": "69201",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 4,
+    "career": 48,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-69220",
+   "state": "ID",
+   "name": "Potlatch Corporation Fire/Rescue",
+   "kind": "Private or industrial fire brigade",
+   "county": "Nez Perce",
+   "city": "Lewiston",
+   "usfa_fdid": "69220",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Private or industrial fire brigade",
+    "stations": 1,
+    "career": 30,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-69306",
+   "state": "ID",
+   "name": "City of Lapwai Fire Department",
+   "kind": "Local fire department",
+   "county": "Nez Perce",
+   "city": "Lapwai",
+   "usfa_fdid": "69306",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 10,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-69311",
+   "state": "ID",
+   "name": "City of Culdesac Fire Department",
+   "kind": "Local fire department",
+   "county": "Nez Perce",
+   "city": "Culdesac",
+   "usfa_fdid": "69311",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 6,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-69333",
+   "state": "ID",
+   "name": "Big Canyon Fire District",
+   "kind": "Fire district",
+   "county": "Nez Perce",
+   "city": "Peck",
+   "usfa_fdid": "69333",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 15,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-69345",
+   "state": "ID",
+   "name": "Wheatland Fire Protection District",
+   "kind": "Fire district",
+   "county": "Nez Perce",
+   "city": "Lewiston",
+   "usfa_fdid": "69345",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 22,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-73334",
+   "state": "ID",
+   "name": "Homedale Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Owyhee",
+   "city": "Homedale",
+   "usfa_fdid": "73334",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 24,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-73336",
+   "state": "ID",
+   "name": "Marsing Rural Fire Department",
+   "kind": "Local fire department",
+   "county": "Owyhee",
+   "city": "Marsing",
+   "usfa_fdid": "73336",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 26,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-73338",
+   "state": "ID",
+   "name": "Grand View Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Owyhee",
+   "city": "Grand View",
+   "usfa_fdid": "73338",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 1,
+    "volunteer": 15,
+    "paid_per_call": 0
+   },
+   "grants": 2
+  },
+  {
+   "id": "ID-73340",
+   "state": "ID",
+   "name": "Bruneau Fire District",
+   "kind": "Fire district",
+   "county": "Owyhee",
+   "city": "Bruneau",
+   "usfa_fdid": "73340",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 15,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-73342",
+   "state": "ID",
+   "name": "Murphy-Reynolds-Wilson Fire District",
+   "kind": "Fire district",
+   "county": "Owyhee",
+   "city": "Melba",
+   "usfa_fdid": "73342",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 4,
+    "career": 0,
+    "volunteer": 32,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-75301",
+   "state": "ID",
+   "name": "Payette City Fire Departmemt",
+   "kind": "Local fire department",
+   "county": "Payette",
+   "city": "Payette",
+   "usfa_fdid": "75301",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 5,
+    "volunteer": 0,
+    "paid_per_call": 21
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-75302",
+   "state": "ID",
+   "name": "Fruitland Fire Department",
+   "kind": "Local fire department",
+   "county": "Payette",
+   "city": "Fruitland",
+   "usfa_fdid": "75302",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 30
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-75303",
+   "state": "ID",
+   "name": "New Plymouth Fire Department",
+   "kind": "Local fire department",
+   "county": "Payette",
+   "city": "New Plymouth",
+   "usfa_fdid": "75303",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 15
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-77306",
+   "state": "ID",
+   "name": "Rockland Rural Fire District",
+   "kind": "Fire district",
+   "county": "Power",
+   "city": "Rockland",
+   "usfa_fdid": "77306",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 16,
+    "paid_per_call": 0
+   },
+   "grants": 7
+  },
+  {
+   "id": "ID-77330",
+   "state": "ID",
+   "name": "American Falls Fire Department",
+   "kind": "Local fire department",
+   "county": "Power",
+   "city": "American Falls",
+   "usfa_fdid": "77330",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 19
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-79234",
+   "state": "ID",
+   "name": "Shoshone County Fire Protection District #2",
+   "kind": "Fire district",
+   "county": "Shoshone",
+   "city": "Kellogg",
+   "usfa_fdid": "79234",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 5,
+    "career": 11,
+    "volunteer": 22,
+    "paid_per_call": 8
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-79236",
+   "state": "ID",
+   "name": "Shoshone County Fire Protection District #1",
+   "kind": "Fire district",
+   "county": "Shoshone",
+   "city": "Osburn",
+   "usfa_fdid": "79236",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 7,
+    "volunteer": 20,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-79304",
+   "state": "ID",
+   "name": "Mullan Volunteer Fire Department",
+   "kind": "Volunteer fire department",
+   "county": "Shoshone",
+   "city": "Mullan",
+   "usfa_fdid": "79304",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 16,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-79305",
+   "state": "ID",
+   "name": "Prichard/Murray Volunteer Fire Department Inc.",
+   "kind": "Volunteer fire department",
+   "county": "Shoshone",
+   "city": "Wallace",
+   "usfa_fdid": "79305",
+   "coverage": 4,
+   "sources": [
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 18,
+    "paid_per_call": 0
+   },
+   "grants": 5
+  },
+  {
+   "id": "ID-79316",
+   "state": "ID",
+   "name": "Shoshone County Fire Protection District #3",
+   "kind": "Fire district",
+   "county": "Shoshone",
+   "city": "Mullan",
+   "usfa_fdid": "79316",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 25
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-81334",
+   "state": "ID",
+   "name": "Teton County Fire Protection District",
+   "kind": "Fire district",
+   "county": "Teton",
+   "city": "Driggs",
+   "usfa_fdid": "81334",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 25,
+    "volunteer": 0,
+    "paid_per_call": 6
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-83101",
+   "state": "ID",
+   "name": "Twin Falls Fire Department",
+   "kind": "Local fire department",
+   "county": "Twin Falls",
+   "city": "Twin Falls",
+   "usfa_fdid": "83101",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 4,
+    "career": 45,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-83207",
+   "state": "ID",
+   "name": "Buhl Fire Department",
+   "kind": "Local fire department",
+   "county": "Twin Falls",
+   "city": "Buhl",
+   "usfa_fdid": "83207",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 7,
+    "volunteer": 0,
+    "paid_per_call": 17
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-83309",
+   "state": "ID",
+   "name": "Hansen Fire Department (Rock Creek Fire Station 3)",
+   "kind": "Local fire department",
+   "county": "Twin Falls",
+   "city": "Hansen",
+   "usfa_fdid": "83309",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 38
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-83334",
+   "state": "ID",
+   "name": "Rock Creek Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Twin Falls",
+   "city": "Kimberly",
+   "usfa_fdid": "83334",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 4,
+    "career": 2,
+    "volunteer": 0,
+    "paid_per_call": 30
+   },
+   "grants": 3
+  },
+  {
+   "id": "ID-83338",
+   "state": "ID",
+   "name": "Filer Fire Department",
+   "kind": "Local fire department",
+   "county": "Twin Falls",
+   "city": "Filer",
+   "usfa_fdid": "83338",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-83340",
+   "state": "ID",
+   "name": "Castleford Rural Fire Department",
+   "kind": "Local fire department",
+   "county": "Idaho",
+   "city": "Castleford",
+   "usfa_fdid": "83340",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 24,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-83349",
+   "state": "ID",
+   "name": "Salmon Tract Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Twin Falls",
+   "city": "Twin Falls",
+   "usfa_fdid": "83349",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 18,
+    "volunteer": 18,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-85304",
+   "state": "ID",
+   "name": "Donnelly Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Valley",
+   "city": "Donnelly",
+   "usfa_fdid": "85304",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 8,
+    "volunteer": 0,
+    "paid_per_call": 23
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-85334",
+   "state": "ID",
+   "name": "Cascade Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Valley",
+   "city": "Cascade",
+   "usfa_fdid": "85334",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 3,
+    "career": 8,
+    "volunteer": 20,
+    "paid_per_call": 0
+   },
+   "grants": 2
+  },
+  {
+   "id": "ID-85339",
+   "state": "ID",
+   "name": "McCall Fire Protection District",
+   "kind": "Fire district",
+   "county": "Valley",
+   "city": "McCall",
+   "usfa_fdid": "85339",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly career",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 14,
+    "volunteer": 0,
+    "paid_per_call": 10
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-87301",
+   "state": "ID",
+   "name": "Weiser City Fire & Rescue",
+   "kind": "Local fire department",
+   "county": "Washington",
+   "city": "Weiser",
+   "usfa_fdid": "87301",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 2,
+    "volunteer": 0,
+    "paid_per_call": 35
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-87330",
+   "state": "ID",
+   "name": "Cambridge Fire Protection District",
+   "kind": "Fire district",
+   "county": "Washington",
+   "city": "Cambridge",
+   "usfa_fdid": "87330",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 15,
+    "paid_per_call": 0
+   },
+   "grants": 1
+  },
+  {
+   "id": "ID-87334",
+   "state": "ID",
+   "name": "Weiser Area Rural Fire District",
+   "kind": "Fire district",
+   "county": "Washington",
+   "city": "Weiser",
+   "usfa_fdid": "87334",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 1,
+    "volunteer": 0,
+    "paid_per_call": 24
+   },
+   "grants": 2
+  },
+  {
+   "id": "ID-87336",
+   "state": "ID",
+   "name": "Midvale Fire Protection District",
+   "kind": "Fire district",
+   "county": "Washington",
+   "city": "Midvale",
+   "usfa_fdid": "87336",
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "openfema",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 2,
+    "career": 0,
+    "volunteer": 25,
+    "paid_per_call": 0
+   },
+   "grants": 2
+  },
+  {
+   "id": "ID-88172",
+   "state": "ID",
+   "name": "Clearwater Potlatch Fire Protection District",
+   "kind": "Fire district",
+   "county": "Clearwater",
+   "city": "Orofino",
+   "usfa_fdid": "88172",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 4,
+    "career": 18,
+    "volunteer": 80,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-F7020",
+   "state": "ID",
+   "name": "Mountain Home AFB Fire Department",
+   "kind": "Federal government",
+   "county": "Elmore",
+   "city": "Mountain Home AFB",
+   "usfa_fdid": "F7020",
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Federal government (Department of Defense fire department)",
+    "stations": 2,
+    "career": 78,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-X-IDAHO-DEPARTMENT-OF-LANDS-FIRE-DEPARTMENT-COEUR-D-ALENE",
+   "state": "ID",
+   "name": "Idaho Department of Lands Fire Department",
+   "kind": "State fire agency",
+   "county": "Kootenai",
+   "city": "Coeur D Alene",
+   "usfa_fdid": null,
+   "coverage": 1,
+   "sources": [
+    "id_state",
+    "usfa"
+   ],
+   "fy_start": "07",
+   "usfa": {
+    "dept_type": "Mostly volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 18,
+    "career": 41,
+    "volunteer": 0,
+    "paid_per_call": 150
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-X-SMILEY-CREEK-FIRE-PROTECTION-DISTRICT-STANLEY",
+   "state": "ID",
+   "name": "Smiley Creek Fire Protection District",
+   "kind": "Fire district",
+   "county": "Blaine",
+   "city": "Stanley",
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr",
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Volunteer",
+    "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
+    "stations": 1,
+    "career": 0,
+    "volunteer": 4,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-X-UNITED-STATES-FISH-AND-WILDLIFE-SERVICE-BOISE",
+   "state": "ID",
+   "name": "United States Fish & Wildlife Service",
+   "kind": "Federal government",
+   "county": "Ada",
+   "city": "Boise",
+   "usfa_fdid": null,
+   "coverage": 4,
+   "sources": [
+    "usfa"
+   ],
+   "fy_start": null,
+   "usfa": {
+    "dept_type": "Career",
+    "organization_type": "Federal government (Executive branch agency fire department)",
+    "stations": 84,
+    "career": 658,
+    "volunteer": 0,
+    "paid_per_call": 0
+   },
+   "grants": 0
+  },
+  {
+   "id": "ID-S-ace-fire-district",
+   "state": "ID",
+   "name": "Ace Fire District",
+   "kind": "Fire district",
+   "county": "Cassia",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-american-falls-rural-fire-protection-district",
+   "state": "ID",
+   "name": "American Falls Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Power",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-arimo-fire-district",
+   "state": "ID",
+   "name": "Arimo Fire District",
+   "kind": "Fire district",
+   "county": "Bannock",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-arrow-junction-fire-protection-district",
+   "state": "ID",
+   "name": "Arrow Junction Fire Protection District",
+   "kind": "Fire district",
+   "county": "Nez Perce",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-bailey-creek-fire-protection-district",
+   "state": "ID",
+   "name": "Bailey Creek Fire Protection District",
+   "kind": "Fire district",
+   "county": "Bear Lake; Caribou",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-bc-south-fire-district-protection-district",
+   "state": "ID",
+   "name": "BC South Fire District Protection District",
+   "kind": "Fire district",
+   "county": "Blaine",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-bear-lake-county-fire-district",
+   "state": "ID",
+   "name": "Bear Lake County Fire District",
+   "kind": "Fire district",
+   "county": "Bear Lake",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-blackfoot-snake-river-fire-protection-district",
+   "state": "ID",
+   "name": "Blackfoot-Snake River Fire Protection District",
+   "kind": "Fire district",
+   "county": "Bingham",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-bonneville-alpine-fire-district-4",
+   "state": "ID",
+   "name": "Bonneville-Alpine Fire District 4",
+   "kind": "Fire district",
+   "county": "Bonneville",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-bonneville-county-fire-district-1",
+   "state": "ID",
+   "name": "Bonneville County Fire District #1",
+   "kind": "Fire district",
+   "county": "Bonneville",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-buhl-rural-fire-protection-district",
+   "state": "ID",
+   "name": "Buhl Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Twin Falls",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-caldwell-rural-fire-protection-district",
+   "state": "ID",
+   "name": "Caldwell Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Canyon",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-council-volunteer-fire-district",
+   "state": "ID",
+   "name": "Council Volunteer Fire District",
+   "kind": "Fire district",
+   "county": "Adams",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-east-priest-lake-fire-protection-district",
+   "state": "ID",
+   "name": "East Priest Lake Fire Protection District",
+   "kind": "Fire district",
+   "county": "Bonner",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-eastern-power-county-fire-district",
+   "state": "ID",
+   "name": "Eastern Power County Fire District",
+   "kind": "Fire district",
+   "county": "Power",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-filer-rural-fire-protection-district",
+   "state": "ID",
+   "name": "Filer Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Twin Falls",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-freedom-fire-district",
+   "state": "ID",
+   "name": "Freedom Fire District",
+   "kind": "Fire district",
+   "county": "Caribou",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-gooding-rural-fire-district",
+   "state": "ID",
+   "name": "Gooding Rural Fire District",
+   "kind": "Fire district",
+   "county": "Gooding",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-grangemont-volunteer-fire-district",
+   "state": "ID",
+   "name": "Grangemont Volunteer Fire District",
+   "kind": "Fire district",
+   "county": "Clearwater",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-grangeville-rural-fire-district",
+   "state": "ID",
+   "name": "Grangeville Rural Fire District",
+   "kind": "Fire district",
+   "county": "Idaho",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-greer-rural-fire-district",
+   "state": "ID",
+   "name": "Greer Rural Fire District",
+   "kind": "Fire district",
+   "county": "Clearwater",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-hamer-fire-district",
+   "state": "ID",
+   "name": "Hamer Fire District",
+   "kind": "Fire district",
+   "county": "Fremont; Jefferson",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-horseshoe-bend-fire-protection-district",
+   "state": "ID",
+   "name": "Horseshoe Bend Fire Protection District",
+   "kind": "Fire district",
+   "county": "Boise",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-jackson-creek-fire-protection-district",
+   "state": "ID",
+   "name": "Jackson Creek Fire Protection District",
+   "kind": "Fire district",
+   "county": "Bannock",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-jerome-rural-fire-district-1",
+   "state": "ID",
+   "name": "Jerome Rural Fire District #1",
+   "kind": "Fire district",
+   "county": "Jerome",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-ketchum-fire-district",
+   "state": "ID",
+   "name": "Ketchum Fire District",
+   "kind": "Fire district",
+   "county": "Blaine",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 4,
+   "sources": [],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-lava-rural-fire-district",
+   "state": "ID",
+   "name": "Lava Rural Fire District",
+   "kind": "Fire district",
+   "county": "Bannock",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-madison-county-fire-protection-district",
+   "state": "ID",
+   "name": "Madison County Fire Protection District",
+   "kind": "Fire district",
+   "county": "Madison",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-mccammon-rural-fire-district",
+   "state": "ID",
+   "name": "McCammon Rural Fire District",
+   "kind": "Fire district",
+   "county": "Bannock",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-meridian-rural-fire-protection-district",
+   "state": "ID",
+   "name": "Meridian Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Ada",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-moscow-rural-fire-district",
+   "state": "ID",
+   "name": "Moscow Rural Fire District",
+   "kind": "Fire district",
+   "county": "Latah",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-nampa-fire-protection-district",
+   "state": "ID",
+   "name": "Nampa Fire Protection District",
+   "kind": "Fire district",
+   "county": "Canyon",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-new-plymouth-fire-protection-district",
+   "state": "ID",
+   "name": "New Plymouth Fire Protection District",
+   "kind": "Fire district",
+   "county": "Payette",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-nezperce-rural-fire-protection-district",
+   "state": "ID",
+   "name": "Nezperce Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Lewis",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-north-blaine-county-fire-district",
+   "state": "ID",
+   "name": "North Blaine County Fire District",
+   "kind": "Fire district",
+   "county": "Blaine",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-north-cassia-rural-fire-district",
+   "state": "ID",
+   "name": "North Cassia Rural Fire District",
+   "kind": "Fire district",
+   "county": "Cassia",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-north-latah-fire-district",
+   "state": "ID",
+   "name": "North Latah Fire District",
+   "kind": "Fire district",
+   "county": "Latah",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-oakley-fire-protection-district",
+   "state": "ID",
+   "name": "Oakley Fire Protection District",
+   "kind": "Fire district",
+   "county": "Cassia",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-oasis-volunteer-fire-dept",
+   "state": "ID",
+   "name": "Oasis Volunteer Fire Dept., Inc.",
+   "kind": "Volunteer fire department",
+   "county": "Elmore",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-oneida-county-fire-district",
+   "state": "ID",
+   "name": "Oneida County Fire District",
+   "kind": "Fire district",
+   "county": "Oneida",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-orofino-rural-fire-district",
+   "state": "ID",
+   "name": "Orofino Rural Fire District",
+   "kind": "Fire district",
+   "county": "Clearwater",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-pocatello-valley-fire-protection-district",
+   "state": "ID",
+   "name": "Pocatello Valley Fire Protection District",
+   "kind": "Fire district",
+   "county": "Bannock",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-potlatch-rural-fire-district",
+   "state": "ID",
+   "name": "Potlatch Rural Fire District",
+   "kind": "Fire district",
+   "county": "Latah",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 4,
+   "sources": [],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-raft-river-fire-protection-district",
+   "state": "ID",
+   "name": "Raft River Fire Protection District",
+   "kind": "Fire district",
+   "county": "Cassia",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-richfield-fire-protection-district",
+   "state": "ID",
+   "name": "Richfield Fire Protection District",
+   "kind": "Fire district",
+   "county": "Lincoln",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-roberts-fire-district",
+   "state": "ID",
+   "name": "Roberts Fire District",
+   "kind": "Fire district",
+   "county": "Jefferson",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-sand-hollow-fire-protection-district",
+   "state": "ID",
+   "name": "Sand Hollow Fire Protection District",
+   "kind": "Fire district",
+   "county": "Payette",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-south-custer-rural-fire-district",
+   "state": "ID",
+   "name": "South Custer Rural Fire District",
+   "kind": "Fire district",
+   "county": "Custer",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-st-joe-valley-fire-district-4",
+   "state": "ID",
+   "name": "St. Joe Valley Fire District #4",
+   "kind": "Fire district",
+   "county": "Shoshone",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-sunset-fire-district",
+   "state": "ID",
+   "name": "Sunset Fire District",
+   "kind": "Fire district",
+   "county": "Ada",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-troy-rural-fire-district",
+   "state": "ID",
+   "name": "Troy Rural Fire District",
+   "kind": "Fire district",
+   "county": "Latah",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 4,
+   "sources": [],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-twin-falls-rural-fire-protection-district",
+   "state": "ID",
+   "name": "Twin Falls Rural Fire Protection District",
+   "kind": "Fire district",
+   "county": "Twin Falls",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-upper-fords-creek-rural-fire-district",
+   "state": "ID",
+   "name": "Upper Fords Creek Rural Fire District",
+   "kind": "Fire district",
+   "county": "Clearwater",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-west-jefferson-fire-control",
+   "state": "ID",
+   "name": "West Jefferson Fire Control",
+   "kind": "Fire district",
+   "county": "Jefferson",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-whitney-fire-protection-district",
+   "state": "ID",
+   "name": "Whitney Fire Protection District",
+   "kind": "Fire district",
+   "county": "Ada",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-wilderness-ranch-fire-protection-district",
+   "state": "ID",
+   "name": "Wilderness Ranch Fire Protection District",
+   "kind": "Fire district",
+   "county": "Boise",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-winchester-rural-fire-district",
+   "state": "ID",
+   "name": "Winchester Rural Fire District",
+   "kind": "Fire district",
+   "county": "Lewis",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-wood-river-fire-protection-district",
+   "state": "ID",
+   "name": "Wood River Fire Protection District",
+   "kind": "Fire district",
+   "county": "Blaine",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-yellow-pine-fire-protection-district",
+   "state": "ID",
+   "name": "Yellow Pine Fire Protection District",
+   "kind": "Fire district",
+   "county": "Valley",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "ID-S-yellow-pine-rural-fire-district",
+   "state": "ID",
+   "name": "Yellow Pine Rural Fire District",
+   "kind": "Fire district",
+   "county": "Valley",
+   "city": null,
+   "usfa_fdid": null,
+   "coverage": 3,
+   "sources": [
+    "id_lgr"
+   ],
+   "fy_start": null,
+   "usfa": null,
+   "grants": 0
+  }
+ ]
+}

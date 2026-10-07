@@ -1,0 +1,600 @@
+agency_id,source,source_entity_id,source_entity_name,fy_start,match_method,note
+CA-33025,ca_corona,30,FIRE,07,department code,registry name: Corona Fire Department
+CA-00555,ca_fiscal,3540,CAL FIRE,07,department code,"state fire agency (PRD open question), business unit 3540, whole department; the registry's regional CAL FIRE rows are not linked"
+CA-19105,ca_la,38,FIRE,07,department code,department 38 FIRE; registry name: Los Angeles Fire Department
+CA-33054,ca_moreno_valley,,Fire - Office of Emergency Mgmt,07,manual,City of Moreno Valley Fire department; registry name: Moreno Valley Fire Service
+CA-33054,ca_moreno_valley,,Fire Operations,07,manual,City of Moreno Valley Fire department; registry name: Moreno Valley Fire Service
+CA-33054,ca_moreno_valley,,Fire Prevention,07,manual,City of Moreno Valley Fire department; registry name: Moreno Valley Fire Service
+CA-33090,ca_riverside_county,,Fire Protection,07,department code,"County department Fire Protection; registry also lists the same operation as Cal Fire - Riverside County Fire Department (CA-33555), not linked"
+CA-01005,ca_sco_cities,1480,Alameda,07,exact name,registry name: City of Alameda Fire Department
+CA-01010,ca_sco_cities,1479,Albany,07,exact name,registry name: Albany Fire Department
+CA-19005,ca_sco_cities,1478,Alhambra,07,exact name,registry name: Alhambra Fire Department
+CA-25010,ca_sco_cities,1476,Alturas,07,exact name,registry name: City of Alturas Fire Department
+CA-30005,ca_sco_cities,1473,Anaheim,07,exact name,registry name: Anaheim Fire & Rescue
+CA-05010,ca_sco_cities,1471,Angels,07,manual,City of Angels (Angels Camp); registry name: Angels Camp Volunteer Fire Department
+CA-19010,ca_sco_cities,1468,Arcadia,07,exact name,registry name: Arcadia Fire Department
+CA-40010,ca_sco_cities,1463,Atascadero,07,exact name,registry name: Atascadero Fire & Emergency Services
+CA-31010,ca_sco_cities,1460,Auburn,07,exact name,registry name: Auburn Fire Department
+CA-19015,ca_sco_cities,1459,Avalon,07,exact name,registry name: Avalon Fire Department
+CA-15005,ca_sco_cities,1456,Bakersfield,07,exact name,registry name: Bakersfield Fire Department
+CA-48005,ca_sco_cities,1446,Benicia,07,exact name,registry name: Benicia Fire Department
+CA-01015,ca_sco_cities,1445,Berkeley,07,exact name,registry name: Berkeley Fire Department
+CA-19025,ca_sco_cities,1444,Beverly Hills,07,exact name,registry name: Beverly Hills Fire Department
+CA-14015,ca_sco_cities,1441,Bishop,07,exact name,registry name: Bishop Fire Department
+CA-13005,ca_sco_cities,1437,Brawley,07,exact name,registry name: City of Brawley Fire Department
+CA-30010,ca_sco_cities,1436,Brea,07,exact name,registry name: Brea Fire Department
+CA-19030,ca_sco_cities,1431,Burbank,07,exact name,registry name: City of Burbank Fire Department
+CA-13010,ca_sco_cities,1428,Calexico,07,exact name,registry name: Calexico Fire Department
+CA-15065,ca_sco_cities,1427,California City,07,exact name,registry name: California City Fire Department
+CA-13015,ca_sco_cities,1425,Calipatria,07,exact name,registry name: Calipatria Fire Department
+CA-28005,ca_sco_cities,1424,Calistoga,07,exact name,registry name: Calistoga Fire Department
+CA-37025,ca_sco_cities,1419,Carlsbad,07,exact name,registry name: Carlsbad Fire Department
+CA-33018,ca_sco_cities,1415,Cathedral City,07,exact name,registry name: Cathedral City Fire Department
+CA-50005,ca_sco_cities,1414,Ceres,07,exact name,registry name: Ceres Fire Department
+CA-04010,ca_sco_cities,1412,Chico,07,exact name,registry name: City of Chico Fire Department
+CA-20005,ca_sco_cities,1409,Chowchilla,07,exact name,registry name: Chowchilla Fire Department
+CA-37030,ca_sco_cities,1408,Chula Vista,07,exact name,registry name: Chula Vista Fire Department
+CA-10005,ca_sco_cities,1402,Clovis,07,exact name,registry name: Clovis Fire Department
+CA-10010,ca_sco_cities,1400,Coalinga,07,exact name,registry name: Coalinga Fire Department
+CA-31030,ca_sco_cities,1399,Colfax,07,exact name,registry name: Colfax Fire Department
+CA-36065,ca_sco_cities,1397,Colton,07,exact name,registry name: City of Colton Fire Department
+CA-06015,ca_sco_cities,1396,Colusa,07,exact name,registry name: Colusa Fire Department
+CA-19040,ca_sco_cities,1394,Compton,07,exact name,registry name: Compton Fire Department
+CA-52005,ca_sco_cities,1391,Corning,07,manual,registry name: Corning Volunteer Fire Department
+CA-33025,ca_sco_cities,1390,Corona,07,exact name,registry name: Corona Fire Department
+CA-37045,ca_sco_cities,1389,Coronado,07,exact name,registry name: Coronado Fire Department
+CA-30020,ca_sco_cities,1387,Costa Mesa,07,exact name,registry name: Costa Mesa Fire & Rescue Department
+CA-19050,ca_sco_cities,1382,Culver City,07,exact name,registry name: Culver City Fire Department
+CA-57025,ca_sco_cities,1376,Davis,07,exact name,registry name: City of Davis Fire Department
+CA-37050,ca_sco_cities,1375,Del Mar,07,exact name,registry name: Del Mar Fire Department
+CA-54010,ca_sco_cities,1370,Dinuba,07,exact name,registry name: City of Dinuba Fire Department
+CA-48015,ca_sco_cities,1369,Dixon,07,exact name,registry name: Dixon Fire Department
+CA-24010,ca_sco_cities,1367,Dos Palos,07,exact name,registry name: Dos Palos Fire Department
+CA-19055,ca_sco_cities,1366,Downey,07,exact name,registry name: City of Downey Fire Department
+CA-47010,ca_sco_cities,1363,Dunsmuir,07,exact name,registry name: Dunsmuir Fire Department
+CA-37055,ca_sco_cities,1360,El Cajon,07,exact name,registry name: El Cajon Fire Department
+CA-13020,ca_sco_cities,1359,El Centro,07,exact name,registry name: El Centro Fire Department
+CA-07040,ca_sco_cities,1358,El Cerrito,07,exact name,registry name: El Cerrito Fire Department
+CA-40050,ca_sco_cities,1356,El Paso De Robles,07,manual,El Paso de Robles is the legal name of the City of Paso Robles; registry name: Paso Robles Department of Emergency Services (the city's fire department)
+CA-19065,ca_sco_cities,1355,El Segundo,07,exact name,registry name: El Segundo Fire Department
+CA-01035,ca_sco_cities,1353,Emeryville,07,exact name,registry name: Emeryville Fire Department
+CA-37065,ca_sco_cities,1352,Encinitas,07,exact name,registry name: Encinitas Fire Department
+CA-37070,ca_sco_cities,1350,Escondido,07,exact name,registry name: Escondido Fire Department
+CA-47020,ca_sco_cities,1349,Etna,07,exact name,registry name: Etna Fire Department
+CA-54015,ca_sco_cities,1347,Exeter,07,exact name,registry name: Exeter Fire Department
+CA-48025,ca_sco_cities,1345,Fairfield,07,exact name,registry name: Fairfield Fire Department
+CA-54005,ca_sco_cities,1344,Farmersville,07,exact name,registry name: City of Farmersville Fire Department
+CA-56005,ca_sco_cities,1342,Fillmore,07,exact name,registry name: City of Fillmore Fire Department
+CA-10020,ca_sco_cities,1341,Firebaugh,07,exact name,registry name: City of Firebaugh Fire Department
+CA-34035,ca_sco_cities,1340,Folsom,07,exact name,registry name: Folsom Fire Department
+CA-47025,ca_sco_cities,1337,Fort Jones,07,manual,registry name: Fort Jones Volunteer Fire Department
+CA-30025,ca_sco_cities,1334,Fountain Valley,07,exact name,registry name: City of Fountain Valley Fire Department
+CA-10025,ca_sco_cities,1333,Fowler,07,exact name,registry name: Fowler Fire Department
+CA-01040,ca_sco_cities,1332,Fremont,07,exact name,registry name: Fremont Fire Department
+CA-10030,ca_sco_cities,1331,Fresno,07,exact name,registry name: City of Fresno Fire Department
+CA-30030,ca_sco_cities,1330,Fullerton,07,exact name,registry name: Fullerton Fire Department
+CA-30035,ca_sco_cities,1328,Garden Grove,07,exact name,registry name: Garden Grove Fire Department
+CA-43010,ca_sco_cities,1326,Gilroy,07,exact name,registry name: Gilroy Fire Department
+CA-19075,ca_sco_cities,1325,Glendale,07,exact name,registry name: Glendale Fire Department
+CA-29005,ca_sco_cities,1320,Grass Valley,07,exact name,registry name: Grass Valley Fire Department
+CA-27045,ca_sco_cities,1319,Greenfield,07,exact name,registry name: Greenfield Fire Department
+CA-04015,ca_sco_cities,1318,Gridley,07,exact name,registry name: Gridley City Fire Department
+CA-42010,ca_sco_cities,1316,Guadalupe,07,exact name,registry name: City of Guadalupe Fire Department
+CA-24015,ca_sco_cities,1315,Gustine,07,manual,registry name: Gustine Volunteer Fire Department
+CA-16010,ca_sco_cities,1313,Hanford,07,exact name,registry name: Hanford City Fire Department
+CA-01045,ca_sco_cities,1310,Hayward,07,exact name,registry name: Hayward Fire Department
+CA-49080,ca_sco_cities,1309,Healdsburg,07,exact name,registry name: Healdsburg Fire Department
+CA-33040,ca_sco_cities,1308,Hemet,07,exact name,registry name: City of Hemet Fire Department
+CA-19085,ca_sco_cities,1306,Hermosa Beach,07,exact name,registry name: Hermosa Beach Fire Department
+CA-36107,ca_sco_cities,1303,Highland,07,exact name,registry name: Highland Fire Department
+CA-35010,ca_sco_cities,1301,Hollister,07,exact name,registry name: Hollister Fire Department
+CA-13030,ca_sco_cities,1300,Holtville,07,exact name,registry name: Holtville Fire Department
+CA-30040,ca_sco_cities,1298,Huntington Beach,07,exact name,registry name: Huntington Beach Fire Department
+CA-37085,ca_sco_cities,1294,Imperial Beach,07,exact name,registry name: Imperial Beach Fire Department
+CA-03010,ca_sco_cities,1289,Ione,07,exact name,registry name: City of Ione Fire Department
+CA-34055,ca_sco_cities,1286,Isleton,07,exact name,registry name: Isleton Fire Department
+CA-03020,ca_sco_cities,1285,Jackson,07,exact name,registry name: Jackson Fire Department
+CA-27050,ca_sco_cities,1282,King City,07,exact name,registry name: King City Fire Department
+CA-10045,ca_sco_cities,1281,Kingsburg,07,exact name,registry name: Kingsburg Fire Department
+CA-30050,ca_sco_cities,1279,La Habra,07,exact name,registry name: City of La Habra Fire Department
+CA-19225,ca_sco_cities,1278,La Habra Heights,07,exact name,registry name: La Habra Heights Fire Department
+CA-37095,ca_sco_cities,1277,La Mesa,07,exact name,registry name: La Mesa Fire Department
+CA-19095,ca_sco_cities,1272,La Verne,07,exact name,registry name: La Verne Fire Department
+CA-30045,ca_sco_cities,1270,Laguna Beach,07,exact name,registry name: Laguna Beach Fire Department
+CA-37100,ca_sco_cities,1258,Lemon Grove,07,exact name,registry name: Lemon Grove Fire Department
+CA-16020,ca_sco_cities,1257,Lemoore,07,manual,registry name: Lemoore Volunteer Fire Department
+CA-31050,ca_sco_cities,1256,Lincoln,07,exact name,registry name: City of Lincoln Fire Department
+CA-39045,ca_sco_cities,1251,Lodi,07,exact name,registry name: Lodi Fire Department
+CA-36125,ca_sco_cities,1250,Loma Linda,07,exact name,registry name: Loma Linda Fire Department
+CA-42015,ca_sco_cities,1248,Lompoc,07,exact name,registry name: Lompoc Fire Department
+CA-19100,ca_sco_cities,1247,Long Beach,07,exact name,registry name: Long Beach Fire Department
+CA-19105,ca_sco_cities,1242,Los Angeles,07,exact name,registry name: Los Angeles Fire Department
+CA-24025,ca_sco_cities,1241,Los Banos,07,exact name,registry name: Los Banos Fire Department
+CA-46010,ca_sco_cities,1239,Loyalton,07,exact name,registry name: City of Loyalton Fire Department
+CA-20010,ca_sco_cities,1237,Madera,07,exact name,registry name: Madera City Fire Department
+CA-19120,ca_sco_cities,1234,Manhattan Beach,07,exact name,registry name: Manhattan Beach Fire Department
+CA-39050,ca_sco_cities,1233,Manteca,07,exact name,registry name: Manteca Fire Department
+CA-27055,ca_sco_cities,1231,Marina,07,exact name,registry name: Marina Fire Department
+CA-58010,ca_sco_cities,1229,Marysville,07,exact name,registry name: Marysville Fire Department
+CA-24030,ca_sco_cities,1223,Merced,07,exact name,registry name: City of Merced Fire Department
+CA-21040,ca_sco_cities,1222,Mill Valley,07,exact name,registry name: Mill Valley Fire Department
+CA-43030,ca_sco_cities,1220,Milpitas,07,exact name,registry name: Milpitas Fire Department
+CA-50040,ca_sco_cities,1218,Modesto,07,exact name,registry name: Modesto Fire Department
+CA-19125,ca_sco_cities,1217,Monrovia,07,exact name,registry name: Monrovia Fire Department
+CA-47055,ca_sco_cities,1216,Montague,07,exact name,registry name: Montague Fire Department
+CA-36140,ca_sco_cities,1215,Montclair,07,exact name,registry name: Montclair Fire Department
+CA-19130,ca_sco_cities,1213,Montebello,07,exact name,registry name: Montebello Fire Department
+CA-27060,ca_sco_cities,1212,Monterey,07,exact name,registry name: Monterey Fire Department
+CA-19135,ca_sco_cities,1211,Monterey Park,07,exact name,registry name: Monterey Park Fire Department
+CA-43040,ca_sco_cities,1207,Morgan Hill,07,exact name,registry name: Morgan Hill City Fire Department
+CA-40040,ca_sco_cities,1206,Morro Bay,07,exact name,registry name: Morro Bay Fire Department
+CA-43050,ca_sco_cities,1205,Mountain View,07,exact name,registry name: Mountain View Fire Department
+CA-47060,ca_sco_cities,1204,Mt. Shasta,07,manual,registry name: Mount Shasta City Fire Department
+CA-28010,ca_sco_cities,1202,Napa,07,exact name,registry name: City of Napa Fire Department
+CA-37110,ca_sco_cities,1201,National City,07,exact name,registry name: National City Fire Department
+CA-29040,ca_sco_cities,1199,Nevada City,07,exact name,registry name: Nevada City Fire Department
+CA-01070,ca_sco_cities,1198,Newark,07,exact name,registry name: Newark Fire Department
+CA-50080,ca_sco_cities,1197,Newman,07,exact name,registry name: City of Newman Fire Department
+CA-30055,ca_sco_cities,1196,Newport Beach,07,exact name,registry name: Newport Beach Fire Department
+CA-33060,ca_sco_cities,1195,Norco,07,exact name,registry name: City of Norco Fire Department
+CA-50085,ca_sco_cities,1192,Oakdale,07,exact name,registry name: Oakdale City Fire Department
+CA-01075,ca_sco_cities,1191,Oakland,07,exact name,registry name: Oakland Fire Department
+CA-37115,ca_sco_cities,1189,Oceanside,07,exact name,registry name: Oceanside Fire Department
+CA-36170,ca_sco_cities,1187,Ontario,07,exact name,registry name: Ontario Fire Department
+CA-30060,ca_sco_cities,1186,Orange,07,exact name,registry name: Orange Fire Department
+CA-04020,ca_sco_cities,1182,Oroville,07,exact name,registry name: Oroville Fire Department
+CA-56010,ca_sco_cities,1181,Oxnard,07,exact name,registry name: Oxnard Fire Department
+CA-27065,ca_sco_cities,1180,Pacific Grove,07,exact name,registry name: Pacific Grove Fire Department
+CA-33065,ca_sco_cities,1177,Palm Springs,07,exact name,registry name: Palm Springs Fire Department
+CA-43060,ca_sco_cities,1175,Palo Alto,07,exact name,registry name: City of Palo Alto Fire Department
+CA-04030,ca_sco_cities,1173,Paradise,07,exact name,registry name: Paradise Fire Department
+CA-19145,ca_sco_cities,1170,Pasadena,07,exact name,registry name: Pasadena Fire Department
+CA-50130,ca_sco_cities,1169,Patterson,07,exact name,registry name: Patterson Fire Department
+CA-49115,ca_sco_cities,1167,Petaluma,07,exact name,registry name: Petaluma Fire Department
+CA-01090,ca_sco_cities,1165,Piedmont,07,exact name,registry name: Piedmont Fire Department
+CA-07075,ca_sco_cities,1164,Pinole,07,exact name,registry name: Pinole Fire Department
+CA-40055,ca_sco_cities,1163,Pismo Beach,07,exact name,registry name: City of Pismo Beach Fire Department
+CA-30070,ca_sco_cities,1161,Placentia,07,exact name,registry name: Placentia Fire Department
+CA-54035,ca_sco_cities,1153,Porterville,07,exact name,registry name: Porterville Fire Department
+CA-32040,ca_sco_cities,1152,Portola,07,manual,registry name: Portola Volunteer Fire Department
+CA-37125,ca_sco_cities,1150,Poway,07,exact name,registry name: Poway Fire Department
+CA-52020,ca_sco_cities,1144,Red Bluff,07,exact name,registry name: City of Red Bluff Fire Department
+CA-45055,ca_sco_cities,1143,Redding,07,exact name,registry name: Redding Fire Department
+CA-36180,ca_sco_cities,1142,Redlands,07,exact name,registry name: City of Redlands Fire Department
+CA-19155,ca_sco_cities,1141,Redondo Beach,07,exact name,registry name: Redondo Beach Fire Department
+CA-41070,ca_sco_cities,1140,Redwood City,07,exact name,registry name: Redwood City Fire Department
+CA-10080,ca_sco_cities,1139,Reedley,07,exact name,registry name: Reedley Fire Department
+CA-36185,ca_sco_cities,1138,Rialto,07,exact name,registry name: Rialto Fire Department
+CA-07095,ca_sco_cities,1137,Richmond,07,exact name,registry name: Richmond Fire Department
+CA-48040,ca_sco_cities,1134,Rio Vista,07,exact name,registry name: Rio Vista Fire Department
+CA-33075,ca_sco_cities,1131,Riverside,07,exact name,registry name: City of Riverside Fire Department
+CA-31080,ca_sco_cities,1130,Rocklin,07,exact name,registry name: City of Rocklin Fire Department
+CA-49140,ca_sco_cities,1129,Rohnert Park,07,manual,registry name: Rohnert Park Department of Public Safety (integrated police and fire)
+CA-31085,ca_sco_cities,1125,Roseville,07,exact name,registry name: City of Roseville Fire Department
+CA-34080,ca_sco_cities,1123,Sacramento,07,exact name,registry name: Sacramento Fire Department
+CA-27070,ca_sco_cities,1122,Salinas,07,exact name,registry name: Salinas Fire Department
+CA-41080,ca_sco_cities,1119,San Bruno,07,exact name,registry name: San Bruno Fire Department
+CA-56025,ca_sco_cities,1118,San Buenaventura,07,manual,San Buenaventura is the legal name of the City of Ventura; registry name: Ventura City Fire Department
+CA-37140,ca_sco_cities,1115,San Diego,07,exact name,registry name: City of San Diego Fire-Rescue Department
+CA-38005,ca_sco_cities,1112,San Francisco,07,exact name,registry name: San Francisco Fire Department
+CA-19165,ca_sco_cities,1111,San Gabriel,07,manual,registry name: San Gabriel Fire Deparetment
+CA-43070,ca_sco_cities,1108,San Jose,07,exact name,registry name: San Jose Fire Department
+CA-35035,ca_sco_cities,1107,San Juan Bautista,07,exact name,registry name: San Juan Bautista Fire Department
+CA-40060,ca_sco_cities,1104,San Luis Obispo,07,exact name,registry name: San Luis Obispo City Fire Department
+CA-37145,ca_sco_cities,1103,San Marcos,07,exact name,registry name: San Marcos Fire Department
+CA-19170,ca_sco_cities,1102,San Marino,07,exact name,registry name: San Marino Fire Department
+CA-21075,ca_sco_cities,1099,San Rafael,07,exact name,registry name: San Rafael Fire Department
+CA-10090,ca_sco_cities,1096,Sanger,07,exact name,registry name: Sanger Fire Department
+CA-30075,ca_sco_cities,1095,Santa Ana,07,exact name,registry name: Santa Ana Fire Department
+CA-42025,ca_sco_cities,1094,Santa Barbara,07,exact name,registry name: Santa Barbara City Fire Department
+CA-43090,ca_sco_cities,1093,Santa Clara,07,exact name,registry name: Santa Clara Fire Department
+CA-44055,ca_sco_cities,1091,Santa Cruz,07,exact name,registry name: Santa Cruz Fire Department
+CA-19175,ca_sco_cities,1090,Santa Fe Springs,07,exact name,registry name: Santa Fe Springs Fire Department
+CA-42040,ca_sco_cities,1089,Santa Maria,07,exact name,registry name: Santa Maria City Fire Department
+CA-19180,ca_sco_cities,1088,Santa Monica,07,exact name,registry name: Santa Monica Fire Department
+CA-49145,ca_sco_cities,1086,Santa Rosa,07,exact name,registry name: Santa Rosa Fire Department
+CA-37150,ca_sco_cities,1085,Santee,07,exact name,registry name: Santee Fire Department
+CA-27080,ca_sco_cities,1080,Seaside,07,exact name,registry name: City of Seaside Fire Department
+CA-49180,ca_sco_cities,1079,Sebastopol,07,exact name,registry name: Sebastopol Fire Department
+CA-10095,ca_sco_cities,1078,Selma,07,exact name,registry name: Selma Fire Department
+CA-19185,ca_sco_cities,1075,Sierra Madre,07,exact name,registry name: Sierra Madre Fire Department
+CA-37160,ca_sco_cities,1072,Solana Beach,07,exact name,registry name: Solana Beach Fire Department
+CA-27090,ca_sco_cities,1071,Soledad,07,exact name,registry name: City of Soledad Fire Department
+CA-55020,ca_sco_cities,1068,Sonora,07,exact name,registry name: City of Sonora Fire Department
+CA-09060,ca_sco_cities,1065,South Lake Tahoe,07,exact name,registry name: South Lake Tahoe Fire Rescue
+CA-19195,ca_sco_cities,1064,South Pasadena,07,exact name,registry name: South Pasadena Fire Department
+CA-41095,ca_sco_cities,1063,South San Francisco,07,exact name,registry name: South San Francisco Fire Department
+CA-28015,ca_sco_cities,1062,St. Helena,07,exact name,registry name: St. Helena Fire Department
+CA-39065,ca_sco_cities,1060,Stockton,07,exact name,registry name: Stockton Fire Department
+CA-48050,ca_sco_cities,1059,Suisun City,07,exact name,registry name: City of Suisun City Fire Department
+CA-43105,ca_sco_cities,1058,Sunnyvale,07,manual,registry name: City of Sunnyvale Department of Public Safety - Fire Division
+CA-18035,ca_sco_cities,1057,Susanville,07,exact name,registry name: Susanville Fire Department
+CA-15040,ca_sco_cities,1054,Tehachapi,07,exact name,registry name: Tehachapi City Fire Department
+CA-19200,ca_sco_cities,1048,Torrance,07,exact name,registry name: Torrance Fire Department
+CA-54040,ca_sco_cities,1044,Tulare,07,exact name,registry name: Tulare Fire Department
+CA-50110,ca_sco_cities,1042,Turlock,07,exact name,registry name: Turlock Fire and Emergency Services
+CA-23075,ca_sco_cities,1039,Ukiah,07,exact name,registry name: Ukiah Fire Department
+CA-01115,ca_sco_cities,1038,Union City,07,exact name,registry name: Union City Fire Department
+CA-48060,ca_sco_cities,1036,Vacaville,07,exact name,registry name: Vacaville Fire Department
+CA-48070,ca_sco_cities,1035,Vallejo,07,exact name,registry name: Vallejo Fire Department
+CA-19205,ca_sco_cities,1034,Vernon,07,exact name,registry name: City of Vernon Fire Department
+CA-36220,ca_sco_cities,1033,Victorville,07,exact name,registry name: Victorville Fire Department
+CA-54045,ca_sco_cities,1031,Visalia,07,exact name,registry name: Visalia Fire Department
+CA-37170,ca_sco_cities,1030,Vista,07,exact name,registry name: Vista Fire Department
+CA-44080,ca_sco_cities,1025,Watsonville,07,exact name,registry name: Watsonville Fire Department
+CA-47080,ca_sco_cities,1024,Weed,07,exact name,registry name: Weed City Fire Department
+CA-19210,ca_sco_cities,1023,West Covina,07,exact name,registry name: West Covina Fire Department
+CA-57065,ca_sco_cities,1021,West Sacramento,07,exact name,registry name: City of West Sacramento Fire Department
+CA-13060,ca_sco_cities,1018,Westmorland,07,exact name,registry name: Westmorland Fire Department
+CA-57070,ca_sco_cities,1010,Winters,07,exact name,registry name: Winters Fire Department
+CA-57075,ca_sco_cities,1008,Woodland,07,exact name,registry name: Woodland Fire Department
+CA-47085,ca_sco_cities,1004,Yreka,07,manual,registry name: Yreka Volunteer Fire Department
+CA-51040,ca_sco_cities,1003,Yuba City,07,exact name,registry name: Yuba City Fire Department
+CA-25005,ca_sco_districts,,Adin Fire Protection District,07,exact name,
+CA-01008,ca_sco_districts,,Alameda County Fire Department,07,exact name,
+CA-S-albion-little-river-fire-protection,ca_sco_districts,,Albion-Little River Fire Protection,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-37005,ca_sco_districts,,Alpine Fire Protection District,07,exact name,
+CA-31005,ca_sco_districts,,Alta Fire Protection District,07,exact name,
+CA-05005,ca_sco_districts,,Altaville-Melones Fire Protection District,07,exact name,
+CA-25015,ca_sco_districts,,Alturas Fire Protection District,07,manual,registry name: Alturas Rural Fire Protection District
+CA-03006,ca_sco_districts,,Amador County Fire Protection District,07,manual,registry name: Amador Fire Protection District
+CA-28020,ca_sco_districts,,American Canyon Fire Protection District,07,exact name,
+CA-45010,ca_sco_districts,,Anderson Fire Protection District,07,exact name,
+CA-26015,ca_sco_districts,,Antelope Fire Protection District,07,manual,registry name: Antelope Valley Fire District (Mono County)
+CA-36015,ca_sco_districts,,Apple Valley Fire Protection District,07,exact name,
+CA-44005,ca_sco_districts,,Aptos-La Selva Fire Protection Services,07,manual,registry name: Aptos/ La Selva Fire Protection District
+CA-06005,ca_sco_districts,,Arbuckle-College City Fire Protection District,07,exact name,
+CA-12140,ca_sco_districts,,Arcata Fire Protection District,07,exact name,
+CA-27005,ca_sco_districts,,Aromas Tri-County Fire Protection District,07,exact name,
+CA-11005,ca_sco_districts,,Artois Fire Protection District,07,exact name,
+CA-24005,ca_sco_districts,,Atwater Fire Protection,07,manual,dependent district that funds Atwater's fire service; City of Atwater's own fire line is not linked
+CA-10055,ca_sco_districts,,Bald Mountain Fire Protection District,07,manual,registry name: Bald Mountain Volunteer Fire Protection District
+CA-36035,ca_sco_districts,,Barstow Fire Protection District,07,exact name,
+CA-S-bayliss-fire-protection-district,ca_sco_districts,,Bayliss Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-06040,ca_sco_districts,,Bear Valley-Indian Valley Fire Protection District,07,manual,registry name: Bear Valley - Indian Valley Fire Department
+CA-32005,ca_sco_districts,,Beckwourth Fire Protection District,07,manual,registry name: Beckwourth Volunteer Fire Department
+CA-S-belmont-fire-protection-district,ca_sco_districts,,Belmont Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-S-belmont-san-carlos-fire-department,ca_sco_districts,,Belmont-San Carlos Fire Department,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-44015,ca_sco_districts,,Ben Lomond Fire Protection District,07,exact name,
+CA-36045,ca_sco_districts,,Big Bear Fire Authority,07,exact name,
+CA-S-big-bear-lake-fire-protection-district,ca_sco_districts,,Big Bear Lake Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-14005,ca_sco_districts,,Big Pine Fire Protection District,07,manual,registry name: Big Pine Fire Department
+CA-18010,ca_sco_districts,,Big Valley Fire Protection District,07,manual,registry name: Big Valley Fire Protection District/ Bieber Fire Department
+CA-S-bishop-fire-protection-district,ca_sco_districts,,Bishop Fire Protection District,07,manual,added to agencies_added.csv: rural district; the registry's Bishop Fire Department is the city's
+CA-12025,ca_sco_districts,,Blue Lake Fire Protection District,07,manual,the district runs the Blue Lake Volunteer Fire Department (the City of Blue Lake reports no fire spending)
+CA-49010,ca_sco_districts,,Bodega Bay Fire Protection District,07,exact name,
+CA-S-boggs-tract-fire-protection-district,ca_sco_districts,,Boggs Tract Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-21010,ca_sco_districts,,Bolinas Fire Protection District,07,exact name,
+CA-37010,ca_sco_districts,,Bonita-Sunnyside Fire Protection District,07,exact name,
+CA-37015,ca_sco_districts,,Borrego Springs Fire Protection District,07,exact name,
+CA-44020,ca_sco_districts,,Boulder Creek Fire Protection District,07,exact name,
+CA-44060,ca_sco_districts,,Branciforte Fire Protection District,07,exact name,
+CA-S-briceland-fire-protection-district,ca_sco_districts,,Briceland Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-26010,ca_sco_districts,,Bridgeport Fire Protection District,07,exact name,
+CA-12195,ca_sco_districts,,Bridgeville Fire Protection District,07,manual,registry name: Bridgeville Volunteer Fire Department
+CA-S-buckeye-fire-protection-district,ca_sco_districts,,Buckeye Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-50045,ca_sco_districts,,Burbank-Paradise Fire Protection District,07,manual,registry name: Burbank Paradise Fire District
+CA-45020,ca_sco_districts,,Burney Fire Protection District,07,exact name,
+CA-47045,ca_sco_districts,,Butte Valley Fire Protection,07,manual,registry name: Butte Valley Fire Protection District
+CA-27905,ca_sco_districts,,Cachagua Fire Protection District,07,exact name,
+CA-05066,ca_sco_districts,,Calaveras Consolidated Fire Protection District,07,exact name,
+CA-25020,ca_sco_districts,,Canby Fire Protection District,07,manual,registry name: Canby Volunteer Fire Department
+CA-S-capay-fire-protection-district,ca_sco_districts,,Capay Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-57010,ca_sco_districts,,Capay Valley Fire Protection District,07,exact name,
+CA-27010,ca_sco_districts,,Carmel Highlands Fire Protection District,07,exact name,
+CA-42005,ca_sco_districts,,Carpinteria - Summerland Fire Protection District,07,exact name,
+CA-45025,ca_sco_districts,,Castella Fire Protection District,07,exact name,
+CA-25025,ca_sco_districts,,Cedarville Fire Protection District,07,exact name,
+CA-05060,ca_sco_districts,,Central Calaveras Fire and Rescue Protection District,07,exact name,
+CA-41556,ca_sco_districts,,Central County Fire Department,07,exact name,
+CA-44065,ca_sco_districts,,Central Fire District of Santa Cruz County,07,exact name,
+CA-43080,ca_sco_districts,,Central Fire Protection District (Santa Clara),07,manual,"Santa Clara County Central Fire Protection District, the legal entity of the Santa Clara County Fire Department"
+CA-44065,ca_sco_districts,,Central Fire Protection District (Santa Cruz),07,manual,former name (FY2021) of Central Fire District of Santa Cruz County
+CA-S-central-marin-fire-authority,ca_sco_districts,,Central Marin Fire Authority,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-S-ceres-fire-protection-district,ca_sco_districts,,Ceres Fire Protection District,07,manual,added to agencies_added.csv: rural district; the registry's Ceres Fire Department is the city's
+CA-26012,ca_sco_districts,,Chalfant Valley Fire Department,07,exact name,
+CA-36058,ca_sco_districts,,Chino Valley Independent Fire District,07,exact name,
+CA-57020,ca_sco_districts,,Clarksburg Fire Protection District,07,exact name,
+CA-39020,ca_sco_districts,,Clements Fire Protection District,07,manual,registry name: Clements Rural Fire Protection District
+CA-49040,ca_sco_districts,,Cloverdale Fire Protection District,07,exact name,
+CA-33020,ca_sco_districts,,Coachella Fire Protection District,07,manual,city-dependent district that funds the city's fire service; City of Coachella's own fire line is not linked
+CA-41045,ca_sco_districts,,Coastside Fire Protection District,07,manual,"registry name: Half Moon Bay Fire Protection District (same district: Coastside FPD was formed in 2007 from Half Moon Bay FPD and Point Montara FPD, CA-41060; the registry row lists Coastside's website hmbfire.org)"
+CA-53568,ca_sco_districts,,Coffee Creek Fire Protection District,07,manual,registry name: Coffee Creek Volunteer Fire Department
+CA-39075,ca_sco_districts,,Collegeville Fire Protection District,07,exact name,
+CA-41030,ca_sco_districts,,Colma Fire Protection District,07,exact name,
+CA-55005,ca_sco_districts,,Columbia Fire Protection District,07,exact name,
+CA-19110,ca_sco_districts,,Consolidated Fire Protection District,07,manual,"Consolidated Fire Protection District of Los Angeles County, the legal entity of the Los Angeles County Fire Department"
+CA-07090,ca_sco_districts,,Contra Costa Fire Protection District,07,manual,registry name: Contra Costa County Fire Protection District
+CA-47054,ca_sco_districts,,Copco Lake Fire Protection District,07,manual,registry name: Copco Lake Fire Department
+CA-05020,ca_sco_districts,,Copperopolis Fire Protection District,07,exact name,
+CA-48055,ca_sco_districts,,Cordelia Fire Protection District,07,exact name,
+CA-45035,ca_sco_districts,,Cottonwood Fire Protection District,07,exact name,
+CA-34015,ca_sco_districts,,Courtland Fire Protection District,07,exact name,
+CA-23020,ca_sco_districts,,Covelo Fire Protection District,07,exact name,
+CA-08010,ca_sco_districts,,Crescent Fire Protection District,07,exact name,
+CA-S-crescent-mills-fire-protection-district,ca_sco_districts,,Crescent Mills Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-07030,ca_sco_districts,,Crockett-Carquinez Fire Protection District,07,manual,registry name: Crockett-Carquinez Fire Department
+CA-27024,ca_sco_districts,,Cypress Fire Protection District,07,exact name,
+CA-25030,ca_sco_districts,,Davis Creek Fire Protection District,07,manual,registry name: Davis Creek Volunteer Fire Department
+CA-37148,ca_sco_districts,,Deer Springs Fire Protection District,07,exact name,
+CA-34130,ca_sco_districts,,Delta Fire Protection District (Sacramento),07,manual,"registry name: Delta Fire Protection District (registry county Solano, FDID county code 34 = Sacramento)"
+CA-50015,ca_sco_districts,,Denair Fire Protection District,07,manual,registry name: Denair Volunteer Fire Department
+CA-09005,ca_sco_districts,,Diamond Springs/El Dorado Fire Protection District,07,exact name,
+CA-S-dixon-fire-protection-district,ca_sco_districts,,Dixon Fire Protection District,07,manual,added to agencies_added.csv: rural district; the registry's Dixon Fire Department is the city's
+CA-58003,ca_sco_districts,,Dobbins Oregon House Fire Protection District,07,exact name,
+CA-46005,ca_sco_districts,,Downieville Fire Protection District,07,exact name,
+CA-18015,ca_sco_districts,,Doyle Fire Protection District,07,exact name,
+CA-57040,ca_sco_districts,,Dunnigan Fire Protection District,07,exact name,
+CA-S-dunsmuir-fire-protection-district,ca_sco_districts,,Dunsmuir Fire Protection District,07,manual,added to agencies_added.csv: rural district; the registry's Dunsmuir Fire Department is the city's
+CA-S-eagleville-fire-protection-district,ca_sco_districts,,Eagleville Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-07015,ca_sco_districts,,East Contra Costa Fire Protection District,07,exact name,
+CA-S-east-davis-fire-protection-district,ca_sco_districts,,East Davis Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-S-east-vallejo-fire-protection-district,ca_sco_districts,,East Vallejo Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-32075,ca_sco_districts,,Eastern Plumas Rural Fire Protection District,07,exact name,
+CA-S-eastside-fire-protection-district,ca_sco_districts,,Eastside Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-05015,ca_sco_districts,,Ebbetts Pass Fire Protection District,07,manual,registry name: Ebbetts Pass Fire District
+CA-09012,ca_sco_districts,,El Dorado County Fire Protection District,07,exact name,
+CA-04025,ca_sco_districts,,El Medio Fire Protection District,07,manual,registry name: El Medio Fire Department
+CA-11020,ca_sco_districts,,Elk Creek Fire Protection District,07,exact name,
+CA-57060,ca_sco_districts,,Elkhorn Fire Protection District,07,exact name,
+CA-39025,ca_sco_districts,,Escalon Consolidated Fire Protection District,07,manual,registry name: Escalon Consolidated Fire District
+CA-57045,ca_sco_districts,,Esparto Fire Protection District,07,exact name,
+CA-S-fairview-fire-protection-district,ca_sco_districts,,Fairview Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-45040,ca_sco_districts,,Fall River Mills Fire Protection District,07,manual,registry name: Fall River Mills Fire Department
+CA-S-fall-river-valley-fire-protection-district,ca_sco_districts,,Fall River Valley Fire Protection District,07,manual,added to agencies_added.csv: formed from Fall River Mills FPD and McArthur FPD (FY2023 on)
+CA-39030,ca_sco_districts,,Farmington Fire Protection District,07,manual,registry name: Farmington Fire Department
+CA-44035,ca_sco_districts,,Felton Fire Protection District,07,exact name,
+CA-12055,ca_sco_districts,,Ferndale Fire Protection District,07,exact name,
+CA-10035,ca_sco_districts,,Fig Garden Fire Protection District,07,exact name,
+CA-45086,ca_sco_districts,,Fire Protection Service Area No. 1,07,manual,"Shasta County Service Area No. 1 - Fire Protection, which funds the Shasta County Fire Department"
+CA-40005,ca_sco_districts,,Five Cities Fire Authority,07,exact name,
+CA-S-fontana-fire-protection-district,ca_sco_districts,,Fontana Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-58004,ca_sco_districts,,Foothill Fire Protection District (Yuba),07,manual,registry name: Foothill Fire Protection District
+CA-31040,ca_sco_districts,,Foresthill Fire Protection District,07,exact name,
+CA-49050,ca_sco_districts,,Forestville Fire Protection District,07,exact name,
+CA-23030,ca_sco_districts,,Fort Bragg Fire Protection Authority,07,manual,JPA of the City of Fort Bragg and Fort Bragg Rural FPD that runs the Fort Bragg Fire Department; the city's own fire line is not linked
+CA-S-fort-bragg-rural-fire-protection-district,ca_sco_districts,,Fort Bragg Rural Fire Protection District,07,manual,added to agencies_added.csv: member district of the Fort Bragg Fire Protection Authority (CA-23030)
+CA-08015,ca_sco_districts,,Fort Dick Fire Protection District,07,exact name,
+CA-12060,ca_sco_districts,,Fortuna Fire Protection District,07,manual,the district runs the Fortuna Volunteer Fire Department (the City of Fortuna reports no fire spending)
+CA-39085,ca_sco_districts,,French Camp-McKinley Fire Protection District,07,manual,registry name: French Camp-McKinley Fire District
+CA-10032,ca_sco_districts,,Fresno County Fire Protection District,07,exact name,
+CA-S-fruitland-ridge-fire-protection-district,ca_sco_districts,,Fruitland Ridge Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-S-fort-bidwell-fire-protection-district,ca_sco_districts,,Ft. Bidwell Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-12065,ca_sco_districts,,Garberville Fire Protection District,07,exact name,
+CA-09100,ca_sco_districts,,Garden Valley Fire Protection District,07,exact name,
+CA-08020,ca_sco_districts,,Gasquet Fire Protection District,07,manual,registry name: Gasquet Fire Department
+CA-47030,ca_sco_districts,,Gazelle Fire Protection District,07,exact name,
+CA-09020,ca_sco_districts,,Georgetown Fire Protection District,07,manual,registry name: Georgetown Fire Department
+CA-11025,ca_sco_districts,,Glenn-Codora Fire Protection District,07,exact name,
+CA-S-glenn-colusa-fire-protection-district,ca_sco_districts,,Glenn-Colusa Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-49062,ca_sco_districts,,Gold Ridge Fire Protection District,07,exact name,
+CA-27035,ca_sco_districts,,Gonzales Fire Protection District,07,manual,the district runs the Gonzales Volunteer Fire Department (City of Gonzales fire line equals the district's and is not linked)
+CA-32020,ca_sco_districts,,Graeagle Fire Protection District,07,exact name,
+CA-49065,ca_sco_districts,,Graton Fire Protection District,07,exact name,
+CA-S-greenfield-fire-protection-district,ca_sco_districts,,Greenfield Fire Protection District,07,manual,added to agencies_added.csv: rural district; the registry's Greenfield Fire Department is the city's
+CA-47095,ca_sco_districts,,Grenada Fire Protection District,07,exact name,
+CA-32065,ca_sco_districts,,Hamilton Branch Fire Protection District,07,exact name,
+CA-11060,ca_sco_districts,,Hamilton City Fire Protection District,07,exact name,
+CA-S-happy-camp-fire-protection-district,ca_sco_districts,,Happy Camp Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-45015,ca_sco_districts,,Happy Valley Fire Protection District,07,exact name,
+CA-53005,ca_sco_districts,,Hayfork Fire Protection District,07,manual,registry name: Hayfork Volunteer Fire Department
+CA-34050,ca_sco_districts,,Herald Fire Protection District,07,exact name,
+CA-S-hesperia-fire-protection-district,ca_sco_districts,,Hesperia Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-29042,ca_sco_districts,,Higgins Area Fire Protection District,07,exact name,
+CA-23100,ca_sco_districts,,Hopland Fire Protection District,07,manual,registry name: Hopland Volunteer Fire Department
+CA-47040,ca_sco_districts,,Hornbrook Fire Protection District,07,manual,registry name: Hornbrook Volunteer Fire District
+CA-50030,ca_sco_districts,,Hughson Fire Protection District,07,exact name,
+CA-12045,ca_sco_districts,,Humboldt Bay Fire,07,manual,registry name: Humboldt Bay Fire Authority
+CA-12050,ca_sco_districts,,Humboldt Fire Protection District No. 1,07,manual,registry name: Humboldt No. 1 Fire Protection District
+CA-33045,ca_sco_districts,,Idyllwild Fire Protection District,07,exact name,
+CA-14025,ca_sco_districts,,Independence Fire Protection District,07,exact name,
+CA-03015,ca_sco_districts,,Jackson Valley Fire Protection District,07,exact name,
+CA-55010,ca_sco_districts,,Jamestown Fire Protection District,07,exact name,
+CA-S-janesville-fire-protection-district,ca_sco_districts,,Janesville Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-53025,ca_sco_districts,,Junction City Fire Protection District,07,manual,registry name: Junction City Volunteer Fire Department
+CA-26020,ca_sco_districts,,June Lake Fire Protection District,07,exact name,
+CA-11055,ca_sco_districts,,Kanawha Fire Protection District,07,exact name,
+CA-17020,ca_sco_districts,,Kelseyville Fire Protection District,07,exact name,
+CA-S-kensington-fire-protection-district,ca_sco_districts,,Kensington Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-21030,ca_sco_districts,,Kentfield Fire Protection District,07,exact name,
+CA-49090,ca_sco_districts,,Kenwood Fire Protection District,07,exact name,
+CA-50150,ca_sco_districts,,Keyes Fire Protection District,07,exact name,
+CA-S-klamath-fire-protection-district-no-5,ca_sco_districts,,Klamath Fire Protection District No. 5,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-12067,ca_sco_districts,,Kneeland Fire Protection District,07,manual,registry name: Kneeland Volunteer Fire Department
+CA-57050,ca_sco_districts,,Knights Landing Fire Protection District,07,manual,registry name: Knights Landing Fire District
+CA-32030,ca_sco_districts,,La Porte Fire Protection District,07,manual,"registry name: LaPorte Volunteer Fire Department, the district's department"
+CA-S-lake-city-fire-protection-district,ca_sco_districts,,Lake City Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-17005,ca_sco_districts,,Lake County Fire Protection District,07,exact name,
+CA-18070,ca_sco_districts,,Lake Forest Fire Protection District,07,exact name,
+CA-17060,ca_sco_districts,,Lake Pillsbury Fire Protection District,07,exact name,
+CA-09065,ca_sco_districts,,Lake Valley Fire Protection District,07,exact name,
+CA-17025,ca_sco_districts,,Lakeport Fire Protection District,07,exact name,
+CA-37090,ca_sco_districts,,Lakeside Fire Protection District,07,exact name,
+CA-39055,ca_sco_districts,,Lathrop-Manteca Fire Protection District,07,manual,registry name: Lathrop-Manteca Fire District
+CA-26025,ca_sco_districts,,Lee Vining Fire Protection District,07,manual,registry name: Lee Vining Volunteer Fire Department
+CA-23115,ca_sco_districts,,Leggett Valley Fire Protection District,07,manual,registry name: Leggett Valley Fire And Rescue
+CA-39010,ca_sco_districts,,Liberty Fire Protection District,07,manual,registry name: Liberty Rural County Fire Protection District
+CA-25050,ca_sco_districts,,Likely Fire Protection District,07,manual,registry name: Likely Volunteer Fire Protection District
+CA-S-lincoln-fire-protection-district,ca_sco_districts,,Lincoln Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-58005,ca_sco_districts,,Linda Fire Protection District,07,exact name,
+CA-39040,ca_sco_districts,,Linden-Peters Fire Protection District,07,manual,registry name: Linden-Peters Rural County Fire Protection District
+CA-23090,ca_sco_districts,,Little Lake Fire Protection District,07,exact name,
+CA-S-livermore-pleasanton-fire-department-joint-powers-authority,ca_sco_districts,,Livermore-Pleasanton Fire Department Joint Powers Authority,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-03022,ca_sco_districts,,Lockwood Fire Protection District,07,exact name,
+CA-S-loleta-fire-protection-district,ca_sco_districts,,Loleta Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-14035,ca_sco_districts,,Lone Pine Fire Protection District,07,manual,registry name: Lone Pine Fire Department
+CA-23045,ca_sco_districts,,Long Valley Fire Protection District (Mendocino),07,manual,registry name: Long Valley Fire Protection District
+CA-26035,ca_sco_districts,,Long Valley Fire Protection District (Mono),07,manual,registry name: Long Valley Fire Protection District
+CA-S-lookout-fire-protection-district,ca_sco_districts,,Lookout Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-S-los-altos-hills-county-fire-district,ca_sco_districts,,Los Altos Hills County Fire District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-S-lower-sweetwater-fire-protection-district,ca_sco_districts,,Lower Sweetwater Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-18025,ca_sco_districts,,Madeline Fire Protection District,07,exact name,
+CA-57055,ca_sco_districts,,Madison Fire Protection District,07,exact name,
+CA-26030,ca_sco_districts,,Mammoth Lakes Fire Protection District,07,exact name,
+CA-06030,ca_sco_districts,,Maxwell Fire Protection District,07,exact name,
+CA-47048,ca_sco_districts,,Mayten Fire Protection District,07,manual,registry name: Mayten Fire District
+CA-45975,ca_sco_districts,,McArthur Fire Protection District,07,manual,registry name: McArthur Volunteer Fire Department
+CA-32035,ca_sco_districts,,Meadow Valley Fire Protection District,07,manual,registry name: Meadow Valley Fire Department
+CA-S-meeks-bay-fire-protection-district,ca_sco_districts,,Meeks Bay Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-23050,ca_sco_districts,,Mendocino Fire Protection District,07,manual,registry name: Mendocino Volunteer Fire Department
+CA-41050,ca_sco_districts,,Menlo Park Fire Protection District,07,exact name,
+CA-S-meridian-fire-protection-district,ca_sco_districts,,Meridian Fire Protection,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-S-meridian-fire-protection-district,ca_sco_districts,,Meridian Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-55015,ca_sco_districts,,Mi-Wuk-Sugar Pine Fire Protection District of Tuolumne County,07,manual,registry name: Mi-Wuk Sugar Pine Fire Protection District
+CA-18075,ca_sco_districts,,Milford Fire Protection District,07,manual,registry name: Milford Fire District
+CA-45935,ca_sco_districts,,Millville Fire Protection District,07,exact name,
+CA-27095,ca_sco_districts,,Mission-Soledad Fire Protection District,07,manual,registry name: Mission Soledad Rural Fire Protection District
+CA-S-modesto-ceres-fire-protection-agency,ca_sco_districts,,Modesto Ceres Fire Protection Agency,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-05025,ca_sco_districts,,Mokelumne Hill Fire Protection District,07,exact name,
+CA-39125,ca_sco_districts,,Mokelumne Rural Fire Protection District,07,manual,registry name: Mokelumne Rural Fire District
+CA-S-mono-city-fire-protection-district,ca_sco_districts,,Mono City Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-S-montague-fire-protection-district,ca_sco_districts,,Montague Fire Protection District,07,manual,added to agencies_added.csv: rural district; the registry's Montague Fire Department is the city's
+CA-S-monte-rio-fire-protection-district,ca_sco_districts,,Monte Rio Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-42030,ca_sco_districts,,Montecito Fire Protection District,07,exact name,
+CA-27075,ca_sco_districts,,Monterey County Regional Fire Protection District,07,manual,registry name: Monterey County Regional FIre District
+CA-39095,ca_sco_districts,,Montezuma Fire Protection District (San Joaquin),07,manual,registry name: Montezuma Fire Protection District
+CA-48090,ca_sco_districts,,Montezuma Fire Protection District (Solano),07,manual,registry name: Montezuma Fire Protection District
+CA-07060,ca_sco_districts,,Moraga/Orinda Fire Protection District,07,exact name,
+CA-09026,ca_sco_districts,,Mosquito Fire Protection District,07,exact name,
+CA-50115,ca_sco_districts,,Mountain View Fire Protection District,07,exact name,
+CA-47065,ca_sco_districts,,Mt. Shasta Fire Protection District,07,manual,registry name: Mount Shasta Fire Protection District
+CA-05030,ca_sco_districts,,Murphys Fire Protection District,07,exact name,
+CA-33055,ca_sco_districts,,Murrieta Fire Protection District,07,manual,city-dependent district that runs the city's fire department; City of Murrieta's own fire line is not linked
+CA-S-myers-fire-protection-district,ca_sco_districts,,Myers Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-S-natomas-fire-protection-district,ca_sco_districts,,Natomas Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-29015,ca_sco_districts,,Nevada County Consolidated Fire District,07,exact name,
+CA-S-nevada-county-fire-agency,ca_sco_districts,,Nevada County Fire Agency,07,manual,added to agencies_added.csv: JPA; not the Nevada County Consolidated Fire District
+CA-31066,ca_sco_districts,,Newcastle Fire Protection District,07,exact name,
+CA-S-no-mans-land-fire-protection-district,ca_sco_districts,,No-Mans Land Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-10040,ca_sco_districts,,North Central Fire Protection District,07,exact name,
+CA-27025,ca_sco_districts,,North County Fire Protection District (Monterey),07,manual,registry name: North County Fire Protection District of Monterey County
+CA-37075,ca_sco_districts,,North County Fire Protection District (San Diego),07,manual,registry name: North County Fire Protection District
+CA-29050,ca_sco_districts,,North San Juan Fire Protection District,07,exact name,
+CA-S-north-sonoma-coast-fire-protection-district,ca_sco_districts,,North Sonoma Coast Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-31044,ca_sco_districts,,North Tahoe Fire Protection District,07,exact name,
+CA-49055,ca_sco_districts,,Northern Sonoma County Fire Protection District,07,exact name,
+CA-17055,ca_sco_districts,,Northshore Fire Protection District,07,exact name,
+CA-21055,ca_sco_districts,,Novato Fire Protection District,07,exact name,
+CA-S-oakdale-fire-protection-district,ca_sco_districts,,Oakdale Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-29025,ca_sco_districts,,Ophir Hill Fire Protection District,07,exact name,
+CA-30065,ca_sco_districts,,Orange County Fire Authority,07,exact name,
+CA-10065,ca_sco_districts,,Orange Cove Fire Protection District,07,exact name,
+CA-11035,ca_sco_districts,,Ord Fire Protection District,07,exact name,
+CA-S-orland-fire-protection-district,ca_sco_districts,,Orland Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-S-pacific-fruitridge-fire-protection-district,ca_sco_districts,,Pacific Fruitridge Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-44045,ca_sco_districts,,Pajaro Valley Fire Protection District,07,exact name,
+CA-26042,ca_sco_districts,,Paradise Fire Protection District,07,exact name,
+CA-29030,ca_sco_districts,,Peardale-Chicago Park Fire Protection District,07,exact name,
+CA-32070,ca_sco_districts,,Peninsula Fire Protection District,07,exact name,
+CA-29065,ca_sco_districts,,Penn Valley Fire Protection District,07,exact name,
+CA-31075,ca_sco_districts,,Penryn Fire Protection District,07,exact name,
+CA-12090,ca_sco_districts,,Petrolia Fire Protection District,07,manual,registry name: Petrolia Volunteer Fire Department
+CA-23055,ca_sco_districts,,Piercy Fire Protection District,07,exact name,
+CA-09090,ca_sco_districts,,Pioneer Fire Protection District,07,exact name,
+CA-31060,ca_sco_districts,,Placer Hills Fire Protection District,07,exact name,
+CA-S-plumas-brophy-fire-protection-district,ca_sco_districts,,Plumas Brophy Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-S-prattville-almanor-fire-protection-district,ca_sco_districts,,Prattville-Almanor Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-06035,ca_sco_districts,,Princeton Fire Protection District,07,manual,registry name: Princeton Volunteer Fire Department
+CA-32050,ca_sco_districts,,Quincy Fire Protection District,07,exact name,
+CA-49110,ca_sco_districts,,Rancho Adobe Fire Protection District,07,exact name,
+CA-36010,ca_sco_districts,,Rancho Cucamonga Fire Protection,07,manual,registry name: Rancho Cucamonga Fire Protection District
+CA-36010,ca_sco_districts,,Rancho Cucamonga Fire Protection District,07,exact name,
+CA-37135,ca_sco_districts,,Rancho Santa Fe Fire Protection District,07,exact name,
+CA-12095,ca_sco_districts,,Redway Fire Protection District,07,exact name,
+CA-S-redwood-coast-fire-protection-district,ca_sco_districts,,Redwood Coast Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-23070,ca_sco_districts,,Redwood Valley - Calpella Fire District,07,exact name,
+CA-S-regional-fire-protection-authority,ca_sco_districts,,Regional Fire Protection Authority,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-09110,ca_sco_districts,,Rescue Fire Protection District,07,exact name,
+CA-12100,ca_sco_districts,,Rio Dell Fire Protection District,07,exact name,
+CA-39060,ca_sco_districts,,Ripon Consolidated Fire Protection District,07,manual,registry name: Ripon Fire District
+CA-34135,ca_sco_districts,,River Delta Fire District,07,exact name,
+CA-07100,ca_sco_districts,,Rodeo-Hercules Fire Protection District,07,exact name,
+CA-21065,ca_sco_districts,,Ross Valley Fire Department,07,exact name,
+CA-29055,ca_sco_districts,,Rough and Ready Fire Protection District,07,exact name,
+CA-34090,ca_sco_districts,,Sacramento Metropolitan Fire District,07,exact name,
+CA-06020,ca_sco_districts,,Sacramento River Fire District,07,manual,registry name: Sacramento River Fire Protection District of Colusa County
+CA-50060,ca_sco_districts,,Salida Fire Protection District,07,exact name,
+CA-12110,ca_sco_districts,,Samoa Fire Protection District,07,manual,registry name: Samoa Peninsula Fire District
+CA-05035,ca_sco_districts,,San Andreas Fire Protection District,07,exact name,
+CA-36193,ca_sco_districts,,San Bernardino County Fire Protection District,07,exact name,
+CA-37047,ca_sco_districts,,San Diego County Fire Protection District,07,manual,registry name: San Diego County Fire Authority (reorganized as the county fire protection district)
+CA-S-san-mateo-consolidated-fire-department,ca_sco_districts,,San Mateo Consolidated Fire Department,07,manual,"added to agencies_added.csv: JPA department of San Mateo, Foster City and Belmont since 2019; the registry still lists San Mateo Fire Department (CA-41090) and Foster City Fire Department separately"
+CA-37165,ca_sco_districts,,San Miguel Consolidated Fire Protection District,07,exact name,
+CA-07035,ca_sco_districts,,San Ramon Valley Fire Protection,07,manual,registry name: San Ramon Valley Fire Protection District
+CA-42035,ca_sco_districts,,Santa Barbara Fire Protection District,07,manual,county-dependent district that is the Santa Barbara County Fire Department
+CA-40070,ca_sco_districts,,Santa Margarita Fire Protection,07,manual,registry name: Santa Margarita Fire Department
+CA-43100,ca_sco_districts,,Saratoga Fire Protection District,07,manual,registry name: Saratoga Fire District
+CA-49205,ca_sco_districts,,Schell-Vista Fire Protection District,07,exact name,
+CA-47120,ca_sco_districts,,Scott Valley Fire Protection District,07,exact name,
+CA-44070,ca_sco_districts,,Scotts Valley Fire Protection District,07,exact name,
+CA-45030,ca_sco_districts,,Shasta Lake Fire Protection District,07,exact name,
+CA-46015,ca_sco_districts,,Sierra City Fire Protection District,07,manual,registry name: Sierra City Fire District
+CA-46020,ca_sco_districts,,Sierra County Fire Protection District No. 1,07,exact name,
+CA-32060,ca_sco_districts,,Sierra Valley Fire Protection District,07,manual,registry name: Sierra Valley Volunteer Fire Department
+CA-S-sleepy-hollow-fire-protection-district,ca_sco_districts,,Sleepy Hollow Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-58020,ca_sco_districts,,Smartville Fire Protection District,07,manual,registry name: Smartsville Fire Protection District
+CA-08050,ca_sco_districts,,Smith River Fire Protection District,07,exact name,
+CA-S-sonoma-county-fire-district,ca_sco_districts,,Sonoma County Fire District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-49200,ca_sco_districts,,Sonoma Valley Fire District,07,manual,"registry name: Sonoma Valley Fire & Rescue Authority, the predecessor JPA the district replaced"
+CA-23040,ca_sco_districts,,South Coast Fire Protection District,07,exact name,
+CA-17040,ca_sco_districts,,South Lake County Fire Protection District,07,manual,registry name: South Lake Couny Fire Protection District (spelled so in the registry)
+CA-27155,ca_sco_districts,,South Monterey County Fire Protection District,07,exact name,
+CA-31150,ca_sco_districts,,South Placer Fire Protection District,07,manual,registry name: South Placer Fire District
+CA-39120,ca_sco_districts,,South San Joaquin County Fire Authority,07,exact name,
+CA-43045,ca_sco_districts,,South Santa Clara County Fire District,07,exact name,
+CA-47115,ca_sco_districts,,South Yreka Fire Protection District,07,exact name,
+CA-14042,ca_sco_districts,,Southern Inyo Fire Protection District,07,exact name,
+CA-21045,ca_sco_districts,,Southern Marin Fire Protection District,07,exact name,
+CA-S-springlake-fire-protection-district,ca_sco_districts,,Springlake Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-18030,ca_sco_districts,,Standish-Litchfield Fire Protection District,07,exact name,
+CA-50075,ca_sco_districts,,Stanislaus Consolidated Fire Protection District,07,exact name,
+CA-21095,ca_sco_districts,,Stinson Beach Fire Protection District,07,exact name,
+CA-S-strathmore-fire-protection-district,ca_sco_districts,,Strathmore Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-55025,ca_sco_districts,,Strawberry Fire Protection District,07,manual,registry name: Strawberry Volunteer Fire Department
+CA-48030,ca_sco_districts,,Suisun Fire Protection District,07,exact name,
+CA-18040,ca_sco_districts,,Susan River Fire Protection District,07,exact name,
+CA-51025,ca_sco_districts,,Sutter Basin Fire Protection District,07,manual,registry name: Sutter Basin Fire District
+CA-03035,ca_sco_districts,,Sutter Creek Fire Protection District,07,exact name,
+CA-S-telegraph-ridge-fire-protection-district,ca_sco_districts,,Telegraph Ridge Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-39115,ca_sco_districts,,Thornton Fire Protection District,07,manual,registry name: Thornton Rural Fire District
+CA-21100,ca_sco_districts,,Tiburon Fire Protection District,07,exact name,
+CA-49225,ca_sco_districts,,Timber Cove Fire Protection District,07,exact name,
+CA-S-tracy-fire-protection-district,ca_sco_districts,,Tracy Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-29060,ca_sco_districts,,Truckee Fire Protection District,07,exact name,
+CA-47075,ca_sco_districts,,Tulelake Multi - County Fire Protection District,07,manual,registry name: Tulelake Multi County Fire District
+CA-55030,ca_sco_districts,,Tuolumne Fire Protection District,07,manual,registry name: Tuolumne Fire District
+CA-50120,ca_sco_districts,,Turlock Fire Protection District,07,manual,registry name: Turlock Rural Fire Protection District
+CA-S-tuxedo-country-club-fire-protection-district,ca_sco_districts,,Tuxedo-Country Club Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-S-ukiah-valley-fire-protection-district,ca_sco_districts,,Ukiah Valley Fire Protection District,07,manual,"added to agencies_added.csv: member district of the Ukiah Valley Fire Authority (CA-23080), not the authority itself"
+CA-48065,ca_sco_districts,,Vacaville Fire Protection District,07,exact name,
+CA-37175,ca_sco_districts,,Valley Center Fire Protection District,07,exact name,
+CA-56020,ca_sco_districts,,Ventura Fire Protection District,07,manual,registry name: Ventura County Fire Protection District
+CA-S-vista-fire-protection-district,ca_sco_districts,,Vista Fire Protection District,07,manual,added to agencies_added.csv: rural district served by the City of Vista under contract; the registry's Vista Fire Department is the city's
+CA-S-walnut-grove-fire-protection-district,ca_sco_districts,,Walnut Grove Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-39105,ca_sco_districts,,Waterloo-Morada Fire Protection District,07,manual,registry name: Waterloo Morada RFPD
+CA-53020,ca_sco_districts,,Weaverville Fire Protection District,07,manual,registry name: Weaverville Fire Department
+CA-57035,ca_sco_districts,,West Plainfield Fire Protection District,07,manual,registry name: West Plainfield Fire Department
+CA-05050,ca_sco_districts,,West Point Fire Protection District,07,manual,registry name: West Point Fire District
+CA-50100,ca_sco_districts,,West Stanislaus Fire Protection District,07,manual,registry name: West Stanislaus County Fire Protection District
+CA-50065,ca_sco_districts,,Westport Fire Protection District,07,exact name,
+CA-26045,ca_sco_districts,,Wheeler Crest Fire Protection District,07,exact name,
+CA-S-white-mountain-fire-protection,ca_sco_districts,,White Mountain Fire Protection,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-12130,ca_sco_districts,,Whitethorn Fire Protection District,07,exact name,
+CA-06045,ca_sco_districts,,Williams Fire Protection Authority,07,exact name,
+CA-S-williams-fire-protection-district,ca_sco_districts,,Williams Fire Protection District,07,manual,added to agencies_added.csv: member district of the Williams Fire Protection Authority (CA-06045)
+CA-12135,ca_sco_districts,,Willow Creek Fire Protection District,07,manual,registry name: Willow Creek Volunteer Fire Department
+CA-57085,ca_sco_districts,,Willow Oak Fire Protection District,07,exact name,
+CA-S-willow-ranch-fire-protection-district,ca_sco_districts,,Willow Ranch Fire Protection District,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-11065,ca_sco_districts,,Willows Fire Protection District,07,manual,registry name: Willows Rural Fire Protection District
+CA-34125,ca_sco_districts,,Wilton Fire Protection District,07,exact name,
+CA-S-winters-fire-protection-district,ca_sco_districts,,Winters Fire Protection District,07,manual,added to agencies_added.csv: rural district; the registry's Winters Fire Department is the city's
+CA-39130,ca_sco_districts,,Woodbridge Fire Protection District,07,exact name,
+CA-54065,ca_sco_districts,,Woodlake Fire Protection District,07,exact name,
+CA-50070,ca_sco_districts,,Woodland Ave Fire Protection District,07,manual,registry name: Woodland Avenue Fire Protection District
+CA-41105,ca_sco_districts,,Woodside Fire Protection District,07,exact name,
+CA-57090,ca_sco_districts,,Yolo Fire Protection District,07,exact name,
+CA-S-yuba-county-rural-fire-joint-powers-agency,ca_sco_districts,,Yuba County Rural Fire Joint Powers Agency,07,manual,added to agencies_added.csv: fire protection district the USFA registry does not list
+CA-57095,ca_sco_districts,,Zamora Fire Protection District,07,exact name,
+CA-44040,ca_sco_districts,,Zayante Fire Protection District,07,exact name,
+CA-00555,ca_scprs,,"Forestry and Fire Protection, Department of",07,exact name,"state fire agency (PRD open question), whole department"
+CA-38005,ca_sf,FIR,FIR Fire Department,07,department code,registry name: San Francisco Fire Department

@@ -1,0 +1,165 @@
+agency_id,source,source_entity_id,source_entity_name,fy_start,match_method,note
+ID-01236,id_lgr,218,North Ada County Fire & Rescue District,,exact name,
+ID-01246,id_lgr,196,Kuna Rural Fire District,,exact name,"serves Ada, Canyon"
+ID-01342,id_lgr,261,Star Fire Protection District,,exact name,"serves Ada, Canyon"
+ID-01344,id_lgr,160,Eagle Fire Protection District,,exact name,"registry county Idaho; serves Ada, Boise, Gem"
+ID-03334,id_lgr,189,Indian Valley Rural Fire District,,exact name,
+ID-03340,id_lgr,205,Meadows Valley Rural Fire District,,manual,"registry: Meadows Valley Fire Protection District; serves Adams, Idaho"
+ID-05323,id_lgr,219,North Bannock Fire District,,exact name,
+ID-05326,id_lgr,159,Downey Volunteer Fire District,,manual,registry: Downey Fire District
+ID-09302,id_lgr,173,Gateway Fire Protection District,,exact name,
+ID-09320,id_lgr,165,Emida Fire Protection District,,exact name,
+ID-09330,id_lgr,167,Fernwood Rural Fire Protection District,,exact name,"serves Benewah, Shoshone"
+ID-09335,id_lgr,264,Tensed Fire Protection District,,exact name,
+ID-09366,id_lgr,260,St. Maries Fire Protection District,,manual,"registry: Saint Maries Fire Protection District; serves Benewah, Kootenai"
+ID-11301,id_lgr,249,Shelley/Firth Fire Protection District,,manual,"registry: Shelley Firth Fire District; Shelley Firth Rural Fire Department (ID-11355) is a second registry row, not linked"
+ID-11303,id_lgr,129,Aberdeen Fire Protection,,manual,registry: Aberdeen/Springfield Fire District
+ID-13354,id_lgr,148,Carey Rural Fire Protection District,,exact name,registry county Clearwater
+ID-15301,id_lgr,235,Placerville Fire Protection District,,exact name,
+ID-15311,id_lgr,172,Garden Valley Fire Protection District,,exact name,
+ID-15324,id_lgr,152,Idaho City Fire Protection District,,exact name,
+ID-17319,id_lgr,279,West Priest Lake Fire District,,manual,registry: West Priest Lake Fire Department (West Priest Lake is not a city)
+ID-17333,id_lgr,228,Northside Fire District,,exact name,
+ID-17335,id_lgr,280,Westside Fire Protection District,,manual,registry: Westside Fire District
+ID-17337,id_lgr,278,West Pend Oreille Fire District,,exact name,
+ID-17339,id_lgr,226,North Of The Narrows Fire District,,exact name,
+ID-17341,id_lgr,243,Sagle Fire District,,exact name,
+ID-17344,id_lgr,153,Coolin Cavanaugh Bay Fire Protection District,,exact name,
+ID-17349,id_lgr,248,Schweitzer Fire District,,manual,registry: Schweitzer Fire/Rescue District
+ID-17360,id_lgr,245,Sam Owen Fire District,,exact name,
+ID-19340,id_lgr,181,Greater Swan Valley Fire District #2,,manual,registry: Greater Swan Valley Fire Protection District #2
+ID-21346,id_lgr,255,South Boundary Fire Protection District,,exact name,
+ID-21348,id_lgr,233,Paradise Valley Fire District,,exact name,
+ID-23341,id_lgr,200,Lost River Fire District,,manual,registry: Lost River Fire Protection District
+ID-25340,id_lgr,277,West Magic Fire District,,exact name,"serves Blaine, Camas"
+ID-27307,id_lgr,283,Wilder Rural Fire Protection District,,exact name,
+ID-27336,id_lgr,209,Middleton Rural Fire District,,exact name,"serves Canyon, Gem"
+ID-27338,id_lgr,234,Parma Rural Fire Protection District,,exact name,"serves Canyon, Payette"
+ID-27339,id_lgr,270,Upper Deer Flat Fire Protection District,,manual,registry: Upper Deer Flat Fire Department (Upper Deer Flat is not a city)
+ID-27344,id_lgr,206,Melba Rural Fire Protection District,,exact name,"serves Ada, Canyon"
+ID-31342,id_lgr,131,Albion Fire Protection District,,exact name,
+ID-35305,id_lgr,269,Twin Ridge Rural Fire District,,exact name,
+ID-35312,id_lgr,272,Weippe Rural Fire District,,exact name,
+ID-35338,id_lgr,262,Sunnyside Rural Fire District,,exact name,"serves Clearwater, Nez Perce"
+ID-35341,id_lgr,166,Evergreen Rural Fire District,,manual,"registry: Evergreen Rural Fire Department; serves Clearwater, Nez Perce"
+ID-37301,id_lgr,247,Sawtooth Valley Rural Fire District,,exact name,
+ID-37334,id_lgr,222,North Custer Rural Fire District,,manual,"registry: North Custer Rural Fire Department; serves Custer, Lemhi"
+ID-39334,id_lgr,213,Mountain Home Rural Fire Protection District,,manual,registry: Mountain Home Rural Fire District
+ID-39336,id_lgr,194,King Hill Rural Fire District,,exact name,
+ID-39338,id_lgr,135,Atlanta Rural Fire District,,manual,registry: Atlanta Rural Fire Protection District
+ID-41301,id_lgr,170,Franklin County Fire District,,manual,registry: Franklin County Fire Protection District
+ID-43334,id_lgr,190,Island Park Fire District,,exact name,
+ID-43336,id_lgr,224,"North Fremont Fire District, Inc",,exact name,
+ID-43338,id_lgr,257,South Fremont Fire Protection District,,manual,registry: South Fremont Volunteer Fire Department (South Fremont is not a city)
+ID-45334,id_lgr,174,Gem County Fire District #1,,manual,registry: Gem County Fire Protection District #1
+ID-45339,id_lgr,175,Gem County Fire Protection District #2,,exact name,
+ID-47323,id_lgr,183,Hagerman Fire Protection District,,exact name,"serves Gooding, Twin Falls"
+ID-47335,id_lgr,274,Wendell Rural Fire District,,exact name,registry county Idaho
+ID-47341,id_lgr,140,Bliss Rural Fire District,,manual,"registry: Bliss Fire District; serves Gooding, Twin Falls"
+ID-49335,id_lgr,154,Cottonwood Rural Fire Protection District,,manual,"registry: Cottonwood Rural Fire Department; Cottonwood Volunteer Fire Department (ID-49310) is the city department, not linked"
+ID-49362,id_lgr,185,Harpster Fire Protection District,,exact name,
+ID-51334,id_lgr,151,Central Fire District,,exact name,"serves Bonneville, Jefferson, Madison"
+ID-53353,id_lgr,169,First Segregation Fire Protection District,,manual,registry: First Segregation Fire District
+ID-55234,id_lgr,195,Kootenai County Fire & Rescue,,exact name,
+ID-55336,id_lgr,287,Worley Fire Protection District,,exact name,
+ID-55338,id_lgr,258,Spirit Lake Fire Protection District,,exact name,"serves Bonner, Kootenai"
+ID-55342,id_lgr,227,Northern Lakes Fire Protection District,,exact name,
+ID-55346,id_lgr,186,Hauser Lake Fire Protection District,,exact name,
+ID-55352,id_lgr,266,Timberlake Fire Protection District,,exact name,"serves Bonner, Kootenai"
+ID-55354,id_lgr,208,Mica Kidd Island Fire Protection District,,exact name,
+ID-55360,id_lgr,162,East Side Fire Protection District,,exact name,
+ID-57309,id_lgr,143,Bovill Fire Protection District,,exact name,
+ID-57338,id_lgr,176,Genesee Rural Fire District,,exact name,"serves Latah, Nez Perce"
+ID-57342,id_lgr,156,Deary Rural Fire District,,exact name,
+ID-59310,id_lgr,164,Elk Bend Fire Protection District,,exact name,
+ID-59315,id_lgr,198,Leadore Volunteer Fire Department,,manual,registry: Leadore Community Volunteer Fire Department
+ID-59330,id_lgr,199,Lemhi County Fire Protection District,,manual,registry: Lemhi County Fire Protection District #1/ Fire Department
+ID-59333,id_lgr,223,North Fork Fire Protection District,,manual,registry: North Fork Fire Protection District 1
+ID-61335,id_lgr,193,Kamiah Fire Protection District,,exact name,"serves Idaho, Lewis"
+ID-63301,id_lgr,250,Shoshone City And Rural Fire District,,exact name,
+ID-63306,id_lgr,157,Dietrich Fire District,,exact name,
+ID-67334,id_lgr,275,West End Fire Protection District,,exact name,"serves Jerome, Minidoka"
+ID-67336,id_lgr,211,Minidoka County Fire Protection District,,exact name,"serves Blaine, Cassia, Minidoka"
+ID-69333,id_lgr,138,Big Canyon Rural Fire Department,,manual,"registry: Big Canyon Fire District; serves Clearwater, Nez Perce"
+ID-69345,id_lgr,281,Wheatland Fire Protection District,,exact name,
+ID-73334,id_lgr,187,Homedale Rural Fire Protection District,,exact name,"serves Canyon, Owyhee"
+ID-73336,id_lgr,202,Marsing Rural Fire District,,manual,"registry: Marsing Rural Fire Department; serves Canyon, Owyhee"
+ID-73338,id_lgr,178,Grand View Rural Fire Protection District,,exact name,"serves Elmore, Owyhee"
+ID-73340,id_lgr,144,Bruneau Fire Protection District,,manual,registry: Bruneau Fire District
+ID-73342,id_lgr,214,Murphy Reynolds Wilson Fire District,,exact name,
+ID-77306,id_lgr,242,Rockland Rural Fire District,,exact name,
+ID-79234,id_lgr,252,Shoshone County Fire District No. 2,,manual,"registry: Shoshone County Fire Protection District #2; serves Kootenai, Shoshone"
+ID-79236,id_lgr,253,Shoshone County Fire Protection District No. 1,,exact name,
+ID-79316,id_lgr,251,Shoshone County Fire District #3,,manual,registry: Shoshone County Fire Protection District #3
+ID-81334,id_lgr,265,Teton County Fire Protection District,,exact name,
+ID-83334,id_lgr,241,Rock Creek Rural Fire Protection District,,exact name,"serves Cassia, Twin Falls"
+ID-83340,id_lgr,150,Castleford Rural Fire Protection District,,manual,"registry: Castleford Rural Fire Department (registry county Idaho, likely an error; Castleford is in Twin Falls County)"
+ID-83349,id_lgr,244,Salmon Tract Rural Fire Protection District,,exact name,
+ID-85304,id_lgr,158,Donnelly Rural Fire Protection District,,exact name,
+ID-85334,id_lgr,149,Cascade Rural Fire Protection District,,exact name,
+ID-85339,id_lgr,203,Mccall Fire Protection District,,exact name,
+ID-87330,id_lgr,147,Cambridge Fire Protection District,,exact name,
+ID-87334,id_lgr,273,Weiser Area Rural Fire District,,exact name,
+ID-87336,id_lgr,210,Midvale Fire Protection District,,exact name,
+ID-S-ace-fire-district,id_lgr,130,Ace Fire District,,manual,not in the USFA registry; registry Ace Fire Protection Association (ID-31343) is an association; the district was formed in 2020
+ID-S-american-falls-rural-fire-protection-district,id_lgr,132,American Falls Rural Fire Protection District,,manual,not in the USFA registry; registry American Falls Fire Department (ID-77330) is the city department
+ID-S-arimo-fire-district,id_lgr,133,Arimo Fire District,,manual,not in the USFA registry; registry Arimo Fire Department (ID-05322) is the city department
+ID-S-arrow-junction-fire-protection-district,id_lgr,134,Arrow Junction Fire Protection District,,manual,not in the USFA registry
+ID-S-bailey-creek-fire-protection-district,id_lgr,136,Bailey Creek Fire Protection District,,manual,"not in the USFA registry; serves Bear Lake, Caribou"
+ID-S-bc-south-fire-district-protection-district,id_lgr,1387,BC South Fire District Protection District ,,manual,not in the USFA registry
+ID-S-bear-lake-county-fire-district,id_lgr,137,Bear Lake County Fire District,,manual,not in the USFA registry
+ID-S-blackfoot-snake-river-fire-protection-district,id_lgr,139,Blackfoot-Snake River Fire Protection District,,manual,not in the USFA registry; registry Blackfoot Fire Department (ID-11101) is the city department
+ID-S-bonneville-alpine-fire-district-4,id_lgr,142,Bonneville-Alpine Fire District 4,,manual,not in the USFA registry
+ID-S-bonneville-county-fire-district-1,id_lgr,141,Bonneville County Fire District #1,,manual,not in the USFA registry
+ID-S-buhl-rural-fire-protection-district,id_lgr,145,Buhl Rural Fire Protection District,,manual,not in the USFA registry; registry Buhl Fire Department (ID-83207) is the city department
+ID-S-caldwell-rural-fire-protection-district,id_lgr,146,Caldwell Rural Fire Protection District,,manual,not in the USFA registry; registry Caldwell Fire Department (ID-27211) is the city department
+ID-S-council-volunteer-fire-district,id_lgr,155,Council Volunteer Fire District,,manual,not in the USFA registry; registry Council Valley Volunteer Fire Department (ID-03320) may be the same; not clear
+ID-S-east-priest-lake-fire-protection-district,id_lgr,161,East Priest Lake Fire Protection District,,manual,not in the USFA registry
+ID-S-eastern-power-county-fire-district,id_lgr,163,Eastern Power County Fire District,,manual,not in the USFA registry
+ID-S-filer-rural-fire-protection-district,id_lgr,168,Filer Rural Fire Protection District,,manual,not in the USFA registry; registry Filer Fire Department (ID-83338) is the city department
+ID-S-freedom-fire-district,id_lgr,171,Freedom Fire District,,manual,not in the USFA registry
+ID-S-gooding-rural-fire-district,id_lgr,177,Gooding Rural Fire District,,manual,not in the USFA registry; registry Gooding City Rural Fire Department (ID-47301) is a joint city-rural department; not clearly the district
+ID-S-grangemont-volunteer-fire-district,id_lgr,179,Grangemont Volunteer Fire District,,manual,not in the USFA registry
+ID-S-grangeville-rural-fire-district,id_lgr,180,Grangeville Rural Fire District,,manual,not in the USFA registry; registry Grangeville Fire Department (ID-49308) is the city department
+ID-S-greer-rural-fire-district,id_lgr,182,Greer Rural Fire District,,manual,not in the USFA registry
+ID-S-hamer-fire-district,id_lgr,184,Hamer Fire District,,manual,"not in the USFA registry; serves Fremont, Jefferson"
+ID-S-horseshoe-bend-fire-protection-district,id_lgr,188,Horseshoe Bend Fire Protection District,,manual,not in the USFA registry; registry Horseshoe Bend Fire Department (ID-15345) is the city department
+ID-S-jackson-creek-fire-protection-district,id_lgr,191,Jackson Creek Fire Protection District,,manual,not in the USFA registry
+ID-S-jerome-rural-fire-district-1,id_lgr,192,Jerome Rural Fire District #1,,manual,not in the USFA registry; registry Jerome City Fire Department (ID-53201) is the city department
+ID-S-ketchum-fire-district,id_lgr,1385,Ketchum Fire District,,manual,not in the USFA registry; registry Ketchum Fire Department (ID-13203) is the city department
+ID-S-lava-rural-fire-district,id_lgr,197,Lava Rural Fire District,,manual,not in the USFA registry; registry Lava Hot Springs Volunteer Fire Department (ID-05329) is the city department
+ID-S-madison-county-fire-protection-district,id_lgr,201,Madison County Fire Protection District,,manual,"not in the USFA registry; registry Madison Fire Department (ID-65234) is the Rexburg/Madison department, not clearly the district"
+ID-S-mccammon-rural-fire-district,id_lgr,204,McCammon Rural Fire District,,manual,not in the USFA registry; registry McCammon Fire Department (ID-05340) is the city department
+ID-S-meridian-rural-fire-protection-district,id_lgr,207,Meridian Rural Fire Protection District,,manual,not in the USFA registry; registry Meridian Fire Department (ID-01313) is the city department
+ID-S-moscow-rural-fire-district,id_lgr,212,Moscow Rural Fire District,,manual,not in the USFA registry; registry Moscow Fire Department (ID-57301) is the city department
+ID-S-nampa-fire-protection-district,id_lgr,215,Nampa Fire Protection District,,manual,not in the USFA registry; registry Nampa Fire Department (ID-27101) is the city department
+ID-S-new-plymouth-fire-protection-district,id_lgr,216,New Plymouth Fire Protection District,,manual,not in the USFA registry; registry New Plymouth Fire Department (ID-75303) is the city department
+ID-S-nezperce-rural-fire-protection-district,id_lgr,217,Nezperce Rural Fire Protection District,,manual,not in the USFA registry; registry City of Nezperce Fire Department (ID-61310) is the city department
+ID-S-north-blaine-county-fire-district,id_lgr,220,North Blaine County Fire District,,manual,not in the USFA registry
+ID-S-north-cassia-rural-fire-district,id_lgr,221,North Cassia Rural Fire District,,manual,not in the USFA registry
+ID-S-north-latah-fire-district,id_lgr,225,North Latah Fire District,,manual,not in the USFA registry
+ID-S-oakley-fire-protection-district,id_lgr,229,Oakley Fire Protection District,,manual,not in the USFA registry; registry Oakley Fire Department (ID-31340) is the city department
+ID-S-oasis-volunteer-fire-dept,id_lgr,230,"Oasis Volunteer Fire Dept., Inc.",,manual,not in the USFA registry
+ID-S-oneida-county-fire-district,id_lgr,231,Oneida County Fire District,,manual,not in the USFA registry
+ID-S-orofino-rural-fire-district,id_lgr,232,Orofino Rural Fire District,,manual,not in the USFA registry; registry Orofino Volunteer Fire Department (ID-35303) is the city department
+ID-S-pocatello-valley-fire-protection-district,id_lgr,236,Pocatello Valley Fire Protection District,,manual,not in the USFA registry; registry Pocatello Fire Department (ID-05101) is the city department
+ID-S-potlatch-rural-fire-district,id_lgr,237,Potlatch Rural Fire District,,manual,not in the USFA registry
+ID-S-raft-river-fire-protection-district,id_lgr,238,Raft River Fire Protection District,,manual,not in the USFA registry
+ID-S-richfield-fire-protection-district,id_lgr,239,Richfield Fire Protection District,,manual,not in the USFA registry
+ID-S-roberts-fire-district,id_lgr,240,Roberts Fire District,,manual,not in the USFA registry
+ID-S-sand-hollow-fire-protection-district,id_lgr,246,Sand Hollow Fire Protection District,,manual,not in the USFA registry
+ID-S-south-custer-rural-fire-district,id_lgr,256,South Custer Rural Fire District,,manual,not in the USFA registry
+ID-S-st-joe-valley-fire-district-4,id_lgr,259,St. Joe Valley Fire District #4,,manual,not in the USFA registry
+ID-S-sunset-fire-district,id_lgr,263,Sunset Fire District,,manual,not in the USFA registry
+ID-S-troy-rural-fire-district,id_lgr,267,Troy Rural Fire District,,manual,not in the USFA registry; registry Troy Fire Department (ID-57340) is the city department
+ID-S-twin-falls-rural-fire-protection-district,id_lgr,268,Twin Falls Rural Fire Protection District,,manual,not in the USFA registry; registry Twin Falls Fire Department (ID-83101) is the city department
+ID-S-upper-fords-creek-rural-fire-district,id_lgr,271,Upper Fords Creek Rural Fire District,,manual,not in the USFA registry
+ID-S-west-jefferson-fire-control,id_lgr,276,West Jefferson Fire Control,,manual,not in the USFA registry
+ID-S-whitney-fire-protection-district,id_lgr,282,Whitney Fire Protection District,,manual,not in the USFA registry
+ID-S-wilderness-ranch-fire-protection-district,id_lgr,284,Wilderness Ranch Fire Protection District,,manual,not in the USFA registry
+ID-S-winchester-rural-fire-district,id_lgr,285,Winchester Rural Fire District,,manual,not in the USFA registry; registry Winchester Volunteer Fire Department (ID-61308) is the city department
+ID-S-wood-river-fire-protection-district,id_lgr,286,Wood River Fire Protection District,,manual,not in the USFA registry
+ID-S-yellow-pine-fire-protection-district,id_lgr,288,Yellow Pine Fire Protection District,,manual,not in the USFA registry
+ID-S-yellow-pine-rural-fire-district,id_lgr,289,Yellow Pine Rural Fire District,,manual,not in the USFA registry
+ID-X-SMILEY-CREEK-FIRE-PROTECTION-DISTRICT-STANLEY,id_lgr,254,Smiley Creek Rural Fire Protection District,,manual,registry: Smiley Creek Fire Protection District (no FDID)
+ID-X-IDAHO-DEPARTMENT-OF-LANDS-FIRE-DEPARTMENT-COEUR-D-ALENE,id_state,320-07H,"Lands, Department of / FOREST AND RANGE FIRE PROTECTN",07,department code,"state fire agency (PRD open question); agency 320 function 07H, the statewide Forest and Range Fire Protection program incl. suppression deficiency warrants; registry row is IDL Fire Department (no FDID)"
