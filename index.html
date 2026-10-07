@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Utah Vendor Finances</title>
+<title>Fire Agency Vendor Finances</title>
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<meta name="description" content="Net payments from Utah fire districts, interlocal fire agencies and city, town and county fire departments to vendors, by category, FY2021 to FY2026. Source: Transparent Utah.">
+<meta name="description" content="Which vendors fire agencies pay, how many agencies use each, and how much they spend: fire districts and fire departments in Utah, Ohio, California, Idaho and Texas, by category and fiscal year, from public spending data.">
 <style>
 :root {
   color-scheme: light;
@@ -208,6 +208,16 @@ button.sort:hover { text-decoration: underline; }
 .empty { color: var(--muted); }
 .loading { color: var(--muted); }
 .loading .btn { margin-left: 6px; }
+/* Coverage tier of an agency: a small bordered label */
+.cov {
+  display: inline-block; font-size: .75rem; line-height: 1.35; font-weight: 400; color: var(--muted); white-space: nowrap;
+  border: 1px solid var(--rule-strong); border-radius: 3px; padding: 0 5px; vertical-align: 1px;
+}
+.cov1, .cov2 { color: var(--fg); }
+td.nodata { color: var(--muted); font-style: italic; }
+ul.srcs { margin: 4px 0; padding-left: 18px; font-size: .8125rem; color: var(--muted); max-width: 64em; }
+ul.srcs li { margin: 3px 0; }
+ul.srcs a { font-weight: 600; }
 td.desc { min-width: 16em; max-width: 40em; }
 
 /* About */
@@ -330,7 +340,7 @@ td.desc { min-width: 16em; max-width: 40em; }
 <a class="skip" href="#/" id="skip">Skip to table</a>
 <header class="site">
   <div class="wrap hdr">
-    <p class="site-title"><a href="#/" id="home-link">Utah fire agency vendor payments</a></p>
+    <p class="site-title"><a href="#/" id="home-link">Fire Agency Vendor Finances</a></p>
     <p class="asof" id="asof"></p>
     <a href="#/about" id="about-link" class="about-link">About</a>
   </div>
@@ -546,10 +556,12 @@ const Core = (function () {
       agencies: I.agencies,
       agency: new Map(I.agencies.map(a => [a.id, a])),
       vendors: [], vendorPos: new Map(), aliases: [], descriptions: [],
+      istrings: [],         // brand, product type and description texts of item lines (addItems)
       grantsBy: new Map(),
       views: new Map(),     // scope -> view, cleared when data is added
       version: 0,           // counts addState calls
       payVersion: 0,        // counts addPayments calls
+      itemVersion: 0,       // counts addItems calls
     };
     store.latest = latestOf(I.agencies, a => (st[a.state] ? st[a.state].partial : new Set(meta.partial_years || [])));
     return store;
@@ -638,7 +650,8 @@ const Core = (function () {
   // Some descriptions carry control characters between items; show them as spaces
   const cleanDesc = s => decodeEntities(String(s)).replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/ {2,}/g, ' ').trim();
   // data/<st>-items.json: {built, state, sources, strings, items}; item = [agency id, fiscal year, date,
-  // vendor index, brand, product type, description (string indexes), quantity, unit price, amount, category index, source index]
+  // vendor index, brand, product type, description (string indexes), quantity, unit price, amount, category index, source index].
+  // After it: vendor index global, string indexes into store.istrings (-1: none), source index -> source id.
   function addItems(store, s, X) {
     const S = store.st[s];
     if (!S || !S.rows) throw new Error('Items of ' + s + ' before its rows');
@@ -657,9 +670,15 @@ const Core = (function () {
         throw new Error(file + ' does not match ' + (S.meta.files && S.meta.files.rows || s));
       }
     }
-    for (const it of X.items) it[3] = S.vmap[it[3]];
-    S.items = { sources: X.sources || [], strings: X.strings.map(cleanDesc), items: X.items };
-    store.views.clear();
+    const soff = store.istrings.length;
+    for (const x of X.strings) store.istrings.push(cleanDesc(x));
+    for (const it of X.items) {
+      it[3] = S.vmap[it[3]];
+      for (let k = 4; k <= 6; k++) it[k] = it[k] == null || it[k] < 0 ? -1 : it[k] + soff;
+      it[11] = X.sources[it[11]];
+    }
+    S.items = { sources: X.sources || [], items: X.items };
+    store.itemVersion++;
     return S.items;
   }
 
@@ -730,9 +749,25 @@ const Core = (function () {
         return pc;
       },
     });
+    // Item lines of the scope, once every state in it that has an item file has loaded it (null before)
+    let xv = -1, xc = null;
+    Object.defineProperty(v, 'X', {
+      enumerable: true,
+      get() {
+        if (xv !== store.itemVersion) {
+          xv = store.itemVersion;
+          const sts = itemStates(store, scope);
+          xc = sts.every(s => store.st[s].items)
+            ? { items: [].concat(...sts.map(s => store.st[s].items.items)), strings: store.istrings } : null;
+        }
+        return xc;
+      },
+    });
     store.views.set(scope, v);
     return v;
   }
+  // The states of a scope that publish item lines (an items file)
+  const itemStates = (store, scope) => scopeStates(store, scope).filter(s => !!(store.st[s].meta.files && store.st[s].meta.files.items));
 
   // The scope of URL parameters p: the selected agency's state, else the state filter, else 'ALL'.
   // A numeric agency id is an older Utah link (UT-<id>, read as a number as the older page did, so "0359"
@@ -1003,6 +1038,36 @@ const Core = (function () {
     const ag = new Set(), ve = new Set();
     for (const p of pays) { total += p[4]; ag.add(p[0]); ve.add(p[2]); }
     return { pays, n: pays.length, total, ag, ve };
+  }
+  // Item lines (addItems) matching global filters g and f, with the same rules as selectRows. Lines of a fiscal
+  // year before the view's first one (California SCPRS purchase orders, FY2013-FY2015) are in early, whatever
+  // the year filter; the others count when their fiscal year is in the range.
+  // it = [agency id, fiscal year, date, vendor index, brand, product type, description, quantity, unit price,
+  //       amount, category index, source id]
+  function selectItems(ix, g, f) {
+    f = f || {};
+    const y0 = f.year != null ? f.year : g.from;
+    const y1 = f.year != null ? f.year : g.to;
+    const first = ix.years[0];
+    const peers = f.agency != null ? null : peerIds(ix, g);
+    let vi = null;
+    if (f.vendor != null) vi = ix.vendorPos.has(f.vendor) ? ix.vendorPos.get(f.vendor) : -2;
+    const okCat = catFilter(ix, g, f);
+    const items = [], early = [];
+    for (const it of ix.X ? ix.X.items : []) {
+      if (vi != null && it[3] !== vi) continue;
+      if (!okCat[ix.catIds[it[10]]]) continue;
+      if (f.agency != null ? it[0] !== f.agency : !peers.has(it[0])) continue;
+      if (it[1] < first) early.push(it);
+      else if (it[1] >= y0 && it[1] <= y1) items.push(it);
+    }
+    return { items, early };
+  }
+  function itemsModel(ix, g, f) {
+    const { items, early } = selectItems(ix, g, f);
+    const total = xs => xs.reduce((s, it) => s + it[9], 0);
+    const sources = xs => [...new Set(xs.map(it => it[11]))].sort();
+    return { items, early, total: total(items), earlyTotal: total(early), sources: sources(items), earlySources: sources(early) };
   }
 
   // Latest of the given fiscal years that is fully reported, or the latest one when all are partial.
@@ -1356,11 +1421,11 @@ const Core = (function () {
 
   return {
     SIZES, decodeEntities, buildIndex, setPayments, normGlobal, peerIds, rowCat, payCat, purchOnly, catFilter, selectRows, vendorCats, catsByVendor, emptyAgg, agg, summary, grantsIn,
-    selectPayments, paymentsModel, fullYear, rangeYears, staffModel, revenueModel, peopleIn, revenueIn, fyStarts,
+    selectPayments, paymentsModel, selectItems, itemsModel, fullYear, rangeYears, staffModel, revenueModel, peopleIn, revenueIn, fyStarts,
     searchRe, searchCategories,
     homeModel, categoryModel, vendorModel, agencyModel, vendorsModel, agenciesModel, rowsModel,
     GROUPS, parseCats, normState, isDefault, stateParams, fromPath, rowFilter, nextGroup, drill, categoriesFor, tableModel,
-    buildStore, addState, addPayments, addItems, isLoaded, view, resolve, isHome, needs, scopeOf, scopeStates, scopeYears,
+    buildStore, addState, addPayments, addItems, isLoaded, view, resolve, isHome, needs, scopeOf, scopeStates, scopeYears, itemStates,
   };
 })();
 
@@ -1373,16 +1438,15 @@ if (typeof module !== 'undefined' && module.exports) module.exports = Core;
 if (typeof window !== 'undefined' && typeof document !== 'undefined') (function () {
   const REPO = 'https://github.com/pasha594/utah-fire-procurement';
   const BLOB = REPO + '/blob/main/';
-  const SITE = 'Utah Vendor Finances';
+  const SITE = 'Fire Agency Vendor Finances';
   const PAGE = 50;                                   // rows shown first
   const MORE = 1000;                                 // rows added per "Show more"
+  // Links that are not data sources; the sources and their links are in meta.sources (data/index.json)
   const LINKS = {
-    tu: 'https://transparent.utah.gov/',
-    usfa: 'https://apps.usfa.fema.gov/registry/',
-    grants: 'https://www.fema.gov/openfema-data-page/non-disaster-assistance-firefighter-grants-v1',
-    neris: 'https://neris.fsri.org/integration-partners',
     ael: 'https://www.fema.gov/grants/tools/authorized-equipment-list',
   };
+  // Coverage tiers: what an agency's sources give (see About)
+  const TIERS = { 1: 'Payee lines', 2: 'Item lines', 3: 'Totals only', 4: 'Directory only' };
   const GNAME = { category: 'category', vendor: 'vendor', agency: 'agency', year: 'fiscal year', none: 'yearly totals' };
   const SEARCH = { category: 'Search categories', vendor: 'Search vendors', agency: 'Search agencies', none: 'Search rows' };
   const SHOW_ALL_MAX = 5000;                         // above this, rows are added 1,000 at a time
@@ -1462,10 +1526,15 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   const V = () => ix.D.vendors;
   const vendorOf = id => V()[ix.vendorPos.get(id)];
   const agName = id => ix.agency.get(id).name;
-  const tuLink = () => A(safeUrl((store.meta.sources.ut_transparent_utah || {}).url) || safeUrl(store.meta.states.UT.transparent_utah) || LINKS.tu, 'Transparent Utah');
-  // A source of meta.sources by id, as a link; a list of them
-  const srcLink = id => { const m = store.meta.sources[id] || {}; const u = safeUrl(m.url); return u ? A(u, esc(m.name || id)) : esc(m.name || id); };
-  const srcList = ids => andList(ids.filter(id => store.meta.sources[id]).map(srcLink));
+  // A source of meta.sources by id: its URL; a link with its name (or the given text); a list of links
+  const srcUrl = id => safeUrl((store.meta.sources[id] || {}).url);
+  const srcLink = (id, text) => { const m = store.meta.sources[id] || {}; const u = srcUrl(id); const t = text || esc(m.name || id); return u ? A(u, t) : t; };
+  const srcList = ids => andList(ids.filter(id => store.meta.sources[id]).map(id => srcLink(id)));
+  const tuLink = () => srcLink('ut_transparent_utah', 'Transparent Utah');
+  // Coverage tier: its label, and a small badge
+  const tierLabel = t => TIERS[t] || 'Unknown';
+  const tierBadge = t => '<span class="cov cov' + esc(t) + '" title="Coverage: ' + esc(tierLabel(t)) + '">' + esc(tierLabel(t)) + '</span>';
+  const hasData = a => !!a && !(a.coverage > 2);               // payee lines or item lines (tiers 1 and 2)
   // The payment sources (payee lines and item lines) of some states
   const paySources = sts => {
     const out = [];
@@ -1816,7 +1885,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       ].concat(yearCols());
       // The NERIS column and its note show only when a row in view is a partner
       t.onSearch = () => { nerisCol.hidden = byYear || !t.rows.some(isNeris); };
-      t.tail = () => (nerisCol.hidden ? '' : '<p class="note">NERIS partner: listed by ' + A(LINKS.neris, 'FSRI') +
+      t.tail = () => (nerisCol.hidden ? '' : '<p class="note">NERIS partner: listed by ' + srcLink('neris', 'FSRI') +
         ' as integrated with NERIS, the national fire incident reporting system replacing NFIRS.</p>');
       t.sort = S.cat != null && S.agency == null ? [['agencies', 'desc'], ['paid', 'desc']] : [['paid', 'desc'], ['vendor', 'asc']];
       t.drill = Object.assign(drill(o => V()[o.key].name), {
@@ -2034,7 +2103,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       : 'Categories: ' + names[0] + ' and ' + plural(cats.length - 1, 'other', 'others');
     let h = '<section class="ctx" aria-labelledby="ctx-ven">' + ctxHead('ctx-ven', 'Vendor: ' + v.name, [
       catText,
-      v.neris ? 'NERIS integration partner (' + A(LINKS.neris, 'FSRI list') + ')' : '',
+      v.neris ? 'NERIS integration partner (' + srcLink('neris', 'FSRI list') + ')' : '',
     ]);
     const how = 'Vendor category from ' + esc(method) + '.' +
       (cats.length > 1 ? ' Account and description rules put some of its payments in other categories.' : '');
@@ -2200,9 +2269,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     }
     const sm_ = store.meta.states[a.state] || {};
     b += ut
-      ? '<p class="note">Source: ' + A(LINKS.grants, 'OpenFEMA firefighter grants') + ', matched to agencies by recipient name (' + gh('config/grant_recipients.csv') + '). ' +
+      ? '<p class="note">Source: ' + srcLink('openfema', 'OpenFEMA firefighter grants') + ', matched to agencies by recipient name (' + gh('config/grant_recipients.csv') + '). ' +
         A(BLOB + um.raw_path + '/openfema/firefighter_grants_ut.json.gz', 'Raw data file') + ' (gzipped JSON).</p>'
-      : '<p class="note">Source: ' + A(LINKS.grants, 'OpenFEMA firefighter grants') + ', matched to agencies by recipient name (' +
+      : '<p class="note">Source: ' + srcLink('openfema', 'OpenFEMA firefighter grants') + ', matched to agencies by recipient name (' +
         gh('data/states/' + a.state.toLowerCase() + '/grants.csv') + ').' + (sm_.grants_raw ? ' ' + A(BLOB + sm_.grants_raw, 'Raw data file') + ' (gzipped JSON).' : '') + '</p>';
     h += details('d-grants', 'FEMA grants (' + int(grants.length) + ')', b);
     h += ut
@@ -2867,7 +2936,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     h += '<li>' + A(LINKS.tu, 'Transparent Utah') + ' public query service, for fire districts and interlocal agencies: total expenses per year, revenue in each agency\'s own account names, compensation reports (wages, benefits and job title per employee; employee names are replaced by numbers in the raw files), fiscal year start and website. Revenue totals leave out borrowing, transfers between the agency\'s own funds and donated infrastructure (' + gh('config/revenue_exclusions.csv') + '). Fetched ' + esc(dateText(meta.fetched)) + '. Raw files: ' + A(REPO + '/tree/main/' + meta.raw_path, esc(meta.raw_path)) + '.</li>';
     h += '<li>For cities, towns and counties, annual expenses are their expenses coded fire, including payroll, from the same BigQuery database (' + gh('pipeline/sql/fire_expenses_by_year.sql') + ').</li>';
     h += '<li>' + A(LINKS.usfa, 'USFA National Fire Department Registry') + ': department type, stations and firefighter counts.</li>';
-    h += '<li>' + A(LINKS.grants, 'OpenFEMA firefighter grants') + ': Assistance to Firefighters, SAFER and Fire Prevention and Safety awards, matched to agencies by recipient name (' + gh('config/grant_recipients.csv') + ').</li>';
+    h += '<li>' + srcLink('openfema', 'OpenFEMA firefighter grants') + ': Assistance to Firefighters, SAFER and Fire Prevention and Safety awards, matched to agencies by recipient name (' + gh('config/grant_recipients.csv') + ').</li>';
     h += '<li>' + A(LINKS.neris, 'NERIS integration partners') + ': vendors listed by FSRI as integrated with NERIS, the national fire incident reporting system replacing NFIRS.</li>';
     h += '<li>' + A(LINKS.ael, 'FEMA Authorized Equipment List') + ': codes shown when a category with an AEL section is selected. The list governs Homeland Security Grant Program awards, not AFG; FEMA limits many fire and medical items to surge or CBRN use.</li>';
     h += '</ul>';

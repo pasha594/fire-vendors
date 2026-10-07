@@ -1,4 +1,4 @@
-# Utah fire agency vendor payments (prototype)
+# Fire Agency Vendor Finances (prototype)
 
 Which vendors Utah fire agencies pay, how many agencies use each, and how much they spend.
 Built from public data only: [Transparent Utah](https://transparent.utah.gov/) transaction lines,
