@@ -11,11 +11,14 @@ own filters and duplicate rules; shared with the adapters are only the hand-revi
     fiscal year equal to the district's filed actual expenditures; every county copy of a multi-county district
     equal; no row for a null or zero actual
   - id_state: fetched lines per year equal the control file's non-Personnel line count, and raw dollars per year and
-    account category equal the control file's server-side sums; identical lines dropped (owner rule of 2026-10-07:
-    lines equal in every column but unique_id and the load dates are kept once, the earliest load batch's lowest
-    unique_id, whether the copy came in a later batch or the same one); then, line by line, every kept payment
-    line is in transactions.csv.gz under its own unique_id (or unique_id-<n>) with the same fiscal year, date,
-    amount, account title and payee; and no two id_state rows are equal in every column but source_record_id
+    account category equal the control file's server-side sums; duplicates dropped by the owner's rule of
+    2026-10-07 as corrected (two lines are identical when every raw column but unique_id, date_of_load and
+    zz_extract_date is equal): first the upload errors (copies from a later load batch than the first copy; extra
+    copies inside one batch when the batch holds 4 or more), then each remaining identical set keeps one line, a
+    positive set min(n, reversals + 1) with reversals the distinct negated lines of the same fund, function,
+    objective, account and vendor in the same or next fiscal year; then, line by line, every kept payment line is
+    in transactions.csv.gz under its own unique_id (or unique_id-<n>) with the same fiscal year, date, amount,
+    account, account title and payee (so published rows that repeat are copies the rule keeps)
   - payee names as published (owner decision 2026-10-06): payee_name is the raw vendor with whitespace collapsed,
     or "Payee name withheld" exactly when it matches config/payee_name_redactions.csv; no column holds text those
     patterns match; no "Individual (name withheld)" left from the old rule
@@ -45,7 +48,9 @@ import vendor_coverage  # noqa: E402  (pipeline/build.py's vendor classification
 ST = "ID"
 IDL = "ID-X-IDAHO-DEPARTMENT-OF-LANDS-FIRE-DEPARTMENT-COEUR-D-ALENE"
 NOT_PAYMENTS = {"Encumbrances", "GAAP Expenses", "Loss", "Operating Transfers Out", "Other Financing Uses", "Personnel"}
-LOAD_COLS = ("unique_id", "date_of_load", "zz_extract_date")
+LOAD_COLS = ("unique_id", "date_of_load", "zz_extract_date")  # row id and load stamps, not compared
+SAME_BATCH_BLOCK = 4  # same-batch copies that make a block inserted twice
+VOID_KEYS = ("fund_code", "agency_code_function_code", "state_objective_code", "account", "vendor")
 
 
 def cents(x):
@@ -134,18 +139,41 @@ def raw_state_lines():
 
 
 def kept_state_lines(lines):
-    """Lines left after dropping identical lines (owner rule of 2026-10-07, see the module docstring): one line per
-    set equal in every column but LOAD_COLS, the earliest load batch's lowest unique_id."""
+    """Lines left after the owner's rule of 2026-10-07 as corrected (see the module docstring). Returns the kept
+    lines and the dropped counts {"upload": n, "identical": n} with the copies the void rule keeps."""
     content = lambda r: json.dumps({k: v for k, v in r.items() if k not in LOAD_COLS}, sort_keys=True)
-    order = lambda r: (r["date_of_load"] or "", r["zz_extract_date"] or "", int(r["unique_id"]))
-    first = {}
+    load = lambda r: (r["date_of_load"] or "", r["zz_extract_date"] or "")
+    sets = collections.defaultdict(list)
     for r in lines:
-        c = content(r)
-        if c not in first or order(r) < order(first[c]):
-            first[c] = r
-    keep = list(first.values())
-    dropped = len(lines) - len(keep)
-    assert dropped < 0.02 * len(lines), f"id_state: {dropped} identical lines, more than 2% of lines"
+        sets[content(r)].append(r)
+    upload, per_batch = set(), collections.defaultdict(list)
+    for rs in sets.values():
+        rs.sort(key=lambda r: (load(r), int(r["unique_id"])))
+        for r in rs[1:]:
+            if load(r) > load(rs[0]):
+                upload.add(id(r))
+            else:
+                per_batch[load(r)].append(id(r))
+    for copies in per_batch.values():
+        if len(copies) >= SAME_BATCH_BLOCK:
+            upload.update(copies)
+    voids = collections.defaultdict(set)  # (keys, cents reversed) -> {(fiscal year, distinct line)}
+    for r in lines:
+        if id(r) not in upload and cents(r["amount"] or 0) < 0:
+            voids[(tuple(r[k] for k in VOID_KEYS), -cents(r["amount"]))].add((int(r["fiscal_year"]), content(r)))
+    keep, void_kept = [], 0
+    for rs in sets.values():
+        rs = [r for r in rs if id(r) not in upload]
+        n = min(len(rs), 1)
+        if len(rs) > 1 and cents(rs[0]["amount"] or 0) > 0:
+            fy = int(rs[0]["fiscal_year"])
+            found = {c for f, c in voids.get((tuple(rs[0][k] for k in VOID_KEYS), cents(rs[0]["amount"])), ())
+                     if f in (fy, fy + 1)}
+            n = min(len(rs), len(found) + 1)
+            void_kept += n - 1
+        keep += rs[:n]
+    dropped = {"upload": len(upload), "identical": len(lines) - len(upload) - len(keep), "void_kept": void_kept}
+    assert len(lines) - len(keep) < 0.02 * len(lines), f"id_state: {dropped}, more than 2% of lines"
     return keep, dropped
 
 
@@ -167,8 +195,11 @@ def check_state_lines(tx, rx):
     for r in keep:
         if r["account_category_0"] in NOT_PAYMENTS:
             continue
+        account = [f"{r['fund_code']} {r['fund_title']}", r["agency_function"], r["account_category_0"],
+                   f"{r['account']} {r['summary_account']}"]
         want[(str(r["unique_id"]), str(r["fiscal_year"]), r["effective_date"] or "", f"{r['amount'] or 0:.2f}",
-              r["summary_account"] or "", published(r["vendor"], rx))] += 1
+              " / ".join(a for a in account if a and a.strip()), r["summary_account"] or "",
+              published(r["vendor"], rx))] += 1
     have = collections.Counter()
     for r in tx:
         if r["source"] != "id_state":
@@ -176,13 +207,11 @@ def check_state_lines(tx, rx):
         assert r["agency_id"] == IDL, f"id_state row for {r['agency_id']}"
         uid = re.fullmatch(r"(\d+)(-\d+)?", r["source_record_id"])
         assert uid, f"id_state: source_record_id {r['source_record_id']} is not a raw unique_id"
-        have[(uid.group(1), r["fiscal_year"], r["posting_date"], r["amount"], r["category_published"],
+        assert r["description"] == "", "id_state: the source has no line description"
+        have[(uid.group(1), r["fiscal_year"], r["posting_date"], r["amount"], r["account"], r["category_published"],
               r["payee_name"])] += 1
     diff = (want - have) + (have - want)
     assert not diff, f"id_state: {sum(diff.values())} lines differ from raw, e.g. {list(diff)[:3]}"
-    same = collections.Counter(tuple(v for k, v in r.items() if k != "source_record_id")
-                               for r in tx if r["source"] == "id_state")
-    assert max(same.values()) == 1, f"id_state: {sum(n - 1 for n in same.values() if n > 1)} identical rows left"
     return len(lines), dropped
 
 
@@ -287,7 +316,8 @@ def main():
     by_source = collections.Counter()
     for r in tx + tot:
         by_source[r["source"]] += float(r["amount"])
-    print(f"{ST}: ok ({len(tx)} payment lines from {n_raw} raw lines, {dropped} identical lines dropped; "
+    print(f"{ST}: ok ({len(tx)} payment lines from {n_raw} raw lines; dropped {dropped['upload']} upload-error "
+          f"copies and {dropped['identical']} identical lines, void rule kept {dropped['void_kept']}; "
           f"{len(tot)} totals rows; " + ", ".join(f"{s} ${v:,.0f}" for s, v in sorted(by_source.items()))
           + f"; config/vendor_map.csv and the rules give a real category to {share:.1%} of "
           + f"${cov['purchasing'] / 100:,.0f} purchasing dollars (map {cov['by_map'] / cov['purchasing']:.1%}, rules "
