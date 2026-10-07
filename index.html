@@ -214,7 +214,7 @@ button.sort:hover { text-decoration: underline; }
   border: 1px solid var(--rule-strong); border-radius: 3px; padding: 0 5px; vertical-align: 1px;
 }
 .cov1, .cov2 { color: var(--fg); }
-td.nodata { color: var(--muted); font-style: italic; }
+.nodata { color: var(--muted); font-style: italic; }
 ul.srcs { margin: 4px 0; padding-left: 18px; font-size: .8125rem; color: var(--muted); max-width: 64em; }
 ul.srcs li { margin: 3px 0; }
 ul.srcs a { font-weight: 600; }
@@ -1404,7 +1404,7 @@ const Core = (function () {
     let by = null;
     if (keyFn) by = agg(rows, keyFn, sum); else sum = summary(rows);
     let items;
-    if (!peers.size || (narrowed && !rows.length)) items = [];
+    if (!peers.size || nodata || (narrowed && !rows.length)) items = [];     // a selected agency without vendor data: no rows, not $0
     else if (s.g === 'category') {
       items = categoriesFor(ix, s).filter(c => s.vendor == null || by.has(c.id)).map(c => by.get(c.id) || emptyAgg(c.id));
     } else if (s.g === 'vendor') {
@@ -1447,6 +1447,12 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   };
   // Coverage tiers: what an agency's sources give (see About)
   const TIERS = { 1: 'Payee lines', 2: 'Item lines', 3: 'Totals only', 4: 'Directory only' };
+  const TIERDESC = {
+    1: 'Payment lines with the payee named, rolled up by vendor, category and fiscal year.',
+    2: 'Lines with brand, quantity and unit price for one kind of purchase, rolled up like payee lines.',
+    3: 'Published annual totals, no vendors.',
+    4: 'USFA registry and FEMA grants only, no spending data.',
+  };
   const GNAME = { category: 'category', vendor: 'vendor', agency: 'agency', year: 'fiscal year', none: 'yearly totals' };
   const SEARCH = { category: 'Search categories', vendor: 'Search vendors', agency: 'Search agencies', none: 'Search rows' };
   const SHOW_ALL_MAX = 5000;                         // above this, rows are added 1,000 at a time
@@ -1535,6 +1541,38 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   const tierLabel = t => TIERS[t] || 'Unknown';
   const tierBadge = t => '<span class="cov cov' + esc(t) + '" title="Coverage: ' + esc(tierLabel(t)) + '">' + esc(tierLabel(t)) + '</span>';
   const hasData = a => !!a && !(a.coverage > 2);               // payee lines or item lines (tiers 1 and 2)
+  // "2021-2026" -> "FY2021–FY2026"
+  const fyRange = y => (y ? String(y).split('-').map(x => 'FY' + x.trim()).join('–') : '');
+  // A source's raw data: a file or folder in the repository (st: the state, for a source with one file per state)
+  function srcRaw(m, st) {
+    const raw = m.raw && typeof m.raw === 'object' ? (st ? m.raw[st] : null) : m.raw;
+    const out = [];
+    if (raw) out.push(A(BLOB + raw, /^raw\//.test(raw) ? 'raw file' : /^data\//.test(raw) ? 'normalized file' : esc(raw.split('/').pop())));
+    if (m.raw_dir) out.push(A(REPO + '/tree/main/' + m.raw_dir, 'raw files'));
+    if (!raw && m.raw && typeof m.raw === 'object') {
+      for (const k of store.order) if (m.raw[k]) out.push(A(BLOB + m.raw[k], esc(stName(k))));
+    }
+    return out;
+  }
+  const sentence = t => { t = String(t || '').trim(); return t && !/[.!?]$/.test(t) ? t + '.' : t; };
+  // Sources as a list: name (linked), tier, years, fiscal year, the source's note and its files in the repository
+  function srcNotes(ids, st) {
+    const li = ids.filter(id => store.meta.sources[id]).map(id => {
+      const m = store.meta.sources[id];
+      const raw = srcRaw(m, st);
+      return '<li data-src="' + esc(id) + '">' + srcLink(id) + (m.years ? ' (' + esc(fyRange(m.years)) + ')' : '') +
+        (m.tier ? ' ' + tierBadge(m.tier) : '') + '. ' + (m.fiscal_year ? 'Fiscal year: ' + esc(sentence(m.fiscal_year)) + ' ' : '') +
+        esc(sentence(m.note)) + (raw.length ? ' Data: ' + raw.join(', ') + '.' : '') + '</li>';
+    });
+    return li.length ? '<ul class="srcs">' + li.join('') + '</ul>' : '';
+  }
+  // Agencies per coverage tier: {1: n, 2: n, 3: n, 4: n}
+  const tierCounts = ags => { const c = { 1: 0, 2: 0, 3: 0, 4: 0 }; for (const a of ags) c[a.coverage] = (c[a.coverage] || 0) + 1; return c; };
+  // "187 payee lines, 966 directory only" (tiers with agencies)
+  const tierText = c => [1, 2, 3, 4].filter(t => c[t]).map(t => int(c[t]) + ' ' + tierLabel(t).toLowerCase());
+  // The item-line sources (tier 2) of agencies whose only vendor data they are (coverage 2)
+  const itemOnlySources = ags => { const out = []; for (const a of ags) if (a.coverage === 2) for (const id of a.sources || []) if ((store.meta.sources[id] || {}).tier === 2 && !out.includes(id)) out.push(id); return out.sort(); };
+  const firstClause = id => esc(String((store.meta.sources[id] || {}).note || '').split(/[;.]/)[0].trim());
   // The payment sources (payee lines and item lines) of some states
   const paySources = sts => {
     const out = [];
@@ -1830,8 +1868,10 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const oneCat = !!S.cat && S.cat.length === 1;          // the category column would repeat one value
     const t = {
       id: 'main-' + g, file: fileName(), wide: true, labelId: 'page-h', allRows: m.items, rows: m.items, byYear, pre: m.pre,
-      hint: 'Select a row to filter to it and ' + then + '.',
-      empty: !m.peers.size ? 'No agencies match the agency filters.' : 'No payments match these filters.',
+      hint: m.nodata ? '' : 'Select a row to filter to it and ' + then + '.',
+      empty: !m.peers.size ? 'No agencies match the agency filters.'
+        : m.nodata ? 'No vendor data: ' + (m.nodata === 3 ? 'this agency has published annual totals only (below).' : 'this agency is in the directory only.')
+        : 'No payments match these filters.',
       notes: '',
     };
     // Nothing in the selected categories: say why when the vendor is in none of them, and offer to clear them
@@ -1925,34 +1965,47 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         }
         return topV.get(o.key);
       };
+      // Agencies without vendor data (totals or directory only): "No vendor data" in place of an amount, never $0
+      const covCol = { key: 'cov', label: 'Coverage', nw: true, hidden: byYear, val: o => tierLabel(ag(o).coverage), html: o => tierBadge(ag(o).coverage) };
+      const paidA = Object.assign({}, paid, {
+        val: o => (o.nodata ? null : o.spend), html: o => (o.nodata ? '<span class="nodata">No vendor data</span>' : money(o.spend)),
+      });
+      const nVendA = Object.assign({}, nVend, { val: o => (o.nodata ? null : o.ve.size), html: o => (o.nodata ? '' : int(o.ve.size)) });
       const peopleCol = { key: 'people', label: 'People paid ' + fy(yP), labelHtml: 'People paid <span class="nw">' + esc(fy(yP)) + '</span>', num: true, opt: true, hidden: byYear,
         val: o => Core.peopleIn(ix, o.key, yP), html: o => { const v = Core.peopleIn(ix, o.key, yP); return v == null ? '' : int(v); } };
       t.cols = [
         { key: 'agency', label: 'Agency', th: true, val: o => ag(o).name },
+      ].concat(ix.states.length > 1 ? [{ key: 'state', label: 'State', nw: true, opt: true, hidden: byYear, val: o => stName(ag(o).state) }] : [], [
         { key: 'kind', label: 'Kind', hidden: byYear, val: o => ag(o).kind },
         { key: 'staffing', label: 'Staffing', nw: true, hidden: byYear, val: o => staffingCell(ag(o)), csv: o => staffingText(ag(o)) },
         { key: 'county', label: 'County', nw: true, opt: true, hidden: byYear || !!S.county, val: o => ag(o).county },
-        nVend,
-      ].concat(S.cat && S.vendor == null ? [{
+        covCol,
+        nVendA,
+      ], S.cat && S.vendor == null ? [{
         key: 'topv', label: 'Main vendors', hidden: byYear, val: o => vnames(o)[0] || null, csv: o => vnames(o).join('; ') || null,
         html: o => { const ns = vnames(o); return esc(ns.slice(0, 2).join(', ')) + (ns.length > 2 ? ' <span class="muted">and ' + plural(ns.length - 2, 'other', 'others') + '</span>' : ''); },
       }] : [], [
-        paid,
+        paidA,
         { key: 'exp', label: 'Annual expenses', num: true, hidden: byYear,
           val: o => (ix.latest.get(o.key) ? ix.latest.get(o.key).amount : null),
           html: o => { const l = ix.latest.get(o.key); return l ? money(l.amount) + (spanText(l) !== expY ? '<br><span class="muted">' + esc(spanText(l)) + '</span>' : '') : ''; } },
         { key: 'expyear', label: 'Annual expenses fiscal years (median of)', hidden: true, val: o => (ix.latest.get(o.key) ? spanText(ix.latest.get(o.key)) : null) },
         { key: 'expwhat', label: 'Annual expenses measure', hidden: true,
-          val: o => (!ix.latest.get(o.key) ? null : fireExp(ag(o)) ? 'Fire-coded expenses' : 'Total expenses') },
+          val: o => (!ix.latest.get(o.key) ? null : fireExp(ag(o)) ? 'Fire-coded expenses' : /^totals:/.test(ag(o).budget_source || '') ? 'Published annual totals' : 'Total expenses') },
         peopleCol,
         { key: 'revenue', label: 'Revenue ' + fy(yP), hidden: true, val: o => Core.revenueIn(ix, o.key, yP) },
         { key: 'grants', label: 'FEMA grants ' + shortSpan(S), labelHtml: 'FEMA grants <span class="nw">' + esc(shortSpan(S)) + '</span>', num: true, opt: true, hidden: byYear,
           val: o => Core.grantsIn(ix, o.key, S), html: o => money(Core.grantsIn(ix, o.key, S)) },
       ], yearCols());
       // People paid shows only when a row in view has it (fire districts and interlocal agencies); kept in the CSV
-      t.onSearch = () => { peopleCol.hidden = byYear || !t.rows.some(o => Core.peopleIn(ix, o.key, yP) != null); };
+      // Coverage shows only when the rows in view have more than one tier (kept in the CSV)
+      t.onSearch = () => {
+        peopleCol.hidden = byYear || !t.rows.some(o => Core.peopleIn(ix, o.key, yP) != null);
+        covCol.hidden = byYear || new Set(t.rows.map(o => ag(o).coverage)).size <= 1;
+      };
       t.sort = [['paid', 'desc'], ['agency', 'asc']];
-      t.drill = Object.assign(drill(o => ag(o).name), { value: o => o.key });
+      // An agency without vendor data leads to its details (annual totals, grants)
+      t.drill = Object.assign(drill(o => ag(o).name), { value: o => o.key, ok: o => o.n > 0 || !!o.nodata });
       t.searchHint = 'Agency name';
       t.filter = (rows, re) => rows.filter(o => re.test(ag(o).name.toLowerCase()) || (ag(o).usfa && re.test(ag(o).usfa.name.toLowerCase())));
       t.foot = rows => {
@@ -1961,12 +2014,27 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         return [Object.assign({ _label: totalLabel(), vendors: int(a.ve.size), paid: money(a.spend), grants: money(gr) }, yearFoot(a))];
       };
       if (m.narrowed) t.notes += '<p class="note">Agencies with no payments in these filters are not listed.</p>';
-      if (!byYear) {
+      if (!byYear && utOnly()) {
         t.notes += '<p class="note">Staffing: USFA registry department type; Not listed: not in the registry. ' +
           (S.cat && S.vendor == null ? 'Main vendors: the vendors each agency paid in ' + catsText(S.cat, true) + ', largest first (the CSV lists all). ' : '') +
           'Annual expenses: the median of total expenses in the last three fully reported fiscal years' + (expY ? ' (' + esc(expY) + ' unless shown)' : '') +
           '; for cities, towns and counties, the expenses coded fire, including payroll. ' +
           'People paid (fire districts and interlocal agencies only): everyone with pay that year, including part-time staff, paid-per-call firefighters and board members. ' +
+          'FEMA grants: awards with a federal fiscal year in the range.</p>';
+      } else if (!byYear) {
+        // Other states: annual expenses are published annual totals; agencies without vendor data are listed, not counted
+        const ut = ix.states.includes('UT');
+        const tot = [];
+        for (const st of ix.states) for (const id of store.meta.states[st].sources || []) if ((store.meta.sources[id] || {}).tier === 3 && !tot.includes(id)) tot.push(id);
+        const multiTier = new Set(m.items.map(o => ag(o).coverage)).size > 1;
+        t.notes += '<p class="note">' + (multiTier ? 'Coverage: what the sources give for the agency (Payee lines, Item lines, Totals only or Directory only; see ' + A('#/about', 'About') + '). ' : '') +
+          (m.items.some(o => o.nodata) ? 'Agencies with totals only or in the directory only show "No vendor data" and are not counted. ' : '') +
+          'Staffing: USFA registry department type; Not listed: not in the registry. ' +
+          (S.cat && S.vendor == null ? 'Main vendors: the vendors each agency paid in ' + catsText(S.cat, true) + ', largest first (the CSV lists all). ' : '') +
+          'Annual expenses: the median of the last three fully reported fiscal years' + (expY ? ' (' + esc(expY) + ' unless shown)' : '') + ': ' +
+          (ut ? 'in Utah, total expenses, or for cities, towns and counties the expenses coded fire, including payroll; ' : '') +
+          (tot.length ? (ut ? 'elsewhere, ' : '') + 'the sum of the published annual totals (' + srcList(tot) + '). ' : (ut ? 'elsewhere, not available. ' : 'not available. ')) +
+          (ut ? 'People paid (Utah fire districts and interlocal agencies only): everyone with pay that year, including part-time staff, paid-per-call firefighters and board members. ' : '') +
           'FEMA grants: awards with a federal fiscal year in the range.</p>';
       }
     } else if (g === 'year') {
@@ -2004,12 +2072,21 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         esc(dateText(ix.meta.transactions_fetched || ix.meta.fetched)) + '. ' + A(BLOB + ix.meta.transactions_file, 'Raw data file') + ' (gzipped CSV, all agencies).</p>'
         : '<p class="note">Sources: ' + srcList(paySources(ix.states)) + '.</p>';
     }
-    if (g !== 'none') {
+    if (g !== 'none' && !m.nodata) {
       t.notes += '<p class="note">Amounts are net of credits and corrections. Vendors and agencies are counted when the net payment is positive in at least one fiscal year and category of the range.</p>';
+    }
+    // Agencies whose only vendor data is item lines (Texas DIR: IT and telecom) are counted, with a note
+    const io = [...m.peersData].map(id => ix.agency.get(id)).filter(a => a.coverage === 2);
+    if (io.length) {
+      const ids = itemOnlySources(io);
+      t.notes += '<p class="note">Item lines only: ' + (S.agency != null ? 'the vendor data of ' + esc(io[0].name) + ' is'
+        : 'for ' + plural(io.length, 'agency', 'agencies') + ' in these filters the only vendor data is') + ' ' +
+        andList(ids.map(id => srcLink(id) + ' (' + firstClause(id) + ')')) + ', so ' + (S.agency != null ? 'its' : 'their') + ' other purchases are not here.</p>';
     }
     if (S.np) {
       t.notes += '<p class="note">Non-purchasing payments include transfers between agencies in this list (for example Unified Fire Service Area to Unified Fire Authority), so totals can count that money twice.</p>';
     }
+    if (m.nodata) t.hint = '';
     applySearch(t);
     return t;
   }
@@ -2122,7 +2199,10 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const lat = ix.latest.get(id);
     const med = lat ? (lat.years.length > 1 ? 'median of ' : '') + spanText(lat) : '';
     const expText = lat ? money(lat.amount) + ' (' + med + (fireExp(a) ? ', expenses coded fire' : '') + ')' : '';
-    const line = [esc(a.kind), a.county ? esc(a.county) + ' County' : '', esc(staffingText(a)),
+    const ut = a.state === 'UT';
+    // The coverage badge shows in the line when the agency has less than payee lines (every Utah agency has them)
+    const line = [a.coverage !== 1 ? tierBadge(a.coverage) : '', esc(a.kind),
+      a.county ? esc(a.county) + ' County' + (ut ? '' : ', ' + esc(stName(a.state))) : ut ? '' : esc(stName(a.state)), esc(staffingText(a)),
       lat ? money(lat.amount) + ' annual ' + (fireExp(a) ? 'fire ' : '') + 'expenses (' + med + ')' : ''];
     // On a phone the facts line moves into the collapsed details
     const small = narrow();
@@ -2134,6 +2214,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     } else {
       f += fact('Kind', esc(a.kind));
     }
+    if (!ut) f += fact('State', esc(stName(a.state)));
     if (a.county) f += fact('County', esc(a.county) + (a.city ? ' <span class="muted">(' + esc(a.city) + ')</span>' : ''));
     if (a.usfa) {
       const u = a.usfa;
@@ -2145,6 +2226,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     if (a.usfa) f += fact('USFA registry', esc(a.usfa.name) + (a.usfa.fdid ? ', FDID ' + esc(a.usfa.fdid) : ''));
     if (site) f += fact('Website', A(site, esc(a.website)));
     if (a.notes) f += fact('Notes', esc(a.notes), true);
+    f += fact('Coverage', tierBadge(a.coverage) + ' ' + esc(TIERDESC[a.coverage] || ''), true);
+    f += fact('Sources', srcList(a.sources || []) || 'None', true);
     // Agencies of the same size: county is left out, since few counties have two agencies of one size
     const size = sizeOf(id);
     const range = size && (/^(Under|Over) /.test(size.label) ? size.label.charAt(0).toLowerCase() + size.label.slice(1) : 'of ' + size.label);
@@ -2322,6 +2405,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       const vcs = Core.vendorCats(ix, S.vendor);
       if (vcs.length && vcs.every(np)) return '';
     }
+    if (S.agency != null && !hasData(ix.agency.get(S.agency))) return '';     // no vendor data, no payments file to load
     const title = 'Largest single payments';
     if (!ix.P) {
       if (payError) {
@@ -2363,8 +2447,50 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
           'Sources: ' + srcList(paySources(ix.states)) + '.</p>');
     return details('d-pay', title + ' (' + int(pm.n) + ')', b);
   }
+  // No category, vendor or agency selected, outside the Utah-only view: what the data covers. All states: agencies per
+  // tier, and a table by state; one state: agencies per tier and its sources.
+  function ctxCoverage() {
+    const peers = Core.peerIds(ix, S);
+    const ags = ix.D.agencies.filter(a => peers.has(a.id));
+    const c = tierCounts(ags);
+    const filtered = ags.length < ix.D.agencies.length;
+    const all = ix.scope === 'ALL';
+    const head = int(ags.length) + ' agencies' + (filtered ? ' in these filters' : '') + (all ? ' in ' + plural(new Set(ags.map(a => a.state)).size, 'state', 'states') : '');
+    let h = '<section class="ctx" aria-labelledby="ctx-cov">' + ctxHead('ctx-cov', all ? 'Coverage' : 'Coverage in ' + stName(ix.scope),
+      [esc(head)].concat(tierText(c).map(esc)));
+    const tierNote = '<p class="note">Payee lines: payment lines with the payee named. Item lines: lines with brand, quantity and unit price for one kind of purchase. ' +
+      'Totals only: published annual totals, no vendors. Directory only: USFA registry and FEMA grants. Agencies with totals only or in the directory only show "No vendor data" and are not counted. ' +
+      A('#/about', 'About') + ' has the sources of each state.</p>';
+    if (all) {
+      const rows = ix.states.map(st => {
+        const sa = ags.filter(a => a.state === st), sc = tierCounts(sa), sm = store.meta.states[st];
+        return { st, name: stName(st), n: sa.length, c: sc, years: sm.years, partial: sm.partial_years || [] };
+      });
+      const ys = r => 'FY' + r.years[0] + '–FY' + r.years[r.years.length - 1];
+      const tcol = t => ({ key: 't' + t, label: tierLabel(t), num: true, val: r => r.c[t], html: r => int(r.c[t]) });
+      const b = table({
+        id: 'cov', title: 'Coverage by state', hideTitle: true, file: 'coverage-by-state', negNote: false,
+        rows,
+        cols: [
+          { key: 'state', label: 'State', th: true, val: r => r.name, html: r => A(stateHash(Core.normState(store, { state: r.st })), esc(r.name)) },
+          { key: 'n', label: 'Agencies', num: true, val: r => r.n, html: r => int(r.n) },
+          tcol(1), tcol(2), tcol(3), tcol(4),
+          { key: 'years', label: 'Fiscal years', nw: true, val: ys },
+          { key: 'partial', label: 'Partial years', nw: true, opt: true, val: r => r.partial.map(y => 'FY' + y).join(', ') || null },
+        ],
+        sort: [['state', 'asc']],
+        foot: [{ _label: 'Total', n: int(ags.length), t1: int(c[1]), t2: int(c[2]), t3: int(c[3]), t4: int(c[4]) }],
+      });
+      h += details('d-cov', 'Coverage by state', b + tierNote);
+    } else {
+      const ids = store.meta.states[ix.scope].sources || [];
+      h += details('d-src', 'Sources for ' + esc(stName(ix.scope)) + ' (' + int(ids.length) + ')', srcNotes(ids, ix.scope) + tierNote);
+    }
+    return h + '</section>';
+  }
   function renderContext() {
     let h = '';
+    if (!S.cat && !S.vendor && S.agency == null && ix.scope !== 'UT') h += ctxCoverage();
     if (S.cat) h += ctxCategories(S.cat);
     if (S.vendor) h += ctxVendor(S.vendor);
     if (S.agency != null) h += ctxAgency(S.agency);
