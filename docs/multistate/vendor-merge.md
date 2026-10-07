@@ -20,7 +20,7 @@ is a slug of the canonical name, so the names decide which payees add up to one 
 | Left out because a vendor rule already says the same | 99 |
 | Rows added | 9,493 |
 | config/vendor_map.csv after | 14,665 |
-| Canonical names covering more than one proposed form, or renamed | 1,277 |
+| Canonical names covering more than one proposed form, or renamed | 1,269 |
 
 ## Rules
 
@@ -79,7 +79,7 @@ Proposals left out of the shared map by an empty `to_vendor` in `config/vendor_n
 
 ## Canonical names
 
-146 canonical names cover more than one proposed form (or a proposed form and a Utah name).
+148 canonical names cover more than one proposed form (or a proposed form and a Utah name).
 `How`: where the canonical name came from.
 
 | Canonical name | Other forms folded in | States | How | Proposed spend |
@@ -93,8 +93,8 @@ Proposals left out of the shared map by an empty `to_vendor` in `config/vendor_n
 | El Dorado Water & Shower Service | El Dorado Water & Shower SVC | CA | most spend | $10,443,262 |
 | Ferrara Fire Apparatus | Ferrara Fire Apparatus Inc | OH, CA | most spend | $10,026,212 |
 | Stark County Schools Council of Governments | Stark County Schools Council of Governments (health benefits); Stark County Schools Council of Governments (health plan) | OH | most spend | $9,207,932 |
+| KeyBank | KeyBank (payroll taxes); Keybank | UT, OH | config/vendor_name_merges.csv | $9,118,116 |
 | HeliQwest International | Heliqwest Intl | CA, ID | most spend | $8,581,127 |
-| KeyBank | KeyBank (payroll taxes); Keybank | UT, OH | config/vendor_map.csv | $8,577,410 |
 | Sysco | Sysco of Central California | CA | config/vendor_name_merges.csv | $7,582,275 |
 | U.S. Bank | US Bank (Credit Card Payments); Us Bank (Credit Card)*; Us Bank (Visa) | UT, OH, ID | config/vendor_name_merges.csv | $7,563,534 |
 | Pierce Manufacturing | Pierce Manufacturing Inc | OH, CA | most spend | $7,534,229 |
@@ -102,19 +102,21 @@ Proposals left out of the shared map by an empty `to_vendor` in `config/vendor_n
 | 911 Fleet & Fire Equipment | 911 Fleet And Fire Equipment | OH | most spend | $5,784,056 |
 | Municipal Emergency Services | Municipal Emergency SVCS; Municipal Emergency Service | UT, OH, CA | config/vendor_name_merges.csv | $4,295,800 |
 | UC Physicians | Uc Physicians | OH | most spend | $3,744,589 |
+| Cigna Health and Life Insurance | Cigna Health and Life Insurance Company | OH | config/vendor_name_merges.csv | $3,477,690 |
 | Fire Safety Services | Fire Safety Service Inc | OH | most spend | $3,261,320 |
 | Johnson's Fire Equipment | Johnson's Fire Equipment Company | OH | config/vendor_name_merges.csv | $3,205,116 |
 | Treasurer of State of Ohio | Treasurer Of State; Treasurer Of State (Das); Treasurer Of State (Fund 5C2); Treasurer Of State Of Ohio | OH | config/vendor_name_merges.csv | $3,111,392 |
 | CA Dept of Tax and Fee Admin | CA Dept of Tax & Fee Admin (boe) | CA | most spend | $3,108,053 |
 | El Dorado Hills Fire Department | El Dorado Hills Fire Dept | CA | most spend | $2,819,281 |
 | Aultcare | AultCare | OH | most spend | $2,736,246 |
+| Delta Dental | Delta Dental of Ohio | OH | config/vendor_name_merges.csv | $2,547,781 |
 | Expeditors by Lindale | Expeditors BY Lindale; Expeditors By Lindale | CA, ID | most spend | $2,432,253 |
 | All American Fire Equipment | All American Fire Equip. Inc; All American Fire Equipment, Inc. | OH | config/vendor_name_merges.csv | $2,307,100 |
 | Warren Fire Equipment | Warren Fire Equip Inc; Warren Fire Equipment,Inc. | OH | config/vendor_name_merges.csv | $2,200,304 |
-| Delta Dental | Delta Dental of Ohio | OH | config/vendor_name_merges.csv | $2,150,636 |
 | Thomas J Ferguson MD PHD | Thomas J. Ferguson, M.D., PH.D. | CA | most spend | $1,877,204 |
 | Humana Health Plan Ohio | Humana Health Plan Of Ohio, Inc. | OH | config/vendor_name_merges.csv | $1,799,624 |
 | Priority Dispatch | Priority Dispatch (Medical Priority Consultants); Priority Dispatch Corp | OH, CA, TX | most spend | $1,535,936 |
+| Fire Apparatus Service & Repair | Fire Apparatus Service & Repair, Inc. | OH | config/vendor_name_merges.csv | $1,429,036 |
 | Public Entities Pool of Ohio | Public Entities Pool Of Ohio (Pep) | OH | most spend | $1,331,914 |
 | MECC Regional Council of Governments | MECC Regional Council of Governments (dispatch); Mecc Regional Council Of Governments | OH | most spend | $1,330,956 |
 | First National Bank | First National Bank (payroll) | OH | most spend | $1,191,830 |
@@ -128,7 +130,9 @@ Proposals left out of the shared map by an empty `to_vendor` in `config/vendor_n
 | W.S. Darley & Co. | WS Darley & Co | UT, OH, CA | config/vendor_map.csv | $670,811 |
 | Voya | Voya (retirement plan) | OH | most spend | $650,667 |
 | Regional Income Tax Agency | Regional Income Tax Agency (Payroll) | OH | most spend | $633,990 |
-| Centerpoint Energy | Centerpoint Energy Ohio | OH | config/vendor_name_merges.csv | $494,665 |
+| Beem's BP Distributing | Beem's BP Distributing Inc. | OH | config/vendor_name_merges.csv | $632,659 |
+| Centerpoint Energy | Centerpoint Energy Ohio | OH | config/vendor_name_merges.csv | $597,942 |
+| P & R Communications Service | P&R Communications Services | OH | config/vendor_name_merges.csv | $526,111 |
 | Atwell's Police & Fire Equipment | Atwell's Police & Fire Equip. Co.; Atwell's Police & Fire Equipment Co | OH | config/vendor_name_merges.csv | $487,305 |
 | Police & Firemen's Insurance Association | Police & Firemen's Insurance Assoc(Pfia); Police and Firemen's Insurance Association | OH | most spend | $466,303 |
 | Optum Bank | Optum Bank (HSA) | OH | most spend | $453,725 |
@@ -136,7 +140,6 @@ Proposals left out of the shared map by an empty `to_vendor` in `config/vendor_n
 | Ohio Fire Chiefs' Association | Ohio Fire Chiefs Assn; Ohio Fire Chiefs Assoc | OH | most spend | $446,759 |
 | Accumed Billing | Accumed Billing Inc. | OH | config/vendor_name_merges.csv | $445,606 |
 | Redd Public Safety Equipment | Redd Public Safety Equip. LLC | OH | most spend | $434,723 |
-| P & R Communications Service | P&R Communications Services | OH | most spend | $414,939 |
 | Teleflex | Teleflex LLC | UT, OH | config/vendor_map.csv | $376,047 |
 | Montgomery County Sheriff | Montgomery County Sheriff (dispatch) | OH | most spend | $370,375 |
 | Across the Street Productions | Across The Street Productions | UT, OH | config/vendor_name_merges.csv | $343,498 |
@@ -153,6 +156,7 @@ Proposals left out of the shared map by an empty `to_vendor` in `config/vendor_n
 | R.D. Holder Oil | R.D. Holder Oil Company | OH | most spend | $205,715 |
 | HSA - Employer Match/Wellness | Hsa - Employer Match/Wellness | OH | config/vendor_name_merges.csv | $199,603 |
 | Union Township | Union Township (flexible spending) | OH | most spend | $195,780 |
+| Ohio Public Risk Insurance Agency | Ohio Public Risk Insurance Agency, Inc. | OH | config/vendor_name_merges.csv | $180,884 |
 | Idaho Department of Fish & Game | Idaho Department of Fish and Game | ID | most spend | $172,004 |
 | OhioHealth | Ohiohealth Corporation | OH | config/vendor_name_merges.csv | $163,970 |
 | Shuttler's Uniform | Shuttler's Uniform Inc. | OH | config/vendor_name_merges.csv | $161,676 |
@@ -172,7 +176,6 @@ Proposals left out of the shared map by an empty `to_vendor` in `config/vendor_n
 | Communications Service | Communication Services | OH | most spend | $113,524 |
 | University of Cincinnati | University Of Cincinnati; University Of Cincinnati Pc | OH | most spend | $110,613 |
 | Cronin Ford | Cronin Ford Inc | OH | config/vendor_name_merges.csv | $104,943 |
-| Vectren Energy Delivery | Vectren Energy Delivery Of Ohio, Inc. | OH | most spend | $103,278 |
 | Waste Management | Waste Management Of Ohio, Inc. | UT, OH, ID | config/vendor_map.csv | $102,403 |
 | J.K. Meurer | J. K. Meurer | OH | most spend | $101,310 |
 | Smyth Automotive | Smyth Automotive Inc. | OH | most spend | $84,154 |
@@ -187,7 +190,6 @@ Proposals left out of the shared map by an empty `to_vendor` in `config/vendor_n
 | US Postal Service | U.S. Postal Service | UT, CA | config/vendor_map.csv | $67,000 |
 | Ohio Department of Job & Family Services | Ohio Dept. Of Job And Family Services | OH | most spend | $64,270 |
 | K E Rose | K E Rose Company Ltd; K. E. Rose Company Ltd | OH | most spend | $59,936 |
-| Ohio Public Risk Insurance Agency | Ohio Public Risk Insurance Agency, Inc. | OH | config/vendor_name_merges.csv | $57,334 |
 | Squire Patton Boggs | Squire Patton Boggs (Us) LLP; Squire Patton Boggs LLP | OH | most spend | $57,211 |
 | Ken Neyer Plumbing | Ken Neyer Plumbing, Inc. | OH | config/vendor_name_merges.csv | $53,299 |
 | Emergency Services Consulting International | Emergency Service Consulting International | UT, OH | config/vendor_map.csv | $50,118 |
@@ -231,12 +233,11 @@ Proposals left out of the shared map by an empty `to_vendor` in `config/vendor_n
 | OpenGov | Opengov, Inc | OH | config/vendor_name_merges.csv | $5,000 |
 | Uline | Uline, Inc | UT, OH | config/vendor_map.csv | $4,751 |
 
-1131 proposed names were only cleaned (legal suffix or lower-case note dropped, small words in
+1121 proposed names were only cleaned (legal suffix or lower-case note dropped, small words in
 lower case), or renamed by `config/vendor_name_merges.csv`:
 
 <details><summary>List</summary>
 
-- * Lion Creative Studios LLC -> Lion Creative Studios (OH)
 - * Sedgwick Claims Mgt Services -> Sedgwick (OH)
 - 10485 Olympic (lessor) -> 10485 Olympic (TX)
 - 1St Nat'L Bank Of S.W. Ohio -> 1St Nat'L Bank of S.W. Ohio (OH)
@@ -334,8 +335,6 @@ lower case), or renamed by `config/vendor_name_merges.csv`:
 - Bazell Oil Co. -> Bazell Oil (OH)
 - Be Solutions LLC -> Be Solutions (OH)
 - Beau Townsend Ford Inc. -> Beau Townsend Ford (OH)
-- Beem's BP Distr. Inc. -> Beem's BP Distr. (OH)
-- Beem's BP Distributing Inc. -> Beem's BP Distributing (OH)
 - Bell Medical Services Inc. -> Bell Medical Services (OH)
 - Bells Custom Concrete LLC -> Bells Custom Concrete (OH)
 - Belmont Petroleum Corp -> Belmont Petroleum (OH)
@@ -385,8 +384,6 @@ lower case), or renamed by `config/vendor_name_merges.csv`:
 - Buckeye Apparatus Services, LLC -> Buckeye Apparatus Services (OH)
 - Bulldog On Site Services -> Bulldog on Site Services (ID)
 - Burgess Ambulance Sales, Inc. -> Burgess Ambulance Sales (OH)
-- Burnham & Flower Agency Of Ohio, Inc. -> Burnham & Flower Agency of Ohio (OH)
-- Burnham & Flower Of Ohio -> Burnham & Flower of Ohio (OH)
 - Byers Ford, LLC -> Byers Ford (OH)
 - C & C Disposal LLC -> C & C Disposal (OH)
 - C & Y Oil Co. -> C & Y Oil (OH)
@@ -420,8 +417,6 @@ lower case), or renamed by `config/vendor_name_merges.csv`:
 - Cherry Lynne Poteet (attorney) -> Cherry Lynne Poteet (OH)
 - Chicago Title Company -> Chicago Title (CA)
 - Childers H.V.A.C. Systems Inc. -> Childers H.V.A.C. Systems (OH)
-- Cigna Health And Life Ins Co. -> Cigna Health and Life Ins (OH)
-- Cigna Health and Life Insurance Company -> Cigna Health and Life Insurance (OH)
 - Cincinnati Life Insurance Co. -> Cincinnati Life Insurance (OH)
 - Cincinnati State Technical And Communit -> Cincinnati State Technical and Communit (OH)
 - Cincinnati United Contractors LLC -> Cincinnati United Contractors (OH)
@@ -579,7 +574,6 @@ lower case), or renamed by `config/vendor_name_merges.csv`:
 - Degree Benefits LLC -> Degree Benefits (OH)
 - Del-Co Water Co., Inc. -> Del-Co Water (OH)
 - Delille Oxygen Co. -> Delille Oxygen (OH)
-- Delta Dental Plan of Ohio Inc. -> Delta Dental Plan of Ohio (OH)
 - Department Of Taxation -> Department of Taxation (OH)
 - Department Of Treasury, Irs -> Department of Treasury, Irs (OH)
 - Design 2 Wellness, LLC -> Design 2 Wellness (OH)
@@ -648,7 +642,6 @@ lower case), or renamed by `config/vendor_name_merges.csv`:
 - Findlay Fleet Repair & Welding LLC -> Findlay Fleet Repair & Welding (OH)
 - Finke Logging Company -> Finke Logging (ID)
 - Finley Fire Equipment Co, Inc -> Finley Fire Equipment (OH)
-- Fire Apparatus Service & Repair, Inc. -> Fire Apparatus Service & Repair (OH)
 - Fire Foe Alarms, Inc -> Fire Foe Alarms (OH)
 - Fire-Fly Fire Equipment Sales, Inc -> Fire-Fly Fire Equipment (OH)
 - Firehouse Svc & Consulting LLC -> Firehouse Svc & Consulting (OH)
@@ -1167,7 +1160,6 @@ lower case), or renamed by `config/vendor_name_merges.csv`:
 - South Summit Council Of Government -> South Summit Council of Government (OH)
 - Southern Computer Warehouse, Inc -> Southern Computer Warehouse (OH)
 - Southway Fence Co -> Southway Fence (OH)
-- Spartan It LLC -> Spartan It (OH)
 - Spear Corporation -> Spear (OH)
 - Specialty Truck Repair, Inc. -> Specialty Truck Repair (OH)
 - Specialty Truck Sales And Service -> Specialty Truck Sales and Service (OH)
@@ -1374,7 +1366,6 @@ Names equal apart from a region that were kept apart (bodies that exist separate
 
 - State of Alaska / State of Colorado / State of New Mexico / State Of Ohio / State of South Dakota / State of Utah / State of Washington / State of Wyoming
 - University of Utah / University of Washington
-- VFIS / VFIS of Ohio
 
 Names of local bodies (cities, counties, townships, fire departments, districts) that are equal in
 several states were not grouped across states; equal names still share a vendor id:
@@ -1399,7 +1390,6 @@ Keys a `config/vendor_rules.csv` pattern names: the row uses the rule's vendor.
 | CDW G | OH | Cdw-G | CDW Government |
 | DELL | OH | Dell | Dell Technologies |
 | INTERNATIONAL ASSOC ARSON INV | OH | International Assoc Arson Inv | International Association of Arson Investigators |
-| NAPA AUTO PARTS BROOKLYN | OH | Napa Auto Parts Brooklyn | NAPA Auto Parts |
 | NARCBOX | OH | NarcBox | EMS LogiK |
 | O REILLY AUTO PARTS | OH | O Reilly Auto Parts | O'Reilly Auto Parts |
 | OREILLY AUTOMOTIVE STORES | OH | O'Reilly Automotive Stores | O'Reilly Auto Parts |
@@ -1540,7 +1530,7 @@ config/vendor_map.csv or a vendor rule instead of the proposal.
 
 | Vendor | States | Proposed (category: spend) | Category | Why |
 | --- | --- | --- | --- | --- |
-| CAL FIRE | CA | government: $1,335,128,937; professional: $396,958 | government | most proposed spend |
+| CAL FIRE | CA | government: $1,335,465,382; professional: $396,958 | government | most proposed spend |
 | JPMorgan Chase Bank | OH, CA, TX | payroll: $42,507,472; finance: $16,678,480 | payroll | most proposed spend |
 | Radiomobile | CA | it: $46,658,619; radios: $474,153 | it | most proposed spend |
 | Heartland Bank | OH | payroll: $33,839,512; finance: $19,555 | payroll | most proposed spend |
@@ -1549,11 +1539,13 @@ config/vendor_map.csv or a vendor rule instead of the proposal.
 | Heli-1 | CA, ID | apparatus: $15,017,331; wildland: $5,164,437 | apparatus | most proposed spend |
 | U.S. Bank | OH, ID | finance: $17,685,656; payroll: $2,049,008 | finance | config/vendor_map.csv |
 | Ohio Bureau of Workers' Compensation | OH | insurance: $12,207,508; payroll: $50,826; apparatus: $5,923 | insurance | most proposed spend |
+| KeyBank | OH | payroll: $9,063,650; finance: $54,467 | finance | config/vendor_map.csv |
+| Sierra Pacific Industries | CA | professional: $9,049,347 | facilities | config/vendor_name_merges.csv |
 | HeliQwest International | CA, ID | apparatus: $5,649,643; wildland: $2,931,484 | apparatus | most proposed spend |
-| KeyBank | OH | payroll: $8,577,410 | finance | config/vendor_map.csv |
 | Ohio Township Association Risk Management Authority | OH | insurance: $8,547,944; government: $10,000 | insurance | most proposed spend |
 | Fidelity National Title | CA | finance: $7,000,000; construction: $400,467 | finance | most proposed spend |
 | Snap-on | CA, TX | general: $5,173,903; fleet: $815 | general | most proposed spend |
+| Act Fast Nationwide Fire Support | CA | wildland: $4,411,242; software: $410,317 | wildland | config/vendor_name_merges.csv |
 | Line Gear | CA | uniforms: $3,185,511; wildland: $1,372,497 | uniforms | most proposed spend |
 | PennCare | OH | ambulance: $3,863,344; ems-supplies: $464,503 | ambulance | most proposed spend |
 | Howell Rescue Systems | OH | fire-equipment: $3,416,814; payroll: $594,447 | fire-equipment | most proposed spend |
@@ -1562,23 +1554,28 @@ config/vendor_map.csv or a vendor rule instead of the proposal.
 | Algerine West | CA | wildland: $2,451,414; construction: $391,018 | wildland | most proposed spend |
 | Recology | CA | facilities: $2,570,865; utilities: $236,257 | utilities | config/vendor_name_merges.csv |
 | FTS Forest Technology Systems | CA | it: $2,670,248 | wildland | config/vendor_map.csv |
+| Fire Dept Extractor Supply | CA | government: $2,230,167 | fire-equipment | config/vendor_name_merges.csv |
 | Harris & Harris | CA, TX | finance: $974,503; ems-billing: $675,594 | ems-billing | config/vendor_name_merges.csv |
 | Ohio Department of Taxation | OH | payroll: $1,574,165; government: $31,363 | payroll | most proposed spend |
+| Farella Braun & Martel | CA | ambulance: $1,590,830 | professional | config/vendor_name_merges.csv |
+| Emergency Medical Service Auth | CA | ems-supplies: $1,488,245 | government | config/vendor_name_merges.csv |
 | Honeywell | TX | facilities: $1,483,108 | fire-equipment | config/vendor_map.csv |
 | MECC Regional Council of Governments | OH | dispatch: $1,305,706; government: $25,250 | dispatch | most proposed spend |
 | Med-I-Bank | OH | payroll: $1,152,477; finance: $4,102 | payroll | most proposed spend |
+| Forge Fire & Company | OH | fire-equipment: $1,096,231 | training | config/vendor_map.csv |
 | U.S. Department of the Treasury | OH, CA | government: $890,422; payroll: $86,676 | payroll | config/vendor_map.csv |
 | Hylant | OH | insurance: $749,928; payroll: $45,865 | insurance | most proposed spend |
 | Mountain Gate Fire Protection District | CA | wildland: $729,636; government: $66,010 | wildland | most proposed spend |
+| Napa County Resc Conserv Dist | CA | fleet: $763,427 | government | config/vendor_name_merges.csv |
 | Timberline Helicopters | CA, ID | apparatus: $606,869; wildland: $153,260 | apparatus | most proposed spend |
 | Burton's Fire | CA | fleet: $759,738 | apparatus | config/vendor_name_merges.csv |
 | United Rentals | CA | general: $738,110 | facilities | config/vendor_map.csv |
+| Burnham & Flower Insurance Group | OH | payroll: $474,422; insurance: $236,737 | payroll | most proposed spend |
 | W.W. Williams | OH | fleet: $680,590; facilities: $16,623 | fleet | most proposed spend |
 | Unity National Bank | OH | payroll: $619,056; finance: $12,781 | payroll | most proposed spend |
 | Hastings Air Energy Control | OH | facilities: $580,378; utilities: $2,985 | facilities | most proposed spend |
 | Cummins | OH | facilities: $550,578; utilities: $30,646 | facilities | config/vendor_map.csv |
 | Atwell's Police & Fire Equipment | OH | fire-equipment: $329,159; uniforms: $158,145 | fire-equipment | most proposed spend |
-| Burnham & Flower Insurance Group | OH | payroll: $278,740; insurance: $202,991 | payroll | most proposed spend |
 | Police & Firemen's Insurance Association | OH | payroll: $436,088; training: $30,215 | payroll | most proposed spend |
 | Optum Bank | OH | payroll: $441,125; finance: $12,600 | payroll | most proposed spend |
 | Home Depot | OH, TX | facilities: $436,341; finance: $5,432 | facilities | config/vendor_map.csv |
@@ -1588,44 +1585,66 @@ config/vendor_map.csv or a vendor rule instead of the proposal.
 | Premier Bank | OH | payroll: $346,894; finance: $10,258 | payroll | most proposed spend |
 | PNC Bank | OH | finance: $250,170; payroll: $104,142 | finance | most proposed spend |
 | Cintas | OH | uniforms: $182,712; facilities: $150,411 | uniforms | config/vendor_map.csv |
+| Jason M. Pauline | OH | general: $298,883 | payroll | config/vendor_name_merges.csv |
 | Buckeye Power Sales | OH | facilities: $270,239; utilities: $28,172 | facilities | most proposed spend |
 | Baycom | OH, TX | it: $232,130; payroll: $26,423 | it | most proposed spend |
 | Lowe's | OH | facilities: $253,173; finance: $4,277 | facilities | config/vendor_map.csv |
 | Public Consulting Group | OH, TX | ems-billing: $217,979; professional: $35,000 | ems-billing | most proposed spend |
 | Kzf Design | OH | construction: $196,254; professional: $45,076 | construction | most proposed spend |
 | Montgomery County | OH | government: $186,246; payroll: $44,745 | government | most proposed spend |
+| Austin D Hurst | OH | fire-equipment: $220,576 | payroll | config/vendor_name_merges.csv |
 | Axcess Fire and Safety Supply | ID, TX | fire-equipment: $108,767; wildland: $86,000 | fire-equipment | most proposed spend |
 | Matheson Tri-Gas | OH | ems-supplies: $133,197; utilities: $32,538 | ems-supplies | most proposed spend |
-| OhioHealth | OH | payroll: $89,263; medical-exams: $74,707 | payroll | most proposed spend |
+| OhioHealth | OH | payroll: $89,263; medical-exams: $74,707 | medical-exams | config/vendor_name_merges.csv |
 | Jg Luke | OH | uniforms: $103,327; payroll: $49,090 | uniforms | most proposed spend |
-| Butler Tech | OH | it: $105,651; training: $31,868 | it | most proposed spend |
+| Butler Tech | OH | it: $105,651; training: $31,868 | training | config/vendor_name_merges.csv |
 | First In-Last Out Fire Equipment & Training | OH | fire-equipment: $96,419; training: $36,433 | fire-equipment | most proposed spend |
 | Greene County | OH | government: $74,152; payroll: $38,473 | government | most proposed spend |
-| Crash Course Village | OH | government: $94,060; payroll: $14,900 | government | most proposed spend |
+| Crash Course Village | OH | government: $94,060; payroll: $14,900 | training | config/vendor_name_merges.csv |
 | J.K. Meurer | OH | construction: $77,910; facilities: $23,400 | construction | most proposed spend |
 | Sam's Club | OH | general: $69,540; finance: $29,897 | general | config/vendor_map.csv |
 | MSA Safety | OH | fire-equipment: $83,939 | scba | config/vendor_map.csv |
 | John D. Suban Spring Service | OH | fleet: $76,804; payroll: $5,476 | fleet | most proposed spend |
+| Lucas Parmelee | OH | ems-equipment: $78,278 | payroll | config/vendor_name_merges.csv |
 | Handtevy | OH | ems-supplies: $71,053 | software | config/vendor_map.csv |
 | Super Laundry Equipment | OH | fire-equipment: $51,033; payroll: $16,421 | fire-equipment | most proposed spend |
 | FireStationFurniture.com | CA | general: $60,772 | facilities | config/vendor_name_merges.csv |
+| Lucas Roberts | OH | ems-equipment: $52,417 | payroll | config/vendor_name_merges.csv |
 | Comdoc | OH | it: $35,600; finance: $12,876 | it | most proposed spend |
 | Mega City Fire Protection | OH | facilities: $43,066; government: $2,060 | facilities | most proposed spend |
+| Lion Creative Studios | OH | fire-equipment: $35,500 | professional | config/vendor_name_merges.csv |
+| Brian Cummins | OH | facilities: $33,685 | payroll | config/vendor_name_merges.csv |
+| DellaPenna Construction | OH | it: $33,125 | facilities | config/vendor_name_merges.csv |
 | Nelbud Services | OH | facilities: $24,443; professional: $5,172 | facilities | most proposed spend |
+| Jasmine M Pierce | OH | apparatus: $29,545 | payroll | config/vendor_name_merges.csv |
 | EMS LogiK | OH | ems-supplies: $28,850 | software | config/vendor_map.csv |
 | R & T Yoder Electric | OH | utilities: $26,386; construction: $2,334 | utilities | most proposed spend |
 | NEOFPA | OH | training: $27,341; government: $1,278 | training | most proposed spend |
+| Spartan IT | OH | apparatus: $27,858 | it | config/vendor_name_merges.csv |
+| Howard W. Goodyear | OH | fleet: $26,898 | payroll | config/vendor_name_merges.csv |
 | DreamSeat | OH | general: $26,593 | facilities | config/vendor_map.csv |
 | Individuals (names withheld) | OH | payroll: $23,211 | individuals | config/vendor_name_merges.csv |
 | Fastsigns | CA | general: $21,078 | professional | config/vendor_map.csv |
 | Walmart | OH | general: $17,202; finance: $3,463 | general | config/vendor_map.csv |
+| Ryan M Lucas | OH | ems-equipment: $19,775 | payroll | config/vendor_name_merges.csv |
+| Spartan Armor Systems | OH | apparatus: $18,688 | ppe | config/vendor_name_merges.csv |
+| Matt Hurst | OH | fire-equipment: $17,712 | payroll | config/vendor_name_merges.csv |
+| Lucas S Welsh | OH | ems-equipment: $17,387 | payroll | config/vendor_name_merges.csv |
+| Lucas Jagger | OH | ems-equipment: $16,871 | payroll | config/vendor_name_merges.csv |
 | PowerDMS | OH | utilities: $16,515 | training-software | config/vendor_map.csv |
+| Craig P Stires | OH | fleet: $13,236 | payroll | config/vendor_name_merges.csv |
+| Wendell A Slagell | OH | it: $12,936 | payroll | config/vendor_name_merges.csv |
+| Bethel Fire Association | OH | training: $12,264 | payroll | config/vendor_name_merges.csv |
+| Spartan Tool Supply | OH | apparatus: $12,245 | general | config/vendor_name_merges.csv |
 | All-Star Inflatables | OH | payroll: $10,870 | general | config/vendor_map.csv |
+| Berlin Twp Firefighter's Association Fire | OH | training: $10,122 | payroll | config/vendor_name_merges.csv |
 | RollNRack | OH | payroll: $9,970 | fire-equipment | config/vendor_map.csv |
+| Tanner S Glass | OH | facilities: $9,374 | payroll | config/vendor_name_merges.csv |
 | Zoll Data Systems | OH | ems-equipment: $9,151 | rms | vendor rule |
 | Health Care Logistics | OH | rms: $7,845 | ems-supplies | config/vendor_name_merges.csv |
 | 8x8 | OH | fleet: $7,757 | telecom | config/vendor_name_merges.csv |
 | Firehouse Innovations | OH | fire-equipment: $7,600 | training | config/vendor_map.csv |
+| Travelers | OH | training: $7,392 | insurance | config/vendor_map.csv |
 | Interstate Billing Service | OH | ems-billing: $5,974 | fleet | config/vendor_map.csv |
 
 ## Judgment calls
@@ -1635,9 +1654,12 @@ keeps that name out of the automatic grouping):
 
 | From | To | Note |
 | --- | --- | --- |
+| 2 Hot Uniforms | 2 Hot Activewear & Uniforms | same uniform company |
 | 8x8, Inc | 8x8 | 8x8 is a telephone (VoIP) company: telecom, not fleet |
 | AccuMed | Accumed Billing | same ambulance billing company |
 | Across the Street | Across the Street Productions | the name config/vendor_map.csv uses |
+| Act Fast Fire Support | Act Fast Nationwide Fire Support | water tenders hired for going fires (SCPRS lines), as Act Fast Nationwide Fire Support: wildland, not software |
+| Act Fast Nationwide Fire Supp | Act Fast Nationwide Fire Support | same company; the source cuts the name off |
 | ADP Payroll | ADP | same company |
 | ADP Payroll Services | ADP | same company |
 | Advanced Gas & Welding Solutions | Advanced Gas & Welding | same company |
@@ -1657,6 +1679,7 @@ keeps that name out of the automatic grouping):
 | Axcess Fire | Axcess Fire and Safety Supply | same company |
 | B&W Automotive Dba Bravo Chrysler Dodge Jeep of Alhambra | B&W Automotive Dba Bravo Chrysler | same dealer |
 | Bachman's HVAC Solutions | Bachman's | same company |
+| Beem's BP Distr. Inc. | Beem's BP Distributing | same fuel distributor; the source cuts the name off |
 | Benistar/Hartford-6795 | Benistar/Hartford | same plan |
 | Best One Tire & Service of | Best One Tire & Service | same company |
 | Best One Tire & Service of Mid America | Best One Tire & Service | same company |
@@ -1667,20 +1690,27 @@ keeps that name out of the automatic grouping):
 | Breating Air Systems | Breathing Air Systems | spelling |
 | Brondes Ford Maumee | Brondes Ford | same dealer |
 | Burgess Hearse & Ambulance Sales | Burgess Hearse & Ambulance | same company |
+| Burnham & Flower Agency Of Ohio, Inc. | Burnham & Flower Insurance Group | same insurance and benefits broker |
+| Burnham & Flower Group | Burnham & Flower Insurance Group | same insurance and benefits broker |
+| Burnham & Flower Of Ohio | Burnham & Flower Insurance Group | same insurance and benefits broker |
 | Burnham & Flowers Insurance Group | Burnham & Flower Insurance Group | spelling |
 | Burtons Fire | Burton's Fire | fire pump and apparatus repair (CAL FIRE lines): apparatus |
-| Butler Tech Ad Ed | Butler Tech | Butler Technology & Career Development Schools |
+| Butler Tech Ad Ed | Butler Tech | Butler Technology & Career Development Schools; paid for fire training services: training, not it |
 | Butler Technology & Career | Butler Tech | Butler Technology & Career Development Schools |
 | Butler Technology & Career Dev. School | Butler Tech | Butler Technology & Career Development Schools |
 | Butler Technology & Career Development School | Butler Tech | Butler Technology & Career Development Schools |
 | Cal Fire | CAL FIRE | California Department of Forestry and Fire Protection, as it names itself |
 | CAL FIRE (State of California) | CAL FIRE | California Department of Forestry and Fire Protection, as it names itself |
+| Calif Dept of Forestry & Fire Protection | CAL FIRE | California Department of Forestry and Fire Protection, as it names itself |
+| Calif. Dept of Health Care Srvcs | California Department of Health Care Services | same state department |
 | Capital One Trade Credit | Capital One | the name config/vendor_map.csv uses |
 | Cdw Goverment | CDW Government | spelling; the name config/vendor_rules.csv uses |
 | Cdw Government LLC, Cdw Government | CDW Government | the name config/vendor_map.csv uses |
 | Cdw Government, Ind. | CDW Government | the name config/vendor_map.csv uses |
 | CDW-G CDW Government | CDW Government | the name config/vendor_map.csv uses |
 | Center Point Energy | Centerpoint Energy | same utility |
+| Vectren Energy Delivery | Centerpoint Energy | Vectren Energy Delivery of Ohio, renamed CenterPoint Energy Ohio after CenterPoint bought Vectren in 2019 |
+| Vectren Energy Delivery Of Ohio, Inc. | Centerpoint Energy | Vectren Energy Delivery of Ohio, renamed CenterPoint Energy Ohio after CenterPoint bought Vectren in 2019 |
 | Central Square Technologies | CentralSquare Technologies | same software company |
 | CentralSquare Technoligies | CentralSquare Technologies | same software company |
 | CERNI MOTORS - Painesville | Cerni Motors | same dealer |
@@ -1697,19 +1727,24 @@ keeps that name out of the automatic grouping):
 | Time Warner - Spectrum Business | Charter Communications | Spectrum is Charter's brand (Time Warner Cable joined it in 2016); not Utah's 'The Spectrum', a St. George newspaper that shares the key SPECTRUM |
 | Time Warner Cable (Spectrum Enterprise) | Charter Communications | Spectrum is Charter's brand (Time Warner Cable joined it in 2016); not Utah's 'The Spectrum', a St. George newspaper that shares the key SPECTRUM |
 | Time Warner Cable-Northeast | Charter Communications | Spectrum is Charter's brand (Time Warner Cable joined it in 2016); not Utah's 'The Spectrum', a St. George newspaper that shares the key SPECTRUM |
+| Cigna Health And Life Ins Co. | Cigna Health and Life Insurance | same insurer |
 | Altafiber | Cincinnati Bell | Cincinnati Bell, renamed altafiber in 2022 |
 | altafiber | Cincinnati Bell | Cincinnati Bell, renamed altafiber in 2022 |
 | Cincinnati Bell Any Distance | Cincinnati Bell | Cincinnati Bell, renamed altafiber in 2022 |
 | Cincinnati Bell Telephone | Cincinnati Bell | Cincinnati Bell, renamed altafiber in 2022 |
 | Cincinnati Bell Telephone Co. Dba Altaf | Cincinnati Bell | Cincinnati Bell, renamed altafiber in 2022 |
+| Colonial Life & Accident | Colonial Life | the name config/vendor_map.csv uses |
 | Comdoc Leasing | Comdoc | same company |
 | Comuunity First National Bank | Community First National Bank | spelling |
 | Companion Life | Companion Life Insurance | same insurer |
 | Computerland Silicon Valley | ComputerLand of Silicon Valley | same company |
 | Consolidated Fleet Services In | Consolidated Fleet Services | the name config/vendor_map.csv uses |
 | Coughlin Ford of CV | Coughlin Ford | same dealer |
+| Riverside County Fire Department, Office of Emergency Services | County of Riverside Fire Dept | same county fire department |
+| Riverside County Fire Dept | County of Riverside Fire Dept | same county fire department |
+| Riverside County Fire Dept - Revenue Section | County of Riverside Fire Dept | same county fire department |
 | Craig Mountain | Craig Mountain Excavation | same Idaho contractor |
-| Crash Course Village Inc | Crash Course Village | same training site |
+| Crash Course Village Inc | Crash Course Village | same training site; a fire and rescue training site paid for training services and registrations: training, not government |
 | Crashcourse Village Inc. | Crash Course Village | same training site |
 | Crewboss | CrewBoss | the company's spelling |
 | Cronin Ford Kia | Cronin Ford | same dealer |
@@ -1718,7 +1753,9 @@ keeps that name out of the automatic grouping):
 | Cummins Sales & Service | Cummins | the name config/vendor_map.csv uses |
 | Darol Stanton Logging | Darold Stanton Logging | spelling |
 | Dell Computers | Dell Technologies | the name config/vendor_map.csv uses |
+| Delta Dental Plan of Ohio Inc. | Delta Dental | Delta Dental of Ohio (Delta Dental Plan of Ohio), as the other Ohio forms |
 | Deltadental | Delta Dental | spelling |
+| Dental Care Plus Group | Dental Care Plus | same dental plan |
 | Digitech | Digitech Computer | the name config/vendor_map.csv uses |
 | M O Dion & Sons | Dion & Sons | same company |
 | Direct Line | Direct Line Dozer | same CAL FIRE dozer contractor |
@@ -1738,10 +1775,13 @@ keeps that name out of the automatic grouping):
 | Fallsway | Fallsway Equipment | same company |
 | Farmers National | Farmers National Bank | same bank |
 | Fastspring | FastSpring | the company's spelling |
+| Federal Express | FedEx | FedEx (Federal Express Corporation); the name config/vendor_map.csv uses |
 | Fidelity Natl Title Co of CA | Fidelity National Title | same company |
 | Fifth Third Bank-Cc | Fifth Third Bank | same bank |
 | Fifth Third Bank-Mastercard | Fifth Third Bank | same bank |
 | Fifth Third Bank/Card Center | Fifth Third Bank | same bank |
+| Fire Apparatus Serv & Repair | Fire Apparatus Service & Repair | same Ohio apparatus repair company; the source cuts the name off |
+| Fire Apparatus Service | Fire Apparatus Service & Repair | same Ohio apparatus repair company (Montgomery County agencies use both forms) |
 | Fire Etc | Fire-Etc | the company's spelling |
 | Fire-Fly Fire Equipment Sales | Fire-Fly Fire Equipment | same company |
 | Firestorm Trucking CA | Firestorm Trucking | same company |
@@ -1750,6 +1790,7 @@ keeps that name out of the automatic grouping):
 | First In-Last Out Fire & Safty Equipmen | First In-Last Out Fire Equipment & Training | same Ohio company |
 | First In-Last Out Fire Ezuipment & Training | First In-Last Out Fire Equipment & Training | same Ohio company |
 | First Merit | First Merit Bank | same bank |
+| Forge and Fire | Forge Fire & Company | Forge & Fire Company LLC (published as 'FORGE & FIRE COMPANY LLC' and 'Forge Fire & Company'); the name config/vendor_map.csv uses |
 | Gerber Collision & Glass- Wilmington | Gerber Collision & Glass | same company |
 | Goodyear Comm Tire & Serv Cent | Goodyear | the name config/vendor_map.csv uses |
 | Goodyear Commercial Truck | Goodyear | the name config/vendor_map.csv uses |
@@ -1762,6 +1803,7 @@ keeps that name out of the automatic grouping):
 | Hall Public Safety Outfitters | Hall Public Safety Upfitters | same company |
 | Hastings Air Energy | Hastings Air Energy Control | same company |
 | Heartland Bank Mastercard | Heartland Bank | same bank |
+| Holt of CA | Holt of California | same Caterpillar dealer |
 | HD SUPPLY Formerly Home Depot Pro | Home Depot | Home Depot Pro (HD Supply), as vendor rule '^HOME DEPOT' names it |
 | Horton Emergency Vehicle | Horton Emergency Vehicles | same company |
 | HSA - Employer | HSA - Employer Match/Wellness | same account |
@@ -1801,6 +1843,10 @@ keeps that name out of the automatic grouping):
 | Kembra Credit Union | KEMBA Credit Union | spelling |
 | Ken Neyer Plumbling | Ken Neyer Plumbing | spelling |
 | Key Chrysler Jeep, Dodge | Key Chrysler | same dealer |
+| Hsa Key Bank | KeyBank | the name config/vendor_map.csv uses |
+| Key Bank - Hsa | KeyBank | the name config/vendor_map.csv uses |
+| Key Bank Credit Card | KeyBank | the name config/vendor_map.csv uses |
+| Key Bank- Key2Purchase | KeyBank | the name config/vendor_map.csv uses |
 | Kilroy Realty 303 | Kilroy Realty | same landlord |
 | Kovatch Mobile Equipment dba KME Fire Apparatus | KME Fire Apparatus | same apparatus maker |
 | Knapheide Truck Equipment | Knapheide Truck Equipment Center | same company |
@@ -1817,6 +1863,7 @@ keeps that name out of the automatic grouping):
 | Linegear | Line Gear | same company |
 | Linegear Fire & Rescue | Line Gear | same company |
 | Lion Group | LION | LION Group, the turnout gear maker |
+| * Lion Creative Studios LLC | Lion Creative Studios | a creative studio paid for special projects; the LION keyword caught it |
 | Lube Depot & Tire | Lube Depot | same company |
 | Marathon | Marathon Petroleum | Marathon fuel and its fleet card |
 | Marathon Ashland Fleet Service | Marathon Petroleum | Marathon fuel and its fleet card |
@@ -1847,8 +1894,10 @@ keeps that name out of the automatic grouping):
 | D&S Auto Parts dba NAPA Auto Parts | NAPA Auto Parts | NAPA stores, as vendor rule '^NAPA' names them |
 | Napa | NAPA Auto Parts | NAPA stores, as vendor rule '^NAPA' names them |
 | Napa - Canal Winchester | NAPA Auto Parts | NAPA stores, as vendor rule '^NAPA' names them |
+| Napa Auto Parts Brooklyn | NAPA Auto Parts | NAPA stores, as vendor rule '^NAPA' names them |
 | Napa Ohio | NAPA Auto Parts | NAPA stores, as vendor rule '^NAPA' names them |
 | Napa Vandalia | NAPA Auto Parts | NAPA stores, as vendor rule '^NAPA' names them |
+| NAPA, Inc.-Columbus, OH | NAPA Auto Parts | NAPA stores, as vendor rule '^NAPA' names them |
 | National Hose Testing Specialties | National Hose Testing | same company |
 | Nelbud Services Group | Nelbud Services | same company |
 | NEOFPA Treasurer | NEOFPA | Northeast Ohio Fire Prevention Association |
@@ -1866,11 +1915,18 @@ keeps that name out of the automatic grouping):
 | Ohio Fire & Emergency Services | Ohio Fire & Emergency Services Foundation | same foundation |
 | Ohio Fire & Emergency Services Fnd | Ohio Fire & Emergency Services Foundation | same foundation |
 | Ohio First Responders Grants | Ohio First Responder Grants | spelling |
+| Oh Police/Fire Pension Fund | Ohio Police & Fire Pension Fund | OP&F (formerly the Police & Firemen's Disability and Pension Fund) |
+| Police & Firemen Pension & | Ohio Police & Fire Pension Fund | OP&F (formerly the Police & Firemen's Disability and Pension Fund); name cut off in the source |
+| Police & Firemen's | Ohio Police & Fire Pension Fund | OP&F (formerly the Police & Firemen's Disability and Pension Fund); paid from 'Ohio Police and Fire Pension Fund' accounts |
+| Police & Firemens Pension Fund | Ohio Police & Fire Pension Fund | OP&F (formerly the Police & Firemen's Disability and Pension Fund) |
 | Opedc | Ohio Public Employees Deferred Compensation | OPEDC is the Ohio Public Employees Deferred Compensation program |
 | Opedc Roth | Ohio Public Employees Deferred Compensation | OPEDC Roth accounts |
 | Ohio Public Employee Retirement System | Ohio Public Employees Retirement System | spelling |
 | Ohio Public Employees Retirment System | Ohio Public Employees Retirement System | spelling |
+| Ohio Public Risk Ins. Agency dba VFIS of Ohio | Ohio Public Risk Insurance Agency | same agency (dba VFIS of Ohio) |
+| Ohio Public Risk Insurance Agency DBA VFIS | Ohio Public Risk Insurance Agency | same agency (dba VFIS of Ohio) |
 | Ohio Public Risks Insurance Agency | Ohio Public Risk Insurance Agency | spelling |
+| VFIS of Ohio | Ohio Public Risk Insurance Agency | the agency publishes itself as Ohio Public Risk Insurance Agency dba VFIS of Ohio |
 | Ohio Township Ass. Risk Management Auth. | Ohio Township Association Risk Management Authority | OTARMA, the township insurance pool |
 | Ohio Township Ass. Risk Mngt Authority | Ohio Township Association Risk Management Authority | OTARMA, the township insurance pool |
 | Ohio Township Assn Risk Mgmt Authority | Ohio Township Association Risk Management Authority | OTARMA, the township insurance pool |
@@ -1878,11 +1934,12 @@ keeps that name out of the automatic grouping):
 | Ohio Twp Assoc Risk Management Authority | Ohio Township Association Risk Management Authority | OTARMA, the township insurance pool |
 | Ohio Twp. Assn Risk Management Authority | Ohio Township Association Risk Management Authority | OTARMA, the township insurance pool |
 | OTARMA | Ohio Township Association Risk Management Authority | OTARMA, the township insurance pool |
-| Ohio Health/Workhealth | OhioHealth | OhioHealth (WorkHealth is its occupational health service) |
+| Ohio Health/Workhealth | OhioHealth | OhioHealth (WorkHealth is its occupational health service); WorkHealth is occupational medicine (physicals): medical-exams, not payroll |
 | OhioHealth/WorkHealth | OhioHealth | OhioHealth (WorkHealth is its occupational health service) |
 | Ok Fine Productions | OK Fine Productions | the company's spelling |
 | Old Fort Bank Visa | Old Fort Bank | same bank |
 | Opengov | OpenGov | the company's spelling |
+| P&R Communications | P & R Communications Service | same Ohio radio company (P&R Communications Service) |
 | Payroll - City of Wapakoneta | Payroll | a payroll entry, not a company: the name config/vendor_map.csv uses |
 | Payroll - Net | Payroll | a payroll entry, not a company: the name config/vendor_map.csv uses |
 | Payroll Deduction From Checking | Payroll | a payroll entry, not a company: the name config/vendor_map.csv uses |
@@ -1919,6 +1976,7 @@ keeps that name out of the automatic grouping):
 | Regents of the University of | Regents of the University of California | one legal body for every UC campus |
 | Regents of the University of California at Los Angeles | Regents of the University of California | one legal body for every UC campus |
 | Regents of the University of California, UC Davis | Regents of the University of California | one legal body for every UC campus |
+| Regents of Univ of CA Davis | Regents of the University of California | one legal body for every UC campus |
 | Reliance Standard Life Ins.Co | Reliance Standard Life | same insurer |
 | Republic Services #798 | Republic Services | the name config/vendor_map.csv uses |
 | Rmc-Resource Manaement Consultants | Rmc-Resource Management Consultants | spelling |
@@ -1927,6 +1985,8 @@ keeps that name out of the automatic grouping):
 | Rumpke Consolidated Companies | Rumpke | same company |
 | Rumpke Waste Removal Systems | Rumpke | same company |
 | Rusty's Towing Srevices | Rusty's Towing Service | spelling |
+| Sacramento Metro Fire Dist | Sacramento Metropolitan Fire District | same fire district |
+| Sacramento Metro Fire District | Sacramento Metropolitan Fire District | same fire district |
 | Sand Hollow Fire Deistrict | Sand Hollow Fire District | spelling |
 | Security Benefits | Security Benefit | spelling |
 | Sedgwick Claims Management | Sedgwick | same claims administrator |
@@ -1940,6 +2000,7 @@ keeps that name out of the automatic grouping):
 | Siteone Landscape Supply | SiteOne Landscape Supply | the company's spelling |
 | Snap-on Industrial | Snap-on | Snap-on and its industrial division |
 | Snap-on Tools | Snap-on | Snap-on and its industrial division |
+| Spartan It LLC | Spartan IT | an IT company; the apparatus keyword rule (SPARTAN) caught it |
 | Speedway Super America LLC | Speedway | the name config/vendor_map.csv uses |
 | Speedway Superamerica | Speedway | the name config/vendor_map.csv uses |
 | Star 2 Star Communications | Star2Star Communications | same company |
@@ -1958,6 +2019,7 @@ keeps that name out of the automatic grouping):
 | Sysco Foods | Sysco | same company |
 | Sysco of Central CA | Sysco | same company |
 | Sysco Sacramento | Sysco | same company |
+| Travelers Insurance | Travelers | the name config/vendor_map.csv uses: insurance, not training |
 | Ohio Treasurer of State | Treasurer of State of Ohio | same office |
 | Treas St of Ohio | Treasurer of State of Ohio | same office |
 | Treas St of Ohio, Fund 615 | Treasurer of State of Ohio | same office |
@@ -1986,16 +2048,19 @@ keeps that name out of the automatic grouping):
 | Unity National Bank/Card Member Services | Unity National Bank | same bank |
 | University Hospital Health Systems | University Hospitals Health System | same hospital system |
 | University Hospital Occupational Health | University Hospitals Occupational Health | same clinic |
+| UNUM Insurance Co of Am | Unum | same insurer |
 | US Food Service | US Foods | US Foodservice is US Foods' former name; the name config/vendor_map.csv uses |
 | US Foodservice | US Foods | US Foodservice is US Foods' former name; the name config/vendor_map.csv uses |
 | US Foodservice/los Angeles | US Foods | US Foodservice is US Foods' former name; the name config/vendor_map.csv uses |
 | Valley Ford Truck | Valley Ford Truck Sales | same dealer |
 | Vasu Communitcations | Vasu Communications | spelling |
+| TargetSolutions Learning LLC Dba Vector Solut | Vector Solutions | TargetSolutions is Vector Solutions' former name; the name config/vendor_map.csv uses |
 | Vision Service Plan - (Ct) | Vision Service Plan | VSP, one national company |
 | Vision Service Plan Of Ohio | Vision Service Plan | VSP, one national company |
 | Vision Service Plan-(OH) | Vision Service Plan | VSP, one national company |
 | Vision Services Plan | Vision Service Plan | VSP, one national company |
 | Vision Services Plan - (OH) | Vision Service Plan | VSP, one national company |
+| Vsp Vision Service Plan | Vision Service Plan | VSP, one national company |
 | W.S. Eletronics | W.S. Electronics | spelling |
 | Warren Fire Equiptment | Warren Fire Equipment | spelling |
 | Waterway of Southwest Pa | Waterway | Waterway (fleet wash), its Southwest Pennsylvania branch |
@@ -2005,6 +2070,7 @@ keeps that name out of the automatic grouping):
 | Wells Fargo Financial Leasing | Wells Fargo | same bank |
 | Wesbanco Bank | Wesbanco | same bank |
 | West Mark Service Center | West Mark | same company |
+| Western Extrication Spec | Western Extrication Specialists | same company; the source cuts the name off |
 | Windstream Western Reserve | Windstream | same telephone company |
 | Windstream/Alltel | Windstream | same telephone company |
 | Witmer | Witmer Public Safety Group | the name config/vendor_map.csv uses |
@@ -2012,14 +2078,38 @@ keeps that name out of the automatic grouping):
 | Zetron A Codan | Zetron | Zetron, a Codan company |
 | The Ziegler Tire & Supply | Ziegler Tire | same company |
 | Zimcom Internet Solutions | Zimcom | same company |
+| Austin D Hurst | Austin D Hurst | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| Berlin Twp Firefighter's Association Fire | Berlin Twp Firefighter's Association Fire | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| Bethel Fire Association | Bethel Fire Association | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| Brian Cummins | Brian Cummins | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| Craig P Stires | Craig P Stires | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| DellaPenna Construction | DellaPenna Construction | paid for building repairs: facilities, not it |
 | Deluxe Door Systems | Deluxe Door Systems | a door company; vendor rule '^DELUXE' (Deluxe checks and forms) catches it by mistake |
+| Emergency Medical Service Auth | Emergency Medical Service Auth | the California Emergency Medical Services Authority, a state agency (dues and consulting): government |
+| Farella Braun & Martel | Farella Braun & Martel | a San Francisco law firm; the ambulance keyword rule (BRAUN) caught it |
+| Fire Dept Extractor Supply | Fire Dept Extractor Supply | sells turnout gear extractors (laundry machines), as Super Laundry Equipment: a company, not a government |
 | FireStationFurniture.com | FireStationFurniture.com | station furniture: facilities, as Utah's keyword rule files it |
 | Harris & Harris | Harris & Harris | collection agency for ambulance bills (TX, CA): ems-billing, not finance |
 | Health Care Logistics | Health Care Logistics | EMS and pharmacy supplies: ems-supplies, not rms |
+| Howard W. Goodyear | Howard W. Goodyear | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| Jasmine M Pierce | Jasmine M Pierce | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| Jason M. Pauline | Jason M. Pauline | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
 | JE Dunn Construction | JE Dunn Construction | a construction company; the journal-entry keyword rule '^JE\b' catches it by mistake |
+| Lucas Jagger | Lucas Jagger | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| Lucas Parmelee | Lucas Parmelee | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| Lucas Roberts | Lucas Roberts | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| Lucas S Welsh | Lucas S Welsh | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| Matt Hurst | Matt Hurst | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| Napa County Resc Conserv Dist | Napa County Resc Conserv Dist | a resource conservation district, as the other RCDs: government, not fleet (the NAPA keyword caught it) |
+| Ryan M Lucas | Ryan M Lucas | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| Sierra Pacific Industries | Sierra Pacific Industries | paid for rents and leases: facilities |
+| Spartan Armor Systems | Spartan Armor Systems | body armor; the apparatus keyword rule (SPARTAN) caught it |
+| Spartan Tool Supply | Spartan Tool Supply | tools; the apparatus keyword rule (SPARTAN) caught it |
+| Tanner S Glass | Tanner S Glass | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
+| Wendell A Slagell | Wendell A Slagell | paid from 'Other - Salaries' accounts: payroll (a keyword in the name set a purchasing category) |
 | Canopy |  | CAL FIRE greenhouse payee; the key CANOPY also names an unrelated Utah payee, so no shared row |
 
-Pairs that look alike but stay apart, for review (238 found; the 191 with $25,000
+Pairs that look alike but stay apart, for review (229 found; the 184 with $25,000
 or more of proposed and Utah spend together are listed). Merge one by adding a row to
 `config/vendor_name_merges.csv` and running the script again.
 
@@ -2045,9 +2135,7 @@ or more of proposed and Utah spend together are listed). Merge one by adding a r
 | Allied | Allied Network Solutions | $12,762 | $3,631,612 |
 | Fire Safety Services | Fire Safety USA | $3,261,320 | $22,767 |
 | City of Nampa | City of Napa | $452,648 | $2,749,262 |
-| Fire Apparatus Service | Fire Apparatus Solutions | $764,857 | $2,161,575 |
 | Hopland Fire Protection Dist | Orland Fire Protection Dist | $1,603,545 | $1,255,585 |
-| Federal | Federal Express | $1,658,972 | $1,131,032 |
 | D-g Backhoe Service | J R Backhoe | $1,587,043 | $1,017,498 |
 | JW Enterprises | RJW Enterprises | $562,208 | $1,818,114 |
 | Central FPD | North Central FPD | $1,312,645 | $1,017,342 |
@@ -2066,7 +2154,6 @@ or more of proposed and Utah spend together are listed). Merge one by adding a r
 | Erickson | Erickson Construction | $1,096,194 | $461,309 |
 | Corona Fire Department | Coronado Fire Dept | $1,264,059 | $244,129 |
 | Pala Fire Department | Pauma Fire Department | $815,292 | $660,142 |
-| Fire Apparatus Service | Fire Apparatus Service & Repair | $764,857 | $653,725 |
 | Fountain Valley Fire Dept | Mountain Valley Fire Dept | $1,341,200 | $70,584 |
 | American Water Truck SVCS | K & B Water Truck Service | $967,398 | $418,729 |
 | Colton Fire Department | Colton Incorporated | $1,367,375 | $11,536 |
@@ -2078,7 +2165,6 @@ or more of proposed and Utah spend together are listed). Merge one by adding a r
 | Premier Companies | Premier Vehicle Installation | $14,488 | $1,211,174 |
 | First National Bank | First National Bank - Visa | $1,191,830 | $2,197 |
 | Emergency Vehicle Equipment | Hi-tech Emergency Vehicle Service | $528,013 | $618,588 |
-| Forge Fire & Company | Forge and Fire | $11,200 | $1,096,231 |
 | Emergency Vehicle Systems | Hi-tech Emergency Vehicle Service | $477,009 | $618,588 |
 | Mission Communications | Vision Communications | $92,210 | $986,227 |
 | Summit Land Management | The Summit | $1,020,290 | $1,161 |
@@ -2090,7 +2176,6 @@ or more of proposed and Utah spend together are listed). Merge one by adding a r
 | Ec Construction | VC Construction | $4,617 | $851,515 |
 | Salary | Salary Readychex | $837,261 | $9,588 |
 | Salina Fire Department | Salinas Fire Department | $83,270 | $757,166 |
-| B&C Communications | P&R Communications | $664,269 | $111,172 |
 | Phoenix | Phoenix Farms | $74,924 | $693,200 |
 | B&C Communications | J&K Communications | $664,269 | $101,743 |
 | Summit Fire Apparatus | The Summit | $735,944 | $1,161 |
@@ -2105,7 +2190,6 @@ or more of proposed and Utah spend together are listed). Merge one by adding a r
 | Emergency Vehicle Equipment | Emergency Vehicle Products | $528,013 | $28,904 |
 | Allied | Allied Universal | $12,762 | $537,060 |
 | Allied | Allied Storage Containers | $12,762 | $532,510 |
-| P & R Communications Service | P&R Communications | $414,939 | $111,172 |
 | G and J Truck Sales | Truck Sales and Services | $507,938 | $13,171 |
 | Guardian | Guardian Alarm | $509,303 | $10,391 |
 | Western Fire Equipment | Western Fire Supply | $438,000 | $76,451 |
@@ -2133,7 +2217,6 @@ or more of proposed and Utah spend together are listed). Merge one by adding a r
 | Valley Ford | Valley Ford Truck Sales | $150,303 | $105,349 |
 | Premier Companies | Premier Truck Group | $14,488 | $239,869 |
 | Shelly L Lacey | The Shelly | $212,131 | $38,166 |
-| J&K Communications | P&R Communications | $101,743 | $111,172 |
 | 3F Fitness | G&G Fitness Equipment | $77,540 | $115,414 |
 | GT Logging | RT Logging | $152,995 | $39,204 |
 | Plain Twp | Plain Twp FF Assoc Acct 4594 | $86,894 | $98,176 |
@@ -2205,8 +2288,8 @@ or more of proposed and Utah spend together are listed). Merge one by adding a r
 | Colton Incorporated | Colton Taylor Lewis | $11,536 | $26,399 |
 | Larsen | Larsen Architects | $11,377 | $24,944 |
 | Allied | Allied Mechanical | $12,762 | $22,332 |
+| Prodigy | Prodigy EMS | $18,387 | $15,940 |
 | Premier Companies | Premier Occupational Health | $14,488 | $19,661 |
-| Prodigy | Prodigy EMS | $18,387 | $15,240 |
 | On-Target | Target | $29,990 | $1,808 |
 | Multi Vendor | Multi-Vendor for Wh Employees | $28,224 | $3,034 |
 | Brian P Huston | Brian S. Huston | $2,858 | $27,995 |
@@ -2279,7 +2362,7 @@ config/vendor_map.csv, then the vendor rules; payees in a purchasing category). 
 | 49 | Helimax Aviation | apparatus | $22,210,882 |  |  | $22,210,882 (1) |  |  | 1 |
 | 50 | Elk Grove Auto Group | fleet | $22,154,376 |  |  | $22,154,376 (2) |  |  | 1 |
 
-Vendors with purchasing spend in at least three of the five states: 323. The 50
+Vendors with purchasing spend in at least three of the five states: 322. The 50
 with the most spend (the national vendors, each under one name):
 
 | # | Vendor | Category | Total | UT | OH | CA | ID | TX | States |
@@ -2325,7 +2408,7 @@ with the most spend (the national vendors, each under one name):
 | 39 | Amazon | general | $4,270,333 | $1,801,211 (75) | $1,169,793 (69) | $940,670 (4) | $303,761 (1) | $54,898 (1) | 5 |
 | 40 | Staples | general | $3,909,038 | $61,817 (27) | $300,883 (78) | $2,460,927 (4) | $4,995 (1) | $1,080,416 (1) | 5 |
 | 41 | T-Mobile | telecom | $3,804,698 | $269,974 (21) | $91,172 (19) | $3,443,551 (4) |  |  | 3 |
-| 42 | NAPA Auto Parts | fleet | $3,481,566 | $898,794 (56) | $377,221 (78) | $2,129,267 (4) | $76,284 (1) |  | 4 |
+| 42 | NAPA Auto Parts | fleet | $3,532,178 | $898,794 (56) | $427,833 (82) | $2,129,267 (4) | $76,284 (1) |  | 4 |
 | 43 | Ferno | ems-equipment | $3,396,633 | $217,576 (8) | $51,746 (6) | $3,127,311 (2) |  |  | 3 |
 | 44 | Cummins | facilities | $3,265,464 | $268,713 (20) | $933,397 (57) | $2,063,354 (3) |  |  | 3 |
 | 45 | Lexipol | training-software | $3,056,256 | $1,085,926 (51) | $1,100,282 (59) | $594,758 (1) |  | $275,290 (3) | 4 |
@@ -2655,5 +2738,56 @@ Productions, FastSpring, PK Safety Supply, PPE Software and Fire-Etc.
 - FEDERAL EXPRESS \| Federal Express Corporation / unclassified / none -> Federal Express / general / map \| 0
 
 </details>
+
+
+### Review of names and categories (2026-10-07)
+
+A second review of the canonical names and categories, made through `config/vendor_name_merges.csv` (70 rows
+added, 3 rows given a category) and a re-run of the merge on the inputs of 56f6710 plus the 11 hand rows above.
+It changed 81 rows of `config/vendor_map.csv`. In Utah only one payee moved: Spartan Armor Systems, from
+apparatus to ppe. Utah's purchasing total is unchanged.
+
+- **One company under two names, now one:** FedEx (Federal Express in CA, ID, OH and TX, $1.13M, had its
+  own name beside Utah's FedEx); Forge Fire & Company (Ohio's $1.1M 'FORGE & FIRE COMPANY LLC', which was
+  filed as fire-equipment under 'Forge and Fire'); P & R Communications Service; Holt of California; Western
+  Extrication Specialists; 2 Hot Activewear & Uniforms; Act Fast Nationwide Fire Support (and no longer software);
+  Dental Care Plus; Cigna Health and Life Insurance; Delta Dental; four more spellings of the Ohio Police & Fire
+  Pension Fund ($6.0M); California Department of Health Care Services ($109.8M under a second spelling);
+  CAL FIRE; Regents of the University of California (UC Davis, $23.3M); County of Riverside Fire Dept;
+  Sacramento Metropolitan Fire District; Ohio Public Risk Insurance Agency (dba VFIS of Ohio);
+  Centerpoint Energy (Vectren Energy Delivery of Ohio, renamed CenterPoint Energy Ohio); Burnham & Flower
+  Insurance Group; Beem's BP Distributing; NAPA Auto Parts (Columbus); Colonial Life; Unum; Vision Service Plan;
+  Travelers; KeyBank; Fire Apparatus Service & Repair.
+- **Categories set by a keyword in a person's or company's name:** 16 Ohio payees paid only from
+  'Other - Salaries' accounts (firefighters such as Austin D Hurst, Jasmine M Pierce, Lucas Parmelee, Ryan M
+  Lucas, Howard W. Goodyear, and two firefighter associations, $0.9M) were in fire-equipment, apparatus,
+  ems-equipment, fleet, it, facilities or general; they are payroll now. Farella Braun & Martel (a law firm,
+  $1.59M) was ambulance; Spartan IT, Spartan Armor Systems and Spartan Tool Supply were apparatus; Lion Creative
+  Studios was fire-equipment; Travelers Insurance was training.
+- **Other categories:** Crash Course Village (training site) was government; Butler Tech (training services) was
+  it; OhioHealth WorkHealth (occupational medicine, $164K) was payroll and is medical-exams; Fire Dept Extractor
+  Supply ($2.2M, gear extractors) was government; the California EMS Authority was ems-supplies and is
+  government; the Napa County RCD was fleet and is government; Sierra Pacific Industries (rent) is facilities.
+- The Utah impact list above predates this review: the key FEDERAL EXPRESS now maps to FedEx.
+
+Left for the owner (not changed):
+
+- **SPECTRUM** stays Utah's newspaper The Spectrum, so $165K of Ohio cable and internet payments show under a
+  St. George newspaper. A name-only map cannot give one key two vendors.
+- **COMMUNITY FIRST NATIONAL BANK** is one key for an Ohio bank ($1.7M of Ohio debt payments) and a Utah payee
+  ($73K); they share the Utah row and one vendor id.
+- **Aircraft contractors** are apparatus in California (Heli-1, HeliQwest, Timberline Helicopters by spend) and
+  wildland in Idaho (Aero Spray, Eagle Helicopters, Aeronautical Technologies). Both are purchasing categories.
+- **California grant recipients** (fire safe councils, foundations, timber companies such as Mendocino Redwood
+  and Collins Timber) are filed as government, which is not purchasing.
+- **Many California fire districts and departments** still have two spellings (for example Idyllwild Fire
+  Protection Dist and District, San Ramon VLLY Fire Prot Dist and San Ramon Valley Fire Protection District).
+  All are government and outside purchasing.
+- Look-alike pairs that may be one company but were not merged without more evidence: NWN and NWN Solutions,
+  System Solutions and System Solutions DVBE, Cross Connections and Cross Connections Emergency, Black Knight
+  Enterprises and Black Knight Fire Support, Phoenix / Phoenix Fire / Phoenix Fire Service (Ohio), Valley Ford
+  and Valley Ford Truck Sales, Atlantic and Atlantic Emergency Solutions.
+- JPMorgan Chase Bank is payroll by spend; Chase Card Services and 'Jp Morgan Chase Commericial Credit Card'
+  stay apart as finance. Both categories are outside purchasing.
 
 <!-- manual:end -->

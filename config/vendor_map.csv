@@ -10,7 +10,7 @@ name_key,vendor,category,confidence
 1063 CHARTER COMMUNICATIONS SPECTRUM ENTERPRISE,Charter Communications,telecom,low
 1066 CINCINNATI SAFETY UPFITTERS VALOR OUTFITTERS,Cincinnati Safety Upfitters,fleet,medium
 1069 TRIHEALTH G ROSS OCCUPATIONAL HEALTH,"Trihealth G, Dba Ross Occupational Hea",medical-exams,low
-1094 CRASHCOURSE VILLAGE,Crash Course Village,government,low
+1094 CRASHCOURSE VILLAGE,Crash Course Village,training,low
 10TH DIST AGRICULTURAL ASSN,10TH Dist Agricultural Assn,facilities,low
 11,11,payroll,low
 1104 JEFFERSON HEALTH PLAN,Jefferson Health Plan,payroll,low
@@ -91,7 +91,7 @@ name_key,vendor,category,confidence
 1ST RESPONSE FLEET SERVICE,1St Response Fleet Service,fleet,low
 2 ELEVEN SHIELDS,2-eleven Shields,unclassified,low
 2 HOT ACTIVEWEAR AND UNIFORMS,2 Hot Activewear & Uniforms,uniforms,medium
-2 HOT UNIFORMS,2 Hot Uniforms,uniforms,medium
+2 HOT UNIFORMS,2 Hot Activewear & Uniforms,uniforms,medium
 20 20 GENESYSTEMS,20/20 GeneSystems,unclassified,low
 20 20 GENESYSYTEMS,20/20 GeneSystems,unclassified,low
 2008 TRISTAN R ALLEN AND MONET L,2008 Tristan R Allen & Monet L,wildland,low
@@ -109,7 +109,7 @@ name_key,vendor,category,confidence
 283 SUMMIT FIRE APPARATUS,Summit Fire Apparatus,apparatus,low
 2923 W CESSNA,2923 W Cessna,facilities,low
 294 DENTAL CARE PLUS,Dental Care Plus,payroll,medium
-294 DENTAL CARE PLUS GROUP,Dental Care Plus Group,payroll,low
+294 DENTAL CARE PLUS GROUP,Dental Care Plus,payroll,low
 2C LAND AND TIMBER MGMT,2C Land & Timber MGMT,wildland,low
 3 D ROOFING,3-D Roofing,construction,low
 306 UNIVERSITY OF CINCINNATI,University of Cincinnati,training,low
@@ -327,8 +327,8 @@ ACRISURE GREAT LAKES PARTNERS INSURANCE,Acrisure Great Lakes Partners Insurance,
 ACROSS STREET,Across the Street Productions,training,medium
 ACROSS STREET PRODUCTIONS,Across the Street Productions,training,low
 ACT ADVANCED CLEANING TECH,A.C.T. Advanced Cleaning Tech,facilities,low
-ACT FAST FIRE SUPPORT,Act Fast Fire Support,software,low
-ACT FAST NATIONWIDE FIRE SUPP,Act Fast Nationwide Fire Supp,wildland,low
+ACT FAST FIRE SUPPORT,Act Fast Nationwide Fire Support,wildland,low
+ACT FAST NATIONWIDE FIRE SUPP,Act Fast Nationwide Fire Support,wildland,low
 ACTENVIRO,ACTenviro,professional,low
 ACTION ALTERNATOR AND STARTER,Action Alternator & Starter,fleet,high
 ACTION DOOR,Action Door,facilities,low
@@ -1129,7 +1129,7 @@ AUSTIN A MILLER,Austin A Miller,payroll,low
 AUSTIN B PARKER,Austin B Parker,payroll,low
 AUSTIN CB STEINDL,Austin Cb Steindl,payroll,low
 AUSTIN CLEMENTS,Austin Clements,training,low
-AUSTIN D HURST,Austin D Hurst,fire-equipment,low
+AUSTIN D HURST,Austin D Hurst,payroll,low
 AUSTIN EDGELL,Austin Edgell,payroll,low
 AUSTIN GEBHARDT,Austin Gebhardt,payroll,low
 AUSTIN HOFFMAN,Austin Hoffman,payroll,low
@@ -1340,7 +1340,7 @@ BEEHIVE COMMERCIAL REPAIRS,Beehive Commercial Repairs,facilities,medium
 BEEHIVE PLUMBING,Beehive Plumbing,facilities,high
 BEEHIVE TELEPHONE,Beehive Telephone,telecom,high
 BEELINE PEST CONTROL,Beeline Pest Control,facilities,high
-BEEMS BP DISTR,Beem's BP Distr.,fleet,low
+BEEMS BP DISTR,Beem's BP Distributing,fleet,low
 BEEMS BP DISTRIBUTING,Beem's BP Distributing,fleet,low
 BEEMS PETROLEUM,Beem's Petroleum,fleet,low
 BEHR MOUNTAIN ELECTRIC,Behr Mountain Electric,facilities,high
@@ -1416,7 +1416,7 @@ BERGER CHEVROLET,Berger Chevrolet,fleet,low
 BERGMAN,Bergman,unclassified,low
 BERKELEY FIRE DEPARTMENT,Berkeley Fire Department,government,medium
 BERLIN TOWNSHIP,Berlin Township,payroll,low
-BERLIN TWP FIREFIGHTERS ASSOCIATION FIRE,Berlin Twp Firefighter's Association Fire,training,low
+BERLIN TWP FIREFIGHTERS ASSOCIATION FIRE,Berlin Twp Firefighter's Association Fire,payroll,low
 BERLIN TWP PROFESSIONAL FIRE,Berlin Twp Professional Fire,payroll,low
 BERNARD DOWLING,Bernard Dowling,wildland,low
 BERNEKER BROTHERS ROOFING,Berneker Brothers Roofing,construction,low
@@ -1447,7 +1447,7 @@ BETH A DIEHL,Beth A. Diehl,payroll,low
 BETH A MONTGOMERY,Beth A. Montgomery,payroll,low
 BETHANY PEREA,Individuals (names withheld),individuals,high
 BETHANY WILLIAMS,Bethany Williams,payroll,low
-BETHEL FIRE ASSOCIATION,Bethel Fire Association,training,low
+BETHEL FIRE ASSOCIATION,Bethel Fire Association,payroll,low
 BETHESDA HEALTH CARE,Bethesda Healthcare,medical-exams,low
 BETHESDA HEALTHCARE,Bethesda Healthcare,medical-exams,low
 BETHESDA NORTH APOTHECARY PHARMACY,Bethesda North Apothecary-Pharmacy,ems-supplies,low
@@ -1828,7 +1828,7 @@ BRIAN C GAULT,Brian C. Gault,payroll,low
 BRIAN C LACEY,Brian C. Lacey,payroll,low
 BRIAN CAHOON,Brian Cahoon,wildland,low
 BRIAN CHRISTOPHER BURTON,Brian Christopher Burton,payroll,low
-BRIAN CUMMINS,Brian Cummins,facilities,low
+BRIAN CUMMINS,Brian Cummins,payroll,low
 BRIAN D IRVAN,Brian D Irvan,payroll,low
 BRIAN D MARTIN,Brian D Martin,payroll,low
 BRIAN D MCKELLAR,Brian D Mckellar,payroll,low
@@ -2045,10 +2045,10 @@ BURNETTS ROOFING AND HEATI,Burnett's Roofing & Heati,construction,low
 BURNEY FIRE PROTECTION DIST,Burney Fire Protection Dist,government,medium
 BURNEY FIRE PROTECTION DISTRICT,Burney Fire Protection District,government,medium
 BURNHAM AND FLOWER,Burnham & Flower Insurance Group,payroll,medium
-BURNHAM AND FLOWER AGENCY OF OHIO,Burnham & Flower Agency of Ohio,insurance,medium
-BURNHAM AND FLOWER GROUP,Burnham & Flower Group,payroll,low
+BURNHAM AND FLOWER AGENCY OF OHIO,Burnham & Flower Insurance Group,payroll,medium
+BURNHAM AND FLOWER GROUP,Burnham & Flower Insurance Group,payroll,low
 BURNHAM AND FLOWER INSURANCE GROUP,Burnham & Flower Insurance Group,payroll,low
-BURNHAM AND FLOWER OF OHIO,Burnham & Flower of Ohio,payroll,low
+BURNHAM AND FLOWER OF OHIO,Burnham & Flower Insurance Group,payroll,low
 BURNHAM AND FLOWERS INSURANCE GROUP,Burnham & Flower Insurance Group,payroll,low
 BURNINGHAM ORIA,Individuals (names withheld),individuals,high
 BURNINGHAM TOR,Individuals (names withheld),individuals,high
@@ -2081,11 +2081,11 @@ BUTLER COUNTY TREASURER,Butler County Treasurer,government,low
 BUTLER COUNTY WATER AND SEWER DEPT,Butler County Water & Sewer Dept.,utilities,low
 BUTLER EXCAVATION,Butler Excavation,construction,medium
 BUTLER HEATING AND AIR CONDITIONING,Butler Heating & Air Conditioning,facilities,low
-BUTLER TECH,Butler Tech,it,low
-BUTLER TECH AD ED,Butler Tech,it,low
-BUTLER TECHNOLOGY AND CAREER,Butler Tech,it,low
-BUTLER TECHNOLOGY AND CAREER DEV SCHOOL,Butler Tech,it,low
-BUTLER TECHNOLOGY AND CAREER DEVELOPMENT SCHOOL,Butler Tech,it,low
+BUTLER TECH,Butler Tech,training,low
+BUTLER TECH AD ED,Butler Tech,training,low
+BUTLER TECHNOLOGY AND CAREER,Butler Tech,training,low
+BUTLER TECHNOLOGY AND CAREER DEV SCHOOL,Butler Tech,training,low
+BUTLER TECHNOLOGY AND CAREER DEVELOPMENT SCHOOL,Butler Tech,training,low
 BUTT HUT,Butt Hut,wildland,low
 BUTTE COUNTY,Butte County,government,medium
 BUTTE COUNTY FIRE SAFE COUNCIL,Butte County Fire Safe Council,government,medium
@@ -2180,8 +2180,8 @@ CALEB SIMAN,Caleb Siman,payroll,low
 CALEXICO FIRE DEPARTMENT,Calexico Fire Department,government,medium
 CALFIRE SINGLE PAY,CALFIRE Single Pay,professional,low
 CALIBER COLLISION,Caliber Collision,fleet,high
-CALIF DEPT OF FORESTRY AND FIRE PROTECTION,Calif Dept of Forestry & Fire Protection,government,medium
-CALIF DEPT OF HEALTH CARE SRVCS,Calif. Dept of Health Care Srvcs,government,medium
+CALIF DEPT OF FORESTRY AND FIRE PROTECTION,CAL FIRE,government,medium
+CALIF DEPT OF HEALTH CARE SRVCS,California Department of Health Care Services,government,medium
 CALIFORNIA CONSERVATION CORPS,California Conservation Corps,government,high
 CALIFORNIA DEER ASSOCIATION,California Deer Association,government,medium
 CALIFORNIA DEPARTMENT OF CONSERVATION,California Department of Conservation,government,medium
@@ -2694,7 +2694,7 @@ CHUCK AND LESLEY FRY,Chuck & Lesley FRY,wildland,low
 CHUCK D WISE,Chuck D Wise,payroll,low
 CHUCKAWALLA VLLY STATE PRISON,Chuckawalla Vlly State Prison,government,medium
 CHULA VISTA FIRE DEPARTMENT,Chula Vista Fire Department,government,medium
-CIGNA HEALTH AND LIFE INS,Cigna Health and Life Ins,payroll,low
+CIGNA HEALTH AND LIFE INS,Cigna Health and Life Insurance,payroll,low
 CIGNA HEALTH AND LIFE INSURANCE,Cigna Health and Life Insurance,payroll,low
 CINCINNATI BELL,Cincinnati Bell,telecom,low
 CINCINNATI BELL ANY DISTANCE,Cincinnati Bell,telecom,low
@@ -3325,7 +3325,7 @@ COLONIAL BUILDING SUPPLY,Colonial Building Supply,facilities,medium
 COLONIAL FLAG,Colonial Flag,general,high
 COLONIAL FOOD,Colonial Food,facilities,low
 COLONIAL LIFE,Colonial Life,payroll,high
-COLONIAL LIFE AND ACCIDENT,Colonial Life & Accident,payroll,low
+COLONIAL LIFE AND ACCIDENT,Colonial Life,payroll,low
 COLOR COUNTRY DIESEL,Color Country Diesel,fleet,high
 COLORADO CITY FIRE DEPARTMENT,Colorado City Fire District,government,high
 COLORADO CITY FIRE DISTRICT,Colorado City Fire District,government,high
@@ -3653,14 +3653,14 @@ CRAIG MICHAEL WRIGHT,Craig Michael Wright,payroll,low
 CRAIG MOUNTAIN,Craig Mountain Excavation,wildland,low
 CRAIG MOUNTAIN EXCAVATION,Craig Mountain Excavation,wildland,low
 CRAIG N WILHELM,Craig N. Wilhelm,payroll,low
-CRAIG P STIRES,Craig P Stires,fleet,low
+CRAIG P STIRES,Craig P Stires,payroll,low
 CRAIG W HEIDINGER,Craig W. Heidinger,payroll,low
 CRAMER LOGGING,Cramer Logging,wildland,medium
 CRAMER OIL,Cramer Oil,fleet,low
 CRANE MILLS,Crane Mills,unclassified,low
-CRASH COURSE VILLAGE,Crash Course Village,government,low
+CRASH COURSE VILLAGE,Crash Course Village,training,low
 CRASH RESCUE VILLAGE,Crash Rescue Village,government,low
-CRASHCOURSE VILLAGE,Crash Course Village,government,low
+CRASHCOURSE VILLAGE,Crash Course Village,training,low
 CRAWFORD DOOR SALES,Crawford Door Sales,facilities,high
 CRAWFORD DOORS,Crawford Door Sales,facilities,high
 CRAWFORD MECHANICAL SERVICES,Crawford Mechanical Services,facilities,low
@@ -4092,14 +4092,14 @@ DELILLE OXYGEN,Delille Oxygen,ems-supplies,low
 DELL COMPUTERS,Dell Technologies,it,low
 DELL MARKETING LP,Dell Technologies,it,high
 DELL TECHNOLOGIES,Dell Technologies,it,high
-DELLAPENNA CONSTRUCTION,DellaPenna Construction,it,low
+DELLAPENNA CONSTRUCTION,DellaPenna Construction,facilities,low
 DELMAS EQUIPMENT,Delmas Equipment Services,apparatus,medium
 DELTA AIR,Delta Air Lines,training,high
 DELTA AIRLINES,Delta Air Lines,training,high
 DELTA CITY,Delta City,government,high
 DELTA DENTAL,Delta Dental,payroll,low
 DELTA DENTAL OF OHIO,Delta Dental,payroll,low
-DELTA DENTAL PLAN OF OHIO,Delta Dental Plan of Ohio,payroll,low
+DELTA DENTAL PLAN OF OHIO,Delta Dental,payroll,low
 DELTA FIRE AND SAFETY,Delta Fire & Safety,fire-equipment,medium
 DELTA FIRE SYSTEMS,Delta Fire Systems,facilities,high
 DELTA GLASS AND TIRE,Delta Glass & Tire,fleet,high
@@ -4125,7 +4125,7 @@ DENNIS M MCLEAN,Dennis M. Mclean,uniforms,low
 DENNYS,Denny's,general,medium
 DENNYS STATIONERY,Denny's Stationery,general,high
 DENTAL CARE PLUS,Dental Care Plus,payroll,medium
-DENTAL CARE PLUS GROUP,Dental Care Plus Group,payroll,low
+DENTAL CARE PLUS GROUP,Dental Care Plus,payroll,low
 DENTPRO,DentPro,fleet,medium
 DENVER MATTRESS,Denver Mattress,facilities,high
 DENZIL FERGUSON,Denzil Ferguson,payroll,low
@@ -4676,7 +4676,7 @@ EMBROIDERY WEARHOUSE AND SCREENPRINTING,Embroidery Wearhouse & Screenprinting,ge
 EMERG VEHICLE SPECIALISTS,Emerg Vehicle Specialists,wildland,low
 EMERGENCY COMMAND SUPPORT,Emergency Command Support,wildland,low
 EMERGENCY MEDICAL PRODUCTS,Emergency Medical Products,ems-supplies,high
-EMERGENCY MEDICAL SERVICE AUTH,Emergency Medical Service Auth,ems-supplies,medium
+EMERGENCY MEDICAL SERVICE AUTH,Emergency Medical Service Auth,government,medium
 EMERGENCY MEDICINE PHYSICIANS OF FRANKLIN,Emergency Medicine Physicians of Franklin Cty,professional,low
 EMERGENCY MEDICINE PHYSICIANS OF FRANKLIN CTY,Emergency Medicine Physicians of Franklin Cty,professional,low
 EMERGENCY NETWORKING,Emergency Networking,rms,high
@@ -5000,7 +5000,7 @@ FAMILY DOLLAR,Family Dollar,general,high
 FAMILY PLAZA PHARMACY,Family Plaza Pharmacy,ems-supplies,high
 FAMILY WATER ALLIANCE,Family Water Alliance,government,low
 FAMOUS SUPPLY,Famous Supply,facilities,low
-FARELLA BRAUN AND MARTEL,Farella Braun & Martel,ambulance,medium
+FARELLA BRAUN AND MARTEL,Farella Braun & Martel,professional,medium
 FARMER TOWNSHIP,Farmer Township,payroll,low
 FARMERS AND MERCHANTS BANK,The Farmers and Merchants Bank,finance,low
 FARMERS NATIONAL,Farmers National Bank,finance,medium
@@ -5028,7 +5028,7 @@ FEATHER RIVER RESOURCE,Feather River Resource Conservation District,government,l
 FEAZEL ROOFING,Feazel Roofing,construction,low
 FEDERAL,Federal,payroll,low
 FEDERAL 941 DEPOSIT,Federal 941 Deposit,payroll,low
-FEDERAL EXPRESS,Federal Express,general,low
+FEDERAL EXPRESS,FedEx,general,low
 FEDERAL PROCESSING REGISTRY,Federal Processing Registry,professional,medium
 FEDERAL RESOURCES,Federal Resources,fire-equipment,medium
 FEDERAL RESOURCES SUPPLY,Federal Resources,fire-equipment,medium
@@ -5092,8 +5092,8 @@ FIRE AND MARINE FMI,Fire & Marine,fire-equipment,medium
 FIRE AND POLICE SELECTION,Fire & Police Selection,professional,high
 FIRE AND SLICE,Fire and Slice,facilities,high
 FIRE APPARATUS SALES AND SERVICE,Fire Apparatus Sales & Service,apparatus,low
-FIRE APPARATUS SERV AND REPAIR,Fire Apparatus Serv & Repair,apparatus,low
-FIRE APPARATUS SERVICE,Fire Apparatus Service,apparatus,low
+FIRE APPARATUS SERV AND REPAIR,Fire Apparatus Service & Repair,apparatus,low
+FIRE APPARATUS SERVICE,Fire Apparatus Service & Repair,apparatus,low
 FIRE APPARATUS SERVICE AND REPAIR,Fire Apparatus Service & Repair,apparatus,low
 FIRE APPARATUS SOLUTIONS,Fire Apparatus Solutions,apparatus,medium
 FIRE ARMOUR,Fire Armour,unclassified,low
@@ -5109,7 +5109,7 @@ FIRE CRAFT SAFETY PRODUCTS,Fire Craft Safety Products,uniforms,low
 FIRE DAWG GREEN,Fire Dawg Green,general,low
 FIRE DEPARTMENT CLOTHING,Fire Department Clothing,uniforms,medium
 FIRE DEPARTMENT TRAINING NETWORK,Fire Department Training Network,training,medium
-FIRE DEPT EXTRACTOR SUPPLY,Fire Dept Extractor Supply,government,medium
+FIRE DEPT EXTRACTOR SUPPLY,Fire Dept Extractor Supply,fire-equipment,medium
 FIRE DEPT TRAINING NETWORK,Fire Department Training Network,training,medium
 FIRE DEX GW,Fire-Dex,ppe,high
 FIRE ENGINEERING,Fire Engineering Company,facilities,medium
@@ -5349,7 +5349,7 @@ FORESTRY RESOURCES,Forestry Resources,wildland,low
 FORESTRY SUPPLIERS,Forestry Suppliers,wildland,high
 FORESTVILLE FIRE PROT DISTRICT,Forestville Fire Prot District,government,medium
 FORESTVILLE FIRE PROTECTION DISTRICT,Forestville Fire Protection District,government,medium
-FORGE AND FIRE,Forge and Fire,fire-equipment,low
+FORGE AND FIRE,Forge Fire & Company,training,low
 FORGE FIRE AND,Forge Fire & Company,training,medium
 FORKLIFTS GROUP WEST,Forklifts Group West,apparatus,low
 FORMAN CHAD,Individuals (names withheld),individuals,high
@@ -6253,7 +6253,7 @@ HOLMES TRUCKING,Holmes Trucking,fleet,medium
 HOLT,Holt & Company,unclassified,low
 HOLT AND,Holt & Company,unclassified,low
 HOLT CLEANING SUPPLY,Holt Cleaning Supply,facilities,medium
-HOLT OF CA,Holt of CA,fleet,medium
+HOLT OF CA,Holt of California,fleet,medium
 HOLT OF CALIFORNIA,Holt of California,fleet,high
 HOLTHAUS PLUMBING,Holthaus Plumbing,facilities,low
 HOLZBERG COMMUNICATIONS,Holzberg Communications,unclassified,low
@@ -6306,7 +6306,7 @@ HOWARD E HERSHBERGER,Howard E Hershberger,payroll,low
 HOWARD E JACKSON,Howard E Jackson,payroll,low
 HOWARD SAMUEL,Individuals (names withheld),individuals,high
 HOWARD TRUCK REPAIR SERVICE,Howard Truck Repair Service,fleet,low
-HOWARD W GOODYEAR,Howard W. Goodyear,fleet,low
+HOWARD W GOODYEAR,Howard W. Goodyear,payroll,low
 HOWCROFT FIELD SERVICES,Howcroft Field Service,fleet,medium
 HOWELL RESCUE,Howell Rescue Systems,fire-equipment,medium
 HOWELL RESCUE SYS,Howell Rescue Systems,fire-equipment,high
@@ -6332,7 +6332,7 @@ HS INVESTIGATIONS,Hs Investigations,professional,low
 HSA ACCOUNTS EMPOYEE DEPOSITS,HSA Accounts-Empoyee Deposits,payroll,medium
 HSA EMPLOYER,HSA - Employer Match/Wellness,payroll,low
 HSA EMPLOYER MATCH WELLNESS,HSA - Employer Match/Wellness,payroll,low
-HSA KEY BANK,Hsa Key Bank,payroll,low
+HSA KEY BANK,KeyBank,finance,low
 HSA SAVINGS,Hsa Savings,payroll,low
 HSCC,HSCC,construction,low
 HSI EMERGENCY CARE SOLUTIONS,Hsi Emergency Care Solutions,training,low
@@ -6866,7 +6866,7 @@ JARRELL CONSTRUCTION,Jarrell Construction,construction,low
 JARRETT TILLEY,Jarrett Tilley,payroll,low
 JARROD R BLAKE,Jarrod R Blake,payroll,low
 JARROD W GRIMM,Jarrod W Grimm,payroll,low
-JASMINE M PIERCE,Jasmine M Pierce,apparatus,low
+JASMINE M PIERCE,Jasmine M Pierce,payroll,low
 JASON A DONALDSON,Jason A Donaldson,payroll,low
 JASON A WAITERS,Jason A Waiters,payroll,low
 JASON A WALTERS,Jason A Walters,payroll,low
@@ -6887,7 +6887,7 @@ JASON L EDMONDSON,Jason L. Edmondson,payroll,low
 JASON L KUHN,Jason L Kuhn,payroll,low
 JASON L TAYLOR,Individuals (names withheld),individuals,high
 JASON LOYER,Jason Loyer,payroll,low
-JASON M PAULINE,Jason M. Pauline,general,low
+JASON M PAULINE,Jason M. Pauline,payroll,low
 JASON MILLER,Jason Miller,training,low
 JASON O EVANS,Jason O Evans,payroll,low
 JASON OCTAVE,Individuals (names withheld),individuals,high
@@ -7642,10 +7642,10 @@ KEVIN R LEE,Kevin R Lee,payroll,low
 KEVIN ROBISON CONSTRUCTION,Kevin Robison Construction,construction,medium
 KEVIN WARD,Individuals (names withheld),individuals,medium
 KEY BANK,KeyBank,finance,high
-KEY BANK CREDIT CARD,Key Bank Credit Card,finance,low
+KEY BANK CREDIT CARD,KeyBank,finance,low
 KEY BANK FEDERAL TAXES,KeyBank,finance,medium
-KEY BANK HSA,Key Bank - Hsa,payroll,low
-KEY BANK KEY2PURCHASE,Key Bank- Key2Purchase,finance,low
+KEY BANK HSA,KeyBank,finance,low
+KEY BANK KEY2PURCHASE,KeyBank,finance,low
 KEY BANK MEDICARE,KeyBank,finance,medium
 KEY BANK STATE TAXES,KeyBank,finance,medium
 KEY CHRYSLER,Key Chrysler,fleet,low
@@ -8135,7 +8135,7 @@ LINIFORM LINEN AND UNIFORM SERVICE,Liniform Linen & Uniform Service,uniforms,low
 LINS HURRICANE,Lin's Fresh Market,general,medium
 LINS RICHFIELD,Lin's Fresh Market,general,high
 LINTON RANDY,"Linton, Randy",construction,low
-LION CREATIVE STUDIOS,Lion Creative Studios,fire-equipment,low
+LION CREATIVE STUDIOS,Lion Creative Studios,professional,low
 LION FIRST RESPONDER PPE,LION,ppe,high
 LION GROUP,LION,ppe,low
 LION TOTALCARE,LION,ppe,high
@@ -8293,10 +8293,10 @@ LUBE DEPOT AND TIRE,Lube Depot,fleet,low
 LUCAS COUNTY 911 RCOG,Lucas County 911 Regional Council of Governments,dispatch,high
 LUCAS GIROUX,Individuals (names withheld),individuals,high
 LUCAS HIXSON,Individuals (names withheld),individuals,medium
-LUCAS JAGGER,Lucas Jagger,ems-equipment,low
-LUCAS PARMELEE,Lucas Parmelee,ems-equipment,low
-LUCAS ROBERTS,Lucas Roberts,ems-equipment,low
-LUCAS S WELSH,Lucas S Welsh,ems-equipment,low
+LUCAS JAGGER,Lucas Jagger,payroll,low
+LUCAS PARMELEE,Lucas Parmelee,payroll,low
+LUCAS ROBERTS,Lucas Roberts,payroll,low
+LUCAS S WELSH,Lucas S Welsh,payroll,low
 LUCAS TRUCK SALES,Lucas Truck Sales,ems-equipment,low
 LUCKEY FARMERS,Luckey Farmers,fleet,low
 LUCKY JAKES FIREFIGHTING EQUIPMENT,Lucky Jakes Firefighting Equipment,fire-equipment,medium
@@ -8542,7 +8542,7 @@ MATHESON TRI GAS VALLEY,Matheson Tri-Gas,ems-supplies,low
 MATRIX TRUST,Matrix Trust,payroll,low
 MATT ERICKSON LCSW,Individual counselors (names withheld),medical-exams,medium
 MATT GEBHARDT,Matt Gebhardt,payroll,low
-MATT HURST,Matt Hurst,fire-equipment,low
+MATT HURST,Matt Hurst,payroll,low
 MATT L LAGEDROST,Matt L Lagedrost,payroll,low
 MATT QUACKENBUSH LCSW,Individuals (names withheld),individuals,medium
 MATT R WENNING,Matt R. Wenning,professional,low
@@ -9343,11 +9343,11 @@ NAPA AUTO,NAPA Auto Parts,fleet,high
 NAPA AUTO PARTS,NAPA Auto Parts,fleet,high
 NAPA BRIANS AUTO SUPPLY,NAPA Auto Parts,fleet,high
 NAPA CANAL WINCHESTER,NAPA Auto Parts,fleet,low
-NAPA COLUMBUS OH,"NAPA, Inc.-Columbus, OH",fleet,low
+NAPA COLUMBUS OH,NAPA Auto Parts,fleet,low
 NAPA COMMUNITIES FIREWISE FDN,Napa Communities Firewise Foundation,government,low
 NAPA COUNTY,Napa County,government,medium
 NAPA COUNTY FIRE DEPT,Napa County Fire Dept,government,medium
-NAPA COUNTY RESC CONSERV DIST,Napa County Resc Conserv Dist,fleet,medium
+NAPA COUNTY RESC CONSERV DIST,Napa County Resc Conserv Dist,government,medium
 NAPA OHIO,NAPA Auto Parts,fleet,low
 NAPA VANDALIA,NAPA Auto Parts,fleet,low
 NAPLES CITY,Naples City,government,high
@@ -9705,7 +9705,7 @@ OH FIRE PENSION,OH Fire Pension,payroll,low
 OH FIRE PENSION PAYROLL,OH Fire Pension - Payroll,payroll,low
 OH POLICE AND FIRE PENSION FUND,Ohio Police & Fire Pension Fund,payroll,low
 OH POLICE AND FIRE PENSION FUND OP AND F,Ohio Police & Fire Pension Fund,payroll,low
-OH POLICE FIRE PENSION FUND,Oh Police/Fire Pension Fund,payroll,low
+OH POLICE FIRE PENSION FUND,Ohio Police & Fire Pension Fund,payroll,low
 OH PUBLIC EMPLOYEE DEFERRED COMP PROGRAM,Oh Public Employee Deferred Comp Program,payroll,low
 OH PUBLIC EMPLOYEES DEF COMP PROG,OH Public Employees Def Comp Prog,payroll,low
 OH PUBLIC EMPLOYEES RETIREMENT SYSTEM OPERS,Ohio Public Employees Retirement System,payroll,low
@@ -9765,7 +9765,7 @@ OHIO FIRST RESPONDERS GRANTS,Ohio First Responder Grants,professional,medium
 OHIO GAS,Ohio Gas,utilities,low
 OHIO GOVERNMENT BENEFIT COOPERATIVE,Ohio Government Benefit Cooperative,payroll,medium
 OHIO HEALTH EMERGENCY MEDICAL SERVICES,Ohio Health Emergency Medical Services,training,low
-OHIO HEALTH WORKHEALTH,OhioHealth,payroll,low
+OHIO HEALTH WORKHEALTH,OhioHealth,medical-exams,low
 OHIO HEATING AND REFRIGERATION,Ohio Heating & Refrigeration,facilities,low
 OHIO INSURANCE SERVICES AGENCY,Ohio Insurance Services Agency,payroll,low
 OHIO PAVING AND CONSTRUCTION,Ohio Paving & Construction,construction,low
@@ -9805,9 +9805,9 @@ OHIO PUBLIC EMPLOYEES RETIREMENT SYSTEM OPERS,Ohio Public Employees Retirement S
 OHIO PUBLIC EMPLOYEES RETIRMENT SYSTEM,Ohio Public Employees Retirement System,payroll,low
 OHIO PUBLIC ENTITY CONSORTIUM,Ohio Public Entity Consortium,payroll,low
 OHIO PUBLIC RETIREMENT SYSTEM,Ohio Public Retirement System,payroll,low
-OHIO PUBLIC RISK INS AGENCY VFIS OF OHIO,Ohio Public Risk Ins. Agency dba VFIS of Ohio,insurance,high
+OHIO PUBLIC RISK INS AGENCY VFIS OF OHIO,Ohio Public Risk Insurance Agency,insurance,high
 OHIO PUBLIC RISK INSURANCE AGENCY,Ohio Public Risk Insurance Agency,insurance,low
-OHIO PUBLIC RISK INSURANCE AGENCY VFIS,Ohio Public Risk Insurance Agency DBA VFIS,insurance,low
+OHIO PUBLIC RISK INSURANCE AGENCY VFIS,Ohio Public Risk Insurance Agency,insurance,low
 OHIO PUBLIC RISKS INSURANCE AGENCY,Ohio Public Risk Insurance Agency,insurance,low
 OHIO RIVER POWER EQUIPMENT,Ohio River Power Equipment,utilities,low
 OHIO SCHOOL DISTRICT INCOME TAX,Ohio School District Income Tax,payroll,low
@@ -9838,8 +9838,8 @@ OHIO TWP ASSOC RISK MANAGEMENT AUTHORITY,Ohio Township Association Risk Manageme
 OHIO UAV SERVICES,Ohio Uav Services,fire-equipment,low
 OHIO VALLEY BANK,Ohio Valley Bank,finance,low
 OHIO VALLEY INTEGRATION,Ohio Valley Integration,it,low
-OHIOHEALTH,OhioHealth,payroll,low
-OHIOHEALTH WORKHEALTH,OhioHealth,payroll,medium
+OHIOHEALTH,OhioHealth,medical-exams,low
+OHIOHEALTH WORKHEALTH,OhioHealth,medical-exams,medium
 OILARS AG SERVICES,Oilars Ag Services,wildland,low
 OJAI VALLEY LAND CONSERVANCY,Ojai Valley Land Conservancy,government,medium
 OK FINE PRODUCTIONS,OK Fine Productions,training,low
@@ -9971,7 +9971,7 @@ OXFORD,Oxford,wildland,low
 OXNARD FIRE DEPARTMENT,Oxnard Fire Department,government,medium
 OXYGEN UTAH,Oxygen Utah,ems-supplies,high
 OZARK MEDICS,Ozark Medics,professional,low
-P AND R COMMUNICATIONS,P&R Communications,radios,medium
+P AND R COMMUNICATIONS,P & R Communications Service,radios,medium
 P AND R COMMUNICATIONS SERVICE,P & R Communications Service,radios,low
 P AND R COMMUNICATIONS SERVICES,P & R Communications Service,radios,low
 P FLEET,P-Fleet,fleet,low
@@ -10425,14 +10425,14 @@ POLICE AND FIRE DISABILITY PENSION,Ohio Police & Fire Pension Fund,payroll,low
 POLICE AND FIRE PENSION FUN,Ohio Police & Fire Pension Fund,payroll,low
 POLICE AND FIRE PENSION FUND,Ohio Police & Fire Pension Fund,payroll,low
 POLICE AND FIRE PENSION FUND OHIO,Ohio Police & Fire Pension Fund,payroll,low
-POLICE AND FIREMEN PENSION AND,Police & Firemen Pension &,payroll,low
-POLICE AND FIREMENS,Police & Firemen's,payroll,low
+POLICE AND FIREMEN PENSION AND,Ohio Police & Fire Pension Fund,payroll,low
+POLICE AND FIREMENS,Ohio Police & Fire Pension Fund,payroll,low
 POLICE AND FIREMENS DISABILITY,Ohio Police & Fire Pension Fund,payroll,low
 POLICE AND FIREMENS DISABILITY AND,Ohio Police & Fire Pension Fund,payroll,low
 POLICE AND FIREMENS INSURANCE ASSOC,Police & Firemen's Insurance Association,payroll,low
 POLICE AND FIREMENS INSURANCE ASSOC PFIA,Police & Firemen's Insurance Association,payroll,low
 POLICE AND FIREMENS INSURANCE ASSOCIATION,Police & Firemen's Insurance Association,payroll,medium
-POLICE AND FIREMENS PENSION FUND,Police & Firemens Pension Fund,payroll,low
+POLICE AND FIREMENS PENSION FUND,Ohio Police & Fire Pension Fund,payroll,low
 POLICE AND SHERIFFS PRESS,The Police and Sheriff's Press,professional,medium
 POLICE FIRE DISABILITY AND PENSION FUND,Police/Fire Disability and Pension Fund,payroll,low
 POLICYBUILDERS,policyBUILDERS,construction,low
@@ -10882,7 +10882,7 @@ REGENCE BLUE CROSS,Regence BlueCross BlueShield,payroll,high
 REGENTS OF UC BERKELEY,Regents of the UC Berkeley,government,medium
 REGENTS OF UC SANTA BARBARA,Regents of UC Santa Barbara,government,medium
 REGENTS OF UNIV OF CA,Regents of the University of California,government,medium
-REGENTS OF UNIV OF CA DAVIS,Regents of Univ of CA Davis,government,medium
+REGENTS OF UNIV OF CA DAVIS,Regents of the University of California,government,medium
 REGENTS OF UNIV OF CA IRVINE,Regents of Univ of CA Irvine,government,medium
 REGENTS OF UNIV OF CA SD,Regents of the University of California,government,medium
 REGENTS OF UNIVERSITY OF,Regents of the University of California,government,medium
@@ -11072,9 +11072,9 @@ RIVERBED CONCRETE AND GRAVEL,Riverbed Concrete & Gravel,construction,high
 RIVERDALE CITY,Riverdale City,government,high
 RIVERPRINT,Riverprint,professional,high
 RIVERSIDE CORNER,Riverside Corner,fleet,high
-RIVERSIDE COUNTY FIRE DEPARTMENT OFFICE OF EMERGENCY SERVICES,"Riverside County Fire Department, Office of Emergency Services",government,medium
-RIVERSIDE COUNTY FIRE DEPT,Riverside County Fire Dept,government,medium
-RIVERSIDE COUNTY FIRE DEPT REVENUE SECTION,Riverside County Fire Dept - Revenue Section,government,medium
+RIVERSIDE COUNTY FIRE DEPARTMENT OFFICE OF EMERGENCY SERVICES,County of Riverside Fire Dept,government,medium
+RIVERSIDE COUNTY FIRE DEPT,County of Riverside Fire Dept,government,medium
+RIVERSIDE COUNTY FIRE DEPT REVENUE SECTION,County of Riverside Fire Dept,government,medium
 RIVERSIDE PLUMBING,Riverside Plumbing,facilities,high
 RIVERSTONE CONTRACTORS,Riverstone Contractors,construction,high
 RIVERTON CITY,Riverton City,government,high
@@ -11384,7 +11384,7 @@ RYAN GARDNER,Individuals (names withheld),individuals,medium
 RYAN HARTMANN,Ryan Hartmann,payroll,low
 RYAN J BREWSTER,Ryan J Brewster,payroll,low
 RYAN J CLEVENGER,Ryan J Clevenger,payroll,low
-RYAN M LUCAS,Ryan M Lucas,ems-equipment,low
+RYAN M LUCAS,Ryan M Lucas,payroll,low
 RYAN M WANNEMACHER,Ryan M. Wannemacher,payroll,low
 RYAN R BADEN,Ryan R Baden,payroll,low
 RYAN R ZAPORA,Ryan R Zapora,payroll,low
@@ -11418,8 +11418,8 @@ SACRAMENTO COPIERS,Sacramento Copiers,general,medium
 SACRAMENTO COUNTY SHERIFFS DEPARTMENT,Sacramento County Sheriff's Department,government,medium
 SACRAMENTO ELECTRONIC SUPPLY,Sacramento Electronic Supply,general,medium
 SACRAMENTO FIRE DEPT,Sacramento Fire Dept,government,medium
-SACRAMENTO METRO FIRE DIST,Sacramento Metro Fire Dist,government,medium
-SACRAMENTO METRO FIRE DISTRICT,Sacramento Metro Fire District,government,medium
+SACRAMENTO METRO FIRE DIST,Sacramento Metropolitan Fire District,government,medium
+SACRAMENTO METRO FIRE DISTRICT,Sacramento Metropolitan Fire District,government,medium
 SACRAMENTO METROPOLITAN FIRE DISTRICT,Sacramento Metropolitan Fire District,government,medium
 SACRAMENTO MUNICIPAL UTIL DIST,Sacramento Municipal Util Dist,utilities,low
 SACRAMENTO RIVER FIRE DISTRICT,Sacramento River Fire District,government,medium
@@ -11905,7 +11905,7 @@ SIERRA M CLARK,Sierra M Clark,payroll,low
 SIERRA NEVADA ALLIANCE,Sierra Nevada Alliance,unclassified,low
 SIERRA NEVADA CONSERVANCY,Sierra Nevada Conservancy,government,medium
 SIERRA NEVADA FOREST MGMT,Sierra Nevada Forest MGMT,wildland,low
-SIERRA PACIFIC INDUSTRIES,Sierra Pacific Industries,professional,low
+SIERRA PACIFIC INDUSTRIES,Sierra Pacific Industries,facilities,low
 SIERRA PACIFIC WEST,Sierra Pacific West,facilities,low
 SIERRA RES CONSERVATION DIST,Sierra Res Conservation Dist,government,medium
 SIERRA RESOURCE MANAGEMENT,Sierra Resource Management,wildland,low
@@ -12176,10 +12176,10 @@ SPANISH FORK FIRE AND EMS,Spanish Fork Fire & EMS,government,high
 SPANISH TRAIL,Spanish Trail,unclassified,low
 SPAREWARES,Sparewares,apparatus,low
 SPARKS FD,Sparks FD,government,low
-SPARTAN ARMOR SYSTEMS,Spartan Armor Systems,apparatus,low
+SPARTAN ARMOR SYSTEMS,Spartan Armor Systems,ppe,low
 SPARTAN FIRE,Spartan Fire,apparatus,high
-SPARTAN IT,Spartan It,apparatus,low
-SPARTAN TOOL SUPPLY,Spartan Tool Supply,apparatus,low
+SPARTAN IT,Spartan IT,it,low
+SPARTAN TOOL SUPPLY,Spartan Tool Supply,general,low
 SPATIAL INFORMATICS GROUP,Spatial Informatics Group,software,low
 SPAW GLASS CONSTRUCTION,SpawGlass,construction,high
 SPAWGLASS CONTRACTORS,SpawGlass,construction,high
@@ -12728,7 +12728,7 @@ TANNER J PATTERSON,Tanner J. Patterson,payroll,low
 TANNER J ROTH,Tanner J Roth,payroll,low
 TANNER L BAKER,Tanner L Baker,payroll,low
 TANNER MALTBIE,Tanner Maltbie,payroll,low
-TANNER S GLASS,Tanner S Glass,facilities,low
+TANNER S GLASS,Tanner S Glass,payroll,low
 TARA A SMITH,Tara A Smith,payroll,low
 TARA A TORRES,Tara A Torres,payroll,low
 TARA CARROLL,Tara Carroll,payroll,low
@@ -13117,7 +13117,7 @@ TRANSWEST MOBILE TRUCK REPAIR,Transwest Mobile Truck Repair,fleet,high
 TRAPWIRE,TrapWire,software,medium
 TRAVCO,Travco,wildland,low
 TRAVELERS INDEMNITY,Travelers,insurance,high
-TRAVELERS INSURANCE,Travelers Insurance,training,low
+TRAVELERS INSURANCE,Travelers,insurance,low
 TRAVIS A FILLHART,Travis A Fillhart,payroll,low
 TRAVIS ARTER,Travis Arter,payroll,low
 TRAVIS AUTH,Travis Auth,payroll,low
@@ -13504,7 +13504,7 @@ UNIVERSITY OF UTAH HOSPITALS AND CLINICS,University of Utah,training,medium
 UNIVERSITY OF WASHINGTON,University of Washington,training,medium
 UNKNOWN,Unknown,placeholder,medium
 UNMANNED VEHICLE TECHNOLOGIES,Unmanned Vehicle Technologies,fire-equipment,low
-UNUM INSURANCE OF AM,UNUM Insurance Co of Am,payroll,low
+UNUM INSURANCE OF AM,Unum,payroll,low
 UNUM LIFE INSURANCE,Unum,payroll,medium
 UPCODES,UpCodes,software,high
 UPPER CASE PRINTING,Upper Case Printing,professional,high
@@ -13811,8 +13811,8 @@ VECK BUILDING GROUP,Veck Building Group,facilities,low
 VECTOR SOLUTIONS,Vector Solutions,training-software,high
 VECTORSOLUTIONS,Vector Solutions,training-software,high
 VECTREN CASS,Vectren/Cass,utilities,low
-VECTREN ENERGY DELIVERY,Vectren Energy Delivery,utilities,low
-VECTREN ENERGY DELIVERY OF OHIO,Vectren Energy Delivery,utilities,low
+VECTREN ENERGY DELIVERY,Centerpoint Energy,utilities,low
+VECTREN ENERGY DELIVERY OF OHIO,Centerpoint Energy,utilities,low
 VECTREN ENERGY SERVICES,Vectren Energy Services,utilities,low
 VEG LAND,Veg-land,general,low
 VEHICLE LIGHTING SOLUTIONS,Vehicle Lighting Solutions,fleet,medium
@@ -13867,7 +13867,7 @@ VETERAN PROCUREMENT SOLUTIONS,Veteran Procurement Solutions,general,low
 VETERANS SERVICE SOLUTIONS,Veterans Service Solutions,general,low
 VEVOR,Vevor,general,high
 VFIS,VFIS,insurance,high
-VFIS OF OHIO,VFIS of Ohio,insurance,high
+VFIS OF OHIO,Ohio Public Risk Insurance Agency,insurance,high
 VIBRANT PLANET PBC,Vibrant Planet PBC,software,low
 VICAR,Vicar,unclassified,low
 VICKERS CONSULTING SERVICES,Vickers Consulting Services,professional,low
@@ -13984,7 +13984,7 @@ VOYAGER FLEET SYSTEMS,U.S. Bank Voyager Fleet Systems,fleet,medium
 VP DATA COMMONS,VP Data Commons,it,low
 VS BECK INSURANCE AGENCY,V. S. Beck Insurance Agency,insurance,low
 VSP,Vsp,payroll,low
-VSP VISION SERVICE PLAN,Vsp Vision Service Plan,payroll,low
+VSP VISION SERVICE PLAN,Vision Service Plan,payroll,low
 VYGON US,Vygon,ems-supplies,medium
 VYVE BROADBAND,Vyve Broadband,telecom,medium
 WADE ALLEN BEAM,Wade Allen Beam,payroll,low
@@ -14203,7 +14203,7 @@ WELLS FARGO REMITTANCE CENTER,Wells Fargo,finance,high
 WELLS RURAL ELECTRIC,Wells Rural Electric,utilities,high
 WELLSTON FIRE DEPARTMENT TRAINING ACADEMY,Wellston Fire Department Training Academy,training,low
 WELLSVILLE CITY,Wellsville City,government,high
-WENDELL A SLAGELL,Wendell A Slagell,it,low
+WENDELL A SLAGELL,Wendell A Slagell,payroll,low
 WENDOVER CITY FIRE DEPARTMENT,Wendover City Fire Department,government,high
 WENDY WAISNER,Wendy Waisner,payroll,low
 WENDYS,Wendy's,general,high
@@ -14248,7 +14248,7 @@ WESTERN BRANCH DIESEL,Western Branch Diesel,fleet,medium
 WESTERN BROWN LOCAL SCHOOL DISTRICT,Western Brown Local School District,payroll,low
 WESTERN BUILDING MAINTENANCE,Western Building Maintenance,facilities,medium
 WESTERN CONTAINER,Western Container,unclassified,low
-WESTERN EXTRICATION SPEC,Western Extrication Spec,fire-equipment,medium
+WESTERN EXTRICATION SPEC,Western Extrication Specialists,fire-equipment,medium
 WESTERN EXTRICATION SPECIALISTS,Western Extrication Specialists,fire-equipment,medium
 WESTERN FENCE,Western Fence Co.,facilities,high
 WESTERN FIRE CHIEFS ASSOCIATION,Western Fire Chiefs Association,training,high
