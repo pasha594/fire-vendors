@@ -35,12 +35,16 @@ $16.8 million to Vogelpohl Fire Equipment and $1.9 million to Halcore Group, mor
 show), and Fleet Services repairs or IT purchases. The vendor alone does not make a line fire spend, so these stay
 out; the sources.csv note states the gap, with the amount computed from vehicle_accounts.json.
 
-Duplicates: (trans_id, trans_line_no) is unique in the source; exact duplicate lines would be kept once (none in
-the 2026-10-06 pull). Owner rule of 2026-10-07: lines identical in every published field (fiscal year, record
-date, vendor, account, category, amount) except the source's ids are one line, so lines with the same vendor,
-amount, date and account are kept once, whether on one check or several (unidentical). Credits (mostly
-purchasing-card credits from U.S. Bank and Fifth Third) are negative lines and kept, so they net out; they are
-compared like any other line.
+Duplicates: owner rule of 2026-10-07 as corrected the same day (identical): two lines are identical when all
+COLUMNS of the raw file are equal. The raw file has no row or load id (ROW_IDS is empty: the fetch does not select
+Socrata's :id, and the dataset has no load timestamp); trans_id (the financial system's document), trans_line_no
+(its line) and check_no (check or EFT number) are content, so separate invoice lines on one check are separate
+payments. Identical lines are kept once; void-safe, a group of n identical positive lines keeps
+min(n, reversals + 1), where reversals counts the distinct negative lines of the same department, fund, account
+and vendor with the amount negated in the same or the next fiscal year (REVERSAL; a credit does not repeat the
+document or check number of the payment it reverses). (trans_id, trans_line_no) is unique in the 2026-10-06 pull,
+so no line is dropped. Credits (mostly purchasing-card credits from U.S. Bank and Fifth Third) are negative lines
+and kept, so they net out.
 
 Payees: published as the source has them (owner decision, 2026-10-06), through common.withhold_person, which
 only cuts payee text with an email address or bank account text.
@@ -70,6 +74,10 @@ NOT_FIRE = {"922": "Police & Fire Fighter's Ins: insurance shared by police and 
 VEHICLE_DEPTS = {"981": "Motorized & Construction Equip", "256": "Fleet Services"}
 APPARATUS_VENDORS = {"Vogelpohl Fire Equipment, Inc.", "Halcore Group, Inc."}
 SOURCE_COLUMNS = ["source", "name", "tier", "url", "years", "fiscal_year", "fetched", "note"]
+# Owner rule of 2026-10-07 (corrected): raw columns that only identify the row or the load (none in this file)
+ROW_IDS = ()
+# a reversal (credit) of a line repeats these: department, fund, account category and vendor
+REVERSAL = ("dept_code", "dept_desc", "fund_code", "fund_desc", "exp_acct_cat", "exp_acct_cat_desc", "vendor_name")
 
 
 def linked_codes():
@@ -166,32 +174,27 @@ def normalize():
     control = json.loads(common.read_gz(d / "control_totals.json.gz"))
     assert len(raw) == sum(int(t["n"]) for t in control), "raw rows do not match control_totals.json"
 
-    unique = {}
-    for r in raw:
-        unique.setdefault(tuple(r[c] for c in COLUMNS), r)
-    dropped = len(raw) - len(unique)
+    kept, stats = identical(raw)
     ids, rows = collections.Counter(), []
     cents = decimal.Decimal("0.01")
-    for key in sorted(unique):
-        r = unique[key]
+    for key in sorted(kept):
+        r, copies = kept[key]
         fy = int(r["fiscal_year"])
         assert fy >= FIRST_FY and r["dept_code"] in codes, f"row outside the fetch filter: {r}"
-        rid = f"{r['trans_id']}-{r['trans_line_no']}"
-        ids[rid] += 1
-        if ids[rid] > 1:
-            rid += f"#{ids[rid]}"
-        rows.append({
-            "agency_id": codes[r["dept_code"]]["agency_id"], "fiscal_year": str(fy),
-            "posting_date": r["record_date"][:10],
-            "payee_name": common.withhold_person(r["vendor_name"]), "description": "",
-            "account": " / ".join([r["dept_desc"], f"{r['fund_code']} {r['fund_desc']}",
-                                   f"{r['exp_acct_cat']} {r['exp_acct_cat_desc']}"]),
-            "category_published": r["exp_acct_cat_desc"],
-            "amount": str(decimal.Decimal(r["amount"]).quantize(cents)), "source_record_id": rid,
-            "_order": (r["trans_id"], int(r["trans_line_no"]), ids[f"{r['trans_id']}-{r['trans_line_no']}"]),
-            "_payee": " ".join(r["vendor_name"].split()),
-        })
-    rows, identical = unidentical(rows)
+        for _ in range(copies):
+            rid = f"{r['trans_id']}-{r['trans_line_no']}"
+            ids[rid] += 1
+            if ids[rid] > 1:
+                rid += f"#{ids[rid]}"
+            rows.append({
+                "agency_id": codes[r["dept_code"]]["agency_id"], "fiscal_year": str(fy),
+                "posting_date": r["record_date"][:10],
+                "payee_name": common.withhold_person(r["vendor_name"]), "description": "",
+                "account": " / ".join([r["dept_desc"], f"{r['fund_code']} {r['fund_desc']}",
+                                       f"{r['exp_acct_cat']} {r['exp_acct_cat_desc']}"]),
+                "category_published": r["exp_acct_cat_desc"],
+                "amount": str(decimal.Decimal(r["amount"]).quantize(cents)), "source_record_id": rid,
+            })
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
 
     years = sorted({int(r["fiscal_year"]) for r in rows})
@@ -209,30 +212,36 @@ def normalize():
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
     withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
-    print(f"{ST}: {SOURCE}: {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {dropped} exact duplicate "
-          f"lines dropped; {len(identical)} identical lines dropped (${sum(identical):,.2f}; "
-          f"{sum(1 for a in identical if a < 0)} negative); {withheld} lines with the payee withheld")
+    print(f"{ST}: {SOURCE}: {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {stats['dropped']} "
+          f"identical lines dropped (${stats['dropped_dollars']:,.2f}); void rule kept {stats['void_kept']} identical "
+          f"lines (${stats['void_kept_dollars']:,.2f}); {withheld} lines with the payee withheld")
 
 
-PUBLISHED = ["agency_id", "fiscal_year", "posting_date", "description", "account", "category_published", "amount"]
-
-
-def unidentical(rows):
-    """Owner rule of 2026-10-07: lines identical in every published field except the source's ids (trans_id and
-    trans_line_no; the check number is not published) are one line: keep the lowest trans_id and line, drop the
-    rest. Payees compare as the source has them (spaces collapsed). Negative lines compare like any other line.
-    Returns the kept rows (without the helper fields) and the dropped amounts."""
-    first, dropped = {}, []
-    for r in sorted(rows, key=lambda r: r["_order"]):
-        k = (*[r[c] for c in PUBLISHED], r["_payee"])
-        if k in first:
-            dropped.append(decimal.Decimal(r["amount"]))
-        else:
-            first[k] = r
-    kept = sorted(first.values(), key=lambda r: r["_order"])
-    for r in kept:
-        del r["_order"], r["_payee"]
-    return kept, dropped
+def identical(raw):
+    """Owner rule of 2026-10-07 as corrected: raw lines equal in every column but ROW_IDS are identical and kept
+    once; a group of n identical positive lines keeps min(n, reversals + 1), reversals being the distinct negative
+    lines with the same REVERSAL fields, the amount negated, in the group's fiscal year or the next. Returns
+    {identity: (line, copies kept)} and the counts for the report."""
+    groups = collections.defaultdict(list)
+    for r in raw:
+        groups[tuple(r[c] for c in COLUMNS if c not in ROW_IDS)].append(r)
+    reversals = collections.defaultdict(set)
+    for k, g in groups.items():
+        if decimal.Decimal(g[0]["amount"]) < 0:
+            reversals[(tuple(g[0][c] for c in REVERSAL), -decimal.Decimal(g[0]["amount"]))].add(
+                (int(g[0]["fiscal_year"]), k))
+    kept, stats = {}, collections.Counter()
+    for k, g in groups.items():
+        amount, fy, keep = decimal.Decimal(g[0]["amount"]), int(g[0]["fiscal_year"]), 1
+        if amount > 0 and len(g) > 1:
+            n_rev = sum(y in (fy, fy + 1) for y, _ in reversals[(tuple(g[0][c] for c in REVERSAL), amount)])
+            keep = min(len(g), n_rev + 1)
+            stats["void_kept"] += keep - 1
+            stats["void_kept_dollars"] += (keep - 1) * amount
+        kept[k] = (g[0], keep)
+        stats["dropped"] += len(g) - keep
+        stats["dropped_dollars"] += (len(g) - keep) * amount
+    return kept, stats
 
 
 def register_source(row):

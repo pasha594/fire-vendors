@@ -69,12 +69,17 @@ keeps size/k lines of each group (Beavercreek Township, March 2023). A later upl
 than RELOAD_GAP) whose lines of a date only repeat lines already uploaded for that date is a reload and dropped
 (Perkins Township (Erie), December 2025 and January 2026). A month whose lines carry batch totals
 instead of line amounts (BROKEN_SHARE rule; Jackson Township (Stark), City of Dover and City of Bellevue,
-2025-2026) is left out. Then the owner's rule of 2026-10-07: lines identical in every published field except the
-source's ids (TransactionId, row Id) are one line; the lowest row Id is kept (unidentical). That covers lines
-re-uploaded under a new row Id, days doubled inside one upload (Hamilton Township (Warren), January-February
-2021) and several equal lines paid the same day. Negative amounts (voids, refunds, reversals) are kept so they
-net out and are compared like any other line, so a payment voided and issued again keeps the payment and the
-void. Every fetched slice is checked against the dashboard's own summary totals for the same filters, per year.
+2025-2026) is left out. Then the owner's rule of 2026-10-07 as corrected the same day (unidentical): two lines
+are identical when every column of the raw rows is equal except the row and load ids ROW_IDS (the checkbook's row
+Id and the TransactionId it numbers lines with in upload order; the source has no load timestamp and publishes
+no invoice, check, voucher or PO number, so its payment Type code, date, payee, fund, department, object and
+amount are the content compared). Identical lines are kept once, the lowest row Id, which covers lines
+re-uploaded under a new row Id and days doubled inside one upload (Hamilton Township (Warren), January-February
+2021). Void-safe: a group of n identical positive lines keeps min(n, reversals + 1) of them, the lowest row Ids,
+where reversals counts the distinct lines (identical reversals once) of the same participant, payee, fund,
+department and object with the amount negated, dated in the group's year or the next (REVERSAL); so a payment,
+its void and its identical reissue keep their net. Negative amounts (voids, refunds, reversals) are kept so they
+net out; identical negative lines are kept once. Every fetched slice is checked against the dashboard's own summary totals for the same filters, per year.
 """
 import argparse
 import collections
@@ -145,7 +150,8 @@ DOUBLED_MIN = 10  # lines in a month before the month can be judged as uploaded 
 # uploads, a new one starting where the TransactionId jumps by more than RELOAD_GAP. A later upload's lines of one
 # date (RELOAD_MIN or more, none negative) that are each an exact copy of a line of that date in an earlier upload
 # are a reload (Perkins Township (Erie): 2025-12-18 and 2026-01-09 uploaded again about 1.1 million TransactionIds
-# later). Identical lines left after these rules are dropped by unidentical (owner rule of 2026-10-07).
+# later). Identical lines left after these rules are kept once by unidentical (owner rule of 2026-10-07), copies
+# of a voided and reissued payment as many times as it has reversals plus one.
 RELOAD_GAP = 100000
 RELOAD_MIN = 3
 # Special districts that are fire agencies (whole checkbook), and the ones whose name suggests fire or EMS but
@@ -158,6 +164,14 @@ SKIP = {"City of Cincinnati": "Cincinnati Fire Department comes from the City's 
 SOURCE_COLUMNS = ["source", "name", "tier", "url", "years", "fiscal_year", "fetched", "note"]
 CENTS = decimal.Decimal("0.01")
 IDENTICAL = {}  # participant -> (identical lines dropped, dollars), for the normalize report
+# Owner rule of 2026-10-07 (corrected): columns that only identify the row or the load, never compared. Id is the
+# checkbook's row id; TransactionId is the number the checkbook gives each line in upload order (not a document
+# number of the local government). Every other raw column is content, including the payment Type code and the
+# dashboard's calculated columns (labels built from the fund, department, object, date, payee and amount).
+ROW_IDS = ("Id", "TransactionId")
+# a reversal of a line repeats these (participant, payee and account); the source publishes no document number
+REVERSAL = ("MuniName", "Payee", "FundCode", "FundDescription", "DeptCode", "DeptDescription", "ObjCode",
+            "ObjDescription")
 PROGRAM220 = {}  # township -> program 220 lines added, police years, police-named program 220 lines left out
 
 
@@ -830,36 +844,59 @@ def payee(r):
     return "" if r["Payee"] == NULL else r["Payee"]
 
 
-def published(r):
-    """A line's published fields other than its row id: posting date (the fiscal year follows from it), payee as
-    published (spaces collapsed), description (none in this source), account, published category and amount."""
-    return (r["TransDate"][:10], " ".join(payee(r).split()), account(r),
-            "" if r["ObjDescription"] == NULL else r["ObjDescription"], str(money(r["Amt"])))
+def identity(r):
+    """Every raw column but the row and load ids (ROW_IDS): two lines with the same identity are identical."""
+    return tuple(sorted((k, v) for k, v in r.items() if k not in ROW_IDS))
 
 
 def unidentical(entity, rows, stats):
-    """Owner rule of 2026-10-07: lines identical in every published field except the row id (TransactionId and
-    row Id are the source's own ids; the payment type code is not published) are one line: keep the lowest row
-    Id, drop the rest. A day uploaded twice inside one upload is a set of identical lines, so it is covered too.
-    Negative lines compare like any other (a reversal is not identical to the payment it reverses)."""
-    first, drop = {}, set()
-    for r in sorted(rows, key=lambda r: int(r["Id"])):
-        k = published(r)
-        if k in first:
-            drop.add(r["Id"])
-        else:
-            first[k] = r["Id"]
+    """Owner rule of 2026-10-07 as corrected: identical lines (identity) are kept once, the lowest row Id. A group
+    of n identical positive lines keeps min(n, reversals + 1), the lowest row Ids: reversals counts the distinct
+    identities (identical reversals once) of the negative lines with the same REVERSAL fields, the amount negated
+    and a date in the group's year or the next, so a payment voided and reissued identically keeps its net.
+    Returns the kept rows and the dropped ones."""
+    groups = collections.defaultdict(list)
+    for r in rows:
+        groups[identity(r)].append(r)
+    reversals = collections.defaultdict(set)  # (REVERSAL fields, amount reversed) -> {(year, identity)}
+    for k, g in groups.items():
+        if money(g[0]["Amt"]) < 0:
+            reversals[(tuple(g[0][c] for c in REVERSAL), -money(g[0]["Amt"]))].add((int(g[0]["TransDate"][:4]), k))
+    drop = set()
+    for k, g in groups.items():
+        g = sorted(g, key=lambda r: int(r["Id"]))
+        amount, year, keep = money(g[0]["Amt"]), int(g[0]["TransDate"][:4]), 1
+        if amount > 0 and len(g) > 1:
+            n_rev = sum(y in (year, year + 1) for y, _ in reversals[(tuple(g[0][c] for c in REVERSAL), amount)])
+            keep = min(len(g), n_rev + 1)
+            if keep > 1:
+                stats["void_kept_groups"] += 1
+                stats["void_kept_lines"] += keep - 1
+                stats["void_kept_dollars"] += (keep - 1) * amount
+        if len(g) > keep:
+            stats["identical_groups"] += 1
+            drop |= {r["Id"] for r in g[keep:]}
+            if amount < 0:
+                stats["identical_negative_lines"] += len(g) - keep
+                stats["identical_negative_dollars"] += (len(g) - keep) * amount
     lines = [r for r in rows if r["Id"] in drop]
+    kept = [r for r in rows if r["Id"] not in drop]
     stats["identical_lines"] += len(lines)
     stats["identical_dollars"] += sum(money(r["Amt"]) for r in lines)
-    stats["identical_groups"] += len({published(r) for r in lines})
-    # reported, not treated differently: a dropped copy whose negative (same fields, opposite amount) is also
-    # published, as in a payment voided and issued again (payment, void, reissue: the rule keeps payment and void)
-    negated = {k[:-1] + (str(-money(k[-1])),) for k in first}
-    voided = [r for r in lines if published(r) in negated]
-    stats["identical_voided_lines"] += len(voided)
-    stats["identical_voided_dollars"] += sum(money(r["Amt"]) for r in voided)
-    return [r for r in rows if r["Id"] not in drop], lines
+    # reported: payment and reversal families (REVERSAL fields and amount, both signs present) whose net the rule
+    # raised, which happens only where identical reversals were kept once
+    net = collections.defaultdict(lambda: [decimal.Decimal(0), decimal.Decimal(0), set()])
+    for r in rows:
+        f = net[(tuple(r[c] for c in REVERSAL), abs(money(r["Amt"])))]
+        f[0] += money(r["Amt"])
+        f[2].add(money(r["Amt"]) > 0)
+    for r in kept:
+        net[(tuple(r[c] for c in REVERSAL), abs(money(r["Amt"])))][1] += money(r["Amt"])
+    for raw_net, kept_net, signs in net.values():
+        if len(signs) == 2 and kept_net > raw_net:
+            stats["net_raised_families"] += 1
+            stats["net_raised_dollars"] += kept_net - raw_net
+    return kept, lines
 
 
 def entity_rows(eid, entity, by_id, stats):
@@ -933,12 +970,7 @@ def normalize():
                 "payee_name": common.withhold_person(payee(r)), "description": "", "account": account(r),
                 "category_published": "" if r["ObjDescription"] == NULL else r["ObjDescription"],
                 "amount": str(money(r["Amt"])),
-                "source_record_id": f"{eid}-{r['Id']}", "_payee": " ".join(payee(r).split())})
-    # the owner's rule of 2026-10-07 holds across the whole output: no two lines identical in every published
-    # field but the record id (the payee compared as the source has it, so two withheld payees stay distinct)
-    ident = collections.Counter((*[r[c] for c in common.TABLES["transactions.csv.gz"] if c not in (
-        "source", "source_record_id", "payee_name")], r.pop("_payee")) for r in out)
-    assert max(ident.values()) == 1, f"identical lines left: {[k for k, n in ident.items() if n > 1][:3]}"
+                "source_record_id": f"{eid}-{r['Id']}"})
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, out)
     years = sorted({int(r["fiscal_year"]) for r in out})
     last = max(r["posting_date"] for r in out)
@@ -951,9 +983,10 @@ def normalize():
                 "the township chart of accounts), never lines named for police, so where a township also runs "
                 "police its mixed Public Safety lines are left out. Cities and villages: only lines whose fund or "
                 "department is named for fire; fire spending they book under general 'Public Safety' lines is not "
-                "included. Lines identical in every published field are shown once. Most of the dollars are "
-                "payroll, pensions and benefits paid through the checkbook. Participation is voluntary and uploads "
-                f"lag by entity (latest payment {last}); FY{years[-1]} partial"})
+                "included. Lines identical in every column the checkbook publishes (row ids aside) are shown "
+                "once, a voided and identically reissued payment as often as it was voided plus one. Most of the "
+                "dollars are payroll, pensions and benefits paid through the checkbook. Participation is voluntary "
+                f"and uploads lag by entity (latest payment {last}); FY{years[-1]} partial"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in out)
     neg = [r for r in out if r["amount"].startswith("-")]
@@ -963,8 +996,11 @@ def normalize():
           f"{stats['reload_lines']} reloaded lines dropped (${stats['reload_dollars']:,.2f}); "
           f"{stats['broken_lines']} lines of broken-upload months dropped (${stats['broken_dollars']:,.2f}); "
           f"{stats['identical_lines']} identical lines dropped (${stats['identical_dollars']:,.2f}, "
-          f"{stats['identical_groups']} groups, {len(IDENTICAL)} agencies; of them {stats['identical_voided_lines']} "
-          f"lines (${stats['identical_voided_dollars']:,.2f}) are copies of a line that is also reversed); "
+          f"{stats['identical_groups']} groups, {len(IDENTICAL)} agencies; of them "
+          f"{stats['identical_negative_lines']} negative, ${stats['identical_negative_dollars']:,.2f}); void rule kept "
+          f"{stats['void_kept_lines']} identical lines (${stats['void_kept_dollars']:,.2f}, "
+          f"{stats['void_kept_groups']} groups); {stats['net_raised_families']} payment and reversal families "
+          f"netted higher than raw (${stats['net_raised_dollars']:,.2f}, identical reversals kept once); "
           f"{stats['outside']} fetched lines outside the rule or years (of them {stats['township_police_lines']} "
           f"township lines named for fire and police, ${stats['township_police_dollars']:,.2f}); {len(neg)} negative lines "
           f"(${sum(decimal.Decimal(r['amount']) for r in neg):,.2f}) kept")

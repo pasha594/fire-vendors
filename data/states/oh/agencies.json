@@ -9,7 +9,7 @@
    "years": "2021-2026",
    "fiscal_year": "Calendar year (Ohio local governments)",
    "fetched": "2026-10-06",
-   "note": "186 participating fire agencies. Fire districts: whole checkbook. Townships: lines whose fund or department is named for fire and lines of program 220 (Public Safety, fire protection in the township chart of accounts), never lines named for police, so where a township also runs police its mixed Public Safety lines are left out. Cities and villages: only lines whose fund or department is named for fire; fire spending they book under general 'Public Safety' lines is not included. Lines identical in every published field are shown once. Most of the dollars are payroll, pensions and benefits paid through the checkbook. Participation is voluntary and uploads lag by entity (latest payment 2026-09-30); FY2026 partial"
+   "note": "186 participating fire agencies. Fire districts: whole checkbook. Townships: lines whose fund or department is named for fire and lines of program 220 (Public Safety, fire protection in the township chart of accounts), never lines named for police, so where a township also runs police its mixed Public Safety lines are left out. Cities and villages: only lines whose fund or department is named for fire; fire spending they book under general 'Public Safety' lines is not included. Lines identical in every column the checkbook publishes (row ids aside) are shown once, a voided and identically reissued payment as often as it was voided plus one. Most of the dollars are payroll, pensions and benefits paid through the checkbook. Participation is voluntary and uploads lag by entity (latest payment 2026-09-30); FY2026 partial"
   },
   {
    "source": "oh_cincinnati",
