@@ -58,11 +58,17 @@ near-constant offset). In all 683 lines, $4,955,951.43. (3) Of the remaining ide
 positive lines keeps min(n, reversals + 1) copies, the earliest load batch's lowest unique_ids first, where
 reversals counts the lines of the same fund, function, objective, account and vendor (REVERSAL_KEYS) with the
 amount negated in the same or the next fiscal year, lines identical among themselves counting once; a set of
-negative or zero lines keeps one. On the raw files of 2026-10-06 this drops 26 lines ($138,820.11, 25 sets; among
-them two $97,378.20 vehicles from one dealer on one day, two $31,500 payments to one contractor, and one copy each of
-a -$84 and a -$1,529.87 credit) and the void rule keeps none (no such set has a reversal); 709 lines dropped in all,
-$5,094,771.54. The -$1,529.87 credit (no vendor, 2026-06-22) is reversed once by a +$1,529.87 line of FY2027, so
-keeping it once raises that family's net from $0 as published to $1,529.87 (open question in docs/sources/id.md).
+zero lines keeps one. (4) Identical voids (owner decision A of 2026-10-07, "fix the voids"): a set of identical
+negative lines keeps one copy if its family has no payments (rule 2); in a family that has payments a negative copy
+is dropped only together with a positive copy of the family that (3) drops, so a payment, void and reissue family
+keeps its raw net; positive lines are not changed. A family (function family) is the lines of the same
+REVERSAL_KEYS with the amount up to sign whose fiscal years are the same or next to each other (a negative line of
+year y links to the positive lines of y - 1, y and y + 1, transitively). On the raw files of 2026-10-06 (3) and (4)
+drop 25 lines ($140,349.98, 24 sets; among them two $97,378.20 vehicles from one dealer on one day, two $31,500
+payments to one contractor, and one copy of a -$84 Super 8 credit that has no payment) and the void rule keeps none
+(no such set has a reversal); 708 lines dropped in all, $5,096,301.41. The void fix keeps both copies of a
+-$1,529.87 credit (no vendor, 2026-06-22) whose family has the +$1,529.87 line of FY2027 that re-reverses one of
+them and no dropped payment copy: the family nets -$1,529.87 as published (kept once, it netted $0).
 Two upload-error copies have a reversal of their amount: a $122.58 purchase-card line whose reversal moves the one
 payment to another account, and a $116.77 hotel line whose reversal pairs with a later $116.77 line; they stay
 dropped. fetch asserts each year's paging matches the row count, normalize that no line appears twice in
@@ -200,10 +206,28 @@ def lines(raw):
     return out
 
 
+def family(keys, amount, fy, present):
+    """The family of a negative line of fiscal year fy (owner decision A of 2026-10-07): the lines with the same
+    REVERSAL_KEYS and the same amount up to sign (amount > 0 here) whose fiscal years are the same or next to each
+    other, a negative line of year y being linked to the positive lines of y - 1, y and y + 1 (a payment reversed in
+    the same or next year, or a credit re-reversed in the next year), and lines linked through a chain of such links
+    being one family. present: {(keys, amount, fiscal year, sign)} of the lines left after the upload errors.
+    Returns the family's (sign, fiscal year) nodes, sorted."""
+    todo, seen = [(-1, fy)], {(-1, fy)}
+    while todo:
+        sign, y = todo.pop()
+        for node in ((-sign, y - 1), (-sign, y), (-sign, y + 1)):
+            if node not in seen and (keys, amount, node[1], node[0]) in present:
+                seen.add(node)
+                todo.append(node)
+    return tuple(sorted(seen))
+
+
 def dedup(rows):
-    """Lines to drop (owner rule of 2026-10-07 as corrected; see the module docstring). Returns {index: reason},
-    reason "later batch" or "doubled block" (upload errors, dropped first) or "identical" (rule 1 with the void
-    rule), and the number of positive identical copies the void rule keeps."""
+    """Lines to drop (owner rule of 2026-10-07 as corrected, with the fix of identical voids, decision A of the same
+    day; see the module docstring). Returns {index: reason}, reason "later batch" or "doubled block" (upload errors,
+    dropped first) or "identical" (rule 1 with the void rule and the void fix), and stats: the positive identical
+    copies the void rule keeps, and the negative copies (lines, cents, families) the void fix keeps."""
     content = lambda r: tuple((k, v) for k, v in sorted(r.items()) if k not in ROW_LOAD_IDS)
     order = lambda i: (rows[i]["date_of_load"] or "", rows[i]["zz_extract_date"] or "", int(rows[i]["unique_id"]))
     groups = collections.defaultdict(list)
@@ -225,24 +249,50 @@ def dedup(rows):
             drop.update(dict.fromkeys(copies, "doubled block"))
     left = [i for i in range(len(rows)) if i not in drop]
     reversals = collections.defaultdict(set)  # (REVERSAL_KEYS, amount, fiscal year) -> distinct negative lines
+    present = set()  # (REVERSAL_KEYS, amount up to sign, fiscal year, sign) of the lines left
     for i in left:
         r = rows[i]
-        if (r["amount"] or 0) < 0:
-            reversals[(tuple(r[k] for k in REVERSAL_KEYS), -r["amount"], int(r["fiscal_year"]))].add(content(r))
-    kept_by_void = 0
+        a, keys, fy = r["amount"] or 0, tuple(r[k] for k in REVERSAL_KEYS), int(r["fiscal_year"])
+        if a < 0:
+            reversals[(keys, -a, fy)].add(content(r))
+        if a:
+            present.add((keys, abs(a), fy, 1 if a > 0 else -1))
+    stats = {"void_kept": 0, "fix_kept": 0, "fix_cents": 0, "fix_families": 0}
+    dropped = collections.Counter()  # (REVERSAL_KEYS, amount, fiscal year) -> positive copies dropped (rule 3)
+    families = collections.defaultdict(list)  # (keys, amount, family nodes) -> [(fy, order, indexes)] negative sets
     for idx in groups.values():
         idx = [i for i in idx if i not in drop]
         if len(idx) < 2:
             continue
         r = rows[idx[0]]
+        a, keys, fy = r["amount"] or 0, tuple(r[k] for k in REVERSAL_KEYS), int(r["fiscal_year"])
         keep = 1
-        if (r["amount"] or 0) > 0:
-            key, fy = (tuple(r[k] for k in REVERSAL_KEYS), r["amount"]), int(r["fiscal_year"])
-            n_rev = len(reversals.get((*key, fy), set()) | reversals.get((*key, fy + 1), set()))
+        if a > 0:
+            n_rev = len(reversals.get((keys, a, fy), set()) | reversals.get((keys, a, fy + 1), set()))
             keep = min(len(idx), n_rev + 1)
-            kept_by_void += keep - 1
+            stats["void_kept"] += keep - 1
+            dropped[(keys, a, fy)] += len(idx) - keep
+        elif a < 0:
+            families[(keys, -a, family(keys, -a, fy, present))].append((fy, order(idx[0]), idx))
+            continue
         drop.update(dict.fromkeys(idx[keep:], "identical"))
-    return drop, kept_by_void
+    # Void fix: in a family with payments a negative copy is dropped only together with a positive copy of the
+    # family that rule 3 drops; the sets in order of (fiscal year, first copy) take the dropped positive copies until
+    # none is left. A family without payments keeps each set of identical negative lines once (rule 2).
+    for (keys, a, nodes), members in sorted(families.items(), key=lambda kv: min(m[:2] for m in kv[1])):
+        payments = [y for sign, y in nodes if sign > 0]
+        pool = sum(dropped[(keys, a, y)] for y in payments)
+        more = False
+        for fy, _, idx in sorted(members, key=lambda m: m[:2]):
+            n_drop = min(len(idx) - 1, pool) if payments else len(idx) - 1
+            pool -= n_drop if payments else 0
+            keep = len(idx) - n_drop
+            drop.update(dict.fromkeys(idx[keep:], "identical"))
+            stats["fix_kept"] += keep - 1
+            stats["fix_cents"] -= (keep - 1) * round(a * 100)
+            more |= keep > 1
+        stats["fix_families"] += more
+    return drop, stats
 
 
 def record_ids(rows):
@@ -268,12 +318,14 @@ def normalize():
     rows_in = lines(raw)
     exact = collections.Counter(json.dumps(r, sort_keys=True) for r in rows_in)
     assert max(exact.values()) == 1, "a line appears twice in the raw files"
-    drop, kept_by_void = dedup(rows_in)
+    drop, stats = dedup(rows_in)
     cents = lambda idx: sum(round((rows_in[i]["amount"] or 0) * 100) for i in idx)
     by_reason = {k: [i for i, w in drop.items() if w == k] for k in ("later batch", "doubled block", "identical")}
     print(f"  dropped: {len(drop)} lines, ${cents(drop) / 100:,.2f} (" + ", ".join(
         f"{k} {len(v)} lines ${cents(v) / 100:,.2f}" for k, v in by_reason.items())
-        + f"); identical copies kept by the void rule: {kept_by_void}")
+        + f"); identical copies kept by the void rule: {stats['void_kept']}; negative copies kept by the void fix: "
+        f"{stats['fix_kept']} ({'-' * (stats['fix_cents'] < 0)}${abs(stats['fix_cents']) / 100:,.2f}, "
+        f"{stats['fix_families']} families)")
     rows_in = [r for i, r in enumerate(rows_in) if i not in drop]
     record_id = record_ids(rows_in)
     excluded, out = collections.defaultdict(lambda: [0, 0.0]), []
@@ -296,8 +348,8 @@ def normalize():
         })
     fields = [f for f in common.TABLES["transactions.csv.gz"] if f not in ("source", "source_record_id")]
     same = collections.Counter(tuple(r[f] for f in fields) for r in out)
-    print(f"  rows equal to another in every published column (kept: they differ in a raw column or the void rule "
-          f"keeps them): {sum(n for n in same.values() if n > 1)}")
+    print(f"  rows equal to another in every published column (kept: they differ in a raw column, or the void "
+          f"rule or the void fix keeps them): {sum(n for n in same.values() if n > 1)}")
     years = sorted({r["fiscal_year"] for r in out})
     write_source_row(f"{years[0]}-{years[-1]}", raw.parent.parent.name)
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, out)
