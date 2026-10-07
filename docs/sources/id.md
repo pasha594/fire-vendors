@@ -195,28 +195,28 @@ unmatched (`grant_recipients_unmatched.csv`). This run did not change it; `check
   summary account title; `account` joins fund, function, account category and account.
 - **Duplicates and reversals:** owner rule of 2026-10-07: identical lines and identical (doubled) days are dropped,
   one copy kept. Lines identical in every column but `unique_id`, `date_of_load` and `zz_extract_date` (the source's
-  own id and load stamps) are kept once: the copy of the earliest load batch (load date, extract date) with the
-  lowest `unique_id`. In all 709 raw lines ($5,094,771.54, 559 sets) are dropped, before the payment-category filter:
-  (a) copies from a later load batch, 567 lines, $4,880,745.10: the same line, same `unique_id`, every column equal
-  but the extract date, loaded again by a later extract (108 lines, $4.61M, extracts of 2024-12-07 and 2025-11-15,
-  for example a $3,451,591 payment to the US Department of Agriculture and a dozen fire district and protective
+  own id and load stamps) are kept once: the copy of the earliest load batch (load date, extract date) with the lowest
+  `unique_id`. In all 709 raw lines ($5,094,771.54, 559 sets) are dropped, before the payment-category filter: (a)
+  copies from a later load batch, 567 lines, $4,880,745.10: the same line, same `unique_id`, every column equal but
+  the extract date, loaded again by a later extract (108 lines, $4.61M, extracts of 2024-12-07 and 2025-11-15, for
+  example a $3,451,591 payment to the US Department of Agriculture and a dozen fire district and protective
   association payments of 2025-10-31, each twice), and purchase-card lines loaded again under new `unique_id`s with no
-  reversal, mostly in the loads of 2024-08-21 and 2024-08-22, which consist almost entirely of such copies;
-  (b) copies inside one load batch, 142 lines, $214,026.44: blocks of purchase-card lines inserted twice (116 lines,
-  $75,206, in 8 batches from 2024-08-19 to 2025-07-07; the copies' `unique_id`s run in a parallel series at a
-  near-constant offset, all 26 copies of the 2025-07-07 batch at +14,313 or +14,764, and include the same airline
-  ticket numbers ("UNITED 0162410148953") and marketplace order numbers twice), and 26 lines ($138,820.11, 25 sets)
-  that the earlier rule kept as possible repeat purchases, for example two $97,378.20 vehicles from one dealer on one
-  day and two $31,500 payments to one contractor; under the owner's rule they are dropped too. On these files the
-  sets are the same whether lines are compared on all raw columns or on the published columns (agency, fiscal year,
-  posting date, payee as published, description, account, published category, amount); normalize repeats the rule
-  on the normalized rows (nothing more to drop) and `check_id.py` asserts that no two published rows are identical.
-  Change from the earlier rule: 26 lines and $138,820.11 fewer (47,026 lines, $329,541,702.66 before). A
-  `unique_id` can also be reused by a different line (a transfer and its reversal), so `source_record_id` is
-  `unique_id`, or `unique_id-<n>` when the id repeats (32 lines, 26 of them payment lines). Reversals and credits are kept as negative lines
-  (2,974 lines, -$14.6M) and are never identical to the payment they reverse, so amounts are net. Accounting entries
-  that are not payments are dropped: encumbrances (14 lines, $3.34M), year-end accrual "GAAP Expenses" (36, $0.08M),
-  loss on disposal (4, $0.14M), transfers (27, $0.04M).
+  reversal, mostly in the loads of 2024-08-21 and 2024-08-22, which consist almost entirely of such copies; (b) copies
+  inside one load batch, 142 lines, $214,026.44: blocks of purchase-card lines inserted twice (116 lines, $75,206, in
+  8 batches from 2024-08-19 to 2025-07-07; the copies' `unique_id`s run in a parallel series at a near-constant
+  offset, all 26 copies of the 2025-07-07 batch at +14,313 or +14,764, and include the same airline ticket numbers
+  ("UNITED 0162410148953") and marketplace order numbers twice), and 26 lines ($138,820.11, 25 sets) that the earlier
+  rule kept as possible repeat purchases, for example two $97,378.20 vehicles from one dealer on one day and two
+  $31,500 payments to one contractor; under the owner's rule they are dropped too. On these files the sets are the
+  same whether lines are compared on all raw columns or on the published columns (agency, fiscal year, posting date,
+  payee as published, description, account, published category, amount); normalize repeats the rule on the normalized
+  rows (nothing more to drop) and `check_id.py` asserts that no two published rows are identical. Change from the
+  earlier rule: 26 lines and $138,820.11 fewer (47,026 lines, $329,541,702.66 before). A `unique_id` can also be
+  reused by a different line (a transfer and its reversal), so `source_record_id` is `unique_id`, or `unique_id-<n>`
+  when the id repeats (32 lines, 26 of them payment lines). Reversals and credits are kept as negative lines (2,974
+  lines, -$14.6M) and are never identical to the payment they reverse, so amounts are net. Accounting entries that are
+  not payments are dropped: encumbrances (14 lines, $3.34M), year-end accrual "GAAP Expenses" (36, $0.08M), loss on
+  disposal (4, $0.14M), transfers (27, $0.04M).
 - **Payees:** shown as published, private persons included (owner decision of 2026-10-06): `common.withhold_person`
   only cuts payee text matching `config/payee_name_redactions.csv`. Since main's Utah work was merged (2026-10-07)
   that file also holds patterns for a named officer, a sole member and an owner's name after "LLC"; one `id_state`
