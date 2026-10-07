@@ -24,6 +24,8 @@
 // 10. #/about: the coverage table has a row per state and a total; every source of meta.sources is listed with a link.
 // 11. #/?g=vendor&agency=359 becomes agency=UT-359 and reads as the old page.
 // 12. #/?county=Salt%20Lake gains state=UT.
+// 13. A state and county whose agencies all lack vendor data: the summary starts "No vendor data", no category rows,
+//     no $0; the agency grouping lists them all as "No vendor data", its total row too.
 // Every view: no console errors, at both sizes; on the phone, no sideways page scroll.
 // Timing (logged): #/ until rendered, and a category drill-down from #/ that loads every state.
 'use strict';
@@ -314,6 +316,39 @@ async function shoot(ctxs, url, name, prep, log) {
       const h = await hashOf(page);
       ok(/[?&]state=UT(&|$)/.test(h) && /county=Salt(%20|\+)Lake/.test(h), 'county link becomes ' + h);
     });
+
+    // 13. Filters that match only agencies without vendor data (the largest such state and county in data/index.json):
+    // the summary says so, the category table is empty, and the agency grouping lists them; never $0
+    const ZERO = /(^|[^\d.,])\$0(?![\d.,]*\d)/;
+    const byCounty = new Map();
+    for (const a of I.agencies) {
+      if (a.state === 'UT' || !a.county) continue;
+      const k = a.state + '\t' + a.county, o = byCounty.get(k) || { n: 0, data: 0 };
+      o.n++; if (a.coverage <= 2) o.data++;
+      byCounty.set(k, o);
+    }
+    const ndc = [...byCounty].filter(([, o]) => !o.data && o.n > 1).sort((x, y) => y[1].n - x[1].n || (x[0] < y[0] ? -1 : 1))[0];
+    if (ndc) {
+      const [st, county] = ndc[0].split('\t');
+      const q = 'state=' + st + '&county=' + encodeURIComponent(county);
+      await view(13, '#/?' + q, '13-no-vendor-data-filters', async page => {
+        const s = await page.$eval('#summary', e => e.innerText);
+        ok(/^No vendor data/.test(s), q + ' summary: ' + s);
+        const tm = await page.$eval('#tbl-main', e => e.innerText);
+        ok(!ZERO.test(s) && !ZERO.test(tm), q + ': $0 in the summary or table: ' + (tm.match(/.{0,40}\$0.{0,20}/) || [''])[0]);
+        ok((await page.$$eval('#tbl-main tbody tr', r => r.length)) === 0, q + ': no category rows');
+        const lo = { errors: [], data: [] };
+        const pa = await open(desk, newUrl + '#/?g=agency&' + q, lo, 'agencies in ' + county);
+        await showAll(pa, 'main-agency');
+        const rows = await tableRows(pa, '#tbl-main table');
+        const paidKey = (await headsOf(pa, '#tbl-main')).find(h => /^Paid/.test(h));
+        ok(rows && rows.length === ndc[1].n && rows.every(r => r[paidKey] === 'No vendor data'), q + ': agency grouping lists ' + ndc[1].n + ' agencies, all No vendor data');
+        const foot = await pa.$eval('#tbl-main tfoot', e => e.innerText).catch(() => '');
+        ok(/No vendor data/.test(foot), q + ': total row reads No vendor data (' + foot.replace(/\s+/g, ' ') + ')');
+        ok(!lo.errors.length, 'agencies in ' + county + ': console errors ' + JSON.stringify(lo.errors));
+        await pa.close();
+      });
+    } else console.log('  13. skipped: every county outside Utah has an agency with vendor data');
 
     // Timing: a drill-down from #/ that loads every state
     if (runs('timing')) {
