@@ -735,15 +735,16 @@ const Core = (function () {
   }
 
   // The scope of URL parameters p: the selected agency's state, else the state filter, else 'ALL'.
-  // A numeric agency id is an older Utah link (UT-<id>). A county without a state picks Utah when Utah
-  // has that county (older links were all Utah), else the one state that has it.
+  // A numeric agency id is an older Utah link (UT-<id>, read as a number as the older page did, so "0359"
+  // is UT-359). A county without a state picks the selected agency's state when it has that county, else
+  // Utah when Utah has it (older links were all Utah), else the one state that has it.
   function resolve(store, p) {
     const has = k => p[k] != null && p[k] !== '';
     const bad = [];
     let agency = null;
     if (has('agency')) {
       const raw = String(p.agency);
-      const id = /^\d+$/.test(raw) ? 'UT-' + raw : raw;
+      const id = /^\d+$/.test(raw) ? 'UT-' + Number(raw) : raw;
       if (store.agency.has(id)) agency = id;
     }
     let state = '';
@@ -754,11 +755,11 @@ const Core = (function () {
     let county = has('county') ? String(p.county) : '';
     if (county && !state) {
       const withC = store.order.filter(s => store.st[s].counties.includes(county));
-      if (withC.includes('UT')) state = 'UT';
+      const ast = agency ? store.agency.get(agency).state : null;
+      if (ast && withC.includes(ast)) state = ast;
+      else if (withC.includes('UT')) state = 'UT';
       else if (withC.length === 1) state = withC[0];
-      else if (!agency || !withC.includes(store.agency.get(agency).state)) {
-        bad.push('county "' + county + '"' + (withC.length ? ' (choose a state)' : ''));
-      }
+      else bad.push('county "' + county + '"' + (withC.length ? ' (choose a state)' : ''));
     }
     const scope = agency ? store.agency.get(agency).state : state || 'ALL';
     return { agency, state, scope, bad };

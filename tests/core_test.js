@@ -255,6 +255,13 @@ same(canon({ state: 'oh', g: 'vendor' }), ['g=vendor&state=OH', []], 'canonical 
 same(canon({ state: 'UT', to: '2026' }), ['g=category&state=UT', []], 'canonical UT to=2026');
 same(canon({ to: '2026' }), ['g=category&to=2026', []], 'canonical ALL to=2026');
 same(canon({ state: 'UT', agency: 'OH-01127', g: 'vendor' }), ['g=vendor&state=UT&agency=OH-01127', []], 'canonical agency of another state');
+// A numeric id is read as a number, as the older page did; a county without a state takes the agency's state first
+same(canon({ g: 'vendor', agency: '0359' }), ['g=vendor&agency=UT-359', []], 'canonical agency=0359');
+{
+  const oa = store.st.OH.agencies.find(a => a.county === 'Washington');
+  if (oa) same(canon({ g: 'vendor', agency: oa.id, county: 'Washington' }), ['g=vendor&state=OH&agency=' + oa.id + '&county=Washington', []], 'county without a state, Ohio agency: Ohio');
+  same(canon({ g: 'vendor', agency: '359', county: 'Washington' }), ['g=vendor&state=UT&agency=UT-359&county=Washington', []], 'county without a state, Utah agency: Utah');
+}
 const ohVendor = store.vendors[store.st.OH.vmap.find(gi => !store.st.UT.valias.has(gi))].id;
 same(canon({ state: 'UT', vendor: ohVendor })[1], ['vendor "' + ohVendor + '" (no payments in Utah)'], 'vendor of another state');
 // Leaving a scope keeps the full range full: Utah (to FY2026) to all states (to FY2027)
