@@ -13,9 +13,13 @@ common.py is used only to read files (read_gz, latest_raw, read_config, read_dat
      identical when every raw column is equal but the columns that only identify the row or the load (Houston: none;
      Austin and Dallas: the Socrata :id); document, invoice, PO and line numbers are content. The first copy (file or :id
      order) is kept; a set of identical positive lines keeps one more copy per distinct exact reversal (same reversal
-     fields, amount negated, same or next fiscal year), up to all of them; a set of negative lines keeps one. For city
-     sources each line is also matched on posting date and source_record_id (payment document and line number among
-     the document's raw lines), so the copy kept is the first. tx_dir is exempt (owner decision 2 of 2026-10-06): only
+     fields, amount negated, same or next fiscal year), up to all of them. Identical voids (owner decision A of
+     2026-10-07): a set of negative lines keeps one copy when its family (same reversal fields, amount up to sign,
+     same or next fiscal year) has no payments; in a family with payments a negative copy is dropped only together
+     with a dropped positive copy of the family, and every family where the fix keeps a negative copy nets its raw
+     lines in the normalized file (no family with payments and identical voids nets above them). For city sources
+     each line is also matched on posting date and source_record_id (payment document and line number among the
+     document's raw lines), so the copy kept is the first. tx_dir is exempt (owner decision 2 of 2026-10-06): only
      lines re-reported in a later month are dropped
   2. no published text column (payee, vendor, description, account, category) still matches a redaction pattern
   3. every agency_id in the tables, agency_sources.csv and grants exists in agencies.json; agencies_added.csv ids are new
@@ -144,28 +148,85 @@ CITY = {
                                                     "lgl_nm", "rf_doc_cd", "rf_doc_dept_cd", "rf_doc_id")},
     "tx_dallas": {"ignore": (":id",), "reversal": ("dpt", "ftyp", "actv", "ogrp", "obj", "vcode", "vendor")},
 }
-DROPPED = {}  # source -> Counter of dropped lines, cents, negative lines, copies the void rule keeps, for the report
+DROPPED = {}  # source -> Counter of dropped lines, cents, negative lines, copies the void rule and void fix keep
+FAMILIES = {}  # source -> [(touched, raw cents, record ids)] per family with payments and a set of identical voids
+
+
+def family_roots(nodes):
+    """Union-find over (reversal fields, cents > 0, fiscal year, sign) nodes: a payment (sign 1) of year y is linked
+    with the negative lines (sign -1) of y and y + 1, the void rule's "same or next fiscal year". Returns find."""
+    parent = {n: n for n in nodes}
+
+    def find(n):
+        while parent[n] != n:
+            parent[n] = parent[parent[n]]
+            n = parent[n]
+        return n
+
+    for rev, c, fy, sign in sorted(nodes, key=str):
+        if sign > 0:
+            for other in ((rev, c, fy, -1), (rev, c, fy + 1, -1)):
+                if other in parent:
+                    parent[find(other)] = find((rev, c, fy, sign))
+    return find
 
 
 def city_expect(source, lines):
     """lines, in the order that decides which copy stays (lowest row id, or file order): (raw content without the
     ignored columns, reversal fields, fiscal year, cents, published line). A line is kept while fewer copies of its
     content than allowed are kept: one, or for a positive line one more than the distinct raw lines that reverse it
-    (same reversal fields, cents negated, same or next fiscal year)."""
+    (same reversal fields, cents negated, same or next fiscal year), up to all copies. Identical voids (owner decision
+    A of 2026-10-07): a negative line's family is every line of the same reversal fields and cents up to sign linked
+    through payment (year y) to negative line (year y or y + 1) links; in a family that has a payment, a negative copy
+    beyond the first is dropped only against a positive copy of the family dropped above, the family's negative sets
+    taking them in order of (fiscal year, first copy); a family without payments keeps each negative set once."""
     total = collections.Counter(line[0] for line in lines)
-    undo = collections.defaultdict(set)
-    for content, rev, fy, c, _ in lines:
+    first, undo, nodes = {}, collections.defaultdict(set), set()
+    for pos, (content, rev, fy, c, _) in enumerate(lines):
+        first.setdefault(content, pos)
         if c < 0:
             undo[(rev, -c, fy)].add(content)
-    kept, stats, e = collections.Counter(), collections.Counter(), Expect()
+        if c:
+            nodes.add((rev, abs(c), fy, 1 if c > 0 else -1))
+    find = family_roots(nodes)
+    allowed, pos_gone, voids = {}, collections.Counter(), collections.defaultdict(list)
+    for content, n in total.items():
+        _, rev, fy, c, _ = lines[first[content]]
+        allowed[content] = 1
+        if n > 1 and c > 0:
+            allowed[content] = min(n, 1 + len(undo[(rev, c, fy)] | undo[(rev, c, fy + 1)]))
+            pos_gone[find((rev, c, fy, 1))] += n - allowed[content]
+        elif n > 1 and c < 0:
+            voids[find((rev, -c, fy, -1))].append((fy, first[content], content, n))
+    has_payment = {find(node) for node in nodes if node[3] > 0}
+    stats = collections.Counter()
+    touched = set()
+    for root, sets in voids.items():
+        left = pos_gone[root]
+        for fy, _, content, n in sorted(sets):
+            gone = n - 1
+            if root in has_payment:
+                gone = min(n - 1, left)
+                left -= gone
+            allowed[content] = n - gone
+            if gone < n - 1:
+                touched.add(root)
+        stats["fix_families"] += root in touched
+    raw_net, ids = collections.Counter(), collections.defaultdict(set)
     for content, rev, fy, c, line in lines:
-        allowed = 1
-        if c > 0 and total[content] > 1:
-            allowed = min(total[content], 1 + len(undo[(rev, c, fy)] | undo[(rev, c, fy + 1)]))
-        if kept[content] < allowed:
+        if c:
+            root = find((rev, abs(c), fy, 1 if c > 0 else -1))
+            if root in voids and root in has_payment:
+                raw_net[root] += c
+                ids[root].add(line[4][1])
+    FAMILIES[source] = [(root in touched, raw_net[root], ids[root]) for root in sorted(raw_net, key=str)]
+    kept, e = collections.Counter(), Expect()
+    for content, rev, fy, c, line in lines:
+        if kept[content] < allowed[content]:
             if kept[content]:
-                stats["void_lines"] += 1
-                stats["void_cents"] += c
+                rule = "void" if c > 0 else "fix"
+                stats[f"{rule}_lines"] += 1
+                stats[f"{rule}_cents"] += c
             kept[content] += 1
             e.add(*line)
         else:
@@ -297,6 +358,19 @@ def main():
         same(f"{source} totals", e.totals, got_totals(tx, source))
         same(f"{source} lines", e.lines, got_lines(tx, source, "payee_name", ("posting_date", "source_record_id")))
         assert e.n == sum(r["source"] == source for r in tx), f"{source}: row count {e.n} raw vs normalized"
+        # void fix: every family it touches nets its raw lines in the normalized file, and no family with payments
+        # and a set of identical voids nets above its raw lines
+        net = collections.Counter()
+        for r in tx:
+            if r["source"] == source:
+                net[r["source_record_id"]] += cents(r["amount"])
+        for touched, raw_net, family_ids in FAMILIES[source]:
+            have = sum(net[i] for i in family_ids)
+            assert have <= raw_net, \
+                f"{source}: a family with payments nets {dollars(have)}, above its raw {dollars(raw_net)}"
+            assert have == raw_net or not touched, \
+                f"{source}: a family touched by the void fix nets {dollars(have)}, raw {dollars(raw_net)}: " \
+                f"{sorted(family_ids)[:6]}"
     same("tx_cpa totals", expect_cpa(), got_totals(tot, "tx_cpa"))
 
     # 2. Redaction patterns no longer match any published text
@@ -395,7 +469,9 @@ def main():
           + f"{cov['by_rule'] / cov['purchasing']:.1%}); tiers {dict(sorted(agencies['coverage_counts'].items()))}; "
           + "identical lines (owner rule of 2026-10-07, every raw column but row ids): "
           + ", ".join(f"{s} {d['lines']} dropped ({dollars(d['cents'])} net, {d['negative_lines']} negative), void rule "
-                      f"keeps {d['void_lines']} ({dollars(d['void_cents'])})" for s, d in sorted(DROPPED.items())) + ")")
+                      f"keeps {d['void_lines']} ({dollars(d['void_cents'])}), void fix keeps {d['fix_lines']} "
+                      f"({dollars(d['fix_cents'])}) in {d['fix_families']} families at raw net"
+                      for s, d in sorted(DROPPED.items())) + ")")
 
 
 if __name__ == "__main__":
