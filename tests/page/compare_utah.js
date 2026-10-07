@@ -191,6 +191,11 @@ async function controls(ctx, newUrl, I) {
     await page.goBack();
     await waitUrl(page, /^#\/\?g=category&state=OH&vendor=motorola-solutions$/);
     await page.waitForFunction(DONE);
+    // A typed link with the state filter on another state than the agency's: the select still shows the agency
+    await page.evaluate(() => { location.hash = '#/?g=vendor&state=OH&agency=UT-359'; });
+    await page.waitForFunction(DONE);
+    const sel = await page.$eval('#f-agency', s => s.value + ':' + s.selectedIndex + ':' + [...s.querySelectorAll('optgroup')].map(g => g.label).join('/'));
+    ok(/^UT-359:[1-9]\d*:Utah\/Ohio$/.test(sel), 'state=OH with a Utah agency: agency select ' + sel);
     ok(!log.errors.length, 'state=OH controls: console errors ' + JSON.stringify(log.errors));
     await page.close();
   }

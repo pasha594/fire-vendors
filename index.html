@@ -2382,12 +2382,15 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       $('f-to').innerHTML = yrs;
       ctlFor.years = ix.scope;
     }
-    const as = S.state || 'ALL';
+    // A selected agency of another state than the state filter (a typed or older link) is listed too, so the select shows it
+    const ast = S.agency != null && store.agency.has(S.agency) ? store.agency.get(S.agency).state : null;
+    const sts = !S.state ? store.order : ast && ast !== S.state ? store.order.filter(st => st === S.state || st === ast) : [S.state];
+    const as = sts.join(',');
     if (ctlFor.agencies !== as) {
-      const list = sts => store.agencies.filter(a => sts.includes(a.state)).sort((x, y) => coll.compare(x.name, y.name)).map(a => opt(a.id, a.name)).join('');
-      $('f-agency').innerHTML = opt('', 'All agencies') + (as === 'ALL'
-        ? store.order.map(st => '<optgroup label="' + esc(stName(st)) + '">' + list([st]) + '</optgroup>').join('')
-        : list([as]));
+      const list = st => store.agencies.filter(a => a.state === st).sort((x, y) => coll.compare(x.name, y.name)).map(a => opt(a.id, a.name)).join('');
+      $('f-agency').innerHTML = opt('', 'All agencies') + (sts.length > 1
+        ? sts.map(st => '<optgroup label="' + esc(stName(st)) + '">' + list(st) + '</optgroup>').join('')
+        : list(sts[0]));
       ctlFor.agencies = as;
     }
     if (ctlFor.counties !== ix.scope) {
