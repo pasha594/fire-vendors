@@ -26,8 +26,10 @@ included: lines that differ in any of them are different payments and are kept. 
 with the lowest :id is kept; a set of n identical positive lines keeps min(n, reversals + 1), reversals being the
 distinct lines equal in every REVERSAL_KEYS column (department, fund type, activity, object group, object, vendor
 code and name; a Dallas void carries its own document id and often no commodity) with the amount negated in the
-same or the next fiscal year. In the 2026-10-06 pull no two lines are identical, so nothing is dropped; the 14
-negative lines are kept and amounts are net. source_record_id counts every raw line of the document. Payee names
+same or the next fiscal year; identical negative lines follow the void fix (owner decision A of 2026-10-07,
+tx_common.dedup rule 4: in a family with payments a negative copy is dropped only with a positive copy). In the
+2026-10-06 pull no two lines are identical, so nothing is dropped; the 14 negative lines are kept and amounts are
+net. source_record_id counts every raw line of the document. Payee names
 are published as the source publishes them (owner decision, 2026-10-06); common.withhold_person only cuts email
 addresses and bank account text.
 """

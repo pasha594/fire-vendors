@@ -30,10 +30,15 @@ are different payments and are kept. Of a set of identical lines the first in fi
 of n identical positive lines keeps min(n, reversals + 1), where reversals counts the distinct lines equal in every
 REVERSAL_KEYS column (fund, department, WBS, GL account, vendor, vendor invoice, type of procurement, PO number and
 item, contract; the City repeats them on a reversal, which can come in another payment document on another day)
-with the amount negated in the same or the next fiscal year; a set of negative lines keeps one. On the raw files of
+with the amount negated in the same or the next fiscal year. Identical voids (owner decision A of 2026-10-07): a set
+of identical negative lines keeps one copy when its family (same REVERSAL_KEYS, amount up to sign, same or next
+fiscal year) has no payments; in a family with payments a negative copy is dropped only together with an identical
+positive copy of the family that the void rule drops, so the family keeps its raw net. On the raw files of
 2026-10-06: 24 sets of identical lines; 21 of the 23 positive sets are payment, reversal and re-payment sequences
-inside one payment document and keep both copies; 3 lines are dropped ($206.10 and $19.62 to "*", one -$12,400.00
-Life-Assist reversal). Negative lines (early payment discounts, credits, vendor offsets, reversals) are kept, so
+inside one payment document and keep both copies; 2 lines are dropped ($206.10 and $19.62 to "*", no reversal,
+$225.72). The one negative set, two -$12,400.00 Life-Assist reversals of invoice 1369849 (2024-03-29), keeps both:
+its family's two identical payments are both kept, so no positive copy is dropped, and the family nets $12,400.00
+as published (kept once, it netted $24,800.00). Negative lines (early payment discounts, credits, vendor offsets, reversals) are kept, so
 amounts are net. Payee names are published as the source publishes them, employees included (owner decision,
 2026-10-06); common.withhold_person only cuts email addresses and bank account text. Vendor name "*" is the City's
 own mask for a withheld vendor and is kept as published.

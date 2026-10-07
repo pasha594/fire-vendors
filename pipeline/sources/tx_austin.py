@@ -28,8 +28,10 @@ referenced purchase order, delivery order or contract (rf_doc_*), the commodity 
 lines that differ in any of them are different payments and are kept. Of a set of identical lines the one with the
 lowest :id is kept; a set of n identical positive lines keeps min(n, reversals + 1), reversals being the distinct
 lines equal in every REVERSAL_KEYS column (department, fund, division, group, object, vendor, referenced document)
-with the amount negated in the same or the next fiscal year. In the 2026-10-06 pull no two lines are identical and
-there is no negative line, so nothing is dropped. source_record_id counts every raw line of the document.
+with the amount negated in the same or the next fiscal year; identical negative lines follow the void fix (owner
+decision A of 2026-10-07, tx_common.dedup rule 4: in a family with payments a negative copy is dropped only with a
+positive copy). In the 2026-10-06 pull no two lines are identical and there is no negative line, so nothing is
+dropped. source_record_id counts every raw line of the document.
 Checks of every status are kept (Outstanding = issued, not yet cashed; Escheat = uncashed and sent to the state as
 unclaimed property; the City's expense stands either way). Payee names are published as the source publishes
 them, employees and customer (non-vendor) payees included (owner decision, 2026-10-06); common.withhold_person
