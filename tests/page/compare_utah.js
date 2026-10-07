@@ -2,7 +2,7 @@
 // The page in Chromium: Utah reads as it did before the states were added, and every state renders.
 //
 //   PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers NODE_PATH=/opt/node22/lib/node_modules node tests/page/compare_utah.js \
-//     [--base REF] [--base-url URL --new-url URL] [--shots DIR]
+//     [--base REF] [--base-url URL --new-url URL] [--shots DIR] [--only utah,first,states,controls]
 //
 // Without URLs, the script serves the working tree (the new page) and `git archive REF index.html data favicon.svg
 // favicon-32.png` (the old page; REF defaults to de1e5cf) with python3 -m http.server on two free ports, and stops
@@ -30,6 +30,7 @@ const args = process.argv.slice(2);
 const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : dflt; };
 const BASE_REF = opt('--base', 'de1e5cf');
 const SHOTS = opt('--shots', null);
+const ONLY = opt('--only', 'utah,first,states,controls').split(',');   // parts to run
 
 let failures = 0, checks = 0;
 const fail = msg => { failures++; console.log('FAIL ' + msg); };
@@ -133,6 +134,113 @@ const PAIRS = [
   ['#/?g=agency&county=Washington&size=1m-5m', '#/?g=agency&county=Washington&size=1m-5m'],
 ];
 
+const ALLFILES = I => I.meta.states_order.map(st => I.meta.states[st].files.rows);
+async function controls(ctx, newUrl, I) {
+  const waitUrl = (page, re) => page.waitForFunction(r => new RegExp(r).test(location.hash), re.source, { timeout: 60000 });
+  // The filter bar on the default view of all states: agencies by state, no county before a state is chosen
+  {
+    const log = { errors: [], data: [] };
+    const page = await open(ctx, newUrl + '#/', log);
+    const groups = await page.$$eval('#f-agency optgroup', g => g.map(x => x.label + ':' + x.children.length));
+    ok(groups.length === I.meta.states_order.length && groups.every((g, i) => g === I.meta.states[I.meta.states_order[i]].name + ':' + I.agencies.filter(a => a.state === I.meta.states_order[i]).length),
+      '#/ agency select by state: ' + groups.join(', '));
+    ok(await page.$eval('#f-county', e => e.disabled), '#/ county select disabled with all states');
+    // Search on the precomputed table: loads every state, then draws the table again with the counts of the matching rows
+    await page.click('#tq');
+    await page.keyboard.type('air', { delay: 30 });
+    await page.waitForFunction(() => /q=air/.test(location.hash) && [...document.querySelectorAll('#tbl-main tfoot td')].filter(td => /\d/.test(td.textContent)).length >= 3, null, { timeout: 60000 });
+    ok(await page.evaluate(() => document.activeElement && document.activeElement.id === 'tq' && document.activeElement.value === 'air'), '#/ search keeps focus and text after loading');
+    ok(ALLFILES(I).every(f => log.data.includes(f)), '#/ search loaded every state: ' + log.data.join(' '));
+    // Picking a state: Utah's counties, the URL has state=UT and no years
+    await page.selectOption('#f-state', 'UT');
+    await waitUrl(page, /state=UT/);
+    await page.waitForFunction(DONE);
+    ok(!(await page.$eval('#f-county', e => e.disabled)) && (await page.$$eval('#f-county option', o => o.length)) > 2, 'state=UT enables the county select');
+    ok(!/from=|to=/.test(await hashOf(page)), 'state=UT keeps the full range: ' + await hashOf(page));
+    await page.selectOption('#f-county', 'Salt Lake');
+    await waitUrl(page, /county=Salt/);
+    // Leaving the state clears the county
+    await page.selectOption('#f-state', '');
+    await waitUrl(page, /^#\/\?g=category&q=air$/);
+    ok(!log.errors.length, '#/ controls: console errors ' + JSON.stringify(log.errors));
+    await page.close();
+  }
+  // Vendor box with more vendors than the list shows (Ohio): suggestions as the user types, then a pick
+  {
+    const log = { errors: [], data: [] };
+    const page = await open(ctx, newUrl + '#/?state=OH', log);
+    ok(log.data.join(' ') === 'data/index.json', 'state=OH precomputed: ' + log.data.join(' '));
+    await page.click('#f-vendor');
+    await page.waitForFunction(f => performance.getEntriesByType('resource').some(e => e.name.endsWith(f)), I.meta.states.OH.files.rows);
+    await page.keyboard.type('motorola', { delay: 30 });
+    await page.waitForFunction(() => document.querySelectorAll('#vendor-list option').length > 0);
+    const n = await page.$$eval('#vendor-list option', o => o.map(x => x.value));
+    ok(n.length <= 200 && n.some(v => /^Motorola/i.test(v)), 'Ohio vendor suggestions: ' + n.length + ' ' + n.slice(0, 3).join(', '));
+    await page.fill('#f-vendor', 'Motorola Solutions');
+    await page.keyboard.press('Enter');
+    await waitUrl(page, /vendor=motorola-solutions/);
+    await page.waitForFunction(DONE);
+    ok(/state=OH/.test(await hashOf(page)), 'vendor pick keeps the state: ' + await hashOf(page));
+    // Agency select: only Ohio's agencies, string ids
+    const vals = await page.$$eval('#f-agency option', o => o.map(x => x.value).filter(Boolean));
+    ok(vals.length === I.agencies.filter(a => a.state === 'OH').length && vals.every(v => v.startsWith('OH-')), 'state=OH agency select: ' + vals.length);
+    await page.selectOption('#f-agency', vals[0]);
+    await waitUrl(page, new RegExp('agency=' + vals[0]));
+    await page.waitForFunction(DONE);
+    // Back returns to the vendor view
+    await page.goBack();
+    await waitUrl(page, /^#\/\?g=category&state=OH&vendor=motorola-solutions$/);
+    await page.waitForFunction(DONE);
+    ok(!log.errors.length, 'state=OH controls: console errors ' + JSON.stringify(log.errors));
+    await page.close();
+  }
+  // A drill-down from all states into one agency loads only that agency's state; agencies of the same size
+  {
+    const log = { errors: [], data: [] };
+    const page = await open(ctx, newUrl + '#/?g=agency&state=TX', log);
+    await page.click('#tbl-main tbody tr.dr button.drill');
+    await waitUrl(page, /agency=TX-/);
+    await page.waitForFunction(DONE);
+    const like = await page.$('[data-like]');
+    if (like) {
+      await page.click('#d-facts > summary');
+      await page.click('[data-like]');
+      await waitUrl(page, /size=/);
+      ok(/state=TX/.test(await hashOf(page)), 'agencies of the same size keep the state: ' + await hashOf(page));
+    }
+    ok(!log.errors.length, 'TX drill: console errors ' + JSON.stringify(log.errors));
+    await page.close();
+  }
+  // A state file that does not load: a message with Retry, which loads it
+  {
+    const log = { errors: [], data: [] };
+    const page = await ctx.newPage();
+    page.on('pageerror', e => log.errors.push(e.message));
+    let block = true;
+    await page.route('**/data/id.json', r => (block ? r.abort() : r.continue()));
+    await page.goto(newUrl + '#/?g=vendor&state=ID');
+    await page.waitForSelector('[data-retry]', { timeout: 60000 });
+    ok(/did not load/.test(await page.evaluate(() => document.getElementById('main').innerText)), 'failed load: message');
+    block = false;
+    await page.click('[data-retry]');
+    await page.waitForFunction(DONE, null, { timeout: 60000 });
+    ok((await page.$$eval('#tbl-main tbody tr', r => r.length)) > 0, 'Retry loads the state');
+    ok(!log.errors.length, 'Retry: page errors ' + JSON.stringify(log.errors));
+    await page.close();
+  }
+  // About
+  {
+    const log = { errors: [], data: [] };
+    const page = await ctx.newPage();
+    page.on('console', m => { if (m.type() === 'error') log.errors.push(m.text()); });
+    page.on('pageerror', e => log.errors.push(e.message));
+    await page.goto(newUrl + '#/about');
+    await page.waitForFunction(() => /About/.test((document.querySelector('#page h1') || {}).textContent || ''));
+    ok(!log.errors.length, 'About: console errors ' + JSON.stringify(log.errors));
+    await page.close();
+  }
+}
+
 (async () => {
   let baseUrl = opt('--base-url', null), newUrl = opt('--new-url', null);
   let tmp = null;
@@ -150,7 +258,7 @@ const PAIRS = [
 
     // ---- 1. Utah ----
     const t1 = Date.now();
-    for (const [oh, nh] of PAIRS) {
+    for (const [oh, nh] of ONLY.includes('utah') ? PAIRS : []) {
       const lo = { errors: [], data: [] }, ln = { errors: [], data: [] };
       const po = await open(ctx, baseUrl + oh, lo), pn = await open(ctx, newUrl + nh, ln);
       const what = oh + ' vs ' + nh;
@@ -175,7 +283,7 @@ const PAIRS = [
     console.log(PAIRS.length + ' Utah views compared in ' + ((Date.now() - t1) / 1000).toFixed(1) + ' s');
 
     // ---- 2. The first load ----
-    {
+    if (ONLY.includes('first')) {
       const log = { errors: [], data: [] };
       const t = Date.now();
       const page = await open(ctx, newUrl + '#/', log);
@@ -204,7 +312,7 @@ const PAIRS = [
     urls.push('#/?g=vendor', '#/?g=agency', '#/?g=year', '#/?cat=scba', '#/?g=vendor&vendor=motorola-solutions', '#/?g=agency&vendor=zoll-medical&years=1');
     const t3 = Date.now();
     const timing = [];
-    for (const h of urls) {
+    for (const h of ONLY.includes('states') ? urls : []) {
       const log = { errors: [], data: [] };
       const t = Date.now();
       let page;
@@ -221,6 +329,10 @@ const PAIRS = [
     }
     timing.sort((a, b) => b[1] - a[1]);
     console.log(urls.length + ' state views rendered in ' + ((Date.now() - t3) / 1000).toFixed(1) + ' s; slowest: ' + timing.slice(0, 3).map(([h, ms]) => h + ' ' + ms + ' ms').join(', '));
+    // ---- 4. Controls and loading ----
+    const t4 = Date.now();
+    if (ONLY.includes('controls')) await controls(ctx, newUrl, I);
+    console.log('controls checked in ' + ((Date.now() - t4) / 1000).toFixed(1) + ' s');
     await browser.close();
   } catch (e) {
     fail(e.stack || String(e));
