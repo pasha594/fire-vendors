@@ -10,7 +10,7 @@ Run of 2026-10-06 (raw folder `raw/2026-10-06/id/`). PRD: `docs/prd/multistate-e
 | `usfa`, `openfema` | Federal layer (USFA registry, OpenFEMA grants) | 4 | built earlier (`federal.py`) | 198 registry departments, 54 with grants | 120 matched awards | $28.9M matched | grants 2005-2025 |
 | `id_lgr` | Transparent Idaho, Local Government Registry: fire district totals | 3 | **built** | 156 | 577 district-years | $577.5M actual expenditures | FY2021-FY2024 |
 | `id_cities` | Transparent Idaho, city financial data | (3) | skipped: whole-city totals only, no fire department line | 0 | - | - | - |
-| `id_state` | Transparent Idaho, state transactions: Idaho Department of Lands fire program | 1 | **built** | 1 (state fire agency) | 47,000 payment lines | $329.4M net | state FY2021-FY2027 (FY2027 partial) |
+| `id_state` | Transparent Idaho, state transactions: Idaho Department of Lands fire program | 1 | **built** | 1 (state fire agency) | 47,001 payment lines | $329.4M net | state FY2021-FY2027 (FY2027 partial) |
 | `id_lgr_compliance`, `id_contracts` | Registry compliance report; SCO open data portal (statewide contracts) | - | skipped (no fire agency spend); samples kept | 0 | - | - | - |
 
 `data/states/id/agencies.json` coverage after this run: tier 1: 1, tier 2: 0, tier 3: 156, tier 4: 101 (258 agencies:
@@ -20,7 +20,8 @@ has a $0 row.
 Checks: `python3 tests/multistate/check_id.py` and `python3 tests/multistate/check_federal.py ID` both pass.
 `check_id.py` imports neither adapter: it re-reads the raw files, checks the `id_state` raw lines against the
 control file's server-side line counts and dollars per account category, applies the owner's dedup rule on its own
-(upload-error copies, identical lines, void-safe copies), and compares every kept payment line with
+(upload-error copies, identical lines, void-safe copies, the fix of identical voids, asserting that every family the
+fix touches nets as its raw lines), and compares every kept payment line with
 `transactions.csv.gz` (unique_id, fiscal year, date, amount, account, account title and payee as published, so a
 published row can repeat only as a copy the rule keeps); it recomputes each district-year total
 of `id_lgr`, checks the contract's column lists, the coverage tiers, the redaction patterns and the vendor map
@@ -37,9 +38,13 @@ accepted as is (see Access). Dedup rule ("drop identical lines, drop identical d
 lines are identical when every column the source publishes is equal except the row id and load stamps
 (`unique_id`, `date_of_load`, `zz_extract_date`); identical lines are kept once, except that a set of identical
 payments keeps one copy more per reversal (void-safe). For `id_state` the first reading already compared every raw
-column, and Idaho publishes no voucher, invoice or check number, so the corrected rule drops the same 709 lines and
-the void rule keeps none: 47,000 payment lines, $329,402,882.55, unchanged (see `id_state`, Duplicates). `id_lgr`
-holds one total per district and year and has no identical rows. The Ohio program-220 rule and the California double-counting decision do not apply to Idaho.
+column, and Idaho publishes no voucher, invoice or check number, so the corrected rule dropped the same 709 lines
+and the void rule keeps none. Latest decisions of 2026-10-07: (A) fix the voids: in a family that has payments an
+identical negative copy is dropped only together with an identical positive copy of the family; this keeps the
+second copy of one -$1,529.87 credit, so `id_state` now drops 708 lines and publishes 47,001 payment lines,
+$329,401,352.68, and the family is back at its raw net (see `id_state`, Duplicates); (B) keeping PO lines applies to
+California's SCPRS only. `id_lgr` holds one total per district and year and has no identical rows. The Ohio
+program-220 rule and the California double-counting decision do not apply to Idaho.
 
 ## Access to Transparent Idaho (applies to `id_lgr`, `id_cities`, `id_state`)
 
@@ -192,7 +197,7 @@ unmatched (`grant_recipients_unmatched.csv`). This run did not change it; `check
   DEPARTMENT-COEUR-D-ALENE`, no FDID). IDL is a state fire agency and stays in the main data (owner decision 4)
   with kind "State fire agency": `federal.py` sets that kind by name ("Department of Lands"), although the
   registry files the row under a local organization type.
-- **Rows:** 47,000 payment lines, $329,402,882.55 net: FY2021 $24.9M, FY2022 $62.2M, FY2023 $34.5M, FY2024 $33.7M,
+- **Rows:** 47,001 payment lines, $329,401,352.68 net: FY2021 $24.9M, FY2022 $62.2M, FY2023 $34.5M, FY2024 $33.7M,
   FY2025 $70.3M, FY2026 $78.0M, FY2027 (partial) $25.8M. By function title: deficiency warrants $182.9M, Forest and
   Range Protection (historical) $97.4M, Forest and Range Fire Protection $24.9M, Fire Management (historical) $24.2M.
   7,749 distinct payee names. `description` is empty (the source has no line description); `category_published` is the
@@ -221,33 +226,48 @@ unmatched (`grant_recipients_unmatched.csv`). This run did not change it; `check
     0162410148953") and marketplace order numbers twice. In all 683 lines, $4,955,951.43; every one is identical to
     the copy kept.
   - *Identical lines:* each remaining identical set keeps the copy of the earliest load batch with the lowest
-    `unique_id`. 26 lines dropped, $138,820.11, in 25 sets, each set inside one load batch: 18 payment copies
+    `unique_id`. 25 lines dropped, $140,349.98, in 24 sets, each set inside one load batch: 18 payment copies
     ($140,433.98, for example two $97,378.20 vehicles from Mountain Home Auto Ranch on 2026-03-03 and two $31,500
-    payments to one contractor on 2024-09-06), 6 zero-dollar lines and 2 credits (-$1,613.87).
+    payments to one contractor on 2024-09-06), 6 zero-dollar lines and one copy of a -$84 Super 8 credit.
   - *Void-safe:* a set of n identical positive lines keeps min(n, reversals + 1) copies, where reversals counts the
     lines of the same fund, function, objective, account and vendor with the amount negated, in the same or the next
-    fiscal year, lines identical among themselves counting once; identical negative lines are kept once. **The void
+    fiscal year, lines identical among themselves counting once; identical zero lines are kept once. **The void
     rule keeps no line here:** none of the 18 payment sets has a reversal. Two upload-error copies do have a
     reversal of their amount and stay dropped, because the reversal belongs to another line: a $122.58 US Bank
     purchase-card line of 2024-09-01 loaded again on 2024-10-08, whose reversal of 2025-02-24 moves the one payment
     from account 698000 to 698100 (reversal and repost the same day), and a $116.77 Westlock Inn line in the doubled
     block of 2025-07-07, whose reversal pairs with a separate $116.77 line of 2025-06-25 loaded with it on
     2025-07-09. Kept, each would count its payment twice.
+  - *Identical voids (owner decision A of 2026-10-07, "fix the voids"):* a family is the lines of the same fund,
+    function, objective, account and vendor (Idaho repeats no document field on a void) with the same amount up to
+    sign whose fiscal years are the same or next to each other: a negative line of year y joins the positive lines
+    of y - 1, y and y + 1, transitively (a payment reversed in its year or the next, or a credit re-reversed in the
+    next year). In a family that has payments, an identical negative copy is dropped only together with an identical
+    positive copy of the family that the void rule drops (sets taken in order of fiscal year and first copy); a
+    family without payments keeps its identical negative lines once, as before. Positive lines are not changed, and
+    upload-error copies stay dropped. Here the fix keeps one line: the second copy of the -$1,529.87 credit (no
+    vendor, account 599400 Employee In State Travel Costs, 2026-06-22, twice in the load of 2026-07-06,
+    `source_record_id` 13674118). Its family also holds a +$1,529.87 line without vendor of 2026-07-22 (FY2027) that
+    re-reverses one credit, and no payment copy of the family is dropped, so both credits stay: the family nets
+    -$1,529.87 as its raw lines (kept once, it netted $0, $1,529.87 more). With the $1,529.87 Enterprise Holdings
+    payment of 2025-09-08 to the same account (another payee, so another family) the four lines net $0, as
+    published. The -$84 Super 8 credit (2025-01-28, twice) has no payment in its family and keeps one copy. Under a
+    link only from a payment to the voids of its year and the next (the reading used for Ohio and California), the
+    FY2027 line would not join the FY2026 credits and this family would stay raised; the decision lists Idaho's
+    family among those to restore, so Idaho links both ways.
   - *Numbers:* raw 47,790 lines ($338,100,490.00), 47,709 in payment categories ($334,497,654.09). With the upload
     errors dropped (the rule before 2026-10-07): 47,026 payment lines, $329,541,702.66. With the owner's rule, first
-    reading and corrected alike: 709 lines dropped ($5,094,771.54, all in payment categories), 47,000 payment lines,
-    $329,402,882.55; `transactions.csv.gz` is byte-identical to the first reading's. The first reading's second pass
-    over the published columns was removed (it dropped nothing here); normalize prints how many published rows
-    repeat (0), and `check_id.py` no longer requires none.
-  - *Where the rule changes a net:* the -$1,529.87 credit (no vendor, account 599400 Employee In State Travel Costs,
-    2026-06-22, twice in the load of 2026-07-06) is reversed once by a +$1,529.87 line of 2026-07-22 (FY2027), after
-    a $1,529.87 Enterprise Holdings payment of 2025-09-08 to the same account: as published the four lines net $0;
-    with one credit kept, $1,529.87. The -$84 Super 8 credit (2025-01-28, twice) has no counterpart. Open question
-    below.
+    reading and corrected alike: 709 lines dropped ($5,094,771.54), 47,000 payment lines, $329,402,882.55. With the
+    void fix (decision A): 708 lines dropped ($5,096,301.41, all in payment categories: upload errors 683,
+    $4,955,951.43; identical 25, $140,349.98), 47,001 payment lines, $329,401,352.68 (FY2026 $77,972,011); the void
+    fix keeps 1 negative copy (-$1,529.87) in 1 family, the void rule none. The only change to
+    `transactions.csv.gz` is the added row 13674118; with the fix switched off normalize writes the previous file
+    byte for byte. Normalize is deterministic (two runs byte-identical). It prints how many published rows repeat
+    in every published column: 2, the two credits, which differ only in `unique_id`.
 
   A `unique_id` can also be reused by a different line (a transfer and its reversal), so `source_record_id` is
   `unique_id`, or `unique_id-<n>` when the id repeats (32 lines, 26 of them payment lines). Reversals and credits are
-  kept as negative lines (2,974 lines, -$14.6M) and are never identical to the payment they reverse, so amounts are
+  kept as negative lines (2,975 lines, -$14.6M) and are never identical to the payment they reverse, so amounts are
   net. Accounting entries that are not payments are dropped: encumbrances (14 lines, $3.34M), year-end accrual "GAAP
   Expenses" (36, $0.08M), loss on disposal (4, $0.14M), transfers (27, $0.04M).
 - **Payees:** shown as published, private persons included (owner decision of 2026-10-06): `common.withhold_person`
@@ -343,13 +363,4 @@ merging. Low-confidence rows were inferred from the account the payment was code
 - A wildland suppression services / aviation category (see Vendor categories): helicopter and air tanker services
   are `apparatus` in the shared map (California's choice, by spend) and contract crews and equipment `wildland`.
 - Yellow Pine: one district registered twice in the Local Government Registry, or two? (see `id_lgr` data quality)
-- Identical credits: the void rule protects identical payments only, so identical negative lines are kept once even
-  when a later line reverses one of them. In `id_state` this raises one family's net from $0 to $1,529.87 (see
-  `id_state`, Duplicates). Counting re-reversals for identical credits the same way (keep min(n, re-reversals + 1))
-  would fix this family but break the owner's own Ohio example (Walnut Township (Fairfield): three identical payments
-  and two identical voids, payment, void, payment, void, payment; the void rule keeps two payments, and two voids
-  would net $0 instead of one payment). A remedy that keeps every such net and changes no positive line (review of
-  2026-10-07): in a family that has payments, drop an identical negative copy only together with an identical
-  positive copy of the family. Here it keeps the second -$1,529.87 credit (the family has the +$1,529.87 line and
-  no payment copy is dropped), so the four lines net $0 as published. Ohio, California and Texas have the same case.
-  Apply it in all four states?
+- (Closed 2026-10-07: identical credits. The owner applied the remedy as decision A; see `id_state`, Duplicates.)
