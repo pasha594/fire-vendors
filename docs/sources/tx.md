@@ -41,7 +41,7 @@ passes. `python3 tests/multistate/check_federal.py TX` still passes. Running eve
 ## Federal layer (done before this run)
 
 From `config/states/tx/` (written by `pipeline/sources/federal.py`): 1,530 USFA registry departments (956 volunteer, 421 local,
-59 county, 43 emergency services districts by name, 16 contract, 35 other kinds). OpenFEMA's firefighter grants dataset lists 2,665 Texas
+59 county, 47 emergency services districts by name, 16 contract, 1 state fire agency (Texas Forest Service- Jefferson District), 30 other kinds). OpenFEMA's firefighter grants dataset lists 2,665 Texas
 awards for FY2005-2026 ($4.07 billion, including 430 Port Security grants to ports) to 1,051 recipient names; 367 names match a registry department strictly (641 awards,
 $130.2M, 362 agencies) and 684 names are left unmatched in `grant_recipients_unmatched.csv`. This run did not touch those files.
 

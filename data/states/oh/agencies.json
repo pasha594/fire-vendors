@@ -9,7 +9,7 @@
    "years": "2021-2026",
    "fiscal_year": "Calendar year (Ohio local governments)",
    "fetched": "2026-10-06",
-   "note": "187 participating fire agencies. Fire districts: whole checkbook. Townships, cities and villages: only lines whose fund or department is named for fire; fire spending they book under general 'Public Safety' lines is not included. Participation is voluntary and uploads lag by entity (latest payment 2026-09-30); FY2026 partial"
+   "note": "183 participating fire agencies. Fire districts: whole checkbook. Townships, cities and villages: only lines whose fund or department is named for fire; fire spending they book under general 'Public Safety' lines is not included. Most of the dollars are payroll, pensions and benefits paid through the checkbook. Participation is voluntary and uploads lag by entity (latest payment 2026-09-30); FY2026 partial"
   },
   {
    "source": "oh_cincinnati",
@@ -23,10 +23,10 @@
   }
  ],
  "coverage_counts": {
-  "1": 187,
+  "1": 184,
   "2": 0,
   "3": 0,
-  "4": 967
+  "4": 969
  },
  "agencies": [
   {
@@ -13503,11 +13503,12 @@
    "county": "Lawrence",
    "city": "Proctorville",
    "usfa_fdid": "44013",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -14105,7 +14106,7 @@
    "id": "OH-45227",
    "state": "OH",
    "name": "West Licking Joint Fire District",
-   "kind": "Other",
+   "kind": "Fire district",
    "county": "Licking",
    "city": "Pataskala",
    "usfa_fdid": "45227",
@@ -15237,12 +15238,11 @@
    "county": "Madison",
    "city": "London",
    "usfa_fdid": "49003",
-   "coverage": 1,
+   "coverage": 4,
    "sources": [
-    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": "01",
+   "fy_start": null,
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -19596,13 +19596,12 @@
    "county": "Portage",
    "city": "Streetsboro",
    "usfa_fdid": "67027",
-   "coverage": 1,
+   "coverage": 4,
    "sources": [
-    "oh_checkbook_local",
     "openfema",
     "usfa"
    ],
-   "fy_start": "01",
+   "fy_start": null,
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -20595,7 +20594,7 @@
    "id": "OH-70205",
    "state": "OH",
    "name": "C B & S Joint Fire District",
-   "kind": "Other",
+   "kind": "Fire district",
    "county": "Richland",
    "city": "Shiloh",
    "usfa_fdid": "70205",
@@ -22802,13 +22801,12 @@
    "county": "Summit",
    "city": "Cuyahoga Falls",
    "usfa_fdid": "77011",
-   "coverage": 1,
+   "coverage": 4,
    "sources": [
-    "oh_checkbook_local",
     "openfema",
     "usfa"
    ],
-   "fy_start": "01",
+   "fy_start": null,
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -25942,7 +25940,7 @@
    "id": "OH-85203",
    "state": "OH",
    "name": "East Wayne Fire District",
-   "kind": "Other",
+   "kind": "Fire district",
    "county": "Wayne",
    "city": "Dalton",
    "usfa_fdid": "85203",
@@ -26918,16 +26916,18 @@
    "grants": 0
   },
   {
-   "id": "OH-S-ohio-division-of-forestry",
+   "id": "OH-S-brunswick-hills-township-fire-department",
    "state": "OH",
-   "name": "Ohio Department of Natural Resources, Division of Forestry",
-   "kind": "State fire agency",
-   "county": "Franklin",
-   "city": "Columbus",
+   "name": "Brunswick Hills Township Fire Department",
+   "kind": "Township fire department",
+   "county": "Medina",
+   "city": "Brunswick",
    "usfa_fdid": null,
-   "coverage": 4,
-   "sources": [],
-   "fy_start": null,
+   "coverage": 1,
+   "sources": [
+    "oh_checkbook_local"
+   ],
+   "fy_start": "01",
    "usfa": null,
    "grants": 0
   },
@@ -26938,38 +26938,6 @@
    "kind": "Volunteer fire department",
    "county": "Mahoning",
    "city": "Craig Beach",
-   "usfa_fdid": null,
-   "coverage": 1,
-   "sources": [
-    "oh_checkbook_local"
-   ],
-   "fy_start": "01",
-   "usfa": null,
-   "grants": 0
-  },
-  {
-   "id": "OH-S-proctorville-community-volunteer-fire-department",
-   "state": "OH",
-   "name": "Proctorville Community Volunteer Fire Department",
-   "kind": "Volunteer fire department",
-   "county": "Lawrence",
-   "city": "Proctorville",
-   "usfa_fdid": null,
-   "coverage": 1,
-   "sources": [
-    "oh_checkbook_local"
-   ],
-   "fy_start": "01",
-   "usfa": null,
-   "grants": 0
-  },
-  {
-   "id": "OH-S-brunswick-hills-township-fire-department",
-   "state": "OH",
-   "name": "Brunswick Hills Township Fire Department",
-   "kind": "Township fire department",
-   "county": "Medina",
-   "city": "Brunswick",
    "usfa_fdid": null,
    "coverage": 1,
    "sources": [
@@ -26992,6 +26960,20 @@
     "oh_checkbook_local"
    ],
    "fy_start": "01",
+   "usfa": null,
+   "grants": 0
+  },
+  {
+   "id": "OH-S-ohio-division-of-forestry",
+   "state": "OH",
+   "name": "Ohio Department of Natural Resources, Division of Forestry",
+   "kind": "State fire agency",
+   "county": "Franklin",
+   "city": "Columbus",
+   "usfa_fdid": null,
+   "coverage": 4,
+   "sources": [],
+   "fy_start": null,
    "usfa": null,
    "grants": 0
   },

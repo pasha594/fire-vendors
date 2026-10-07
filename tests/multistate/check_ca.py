@@ -332,7 +332,15 @@ def main():
     counts = collections.Counter(a["coverage"] for a in agencies["agencies"])
     assert agencies["coverage_counts"] == {str(t): counts[t] for t in (1, 2, 3, 4)}
     kinds = {a["id"]: a["kind"] for a in agencies["agencies"]}
-    assert kinds["CA-00555"] in ("State government", "State fire agency"), "CAL FIRE (CA-00555) is not a state row"
+    # owner decision 4: CAL FIRE stays in the main data with kind "State fire agency" (federal.kind, by name); a
+    # county department CAL FIRE runs under contract stays a county department
+    assert kinds["CA-00555"] == "State fire agency", "CAL FIRE (CA-00555) is not kind 'State fire agency'"
+    assert kinds["CA-33555"] == "County fire department", "Cal Fire - Riverside County Fire Department is a county row"
+    allowed_kinds = {"Fire district", "Emergency services district", "Local fire department",
+                     "Volunteer fire department", "County fire department", "Township fire department",
+                     "State fire agency"}
+    assert all(a["kind"] in allowed_kinds for a in common.read_config(ST, "agencies_added.csv")), \
+        "agencies_added.csv: kind outside federal.kind's labels"
     # agencies_added.csv: source-named agencies only, never a second row for a registry fire district of the county
     registry = common.read_config(ST, "agencies.csv")
     for a in common.read_config(ST, "agencies_added.csv"):

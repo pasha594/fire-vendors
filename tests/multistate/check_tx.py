@@ -208,6 +208,10 @@ def main():
     tot = common.read_data_csv(d / "totals.csv")
     agencies = json.loads((d / "agencies.json").read_text())
     ids = {a["id"] for a in agencies["agencies"]}
+    kinds = {a["id"]: a["kind"] for a in agencies["agencies"]}
+    assert kinds.get("TX-S-texas-a-and-m-forest-service") == "State fire agency" \
+        and kinds.get("TX-X-TEXAS-FOREST-SERVICE-JEFFERSON-DISTRICT-JEFFERSON") == "State fire agency", \
+        "Texas A&M Forest Service keeps kind 'State fire agency' (owner decision 4)"
 
     # 1. Totals, row counts and payee lines per source
     e, dir_names = expect_dir()
@@ -289,6 +293,8 @@ def main():
     cats = {r["id"]: r["purchasing"] == "yes" for r in csv.DictReader(open(ROOT / "config" / "categories.csv", encoding="utf-8"))}
     assert all(r["category"] in cats for r in add_rows), "vendor_map_additions.csv: unknown category"
     assert len({r["name_key"] for r in add_rows}) == len(add_rows), "vendor_map_additions.csv: duplicate name_key"
+    assert [r["name_key"] for r in add_rows] == sorted(r["name_key"] for r in add_rows), \
+        "vendor_map_additions.csv: not sorted by name_key"
     assert not {r["name_key"] for r in add_rows} & set(vm), "vendor_map_additions.csv repeats a vendor_map.csv key"
     spend, ags = collections.Counter(), collections.defaultdict(set)
     for r in tx:

@@ -440,7 +440,7 @@ CA-33110,Rancho Mirage Fire Service,Local fire department,Riverside,Rancho Mirag
 CA-33115,Temecula Fire Service,Local fire department,Riverside,Temecula,33115,Mostly career,"Local (includes career, combination, and volunteer fire departments and fire districts)",4,43,25,0,,0
 CA-33410,California Rehabilitation Center,State government,Riverside,Norco,33410,Mostly volunteer,State government (includes state forest fire agencies and state institution fire departments),1,5,0,9,,0
 CA-33415,Chuckawalla Valley State Prison (CDCR) Fire Department,State government,Riverside,Sacramento,33415,Mostly career,State government (includes state forest fire agencies and state institution fire departments),27,19,0,4,,0
-CA-33555,Cal Fire - Riverside County Fire Department,State government,Riverside,Perris,33555,Mostly career,State government (includes state forest fire agencies and state institution fire departments),91,1200,300,0,https://www.rvcfire.org/,0
+CA-33555,Cal Fire - Riverside County Fire Department,County fire department,Riverside,Perris,33555,Mostly career,State government (includes state forest fire agencies and state institution fire departments),91,1200,300,0,https://www.rvcfire.org/,0
 CA-33905,University of California Riverside,State government,Riverside,Riverside,33905,Career,State government (includes state forest fire agencies and state institution fire departments),1,3,0,0,,0
 CA-34003,Aerojet Fire Services,Private or industrial fire brigade,Sacramento,Sacramento,34003,Career,Private or industrial fire brigade,1,15,0,0,,0
 CA-34015,Courtland Fire Protection District,Fire district,Sacramento,Courtland,34015,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",2,0,0,21,https://courtlandfire.com/,0

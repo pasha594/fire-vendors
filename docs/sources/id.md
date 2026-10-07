@@ -62,8 +62,8 @@ districts are a separate registry type and are not linked, see `id_lgr`); state 
 ## Federal layer (`usfa`, `openfema`)
 
 Built by `pipeline/sources/federal.py` before this run: 198 USFA registry departments in
-`config/states/id/agencies.csv` (95 fire districts, 70 local fire departments, 22 volunteer fire departments, and
-others); 424 OpenFEMA firefighter grant awards to Idaho recipients (FY2005-FY2025, $305.8M), of which 120 awards
+`config/states/id/agencies.csv` (98 fire districts, 69 local fire departments, 22 volunteer fire departments, the
+Idaho Department of Lands row as "State fire agency", and others); 424 OpenFEMA firefighter grant awards to Idaho recipients (FY2005-FY2025, $305.8M), of which 120 awards
 ($28.9M) to 54 recipients are matched strictly to a registry department (`grant_recipients.csv`); 113 recipients are
 unmatched (`grant_recipients_unmatched.csv`). This run did not change it; `check_federal.py ID` passes.
 
@@ -174,10 +174,9 @@ unmatched (`grant_recipients_unmatched.csv`). This run did not change it; `check
 - **Years:** state FY2021-FY2027, July to June, the year it ends in. FY2027 holds July 1 to late September 2026.
 - **How fire is identified:** the agency function code (07H), which is IDL's fire program in every year.
 - **Attribution:** the registry's "Idaho Department of Lands Fire Department" (`ID-X-IDAHO-DEPARTMENT-OF-LANDS-FIRE-
-  DEPARTMENT-COEUR-D-ALENE`, no FDID; the registry gives it kind "Local fire department", which `federal.py`
-  generates and this run cannot change). IDL is a state fire agency and stays in the main data (owner decision
-  4); the owner asked for kind "State fire agency", but the row's kind comes from `federal.py`, and an
-  `agencies_added.csv` row would list IDL twice, so the kind needs a change in `federal.py` (reported).
+  DEPARTMENT-COEUR-D-ALENE`, no FDID). IDL is a state fire agency and stays in the main data (owner decision 4)
+  with kind "State fire agency": `federal.py` sets that kind by name ("Department of Lands"), although the
+  registry files the row under a local organization type.
 - **Rows:** 47,026 payment lines, $329,541,703 net: FY2021 $24.9M, FY2022 $62.2M, FY2023 $34.5M, FY2024 $33.7M, FY2025
   $70.4M, FY2026 $78.1M, FY2027 (partial) $25.8M. By function title: deficiency warrants $182.9M, Forest and Range
   Protection (historical) $97.4M, Forest and Range Fire Protection $25.0M, Fire Management (historical) $24.2M. 7,748
@@ -216,9 +215,14 @@ unmatched (`grant_recipients_unmatched.csv`). This run did not change it; `check
 
 ## Vendor categories (`config/states/id/vendor_map_additions.csv`)
 
-464 proposed rows (63 high, 199 medium, 202 low confidence). With the 111 payee names `config/vendor_map.csv`
-already maps, they cover 90.5% of `id_state`'s purchasing dollars ($143.1M of $158.1M, counting every unmapped payee
-as purchasing; the additions alone 86.1%). In review, after the owner decision to show names, the "Individual name
+494 proposed rows (63 high, 215 medium, 216 low confidence). With the 111 payee names `config/vendor_map.csv`
+already maps, they cover 90.7% of `id_state`'s purchasing dollars ($144.1M of $158.9M, counting every unmapped payee
+with net spend above zero as purchasing, the rule the other states' checks use; the additions alone 86.3%). The
+cross-state check of 2026-10-07 found that under that rule the file covered 89.97% (90.5% only when payees with net
+refunds, such as a -$0.9M "Idaho Department of Lands" line, reduce the base), and added 30 rows for the largest
+unmapped payees (logging, excavation, water tender and firefighting contractors `wildland`; fire districts,
+cities and a school district `government`; rentals `general`; auto parts `fleet`; B&H Photo `it`), most with low
+or medium confidence from the name and account. In review, after the owner decision to show names, the "Individual name
 withheld" row was dropped, spend and agencies were recomputed, and 129 rows were added for the largest payees that
 were withheld before (mostly sole proprietors paid from "Professional Services", given `wildland` with low
 confidence from the account, like the builder's account-based rows). IDL's fire program buys mostly wildland
@@ -268,11 +272,6 @@ merging. Low-confidence rows were inferred from the account the payment was code
   with the SCO before publishing Idaho data (see Access).
 - The crawler-form User-Agent for `transparent.idaho.gov` (its CloudFront serves the app shell to library agents
   although robots.txt allows all): acceptable, or should the project ask the SCO to allow its plain agent?
-- IDL's fire program is in the main data (owner decision 4) on the registry row "Idaho Department of Lands Fire
-  Department", whose kind `federal.py` sets to "Local fire department" from the registry's organization type; the
-  owner wants kind "State fire agency", which needs a change in `federal.py` or `common.assemble_agencies` (adapters
-  cannot set the kind of a registry row). The registry also gives Bovill Fire Protection District kind "State
-  government".
 - Should `id_state` also carry the State Fire Marshal, or IDL's forestry function 03H?
 - Fire district fiscal year start (October or January) is unknown per district; `fy_start` is empty.
 - A wildland suppression services / aviation category (see Vendor categories).

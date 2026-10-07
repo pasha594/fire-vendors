@@ -7,7 +7,7 @@
    "tier": "1",
    "url": "https://data.austintexas.gov/d/8c6z-qnmj",
    "years": "2021-2027",
-   "fiscal_year": "City FY, Oct-Sep",
+   "fiscal_year": "City of Austin FY, Oct-Sep",
    "fetched": "2026-10-06",
    "note": "Fire department (code 83) payment lines; FY2027 holds only its first days"
   },
@@ -27,7 +27,7 @@
    "tier": "1",
    "url": "https://www.dallasopendata.com/d/x5ih-idh7",
    "years": "2026-2027",
-   "fiscal_year": "City FY, Oct-Sep",
+   "fiscal_year": "City of Dallas FY, Oct-Sep",
    "fetched": "2026-10-06",
    "note": "Dallas Fire-Rescue (DFD) payment lines; the open data set now keeps only FY2026 and the first days of FY2027; the City withholds some payments for vendor anonymity"
   },
@@ -47,7 +47,7 @@
    "tier": "1",
    "url": "https://data.houstontx.gov/dataset/checkbook",
    "years": "2021-2027",
-   "fiscal_year": "City FY, Jul-Jun",
+   "fiscal_year": "City of Houston FY, Jul-Jun",
    "fetched": "2026-10-06",
    "note": "Houston Fire Department (department 1200) payment lines; FY2027 holds July to September 2026"
   }

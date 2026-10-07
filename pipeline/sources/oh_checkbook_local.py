@@ -59,8 +59,11 @@ Duplicates and broken uploads (normalize): rows are keyed by the checkbook's row
 match in every field but TransactionId are separate lines (several identical invoices or benefit lines paid the
 same day) and are kept, except in a month uploaded k times: a month of DOUBLED_MIN lines or more in which every
 group of lines identical in date, payee, fund, department, object and amount has a size divisible by k >= 2
-keeps size/k lines of each group (Beavercreek Township, March 2023). A month whose lines carry batch totals
-instead of line amounts (BROKEN_SHARE rule; Jackson Township (Stark), 2026) is left out. Negative amounts
+keeps size/k lines of each group (Beavercreek Township, March 2023). A later upload (TransactionId jump of more
+than RELOAD_GAP) whose lines of a date only repeat lines already uploaded for that date is a reload and dropped
+(Perkins Township (Erie), December 2025 and January 2026). A month whose lines carry batch totals
+instead of line amounts (BROKEN_SHARE rule; Jackson Township (Stark), City of Dover and City of Bellevue,
+2025-2026) is left out. Negative amounts
 (voids, refunds, reversals) are kept so they net out. Every fetched slice is checked against the dashboard's
 own summary totals for the same filters, per year.
 """
@@ -109,13 +112,29 @@ CHART = "Bar | SOH"  # the dashboard's default chart; its underlying rows are ev
 FIRE_NAME = re.compile(r"\bFIRE(S|FIGHTERS?|FIGHTING|MEN|MEN'?S)?\b", re.I)
 # shared police-and-fire names, water hydrants, fire-loss insurance escrow (ORC 3929.86 "fire damaged structures"
 # funds), fireworks permits, and wage garnishments passed through to creditors
-NOT_FIRE_NAME = re.compile(r"POLICE|HYDRANT|FIRE ?LOSS|FIREWORK|INSURANCE|ESCROW|DAMAGED? STRUCTURE|GARNISH", re.I)
+NOT_FIRE_NAME = re.compile(r"POLICE|HYDRANT|FIRE ?LOSS|FIREWORK|INSURANCE|ESCROW|DAMAGED? STRUCTURE|GARNISH|"
+                           r"FIRE DAMAGE|REPAIR ?(AND|/|&) ?REMOVAL|CLEAN ?UP", re.I)
+# fire-loss insurance escrow funds pay insurance proceeds back to owners of burned buildings or to demolition
+# contractors (City of Steubenville "FIRE DAMAGE REMOVAL", Village of Gallipolis "FIRE LOSS RECOVERY", City of
+# Tallmadge "FIRE REPAIR/REMOVAL FUND", Jackson Township (Mahoning) "FIRE INSURANCE CLAIM CLEAN UP ESCROW"): such a
+# fund or department name excludes the line even when the other one is named for fire
+ESCROW_NAME = re.compile(r"FIRE ?LOSS|ESCROW|DAMAGED? STRUCTURE|FIRE DAMAGE|REPAIR ?(AND|/|&) ?REMOVAL|CLEAN ?UP",
+                         re.I)
 # A month whose upload carries batch totals instead of line amounts: most of its lines share their date and amount
-# with at least two other lines paid to other payees (Jackson Township (Stark), 2026: every line of a day shows
-# the same $0.5-4.7 million). Its lines are dropped.
+# with at least two other lines paid to other payees for other objects (Jackson Township (Stark), City of Dover,
+# City of Bellevue, 2025-2026: every line of a day shows the same $0.5-5.6 million). Its lines are dropped. Equal
+# amounts paid to several people for the same object (York Township (Athens), November 2022: seven $500
+# firefighter reimbursements) are real lines and do not count.
 BROKEN_SHARE = decimal.Decimal("0.5")
 POLICE_FUND = re.compile(r"POLICE", re.I)
 DOUBLED_MIN = 10  # lines in a month before the month can be judged as uploaded twice
+# Reloads: TransactionIds are numbered in upload order, so a participant's lines sorted by TransactionId fall into
+# uploads, a new one starting where the TransactionId jumps by more than RELOAD_GAP. A later upload's lines of one
+# date (RELOAD_MIN or more, none negative) that are each an exact copy of a line of that date in an earlier upload
+# are a reload (Perkins Township (Erie): 2025-12-18 and 2026-01-09 uploaded again about 1.1 million TransactionIds
+# later). Identical lines inside one upload are separate payments and kept.
+RELOAD_GAP = 100000
+RELOAD_MIN = 3
 # Special districts that are fire agencies (whole checkbook), and the ones whose name suggests fire or EMS but
 # which are not fire agencies, by participant name.
 FIRE_DISTRICT = re.compile(r"\bFIRE\b", re.I)
@@ -566,6 +585,8 @@ def label(r, part):
 def is_fire_line(kind, r, dept_trusted=True):
     if kind == "special_districts":
         return True
+    if ESCROW_NAME.search(r["FundDescription"] or "") or ESCROW_NAME.search(r["DeptDescription"] or ""):
+        return False
     return fire_line_name(r["FundDescription"]) or (dept_trusted and fire_line_name(r["DeptDescription"]))
 
 
@@ -608,17 +629,19 @@ def entity_lines(path):
 
 
 def broken_months(rows):
-    """Months (YYYY-MM) of one entity whose lines mostly share date and amount with 2+ other lines of 2+ payees."""
-    pair, payees = collections.Counter(), collections.defaultdict(set)
+    """Months (YYYY-MM) of one entity whose lines mostly share date and amount with 2+ other lines of 2+ payees
+    and 2+ objects."""
+    pair, payees, objects = collections.Counter(), collections.defaultdict(set), collections.defaultdict(set)
     for r in rows:
         k = (r["TransDate"][:10], r["Amt"])
         pair[k] += 1
         payees[k].add(r["Payee"])
+        objects[k].add(r["ObjCode"])
     n, rep = collections.Counter(), collections.Counter()
     for r in rows:
         k = (r["TransDate"][:10], r["Amt"])
         n[r["TransDate"][:7]] += 1
-        rep[r["TransDate"][:7]] += pair[k] >= 3 and len(payees[k]) >= 2
+        rep[r["TransDate"][:7]] += pair[k] >= 3 and len(payees[k]) >= 2 and len(objects[k]) >= 2
     return {m for m in n if rep[m] > BROKEN_SHARE * n[m]}
 
 
@@ -650,8 +673,42 @@ def undouble(entity, rows, stats):
     return [r for r in rows if r["Id"] not in drop]
 
 
+def unreload(entity, rows, stats):
+    """Drop a later upload's lines of a date that only repeat lines already uploaded for that date (RELOAD_GAP,
+    RELOAD_MIN)."""
+    def same(r):
+        return r["TransDate"][:10], r["Payee"], r["FundCode"], r["DeptCode"], r["ObjCode"], r["Amt"]
+    uploads, prev = [], None
+    for r in sorted(rows, key=lambda r: (int(r["TransactionId"]), int(r["Id"]))):
+        if prev is None or int(r["TransactionId"]) - prev > RELOAD_GAP:
+            uploads.append([])
+        uploads[-1].append(r)
+        prev = int(r["TransactionId"])
+    seen, drop = collections.Counter(), set()
+    for upload in uploads:
+        days = collections.defaultdict(list)
+        for r in upload:
+            days[r["TransDate"][:10]].append(r)
+        new = collections.Counter()
+        for day in sorted(days):
+            lines = days[day]
+            count = collections.Counter(same(r) for r in lines)
+            if len(lines) >= RELOAD_MIN and all(money(r["Amt"]) >= 0 for r in lines) \
+                    and all(seen[k] >= n for k, n in count.items()):
+                drop |= {r["Id"] for r in lines}
+                stats["reload_lines"] += len(lines)
+                stats["reload_dollars"] += sum(money(r["Amt"]) for r in lines)
+                print(f"  {entity['name']}: {day}: {len(lines)} lines uploaded again in a later upload dropped "
+                      f"(${sum(money(r['Amt']) for r in lines):,.2f})")
+            else:
+                new += count
+        seen += new
+    return [r for r in rows if r["Id"] not in drop]
+
+
 def entity_rows(eid, entity, by_id, stats):
-    """The entity's published lines: fire lines from FIRST_FY, re-uploads once, broken-upload months dropped."""
+    """The entity's published lines: fire lines from FIRST_FY, re-uploads and reloads once, broken-upload months
+    dropped."""
     seen, rows = set(), []
     trusted = dept_trusted(by_id)
     if not trusted:
@@ -669,6 +726,7 @@ def entity_rows(eid, entity, by_id, stats):
         seen.add(key)
         rows.append(r)
     rows = undouble(entity, rows, stats)
+    rows = unreload(entity, rows, stats)
     broken = broken_months(rows)
     for m in sorted(broken):
         lines = [r for r in rows if r["TransDate"][:7] == m]
@@ -705,7 +763,8 @@ def normalize():
         "fiscal_year": "Calendar year (Ohio local governments)", "fetched": d.parent.parent.name,
         "note": f"{len(links)} participating fire agencies. Fire districts: whole checkbook. Townships, cities and "
                 "villages: only lines whose fund or department is named for fire; fire spending they book under "
-                "general 'Public Safety' lines is not included. Participation is voluntary and uploads lag by "
+                "general 'Public Safety' lines is not included. Most of the dollars are payroll, pensions and "
+                "benefits paid through the checkbook. Participation is voluntary and uploads lag by "
                 f"entity (latest payment {last}); FY{years[-1]} partial"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in out)
@@ -713,6 +772,7 @@ def normalize():
     print(f"{ST}: {SOURCE}: {len(out)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}, {len(links)} agencies; "
           f"{stats['reuploads']} re-uploaded lines dropped (${stats['reupload_dollars']:,.2f}); "
           f"{stats['doubled_lines']} lines of months uploaded twice dropped (${stats['doubled_dollars']:,.2f}); "
+          f"{stats['reload_lines']} reloaded lines dropped (${stats['reload_dollars']:,.2f}); "
           f"{stats['broken_lines']} lines of broken-upload months dropped (${stats['broken_dollars']:,.2f}); "
           f"{stats['outside']} fetched lines outside the rule or years; {len(neg)} negative lines "
           f"(${sum(decimal.Decimal(r['amount']) for r in neg):,.2f}) kept")

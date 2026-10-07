@@ -25,7 +25,8 @@ own filters and duplicate rules; shared with the adapters are only the hand-revi
     present; no agency gets a $0 totals row
   - vendor_map_additions.csv: valid categories, unique keys not already in config/vendor_map.csv, keys among the
     published payees, spend and agencies equal to the transactions, and with config/vendor_map.csv it covers at least
-    90% of purchasing dollars (unmapped payees counted as purchasing)
+    90% of purchasing dollars (payees with net spend above zero; unmapped payees counted as purchasing); keys sorted;
+    IDL keeps kind "State fire agency"
 """
 import collections
 import csv
@@ -244,6 +245,8 @@ def main():
     assert not {r["id"] for r in added} & registry, "agencies_added.csv repeats a registry id"
     assert len({r["id"] for r in added}) == len(added), "agencies_added.csv: duplicate id"
     assert IDL in registry, "Idaho Department of Lands fire row missing from the registry"
+    kinds = {a["id"]: a["kind"] for a in agencies["agencies"]}
+    assert kinds[IDL] == "State fire agency", "IDL keeps kind 'State fire agency' (owner decision 4)"
 
     # 3. Unique source_record_id per source
     c = collections.Counter((r["source"], r["source_record_id"]) for r in tx)
@@ -283,6 +286,8 @@ def main():
     assert all(r["category"] in cats and r["category"] != "individuals" for r in add_rows), "additions: category"
     assert all(r["confidence"] in ("high", "medium", "low") and r["vendor"] for r in add_rows), "additions: row"
     assert len({r["name_key"] for r in add_rows}) == len(add_rows), "vendor_map_additions.csv: duplicate name_key"
+    assert [r["name_key"] for r in add_rows] == sorted(r["name_key"] for r in add_rows), \
+        "vendor_map_additions.csv: not sorted by name_key"
     assert not {r["name_key"] for r in add_rows} & {r["name_key"] for r in vm_rows}, \
         "vendor_map_additions.csv repeats a vendor_map.csv key"
     spend, ags = collections.Counter(), collections.defaultdict(set)
@@ -295,8 +300,9 @@ def main():
             f"vendor_map_additions.csv: stale spend or agencies for {r['name_key']!r}"
     cat = {r["name_key"]: r["category"] for r in vm_rows}
     cat.update({r["name_key"]: r["category"] for r in add_rows})
-    purch = sum(v for k, v in spend.items() if k not in cat or cats[cat[k]]["purchasing"] == "yes")
-    mapped = sum(v for k, v in spend.items() if k in cat and cats[cat[k]]["purchasing"] == "yes")
+    # as the other states count it: payees with net spend above zero, purchasing category or unmapped
+    purch = sum(v for k, v in spend.items() if v > 0 and (k not in cat or cats[cat[k]]["purchasing"] == "yes"))
+    mapped = sum(v for k, v in spend.items() if v > 0 and k in cat and cats[cat[k]]["purchasing"] == "yes")
     assert mapped >= 0.9 * purch, f"vendor maps cover {mapped / purch:.1%} of purchasing dollars, under 90%"
 
     by_source = collections.Counter()

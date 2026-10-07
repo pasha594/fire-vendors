@@ -140,37 +140,33 @@ def is_person(raw):
 
 
 def looks_like_person(raw):
-    """'JOHN SMITH'-style payee names (as pipeline/build.py). Over-matches some two-word company names, so the
-    adapters only apply it to payees that no vendor_map row claims (see withhold_person)."""
+    """'JOHN SMITH'-style payee names (as pipeline/build.py). Over-matches some two-word company names. Used only
+    to count such names in check reports; no adapter withholds a name because of it (owner decision 2026-10-06)."""
     raw = re.sub(r"\(.*?\)|[*#0-9]", " ", raw or "")
     raw = " ".join(raw.split())
     return bool(PERSON_NO_COMMA.match(raw)) and not BUSINESS_WORDS.search(raw)
 
 
 _REDACTIONS = None
-_KNOWN = None
 
 
-def _load_name_rules():
-    global _REDACTIONS, _KNOWN
+def _load_redactions():
+    global _REDACTIONS
     if _REDACTIONS is None:
-        def rows(name):
-            path = ROOT / "config" / name
-            if not path.exists():
-                return []
+        path = ROOT / "config" / "payee_name_redactions.csv"
+        rows = []
+        if path.exists():
             with open(path, newline="", encoding="utf-8") as f:
-                return list(csv.DictReader(f))
-        _REDACTIONS = [re.compile(r["pattern"], re.I) for r in rows("payee_name_redactions.csv")]
-        _KNOWN = {r["name_key"] for r in rows("vendor_map.csv") if r["category"] != "individuals"}
-    return _REDACTIONS, _KNOWN
+                rows = list(csv.DictReader(f))
+        _REDACTIONS = [re.compile(r["pattern"], re.I) for r in rows]
+    return _REDACTIONS
 
 
-def withhold_person(payee, person_flag=False):
+def withhold_person(payee):
     """Payee name as it may be published. Owner decision of 2026-10-06: payee names are shown as published,
-    private persons included. Only payee text matching config/payee_name_redactions.csv (email addresses,
-    bank transfer text with account numbers) is withheld. person_flag is accepted and ignored, so adapters
-    written for the earlier rule need no change."""
-    redactions, _ = _load_name_rules()
+    private persons included, and nothing classifies names as persons or companies. Only payee text matching
+    config/payee_name_redactions.csv (email addresses, bank transfer text with account numbers) is withheld."""
+    redactions = _load_redactions()
     payee = " ".join((payee or "").split())
     if any(rx.search(payee) for rx in redactions):
         return "Payee name withheld"

@@ -61,8 +61,8 @@ def kind(name, org_type):
     as 'State government'). State fire agencies stay in the main data (owner decision, 2026-10-06); a county
     department that CAL FIRE runs under contract ('Cal Fire - Riverside County Fire Department') stays a county one."""
     n = name.upper()
-    if STATE_FIRE.search(n) and "COUNTY FIRE" not in n:
-        return "State fire agency"
+    if STATE_FIRE.search(n):
+        return "County fire department" if "COUNTY FIRE" in n else "State fire agency"
     if re.search(r"\bESD\b|\bE\.S\.D\.|EMERGENCY SERVICES? DIST", n):
         return "Emergency services district"
     if re.search(r"\bFIRE (PROTECTION )?(DISTRICT|DIST)\b|\bFPD\b|\bFIRE AUTHORITY\b|\bJOINT FIRE\b|\bFIRE (AND|&) (RESCUE|EMS) DISTRICT\b", n):

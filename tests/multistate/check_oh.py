@@ -8,10 +8,12 @@ csv and json, applies each source's published rule and compares
   department; the linked fire department codes, fiscal year 2021 on;
 - oh_checkbook_local: every linked participant's raw Tableau responses (underlying rows) with the summary totals
   the same dashboard gave for the same filters; fire districts' whole checkbooks, and for townships, cities and
-  villages the lines whose fund or department is named for fire; calendar years 2021 on; one line per row Id,
+  villages the lines whose fund or department is named for fire (not shared police, hydrant, insurance or
+  fire-loss escrow names); calendar years 2021 on; one line per row Id,
   re-uploads (same transaction id, date, payee, fund, department, object and amount under a new row Id) once,
-  months uploaded k times (every group of identical lines a multiple of k) once, and months whose upload carries
-  batch totals instead of line amounts left out;
+  months uploaded k times (every group of identical lines a multiple of k) once, a date's lines repeated in a
+  later upload (TransactionId jump over 100,000) once, and months whose upload carries batch totals instead of
+  line amounts left out;
 - lines and dollars per agency, source and fiscal year with data/states/oh/transactions.csv.gz;
 - every published line, field by field, with its raw line (agency, fiscal year, date, payee, account, amount).
 Also checks: the contract's column names and order; attribution (Cincinnati: every linked code is a fire
@@ -19,8 +21,11 @@ department and every fire-named department is linked or a known exclusion; check
 is a fire district or a township, city or village whose county equals the agency's county, no EMS-only
 district, every participant line published is a fire line); agency ids, links and coverage tiers; duplicate
 source_record_ids; sort order; payees published as the source has them except email or bank account text
-(owner decision 2026-10-06); emails in any published text; sources.csv; vendor_map_additions.csv (spend
-recomputed from raw, categories, >= 90% of purchasing dollars); raw files (location, size, samples for every
+(owner decision 2026-10-06); emails in any published text; sources.csv; added agencies (no registry department
+of the same county under another name, unless reviewed; Forestry kept as "State fire agency");
+vendor_map_additions.csv (spend recomputed from raw, categories, sorted keys, no key repeated from
+config/vendor_map.csv except overrides of its individuals and unclassified rows, no name artifacts, with
+config/vendor_map.csv >= 90% of purchasing dollars); raw files (location, size, samples for every
 reachable source, no address columns in the state checkbook sample).
 common is used only for norm() (the vendor map key).
 """
@@ -61,13 +66,21 @@ REACHABLE = ["oh_cincinnati", "oh_checkbook_state", "oh_aos", "oh_checkbook_loca
 
 # Ohio Checkbook local: what a fire line is, written independently of the adapter
 FIRE_WORD = re.compile(r"\bfire(s|fighters?|fighting|men|men'?s)?\b", re.I)
-NOT_FIRE_WORDS = re.compile(r"police|hydrant|fire ?loss|firework|insurance|escrow|damaged? structure|garnish", re.I)
+NOT_FIRE_WORDS = re.compile(r"police|hydrant|fire ?loss|firework|insurance|escrow|damaged? structure|garnish|"
+                            r"fire damage|repair ?(and|/|&) ?removal|clean ?up", re.I)
+# fire-loss insurance escrow (proceeds paid back to owners of burned buildings): excludes the line whichever of
+# fund or department carries the name
+ESCROW_WORDS = re.compile(r"fire ?loss|escrow|damaged? structure|fire damage|repair ?(and|/|&) ?removal|clean ?up", re.I)
 EMS_ONLY_DISTRICTS = {"Joint Emergency Medical Service"}
+# added agencies whose place word also appears in a registry name of the same county, checked by hand
+ADDED_REVIEWED = {"OH-S-brunswick-hills-township-fire-department":
+                  "Brunswick Division of Fire (OH-52003) is the City of Brunswick's; Brunswick Hills Township runs its own"}
 # participants in two counties, listed under another county than the registry's (checked by hand)
 COUNTY_EXCEPTIONS = {("City of Vermilion", "OH-22017")}  # Vermilion: Erie and Lorain counties
 EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+")
 BROKEN = set()  # (participant, month) left out as broken uploads, for the summary line
 DOUBLED = set()  # (participant, month) uploaded more than once
+RELOADED = set()  # (participant, date) uploaded again in a later upload
 
 
 def rows_of(path):
@@ -184,6 +197,8 @@ def tableau_table(body):
 def fire_line(kind, r, by_department=True):
     if kind == "special_districts":
         return True
+    if any(ESCROW_WORDS.search(r[f]) for f in ("FundDescription", "DeptDescription")):
+        return False
     fields = ("FundDescription", "DeptDescription") if by_department else ("FundDescription",)
     return any(FIRE_WORD.search(r[f]) and not NOT_FIRE_WORDS.search(r[f]) for f in fields)
 
@@ -265,16 +280,42 @@ def expected_checkbook_local(agency_county):
             if key[0][:7] in times:
                 extra |= {r["Id"] for r in sorted(g, key=lambda r: int(r["Id"]))[len(g) // times[key[0][:7]]:]}
         kept = [r for r in kept if r["Id"] not in extra]
+        # reloads: uploads are runs of TransactionIds without a jump over 100,000; in a later upload, a date's
+        # lines (3 or more, none negative) that all repeat lines of that date from earlier uploads are dropped
+        order = sorted(kept, key=lambda r: (int(r["TransactionId"]), int(r["Id"])))
+        upload_of, n_up = {}, 0
+        for i, r in enumerate(order):
+            if i and int(r["TransactionId"]) - int(order[i - 1]["TransactionId"]) > 100000:
+                n_up += 1
+            upload_of[r["Id"]] = n_up
+        by_upload = collections.defaultdict(lambda: collections.defaultdict(list))
+        for r in kept:
+            by_upload[upload_of[r["Id"]]][r["TransDate"][:10]].append(r)
+        earlier, reloaded = collections.Counter(), set()
+        for u in range(n_up + 1):
+            this = collections.Counter()
+            for day, ls in sorted(by_upload[u].items()):
+                c = collections.Counter((day, r["Payee"], r["FundCode"], r["DeptCode"], r["ObjCode"], r["Amt"])
+                                        for r in ls)
+                if len(ls) >= 3 and min(D(r["Amt"]) for r in ls) >= 0 and all(earlier[k] >= v for k, v in c.items()):
+                    reloaded |= {r["Id"] for r in ls}
+                    RELOADED.add((p["Name"], day))
+                else:
+                    this.update(c)
+            earlier.update(this)
+        kept = [r for r in kept if r["Id"] not in reloaded]
         # broken uploads: a month in which more than half the lines share date and amount with 2+ other lines
-        # paid to 2+ different payees carries batch totals, not line amounts; the whole month is left out
+        # paid to 2+ different payees for 2+ different objects carries batch totals, not line amounts; the whole
+        # month is left out (equal amounts to several people for one object, e.g. stipends, are real lines)
         groups = collections.defaultdict(list)
         for r in kept:
-            groups[(r["TransDate"][:10], r["Amt"])].append(r["Payee"])
+            groups[(r["TransDate"][:10], r["Amt"])].append((r["Payee"], r["ObjCode"]))
         month_n, month_rep = collections.Counter(), collections.Counter()
         for r in kept:
             g = groups[(r["TransDate"][:10], r["Amt"])]
             month_n[r["TransDate"][:7]] += 1
-            month_rep[r["TransDate"][:7]] += len(g) >= 3 and len(set(g)) >= 2
+            month_rep[r["TransDate"][:7]] += (len(g) >= 3 and len({x for x, _ in g}) >= 2
+                                              and len({o for _, o in g}) >= 2)
         broken = {m for m, n in month_n.items() if 2 * month_rep[m] > n}
         BROKEN.update((p["Name"], m) for m in broken)
         # a linked participant's fire lines are a department's spending, not a stray grant or capital line:
@@ -360,6 +401,19 @@ def main():
     added = config_rows("agencies_added.csv")
     assert all(r["id"].startswith("OH-S-") for r in added), "agencies_added ids must be OH-S-<slug>"
     assert not {r["id"] for r in added} & {r["id"] for r in config_rows("agencies.csv")}, "added id in registry"
+    # an added agency must not be a registry department under another name: no registry row of the same county
+    # shares its place word (the first word that is not generic), unless reviewed by hand (ADDED_REVIEWED)
+    generic = {"city", "village", "township", "twp", "of", "the", "fire", "department", "volunteer", "community",
+               "ohio", "department", "division", "north", "south", "east", "west", "new", "mount", "joint"}
+    for r in added:
+        words = [w for w in re.findall(r"[a-z]+", r["name"].lower()) if w not in generic]
+        if not words or r["kind"] == "State fire agency":
+            continue
+        clash = [g["name"] for g in config_rows("agencies.csv") if g["county"] == r["county"]
+                 and words[0] in re.findall(r"[a-z]+", g["name"].lower())]
+        assert not clash or r["id"] in ADDED_REVIEWED, f"added agency {r['id']} may be registry {clash}"
+    assert all(r["kind"] == "State fire agency" for r in added if "forestry" in r["name"].lower()), \
+        "state fire agencies are kept with kind 'State fire agency' (owner decision 4)"
     with_rows = {a for a, _, _ in got}
     sources_of = collections.defaultdict(set)
     for a, s, _ in got:
@@ -400,8 +454,17 @@ def main():
     additions = config_rows("vendor_map_additions.csv")
     keys = [r["name_key"] for r in additions]
     assert len(keys) == len(set(keys)), "duplicate name_key in vendor_map_additions.csv"
+    assert keys == sorted(keys), "vendor_map_additions.csv is not sorted by name_key"
     assert all(r["category"] in categories for r in additions), "unknown category in vendor_map_additions.csv"
     assert all(k == common.norm(k) for k in keys), "name_key is not common.norm(name)"
+    # a payee already in config/vendor_map.csv is not repeated (as in the other states), except to override one
+    # of that file's 'individuals' rows (names are shown, owner decision 1) or 'unclassified' rows
+    shared = {r["name_key"]: r for r in config_rows("vendor_map.csv", state=False)}
+    for r in additions:
+        g = shared.get(r["name_key"])
+        assert not g or (g["category"] in ("individuals", "unclassified") and r["category"] != g["category"]), \
+            f"repeats a config/vendor_map.csv row: {r}"
+    assert not any(r["vendor"].startswith(("-", " ")) or not r["vendor"] for r in additions), "vendor name artifact"
     raw_spend = collections.defaultdict(D)
     raw_agencies = collections.defaultdict(set)
     for r in tx:
@@ -411,16 +474,23 @@ def main():
     for r in additions:
         assert D(r["spend"]) == raw_spend.get(r["name_key"]), f"spend differs from raw: {r}"
         assert int(r["agencies"]) == len(raw_agencies[r["name_key"]]), f"agencies differs from raw: {r}"
+    # coverage as the other states count it: payees mapped by the additions or config/vendor_map.csv, over
+    # purchasing dollars (payees with a purchasing category or unmapped, net spend above zero)
     add = {r["name_key"]: r["category"] for r in additions}
-    purchasing, covered = D(0), D(0)
+    payee_spend = collections.defaultdict(D)
     for r in tx:
-        key = common.norm(r["payee_name"])
-        cat = add.get(key) or vendor_map.get(key) or "unclassified"  # unmapped counts as purchasing
-        if categories[cat]:
-            purchasing += D(r["amount"])
-            covered += D(r["amount"]) if key in add else 0
+        payee_spend[common.norm(r["payee_name"])] += D(r["amount"])
+    purchasing, covered, covered_add = D(0), D(0), D(0)
+    for key, v in payee_spend.items():
+        cat = add.get(key) or vendor_map.get(key)
+        if v <= 0 or (cat and not categories[cat]):
+            continue
+        purchasing += v
+        covered += v if cat else 0
+        covered_add += v if key in add else 0
     share = covered / purchasing if purchasing else D(1)
-    assert share >= D("0.9"), f"vendor_map_additions covers {share:.1%} of purchasing dollars"
+    share_add = covered_add / purchasing if purchasing else D(1)
+    assert share >= D("0.9"), f"vendor maps cover {share:.1%} of purchasing dollars"
 
     # 7. raw files: only gzipped files under raw/<date>/oh/<source>/, each under 50 MB, Ohio under 150 MB; a
     #    sample of at most 100 rows for every reachable source; no address columns in the state checkbook sample
@@ -443,11 +513,11 @@ def main():
     by_source = collections.Counter()
     for (a, s, fy), (n, _) in got.items():
         by_source[s] += n
-    print(f"{ST}: oh_checkbook_local: months uploaded twice {sorted(DOUBLED)}; broken uploads left out "
-          f"{sorted(BROKEN)}")
+    print(f"{ST}: oh_checkbook_local: months uploaded twice {sorted(DOUBLED)}; dates reloaded {sorted(RELOADED)}; "
+          f"broken uploads left out {sorted(BROKEN)}")
     print(f"{ST}: ok ({len(tx)} transaction lines, ${dollars:,.2f}, {len(with_rows)} agencies at tier 1 "
-          f"({', '.join(f'{s}: {n}' for s, n in sorted(by_source.items()))}); vendor_map_additions covers "
-          f"{share:.1%} of ${purchasing:,.0f} purchasing dollars)")
+          f"({', '.join(f'{s}: {n}' for s, n in sorted(by_source.items()))}); vendor maps cover "
+          f"{share:.1%} of ${purchasing:,.0f} purchasing dollars, vendor_map_additions alone {share_add:.1%})")
 
 
 if __name__ == "__main__":

@@ -60,8 +60,10 @@ Every source section below takes its terms of use and robots.txt from this table
 ## Federal layer (`usfa`, `openfema`)
 
 Built by `pipeline/sources/federal.py` before this run and not changed by it: 853 USFA registry departments in
-`config/states/ca/agencies.csv` (335 local fire departments, 248 fire districts, 103 volunteer fire departments, 38
-state government rows (CAL FIRE units and state institutions), 36 federal, 30 county fire departments, and others);
+`config/states/ca/agencies.csv` (334 local fire departments, 253 fire districts, 103 volunteer fire departments, 9
+CAL FIRE and CDF rows with kind "State fire agency", 29 other state government rows (mostly state prisons, hospitals
+and universities), 36 federal, 31 county fire departments, and others; kinds as `federal.py` sets them on
+2026-10-07);
 579 OpenFEMA firefighter grant awards ($255.3M, FY2005-FY2024) to 195 registry departments matched strictly
 (`grant_recipients.csv`); 655 recipients with 2,696 awards are unmatched (`grant_recipients_unmatched.csv`).
 `check_federal.py CA` passes: "853 registry agencies, 195 with grants, $255,287,987".
@@ -89,7 +91,7 @@ state government rows (CAL FIRE units and state institutions), 36 federal, 30 co
 - **Matching:** 366 SCO entities link to 363 agencies (three districts filed under two names in different years, with
   no overlapping year). 186 match a registry department by exact name in the same county; 180 are manual (registry
   name differs, or the district is missing from the registry). 73 districts and fire authorities the registry lacks
-  were added to `config/states/ca/agencies_added.csv` (65 fire districts, 8 fire authority JPAs); 74 entity links go to
+  were added to `config/states/ca/agencies_added.csv` (65 fire districts, 8 fire authority JPAs, all with kind "Fire district", the label `federal.py` gives registry fire authorities such as Orange County Fire Authority); 74 entity links go to
   them. Review of 2026-10-06 moved three districts the registry does list under another spelling or an older name
   from `agencies_added.csv` to their registry rows: South Lake County FPD -> CA-17040 ("South Lake Couny Fire
   Protection District"), Humboldt Fire Protection District No. 1 -> CA-12050 ("Humboldt No. 1 Fire Protection
@@ -362,9 +364,10 @@ to employees). `check_ca.py` reports 141,075 lines whose payee looks like a pers
 
 ## Agencies, overlaps and state fire agency
 
-- **CAL FIRE:** included in the main data (owner decision 4) through the registry row CA-00555. Its kind in
-  `agencies.json` is "State government", because `federal.py` sets kinds from the registry; the owner decision asks for
-  "State fire agency" (reported as a shared-code issue).
+- **CAL FIRE:** included in the main data (owner decision 4) through the registry row CA-00555, with kind "State fire
+  agency" in `agencies.json`. `federal.py` sets that kind by name for CAL FIRE and CDF rows (8 registry rows besides
+  CA-00555), whatever the registry's organization type. A county department that CAL FIRE runs under contract
+  ("Cal Fire - Riverside County Fire Department", CA-33555) has kind "County fire department".
 - **Money flowing between agencies:** Moreno Valley pays the County of Riverside for fire staffing; the County Fire
   Department pays the State (CAL FIRE) for contract staffing ("STATE OF CALIFORNIA DEPT OF FORESTRY", $1.40B); CAL FIRE
   pays contract counties (Kern, Los Angeles, Ventura, Santa Barbara, Marin, Orange) for state responsibility area
@@ -423,8 +426,6 @@ before the review).
 
 ## Open questions
 
-- CAL FIRE's kind in `agencies.json` should be "State fire agency" (owner decision 4); `federal.py` gives the registry
-  row CA-00555 "State government". A fix belongs in `federal.py` or `assemble_agencies`.
 - Cities with an SCO fire line but no registry fire department (Imperial, Delano, Willows, Corcoran, Blythe, Orland,
   Crescent City and some smaller cities): some may run their own departments (would be added to `agencies_added.csv`
   after confirmation); left unlinked.
