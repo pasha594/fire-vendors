@@ -225,6 +225,7 @@ td.desc { min-width: 16em; max-width: 40em; }
 .prose { max-width: 46em; padding-top: 14px; }
 .prose h1 { font-size: 1.35rem; font-weight: 600; margin: 4px 0 6px; }
 .prose h2 { font-size: 1.05rem; font-weight: 600; margin: 26px 0 6px; }
+.prose h3 { font-size: .95rem; font-weight: 600; margin: 18px 0 4px; }
 .prose li { margin: 3px 0; }
 
 /* Filter bar: one row of labelled controls that wraps */
@@ -3145,118 +3146,185 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   }
 
   function viewAbout() {
-    const meta = ix.meta;
-    const share = meta.purchasing_classified_share;
-    const py = (meta.partial_years || []).map(y => 'FY' + y);
-    const span = 'FY' + meta.years[0] + ' to FY' + meta.years[meta.years.length - 1];
+    const M = store.meta;
+    const um = M.states.UT || null;                               // Utah's meta, as before the states were added
+    const sts = store.order;
+    const names = sts.map(stName);
+    const span = 'FY' + M.years[0] + ' to FY' + M.years[M.years.length - 1];
     const sql = 'pipeline/sql/fire_transactions.sql';
+    const yrs = st => { const y = M.states[st].years; return 'FY' + y[0] + '–FY' + y[y.length - 1]; };
     let h = '<div class="prose"><h1 tabindex="-1">About</h1>';
-    h += '<p>This prototype shows what Utah fire agencies paid to vendors: fire districts and service areas, interlocal fire agencies, and the fire departments of cities, towns and counties. It is for a fire chief or purchasing officer who wants to see, for one kind of purchase, which vendors similar agencies use, how many agencies use each, and what they paid.</p>';
-    h += '<p>Pick filters and a grouping for the table. Selecting a row adds it as a filter and moves to the next grouping. Yearly totals shows the rows every number is built from: what one agency paid one payee name in one fiscal year and category. With a category, vendor or agency selected, the largest single payments are listed below the table, with date and description.</p>';
+    h += '<p>This prototype shows what fire agencies in ' + esc(andList(names)) + ' paid to vendors: fire districts, the fire departments of cities, towns, townships and counties, and state fire agencies. It is for a fire chief or purchasing officer who wants to see, for one kind of purchase, which vendors similar agencies use, how many agencies use each, and what they paid.</p>';
+    h += '<p>Pick filters and a grouping for the table. Selecting a row adds it as a filter and moves to the next grouping. Yearly totals shows the rows every number is built from: what one agency paid one payee name in one fiscal year and category. With a category, vendor or agency selected, the largest single payments are listed below the table, with date and description, and for agencies and vendors with item lines, the item lines.</p>';
 
-    // Agencies by kind (with payments: transaction lines in the source)
-    const withLines = new Set(ix.D.agencies.filter(a => a.lines > 0).map(a => a.id));
+    // Coverage: what each agency's sources give, by state
+    h += '<h2>Coverage</h2>';
+    h += '<p>Each agency gets the best of four tiers its sources support, shown as a label wherever the tiers differ:</p><ul>';
+    for (const t of [1, 2, 3, 4]) h += '<li>' + tierBadge(t) + ' ' + esc(TIERDESC[t]) + '</li>';
+    h += '</ul><p>An agency without vendor data (totals only or directory only) is never shown as spending $0: it reads "No vendor data" and is left out of the vendor and agency counts. Its published totals still give its annual expenses.</p>';
+    const covRows = sts.map(st => {
+      const sm = M.states[st];
+      return { st, name: stName(st), n: store.st[st].agencies.length, c: tierCounts(store.st[st].agencies), share: sm.purchasing_classified_share, partial: sm.partial_years || [] };
+    });
+    const allC = tierCounts(store.agencies);
+    const tcol = t => ({ key: 't' + t, label: tierLabel(t), num: true, val: r => r.c[t], html: r => int(r.c[t]) });
+    h += table({
+      id: 'about-states', title: 'Coverage by state', file: 'coverage-by-state', negNote: false,
+      rows: covRows,
+      cols: [
+        { key: 'state', label: 'State', th: true, val: r => r.name },
+        { key: 'n', label: 'Agencies', num: true, val: r => r.n, html: r => int(r.n) },
+        tcol(1), tcol(2), tcol(3), tcol(4),
+        { key: 'years', label: 'Fiscal years', nw: true, val: r => yrs(r.st) },
+        { key: 'partial', label: 'Partial years', nw: true, val: r => r.partial.map(y => 'FY' + y).join(', ') || null },
+        { key: 'share', label: 'Purchasing in a named category', csvLabel: 'Purchasing in a named category (%)', csvDp: 3, num: true,
+          val: r => (r.share == null ? null : r.share), html: r => (r.share == null ? '' : pct(r.share)), csv: r => (r.share == null ? null : r.share * 100) },
+      ],
+      sort: [['state', 'asc']],
+      foot: [{ _label: 'Total', n: int(store.agencies.length), t1: int(allC[1]), t2: int(allC[2]), t3: int(allC[3]), t4: int(allC[4]) }],
+    });
+    h += '<p class="note">Purchasing in a named category: the share of the state\'s purchasing payments (net) whose category is not Unclassified.</p>';
+
+    // Agencies by kind and state (with payment lines: transaction lines in a source)
     const kinds = new Map();
-    for (const a of ix.D.agencies) {
-      const k = kinds.get(a.kind) || { kind: a.kind, n: 0, lines: 0 };
+    for (const a of store.agencies) {
+      const k = kinds.get(a.kind) || { kind: a.kind, n: 0, lines: 0, by: {} };
       k.n++;
-      if (withLines.has(a.id)) k.lines++;
+      k.by[a.state] = (k.by[a.state] || 0) + 1;
+      if (a.lines > 0) k.lines++;
       kinds.set(a.kind, k);
     }
-    const kindRows = [...kinds.values()];
+    const withLines = store.agencies.filter(a => a.lines > 0).length;
     h += '<h2>Agencies</h2>';
-    h += '<p>' + int(ix.D.agencies.length) + ' agencies, ' + esc(span) + ' (' + A(BLOB + 'config/agencies.csv', 'config/agencies.csv') + '). Cities, towns and counties that only pay another agency for fire service are not listed; the file gives the reason for each.</p>';
+    h += '<p>' + int(store.agencies.length) + ' agencies, ' + esc(span) + '. Utah: ' + gh('config/agencies.csv') + ' (cities, towns and counties that only pay another agency for fire service are not listed; the file gives the reason for each). ' +
+      'Other states: the fire departments of the ' + srcLink('usfa', 'USFA registry') + ' plus the agencies their sources name (' +
+      andList(sts.filter(st => st !== 'UT').map(st => gh('data/states/' + st.toLowerCase() + '/agencies.json'))) + '). Kind is the agency\'s own kind in Utah and the registry\'s department type elsewhere.</p>';
     h += table({
       id: 'about-kinds', title: 'Agencies by kind', hideTitle: true, file: 'agencies-by-kind', negNote: false,
-      rows: kindRows,
-      cols: [
-        { key: 'kind', label: 'Kind', th: true, val: k => k.kind },
-        { key: 'n', label: 'Agencies', num: true, val: k => k.n, html: k => int(k.n) },
-        { key: 'lines', label: 'With payments', num: true, val: k => k.lines, html: k => int(k.lines) },
-      ],
+      rows: [...kinds.values()],
+      cols: [{ key: 'kind', label: 'Kind', th: true, val: k => k.kind }]
+        .concat(sts.map(st => ({ key: 's' + st, label: stName(st), num: true, opt: true, val: k => k.by[st] || 0, html: k => (k.by[st] ? int(k.by[st]) : '') })), [
+          { key: 'n', label: 'Agencies', num: true, val: k => k.n, html: k => int(k.n) },
+          { key: 'lines', label: 'With payment lines', num: true, val: k => k.lines, html: k => int(k.lines) },
+        ]),
       sort: [['n', 'desc'], ['kind', 'asc']],
-      foot: [{ _label: 'Total', n: int(ix.D.agencies.length), lines: int(withLines.size) }],
+      foot: [Object.assign({ _label: 'Total', n: int(store.agencies.length), lines: int(withLines) },
+        Object.fromEntries(sts.map(st => ['s' + st, int(store.st[st].agencies.length)])))],
     });
 
-    h += '<h2>Sources</h2><ul>';
-    h += '<li>' + A(LINKS.tu, 'Transparent Utah') + ' transaction lines, from its BigQuery database (' + gh(sql) + '): every expense line of the fire districts, service areas and interlocal fire agencies, and the lines of cities, towns and counties coded fire (function 2009xx in the account number, or "fire" in the department names, not fireworks), ' + esc(span) + '. ' +
-      (meta.counts.lines != null ? int(meta.counts.lines) + ' lines, fetched ' : 'Fetched ') + esc(dateText(meta.transactions_fetched || meta.fetched)) + '. ' +
-      'Raw file: ' + gh(meta.transactions_file) + ' (gzipped CSV).<ul>';
-    h += '<li>Left out by the query: payroll and benefits (account names that mention salaries, wages, payroll, personnel, employee benefits, employer-paid costs, compensation or retirement) and refunds (lines whose account names or description mention a refund; refunds can name patients). Payroll and benefits recorded under other account names, such as "Regular Employees" or "Benefits", are kept; the account rules put them under payroll, which is not counted as purchasing.</li>';
-    h += '<li>Duplicate uploads: some entities uploaded the same transactions more than once, sometimes with a corrected account or renumbered transaction ids. A line is dropped when an earlier upload batch has a line with the same entity, transaction id, posting date, payee and amount; or, for renumbered ids, the same accounting period, posting date, payee, amount and description; or when the later batch repeats the earlier one line for line' +
-      (meta.counts.lines_reuploaded ? ' (' + int(meta.counts.lines_reuploaded) + ' lines)' : '') + '. Each transaction is counted once.</li>';
-    h += '<li>Police: Lone Peak Public Safety District also runs a police department. Its police department lines are left out' + (meta.counts.lines_police ? ' (' + int(meta.counts.lines_police) + ' lines)' : '') + '; its annual expenses, revenue and people paid still include police.</li>';
-    h += '<li>Single payments: the ' + (meta.counts.payments != null ? int(meta.counts.payments) + ' ' : '') + 'lines of $1,000 or more in purchasing categories, with posting date and description. A line is left out when a credit or reversal of the same amount to the same payee cancels it. Smaller credits are not matched to a line, so the lines can add up to more than the net amount for the same agency, vendor and year. Descriptions that may identify a person are not shown (' + gh('config/description_privacy_patterns.csv') + ').</li>';
-    h += '</ul></li>';
-    h += '<li>' + A(LINKS.tu, 'Transparent Utah') + ' public query service, for fire districts and interlocal agencies: total expenses per year, revenue in each agency\'s own account names, compensation reports (wages, benefits and job title per employee; employee names are replaced by numbers in the raw files), fiscal year start and website. Revenue totals leave out borrowing, transfers between the agency\'s own funds and donated infrastructure (' + gh('config/revenue_exclusions.csv') + '). Fetched ' + esc(dateText(meta.fetched)) + '. Raw files: ' + A(REPO + '/tree/main/' + meta.raw_path, esc(meta.raw_path)) + '.</li>';
-    h += '<li>For cities, towns and counties, annual expenses are their expenses coded fire, including payroll, from the same BigQuery database (' + gh('pipeline/sql/fire_expenses_by_year.sql') + ').</li>';
-    h += '<li>' + A(LINKS.usfa, 'USFA National Fire Department Registry') + ': department type, stations and firefighter counts.</li>';
-    h += '<li>' + srcLink('openfema', 'OpenFEMA firefighter grants') + ': Assistance to Firefighters, SAFER and Fire Prevention and Safety awards, matched to agencies by recipient name (' + gh('config/grant_recipients.csv') + ').</li>';
-    h += '<li>' + A(LINKS.neris, 'NERIS integration partners') + ': vendors listed by FSRI as integrated with NERIS, the national fire incident reporting system replacing NFIRS.</li>';
-    h += '<li>' + A(LINKS.ael, 'FEMA Authorized Equipment List') + ': codes shown when a category with an AEL section is selected. The list governs Homeland Security Grant Program awards, not AFG; FEMA limits many fire and medical items to surge or CBRN use.</li>';
-    h += '</ul>';
+    // Sources by state, then the national ones
+    h += '<h2>Sources</h2>';
+    h += '<p>Every source is listed with its coverage tier, fiscal years and the files it was built from (normalized files under ' + gh('data/states') + ', raw files under ' + A(REPO + '/tree/main/raw', 'raw') + ').</p>';
+    for (const st of sts) {
+      const own = (M.states[st].sources || []).filter(id => M.sources[id] && M.sources[id].state === st);
+      h += '<h3>' + esc(stName(st)) + '</h3>';
+      if (st === 'UT' && um) {
+        const tu = M.sources.ut_transparent_utah || {}, qs = M.sources.ut_query_service || {};
+        h += '<ul class="srcs">';
+        h += '<li data-src="ut_transparent_utah">' + srcLink('ut_transparent_utah', esc(tu.name || 'Transparent Utah transaction lines')) + ' ' + tierBadge(1) + ', from its BigQuery database (' + gh(sql) + '): every expense line of the fire districts, service areas and interlocal fire agencies, and the lines of cities, towns and counties coded fire (function 2009xx in the account number, or "fire" in the department names, not fireworks), ' + esc(yrs('UT')) + '. ' +
+          (um.counts.lines != null ? int(um.counts.lines) + ' lines, fetched ' : 'Fetched ') + esc(dateText(um.transactions_fetched || um.fetched)) + '. ' +
+          'Raw file: ' + gh(um.transactions_file) + ' (gzipped CSV).<ul>';
+        h += '<li>Left out by the query: payroll and benefits (account names that mention salaries, wages, payroll, personnel, employee benefits, employer-paid costs, compensation or retirement) and refunds (lines whose account names or description mention a refund; refunds can name patients). Payroll and benefits recorded under other account names, such as "Regular Employees" or "Benefits", are kept; the account rules put them under payroll, which is not counted as purchasing.</li>';
+        h += '<li>Duplicate uploads: some entities uploaded the same transactions more than once, sometimes with a corrected account or renumbered transaction ids. A line is dropped when an earlier upload batch has a line with the same entity, transaction id, posting date, payee and amount; or, for renumbered ids, the same accounting period, posting date, payee, amount and description; or when the later batch repeats the earlier one line for line' +
+          (um.counts.lines_reuploaded ? ' (' + int(um.counts.lines_reuploaded) + ' lines)' : '') + '. Each transaction is counted once.</li>';
+        h += '<li>Police: Lone Peak Public Safety District also runs a police department. Its police department lines are left out' + (um.counts.lines_police ? ' (' + int(um.counts.lines_police) + ' lines)' : '') + '; its annual expenses, revenue and people paid still include police.</li>';
+        h += '<li>Single payments: the ' + (um.counts.payments != null ? int(um.counts.payments) + ' ' : '') + 'lines of $1,000 or more in purchasing categories, with posting date and description. A line is left out when a credit or reversal of the same amount to the same payee cancels it. Smaller credits are not matched to a line, so the lines can add up to more than the net amount for the same agency, vendor and year. Descriptions that may identify a person are not shown (' + gh('config/description_privacy_patterns.csv') + ').</li>';
+        h += '</ul></li>';
+        h += '<li data-src="ut_query_service">' + srcLink('ut_query_service', esc(qs.name || 'Transparent Utah public query service')) + ', for fire districts and interlocal agencies: total expenses per year, revenue in each agency\'s own account names, compensation reports (wages, benefits and job title per employee; employee names are replaced by numbers in the raw files), fiscal year start and website. Revenue totals leave out borrowing, transfers between the agency\'s own funds and donated infrastructure (' + gh('config/revenue_exclusions.csv') + '). Fetched ' + esc(dateText(um.fetched)) + '. Raw files: ' + A(REPO + '/tree/main/' + um.raw_path, esc(um.raw_path)) + '.</li>';
+        h += '<li>For cities, towns and counties, annual expenses are their expenses coded fire, including payroll, from the same BigQuery database (' + gh('pipeline/sql/fire_expenses_by_year.sql') + ').</li>';
+        h += '</ul>' + srcNotes(own.filter(id => id !== 'ut_transparent_utah' && id !== 'ut_query_service'), st);
+      } else {
+        h += srcNotes(own, st);
+      }
+    }
+    const fed = Object.keys(M.sources).filter(id => !M.sources[id].state).sort();
+    h += '<h3>National</h3>' + srcNotes(fed);
+    h += '<ul class="srcs"><li>' + A(LINKS.ael, 'FEMA Authorized Equipment List') + ': codes shown when a category with an AEL section is selected. The list governs Homeland Security Grant Program awards, not AFG; FEMA limits many fire and medical items to surge or CBRN use.</li></ul>';
+    // Any source of meta.sources not listed above (a state not in states_order) is still listed
+    const listed = new Set(fed);
+    for (const st of sts) for (const id of M.states[st].sources || []) if (M.sources[id] && M.sources[id].state === st) listed.add(id);
+    const other = Object.keys(M.sources).filter(id => !listed.has(id)).sort();
+    if (other.length) h += '<h3>Other sources</h3>' + srcNotes(other);
 
     h += '<h2>How payments are categorized</h2>';
-    h += '<p>Payee names are normalized: upper case, punctuation removed, and words such as Inc, LLC, Corp and The dropped. Payee names that normalize to the same text are one vendor. Each vendor gets a vendor category from ' + gh('config/vendor_map.csv') + ' (set by hand), ' + gh('config/vendor_rules.csv') + ' (other spellings of a mapped vendor) or ' + gh('config/keyword_rules.csv') + ' (the first pattern that matches the name); otherwise it is Unclassified.</p>';
+    h += '<p>The same rules run for every state. Payee names are normalized: upper case, punctuation removed, and words such as Inc, LLC, Corp and The dropped. Payee names that normalize to the same text are one vendor, across states too. Each vendor gets a vendor category from ' + gh('config/vendor_map.csv') + ' (set by hand), ' + gh('config/vendor_rules.csv') + ' (other spellings of a mapped vendor) or ' + gh('config/keyword_rules.csv') + ' (the first pattern that matches the name); otherwise it is Unclassified.</p>';
     h += '<p>Each transaction line then gets its own category, in this order:</p><ol>';
     h += '<li>Account rules marked override (' + gh('config/account_rules.csv') + '): the line\'s account names decide, whoever the payee is. These cover payroll, debt, transfers to other governments and similar accounts.</li>';
     h += '<li>The vendor category of the payee, unless the payee is broad: fire equipment distributors, general retail, unclassified payees, lines with no vendor named, and card programs (' + gh('config/card_programs.csv') + ').</li>';
     h += '<li>Broad payees: description rules (' + gh('config/description_rules.csv') + '), the first pattern that matches the line\'s description.</li>';
     h += '<li>Broad payees: account rules marked refine. Lines with no vendor named that are journal entries, reclassifications or corrections, in accounts the agency also pays named vendors from, stay under No vendor named instead: they correct those payments.</li>';
     h += '<li>Otherwise the vendor category of the payee. Card statement lines with no rule for their account are Unclassified purchases, unless the account or description is a debt, loan, lease or transfer.</li></ol>';
-    const cov = meta.coverage || {};
     const STEPS = [['override', '1. Account rule (override)'], ['vendor', '2. Vendor category'], ['description', '3. Description rule'],
       ['refine', '4. Account rule (refine)'], ['fallback', '5. Vendor category of a broad payee']];
-    const covRows = STEPS.filter(([k]) => cov[k]).map(([k, label]) => Object.assign({ key: k, label }, cov[k]));
-    if (covRows.length) {
-      const tp = meta.purchasing_total;
-      const sum = k => covRows.reduce((s, r) => s + r[k], 0);
+    // The account rules were written for Utah's account names: say where they set no line's category
+    const noAcct = sts.filter(st => { const c = M.states[st].coverage || {}; return !((c.override || {}).lines || (c.refine || {}).lines); });
+    if (noAcct.length) h += '<p>The account rules were written for Utah\'s account names. In ' + esc(andList(noAcct.map(stName))) + ' they set no line\'s category, so the vendor category and the description rules decide.</p>';
+    const stepRows = [];
+    for (const st of sts) {
+      const c = M.states[st].coverage || {};
+      for (const [k, label] of STEPS) if (c[k]) stepRows.push(Object.assign({ st, name: stName(st), key: k, label, tp: M.states[st].purchasing_total }, c[k]));
+    }
+    if (stepRows.length) {
       h += table({
         id: 'about-cov', title: 'Lines by how their category was set', file: 'category-coverage', negNote: false,
-        rows: covRows,
+        rows: stepRows,
         cols: [
+          { key: 'state', label: 'State', val: r => r.name },
           { key: 'step', label: 'Category set by', th: true, val: r => r.label },
           { key: 'lines', label: 'Lines', num: true, val: r => r.lines, html: r => int(r.lines) },
           { key: 'all', label: 'All lines, net', num: true, val: r => r.all, html: r => money(r.all) },
           { key: 'purch', label: 'Purchasing, net', num: true, val: r => r.purchasing, html: r => money(r.purchasing) },
-          { key: 'share', label: 'Share of purchasing', csvLabel: 'Share of purchasing (%)', csvDp: 3, num: true,
-            val: r => (tp ? r.purchasing / tp : null), html: r => (tp ? pct(r.purchasing / tp) : ''), csv: r => (tp ? r.purchasing / tp * 100 : null) },
+          { key: 'share', label: 'Share of the state\'s purchasing', csvLabel: 'Share of the state\'s purchasing (%)', csvDp: 3, num: true,
+            val: r => (r.tp ? r.purchasing / r.tp : null), html: r => (r.tp ? pct(r.purchasing / r.tp) : ''), csv: r => (r.tp ? r.purchasing / r.tp * 100 : null) },
         ],
-        sort: [['step', 'asc']],
-        foot: [{ _label: 'Total', lines: int(sum('lines')), all: money(sum('all')), purch: money(sum('purchasing')), share: tp ? pct(sum('purchasing') / tp) : '' }],
+        sort: [['state', 'asc'], ['step', 'asc']],
+        page: 60,
       });
-      h += '<p class="note">All agencies, ' + esc(span) + '. Purchasing: lines in categories counted as purchasing.</p>';
+      h += '<p class="note">All agencies of each state, ' + esc(span) + ' (each state\'s own years). Purchasing: lines in categories counted as purchasing.</p>';
     }
-    if (share != null) {
-      h += '<p>Purchasing payments in a named category: ' + pct(share) + ' of ' + money(meta.purchasing_total) + ' (all agencies, all years). The rest is Unclassified.</p>';
-    }
-    h += '<p>One vendor\'s payments can be in several categories. The vendor table shows the main one, with the largest net amount in the filters. Payees that look like a person are combined into one entry, Individuals (names withheld). The category list is ' + gh('config/categories.csv') + '. Categories marked as not purchasing (payroll and benefits, debt, banking and card payments, payments to other governments, No vendor named, individuals, and spending that is not for fire service, such as streets, recreation and fireworks shows coded fire by a city) are left out unless Include non-purchasing payments is checked. Lines with no vendor named are under No vendor named unless an account or description rule names what was bought. The build script is ' + gh('pipeline/build.py') + '.</p>';
+    h += '<p>One vendor\'s payments can be in several categories. The vendor table shows the main one, with the largest net amount in the filters. In Utah, payees that look like a person are combined into one entry, Individuals (names withheld); the other states publish payee names, and they are shown as published. The category list is ' + gh('config/categories.csv') + '. Categories marked as not purchasing (payroll and benefits, debt, banking and card payments, payments to other governments, No vendor named, individuals, and spending that is not for fire service, such as streets, recreation and fireworks shows coded fire by a city) are left out unless Include non-purchasing payments is checked. Lines with no vendor named are under No vendor named unless an account or description rule names what was bought. Item lines are in the category of the transaction line they belong to. The build script is ' + gh('pipeline/build.py') + '.</p>';
 
     h += '<h2>How agencies and vendors are counted</h2>';
-    h += '<p>Amounts are net: credits and corrections are subtracted. An agency counts as using a vendor when its net payment to that vendor in one category is positive in at least one fiscal year in the selected range. Last year paid is the latest such year. An agency or vendor with only credits in the range is listed with its net amount but not counted.</p>';
+    h += '<p>Amounts are net: credits and corrections are subtracted. An agency counts as using a vendor when its net payment to that vendor in one category is positive in at least one fiscal year in the selected range. Last year paid is the latest such year. An agency or vendor with only credits in the range is listed with its net amount but not counted. Agencies with totals only or in the directory only are not counted at all; agencies with item lines only are counted, for what those lines cover.</p>';
     h += '<h2>Filters and agency columns</h2>';
-    h += '<p>Category takes one or more categories; a payment is included when its own category is any of them. Annual expenses is the median of total expenses in the last three fully reported fiscal years, from Transparent Utah, so one year of large capital spending does not move an agency into a larger range; for cities, towns and counties it uses their expenses coded fire, including payroll. Agencies without that figure are left out when a range is selected. Selecting one agency sets the county and annual expenses filters aside.</p>';
-    h += '<p>Kind in the agency table is fire district or service area, interlocal fire agency, or the fire department of a city, town or county. Staffing is the USFA registry department type: Career, Mostly career, Mostly volunteer or Volunteer. Mostly career and Mostly volunteer are combination departments. Agencies not found in the registry are shown as Not listed. People paid comes from compensation reports, which only fire districts and interlocal agencies have here. FEMA grants in the agency grouping count awards with a federal fiscal year in the selected range.</p>';
+    h += '<p>State takes one state or all of them; the county filter needs a state. Category takes one or more categories; a payment is included when its own category is any of them. Annual expenses is the median of the agency\'s expenses in the last three fully reported fiscal years, so one year of large capital spending does not move an agency into a larger range. In Utah it is total expenses from Transparent Utah, or for cities, towns and counties their expenses coded fire, including payroll; elsewhere it is the sum of the published annual totals of a Totals only source. Agencies without that figure are left out when a range is selected. Selecting one agency sets the state, county and annual expenses filters aside.</p>';
+    h += '<p>Kind in the agency table is the agency\'s kind: in Utah fire district or service area, interlocal fire agency, or the fire department of a city, town or county; elsewhere the USFA registry department type or the source\'s own kind. Staffing is the USFA registry department type: Career, Mostly career, Mostly volunteer or Volunteer. Mostly career and Mostly volunteer are combination departments. Agencies not found in the registry are shown as Not listed. People paid comes from compensation reports, which only Utah fire districts and interlocal agencies have here. FEMA grants in the agency grouping count awards with a federal fiscal year in the selected range.</p>';
+
     h += '<h2>Limitations</h2><ul>';
+    h += '<li>Coverage is uneven: payee lines come from the agencies and cities that publish them, not from a sample of all agencies, so a state\'s totals are not a market picture of that state. The Coverage table above gives the tiers per state.</li>';
     h += '<li>Rows are net yearly totals per agency, payee name and category, built from transaction lines. Credits and corrections can make a total negative.</li>';
-    h += '<li>Many descriptions are short or generic, such as "ACCOUNTS PAYABLE". A payment to a distributor or retailer that no description or account rule matches keeps the payee\'s vendor category.</li>';
+    h += '<li>Many descriptions are short or generic, such as "ACCOUNTS PAYABLE", and some sources publish none. A payment to a distributor or retailer that no description or account rule matches keeps the payee\'s vendor category.</li>';
     h += '<li>Card statements are paid to the bank that issued the card. Their lines get a category where a description or account rule matches; the rest are Unclassified, except lines in debt, loan, lease or transfer accounts, which stay under Debt, banking and card payments (not counted as purchasing). A loan payment to a bank booked in an ordinary expense account can still show as Unclassified.</li>';
-    h += '<li>City, town and county lines are the ones coded fire. Fire spending recorded under another department is missed.</li>';
-    const fs = Core.fyStarts(ix);
-    const fyParts = [];
-    if (fs.January) fyParts.push(plural(fs.January, 'agency runs its', 'agencies run their') + ' fiscal year January to December');
-    if (fs.July) fyParts.push(plural(fs.July, 'runs', 'run') + ' July to June');
-    if (fs['']) fyParts.push('for ' + int(fs['']) + ' it is not known');
-    h += '<li>FY is each agency\'s own fiscal year as reported to Transparent Utah (for cities, towns and counties, the start month is read from the posting dates). ' +
-      cap(andList(fyParts)) +
-      (py.length ? '; ' + py.join(' and ') + ' may be incomplete for any agency (calendar-year agencies are mid-year) and ' +
-        (py.length === 1 ? 'is' : 'are') + ' marked partial throughout.' : '.') + ' A payment\'s posting date can fall outside the fiscal year it was reported in.</li>';
-    h += '<li>People paid counts employee numbers in the compensation reports. Unified Fire Authority reports several of its fire investigations staff under one employee number each year, so its count is a few people low and they appear under one job title.</li>';
-    h += '<li>Payee names that look like a person are withheld, and descriptions that may identify a person are not shown. Names of people written another way may still appear.</li>';
+    h += '<li>City, town and county lines are the ones their source assigns to fire (in Utah, coded fire). Fire spending recorded under another department is missed.</li>';
+    // Fiscal years: each agency's own, by state; partial years by state; item lines in their source's fiscal year
+    const fyParts = sts.map(st => {
+      const c = new Map();
+      for (const a of store.st[st].agencies) c.set(a.fy_start || '', (c.get(a.fy_start || '') || 0) + 1);
+      const parts = [...c].filter(([k]) => k).sort((x, y) => y[1] - x[1]).map(([k, n]) => int(n) + ' ' + esc(k));
+      if (c.get('')) parts.push(int(c.get('')) + ' not known');
+      return esc(stName(st)) + ': ' + andList(parts);
+    });
+    h += '<li>FY is each agency\'s own fiscal year, named for the year it ends in (for Utah cities, towns and counties, the start month is read from the posting dates). Agencies by the month their fiscal year starts: ' + fyParts.join('; ') + '. A payment\'s posting date can fall outside the fiscal year it was reported in.</li>';
+    const byPartial = new Map();
+    for (const st of sts) { const k = (M.states[st].partial_years || []).map(y => 'FY' + y).join(' and '); if (k) byPartial.set(k, (byPartial.get(k) || []).concat(stName(st))); }
+    if (byPartial.size) {
+      h += '<li>Partial years, which may be incomplete for any agency and are marked partial throughout: ' +
+        [...byPartial].map(([k, ns]) => k + ' in ' + andList(ns)).join('; ') + '. In the all-states view a year is marked partial when it is partial in any state.</li>';
+    }
+    const t2 = Object.keys(M.sources).filter(id => M.sources[id].tier === 2).sort();
+    if (t2.length) {
+      h += '<li>Item lines use their source\'s fiscal year, which can differ from the agency\'s own: ' +
+        andList(t2.map(id => srcLink(id) + ' (' + esc(M.sources[id].fiscal_year || '') + '; ' + firstClause(id) + ')')) + '. Lines before FY' + M.years[0] + ' are shown apart and are not in any total.</li>';
+    }
+    if (store.st.CA) {
+      h += '<li>California totals: fire authorities and their member districts both file annual totals, and some districts served by a city fire department sit beside the city\'s fire line, so adding Totals only agencies can count money twice (' + gh('docs/sources/ca.md') + ' lists the pairs). Totals are kept as published.</li>';
+    }
+    h += '<li>Names: in Utah, payee names that look like a person are withheld, and descriptions that may identify a person are not shown; names of people written another way may still appear. The other states\' payee names and descriptions are shown as published, apart from email addresses, bank details and similar text removed by ' + gh('config/payee_name_redactions.csv') + '.</li>';
+    h += '<li>People paid counts employee numbers in the Utah compensation reports. Unified Fire Authority reports several of its fire investigations staff under one employee number each year, so its count is a few people low and they appear under one job title.</li>';
     h += '<li>The USFA registry is self-reported and some agencies are missing from it.</li>';
     h += '<li>Some agencies fund others. For example, Unified Fire Service Area pays Unified Fire Authority, and some cities pay a fire district or another city for fire service. Those payments are under Payments to other governments, which is not counted as purchasing.</li>';
     h += '</ul>';
-    h += '<h2>Code</h2><p>' + A(REPO, 'github.com/pasha594/utah-fire-procurement') + '. Data built ' + esc(dateText(meta.built)) + '.</p>';
+    h += '<h2>Code</h2><p>' + A(REPO, 'github.com/pasha594/utah-fire-procurement') + '. Data built ' + esc(dateText(M.built)) + '.</p>';
     h += '</div>';
     return h;
   }
@@ -3303,7 +3371,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     clearTimeout(scrollTimer);
     try {
       if (L.page === 'about') {
-        ix = Core.view(store, 'UT');                     // About describes Utah's data until it covers every state
+        ix = Core.view(store, 'ALL');                    // About describes every state
         view = 'about';
         $('explore').hidden = true;
         $('page').hidden = false;
