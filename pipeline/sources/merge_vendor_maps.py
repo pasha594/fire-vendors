@@ -559,6 +559,18 @@ def classifier(rows, rules):
     return classify
 
 
+BRANDS = [("Zoll", r"\bzoll\b"), ("Stryker / Physio-Control", r"\bstryker\b|\bphysio ?control\b"),
+          ("L.N. Curtis", r"\bln curtis\b"), ("MSA", r"^msa\b|mine safety"), ("Pierce", r"^pierce manufacturing"),
+          ("E-ONE", r"^e ?one\b"), ("Motorola", r"\bmotorola\b"), ("Verizon", r"\bverizon\b"), ("AT&T", r"^at ?and ?t\b"),
+          ("Municipal Emergency Services", r"^municipal emergency serv"), ("Bound Tree", r"^bound ?tree"),
+          ("Henry Schein", r"^henry schein"), ("Life-Assist", r"^life assist"), ("Globe", r"^globe manufacturing"),
+          ("Fire-Dex", r"^fire ?dex"), ("LION", r"^lion\b"), ("Scott Safety", r"^scott (safety|health)"),
+          ("Rosenbauer", r"^rosenbauer"), ("Ferrara", r"^ferrara"), ("Sutphen", r"^sutphen"), ("KME", r"^kme\b"),
+          ("Spartan", r"^spartan (motors|fire|emergency)"), ("Grainger", r"\bgrainger\b"), ("Galls", r"^galls\b"),
+          ("Teleflex", r"^teleflex"), ("Ferno", r"^ferno\b"), ("ImageTrend", r"^image ?trend"),
+          ("ESO", r"^eso\b"), ("Lexipol", r"^lexipol"), ("Vector Solutions", r"^vector solutions|^target ?solutions")]
+
+
 def cross_state(rows, rules, categories):
     """Spend and agencies per canonical vendor in Utah (data/data.json) and each state's transactions."""
     purchasing = {c["id"] for c in categories if c["purchasing"] == "yes"}
@@ -623,7 +635,24 @@ def cross_state_md(rows, rules, categories, n=50):
         cells = [f"{money(by[j][0])} ({by[j][1]})" if j in by and round(by[j][0]) else "" for j in JURIS]
         out.append(f"| {i} | {md(v)} | {cat} | {money(total)} | " + " | ".join(cells) + f" | {sum(1 for c in cells if c)} |")
     multi = [t for t in table if sum(1 for j in t[3] if round(t[3][j][0])) >= 3]
-    out += ["", f"Vendors with purchasing spend in at least three of the five states: {len(multi)}.", "", CROSS[1]]
+    out += ["", f"Vendors with purchasing spend in at least three of the five states: {len(multi)}. The {min(n, len(multi))}",
+            "with the most spend (the national vendors, each under one name):", "",
+            "| # | Vendor | Category | Total | " + " | ".join(JURIS) + " | States |",
+            "| --- | --- | --- | --- | " + " | ".join("---" for _ in JURIS) + " | --- |"]
+    for i, (v, cat, total, by) in enumerate(multi[:n], 1):
+        cells = [f"{money(by[j][0])} ({by[j][1]})" if j in by and round(by[j][0]) else "" for j in JURIS]
+        out.append(f"| {i} | {md(v)} | {cat} | {money(total)} | " + " | ".join(cells) + f" | {sum(1 for c in cells if c)} |")
+    out += ["", "Large fire and EMS vendors: every vendor name with purchasing spend whose name matches the brand, so a",
+            "second spelling would show here (Zoll Data Systems is Zoll's ePCR software company, kept apart as in",
+            "config/vendor_rules.csv).", "",
+            "| Brand | Vendor names (states) | Total |", "| --- | --- | --- |"]
+    for label, rx in BRANDS:
+        hits = [t for t in table if re.search(rx, level_a(t[0]))]
+        if hits:
+            names = "; ".join(f"{md(v)} ({', '.join(j for j in JURIS if j in by and round(by[j][0]))})"
+                              for v, cat, total, by in hits)
+            out.append(f"| {label} | {names} | {money(sum(t[2] for t in hits))} |")
+    out += ["", CROSS[1]]
     return "\n".join(out)
 
 

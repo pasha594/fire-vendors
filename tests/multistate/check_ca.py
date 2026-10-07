@@ -22,8 +22,8 @@ redaction rule) and common's file helpers and norm(). Checks:
      duplicates a registry fire district of the same county by name; SCO city fire lines go only to fire departments
   4. no duplicate and no empty source_record_id per source; tier-2 line items equal their transactions rows
   5. every source in a table is registered in sources.csv with the years present in the data and the raw folder date
-  6. vendor_map_additions.csv: spend and agency counts equal the transactions, categories are valid ids, no key
-     repeats config/vendor_map.csv, and the mapped payees cover at least 90% of purchasing dollars
+  6. vendor map: no unmerged config/states/ca/vendor_map_additions.csv; config/vendor_map.csv, then the vendor and
+     keyword rules (as pipeline/build.py applies them), give a real category to at least 90% of purchasing dollars
   7. raw files: each under 50 MB, California under 150 MB, every source folder has a sample of at most 100 rows
   8. contract conformance: table and config columns in the order docs/multistate/data-contract.md gives; dates
      YYYY-MM-DD; amounts with two decimals; payment dates inside the fiscal year they are filed under (July-June,
@@ -42,6 +42,8 @@ from decimal import Decimal
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "pipeline" / "sources"))
 import common  # noqa: E402
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import vendor_coverage  # noqa: E402
 
 ST = "CA"
 OLD_MARKER = "Individual (name withheld)"
@@ -475,33 +477,19 @@ def main():
     for r in tot:
         assert re.fullmatch(r"-?\d+\.\d{2}", r["amount"]) and re.fullmatch(r"20\d\d", r["fiscal_year"]), r
 
-    # 6. vendor_map_additions.csv
-    cats = {c["id"]: c["purchasing"] == "yes" for c in csv.DictReader(open(common.ROOT / "config/categories.csv"))}
-    vm = {r["name_key"]: r["category"] for r in csv.DictReader(open(common.ROOT / "config/vendor_map.csv"))}
-    va = common.read_config(ST, "vendor_map_additions.csv")
-    spend, who = collections.Counter(), collections.defaultdict(set)
+    # 6. vendor map: payees classified the way pipeline/build.py classifies them (config/vendor_map.csv, then the
+    #    vendor and keyword rules); proposals are folded into config/vendor_map.csv by merge_vendor_maps.py
+    assert not (common.config_dir(ST) / "vendor_map_additions.csv").exists(), \
+        "config/states/ca/vendor_map_additions.csv: fold it into config/vendor_map.csv (merge_vendor_maps.py)"
+    spend = collections.Counter()
     for r in tx:
-        k = common.norm(r["payee_name"])
-        spend[k] += cents(r["amount"])
-        who[k].add(r["agency_id"])
-    keys = [r["name_key"] for r in va]
-    assert len(keys) == len(set(keys)) and keys == sorted(keys), "vendor_map_additions.csv: keys repeat or unsorted"
-    for r in va:
-        assert r["category"] in cats, f"unknown category {r}"
-        assert r["name_key"] not in vm, f"key already in config/vendor_map.csv: {r['name_key']}"
-        assert r["confidence"] in ("high", "medium", "low"), r
-        assert cents(r["spend"]) == spend[r["name_key"]] and int(r["agencies"]) == len(who[r["name_key"]]), \
-            f"vendor_map_additions.csv: spend or agencies stale for {r['name_key']}"
-    mapped = {**vm, **{r["name_key"]: r["category"] for r in va}}
-    purchasing = covered = 0
-    for k, v in spend.items():
-        if v <= 0 or (k in mapped and not cats[mapped[k]]):
-            continue
-        purchasing += v
-        covered += v if k in mapped else 0
-    share = covered / purchasing
-    assert share >= 0.90, f"vendor map covers {share:.1%} of purchasing dollars"
-    report.append(f"vendor map: {len(va)} additions; {share:.1%} of ${purchasing / 100:,.0f} purchasing dollars mapped")
+        spend[common.norm(r["payee_name"])] += cents(r["amount"])
+    cov = vendor_coverage.Classifier().coverage(spend)
+    share = cov["share_real"]
+    assert share >= 0.90, f"vendor map gives a real category to {share:.1%} of purchasing dollars"
+    report.append(f"vendor map: config/vendor_map.csv and the rules give a real category to {share:.1%} of "
+                  f"${cov['purchasing'] / 100:,.0f} purchasing dollars (map {cov['by_map'] / cov['purchasing']:.1%}, "
+                  f"rules {cov['by_rule'] / cov['purchasing']:.1%}; unclassified {cov['unclassified'] / cov['purchasing']:.1%})")
 
     # 7. raw files
     total = 0

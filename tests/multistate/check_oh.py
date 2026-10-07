@@ -23,11 +23,10 @@ district, every participant line published is a fire line); agency ids, links an
 source_record_ids; sort order; payees published as the source has them except email or bank account text
 (owner decision 2026-10-06); emails in any published text; sources.csv; added agencies (no registry department
 of the same county under another name, unless reviewed; Forestry kept as "State fire agency");
-vendor_map_additions.csv (spend recomputed from raw, categories, sorted keys, no key repeated from
-config/vendor_map.csv except overrides of its individuals and unclassified rows, no name artifacts, with
-config/vendor_map.csv >= 90% of purchasing dollars); raw files (location, size, samples for every
-reachable source, no address columns in the state checkbook sample).
-common is used only for norm() (the vendor map key).
+vendor map (no unmerged config/states/oh/vendor_map_additions.csv; config/vendor_map.csv, then the vendor and
+keyword rules as pipeline/build.py applies them, give a real category to >= 90% of purchasing dollars); raw files
+(location, size, samples for every reachable source, no address columns in the state checkbook sample).
+common is used only for norm() (the vendor map key), tests/multistate/vendor_coverage.py for the vendor map.
 """
 import collections
 import csv
@@ -43,6 +42,8 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "pipeline" / "sources"))
 import common  # noqa: E402
+sys.path.insert(0, str(ROOT / "tests" / "multistate"))
+import vendor_coverage  # noqa: E402
 
 ST = "OH"
 FIRST_FY = 2021
@@ -57,7 +58,7 @@ SOURCES_COLUMNS = ["source", "name", "tier", "url", "years", "fiscal_year", "fet
 LINK_COLUMNS = ["agency_id", "source", "source_entity_id", "source_entity_name", "fy_start", "match_method", "note"]
 AGENCY_COLUMNS = ["id", "name", "kind", "county", "city", "usfa_fdid", "dept_type", "organization_type", "stations",
                   "career", "volunteer", "paid_per_call", "website", "grants"]
-ADDITION_COLUMNS = ["name_key", "vendor", "category", "confidence", "spend", "agencies"]
+VENDOR_MAP_COLUMNS = ["name_key", "vendor", "category", "confidence"]
 
 # Cincinnati: department codes whose name says fire but which are not the fire department (insurance shared by
 # police and fire)
@@ -414,8 +415,6 @@ def main():
     tx = rows_of(tx_path)
     assert header_of(ROOT / "config" / "states" / "oh" / "sources.csv") == SOURCES_COLUMNS, "sources.csv header"
     assert header_of(ROOT / "config" / "states" / "oh" / "agency_sources.csv") == LINK_COLUMNS, "agency_sources header"
-    assert header_of(ROOT / "config" / "states" / "oh" / "vendor_map_additions.csv") == ADDITION_COLUMNS, \
-        "vendor_map_additions.csv header"
     if (ROOT / "config" / "states" / "oh" / "agencies_added.csv").exists():
         assert header_of(ROOT / "config" / "states" / "oh" / "agencies_added.csv") == AGENCY_COLUMNS, \
             "agencies_added.csv header"
@@ -513,49 +512,19 @@ def main():
     for r in tx:
         assert not any(EMAIL.search(r[c]) for c in ("payee_name", "description", "account")), f"email: {r}"
 
-    # 6. vendor_map_additions: spend recomputed from raw, valid categories, unique keys, >= 90% of purchasing
-    categories = {c["id"]: c["purchasing"] == "yes" for c in config_rows("categories.csv", state=False)}
-    vendor_map = {r["name_key"]: r["category"] for r in config_rows("vendor_map.csv", state=False)}
-    additions = config_rows("vendor_map_additions.csv")
-    keys = [r["name_key"] for r in additions]
-    assert len(keys) == len(set(keys)), "duplicate name_key in vendor_map_additions.csv"
-    assert keys == sorted(keys), "vendor_map_additions.csv is not sorted by name_key"
-    assert all(r["category"] in categories for r in additions), "unknown category in vendor_map_additions.csv"
-    assert all(k == common.norm(k) for k in keys), "name_key is not common.norm(name)"
-    # a payee already in config/vendor_map.csv is not repeated (as in the other states), except to override one
-    # of that file's 'individuals' rows (names are shown, owner decision 1) or 'unclassified' rows
-    shared = {r["name_key"]: r for r in config_rows("vendor_map.csv", state=False)}
-    for r in additions:
-        g = shared.get(r["name_key"])
-        assert not g or (g["category"] in ("individuals", "unclassified") and r["category"] != g["category"]), \
-            f"repeats a config/vendor_map.csv row: {r}"
-    assert not any(r["vendor"].startswith(("-", " ")) or not r["vendor"] for r in additions), "vendor name artifact"
-    raw_spend = collections.defaultdict(D)
-    raw_agencies = collections.defaultdict(set)
-    for r in tx:
-        k = common.norm(" ".join(raw_lines[(r["source"], r["source_record_id"])]["_payee"].split()))
-        raw_spend[k] += D(r["amount"])
-        raw_agencies[k].add(r["agency_id"])
-    for r in additions:
-        assert D(r["spend"]) == raw_spend.get(r["name_key"]), f"spend differs from raw: {r}"
-        assert int(r["agencies"]) == len(raw_agencies[r["name_key"]]), f"agencies differs from raw: {r}"
-    # coverage as the other states count it: payees mapped by the additions or config/vendor_map.csv, over
-    # purchasing dollars (payees with a purchasing category or unmapped, net spend above zero)
-    add = {r["name_key"]: r["category"] for r in additions}
+    # 6. vendor map: payees classified the way pipeline/build.py classifies them (config/vendor_map.csv, then the
+    #    vendor and keyword rules); the state's proposals are folded into config/vendor_map.csv by
+    #    pipeline/sources/merge_vendor_maps.py, so no proposals file is left behind; >= 90% of purchasing dollars
+    #    (payees with net spend above zero, purchasing category or unmapped) mapped to a real category
+    assert not (ROOT / "config" / "states" / "oh" / "vendor_map_additions.csv").exists(), \
+        "config/states/oh/vendor_map_additions.csv: fold it into config/vendor_map.csv (merge_vendor_maps.py)"
+    assert header_of(ROOT / "config" / "vendor_map.csv") == VENDOR_MAP_COLUMNS, "config/vendor_map.csv header"
     payee_spend = collections.defaultdict(D)
     for r in tx:
         payee_spend[common.norm(r["payee_name"])] += D(r["amount"])
-    purchasing, covered, covered_add = D(0), D(0), D(0)
-    for key, v in payee_spend.items():
-        cat = add.get(key) or vendor_map.get(key)
-        if v <= 0 or (cat and not categories[cat]):
-            continue
-        purchasing += v
-        covered += v if cat else 0
-        covered_add += v if key in add else 0
-    share = covered / purchasing if purchasing else D(1)
-    share_add = covered_add / purchasing if purchasing else D(1)
-    assert share >= D("0.9"), f"vendor maps cover {share:.1%} of purchasing dollars"
+    cov = vendor_coverage.Classifier().coverage(payee_spend)
+    share = cov["share_real"]
+    assert share >= D("0.9"), f"vendor map gives a real category to {share:.1%} of purchasing dollars"
 
     # 7. raw files: only gzipped files under raw/<date>/oh/<source>/, each under 50 MB, Ohio under 150 MB; a
     #    sample of at most 100 rows for every reachable source; no address columns in the state checkbook sample
@@ -585,8 +554,9 @@ def main():
     print(f"{ST}: identical lines dropped: oh_cincinnati {IDENTICAL.pop('oh_cincinnati')}, oh_checkbook_local "
           f"{sum(IDENTICAL.values())} ({sum(1 for v in IDENTICAL.values() if v)} participants)")
     print(f"{ST}: ok ({len(tx)} transaction lines, ${dollars:,.2f}, {len(with_rows)} agencies at tier 1 "
-          f"({', '.join(f'{s}: {n}' for s, n in sorted(by_source.items()))}); vendor maps cover "
-          f"{share:.1%} of ${purchasing:,.0f} purchasing dollars, vendor_map_additions alone {share_add:.1%})")
+          f"({', '.join(f'{s}: {n}' for s, n in sorted(by_source.items()))}); config/vendor_map.csv and the rules give "
+          f"a real category to {share:.1%} of ${cov['purchasing']:,.0f} purchasing dollars (map "
+          f"{cov['by_map'] / cov['purchasing']:.1%}, rules {cov['by_rule'] / cov['purchasing']:.1%}))")
 
 
 if __name__ == "__main__":

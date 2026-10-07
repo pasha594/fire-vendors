@@ -5,8 +5,8 @@
 Independent of the adapters' code: it imports neither id_state nor id_lgr. Raw files are parsed here with their
 own filters and duplicate rules; shared with the adapters are only the hand-reviewed config files
 (config/states/id/agency_sources.csv, agencies_added.csv) and common's file readers and norm(). Checks:
-  - columns and their order exactly as docs/multistate/data-contract.md (tables, sources.csv, agency_sources.csv,
-    vendor_map_additions.csv); dates YYYY-MM-DD inside the fiscal year; amounts with two decimals
+  - columns and their order exactly as docs/multistate/data-contract.md (tables, sources.csv, agency_sources.csv);
+    dates YYYY-MM-DD inside the fiscal year; amounts with two decimals
   - id_lgr: every Fire District (registry entity type 6) has an agency_sources.csv row; one totals row per agency and
     fiscal year equal to the district's filed actual expenditures; every county copy of a multi-county district
     equal; no row for a null or zero actual
@@ -24,10 +24,9 @@ own filters and duplicate rules; shared with the adapters are only the hand-revi
   - no duplicate or empty source_record_id within a source
   - every table source is registered in sources.csv with every column filled; coverage tiers agree with the rows
     present; no agency gets a $0 totals row
-  - vendor_map_additions.csv: valid categories, unique keys not already in config/vendor_map.csv, keys among the
-    published payees, spend and agencies equal to the transactions, and with config/vendor_map.csv it covers at least
-    90% of purchasing dollars (payees with net spend above zero; unmapped payees counted as purchasing); keys sorted;
-    IDL keeps kind "State fire agency"
+  - vendor map: no unmerged config/states/id/vendor_map_additions.csv; config/vendor_map.csv, then the vendor and
+    keyword rules (as pipeline/build.py applies them), give a real category to at least 90% of purchasing dollars
+    (payees with net spend above zero; unmapped payees counted as purchasing); IDL keeps kind "State fire agency"
 """
 import collections
 import csv
@@ -40,6 +39,8 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "pipeline" / "sources"))
 import common  # noqa: E402  (file readers and norm only)
+sys.path.insert(0, str(ROOT / "tests" / "multistate"))
+import vendor_coverage  # noqa: E402  (pipeline/build.py's vendor classification over config/vendor_map.csv)
 
 ST = "ID"
 IDL = "ID-X-IDAHO-DEPARTMENT-OF-LANDS-FIRE-DEPARTMENT-COEUR-D-ALENE"
@@ -61,7 +62,7 @@ def links(source):
 
 
 def contract_columns():
-    """Column lists from docs/multistate/data-contract.md: the three tables and three config files."""
+    """Column lists from docs/multistate/data-contract.md: the three tables and two config files."""
     text = (ROOT / "docs" / "multistate" / "data-contract.md").read_text(encoding="utf-8")
     out = {}
     for name, heading in (("transactions.csv.gz", "## `data/states/<st>/transactions.csv.gz`"),
@@ -76,9 +77,6 @@ def contract_columns():
             if m:
                 cols += [c.strip().strip("`") for c in m.group(1).split(",")]
         out[name] = cols
-    vm = text.split("## `config/states/<st>/vendor_map_additions.csv`", 1)[1].split("\n## ", 1)[0]
-    m = re.search(r"\(`([^)]*)`\) plus `(\w+)` and `(\w+)`", vm)
-    out["vendor_map_additions.csv"] = [c.strip(" `") for c in m.group(1).split(",")] + [m.group(2), m.group(3)]
     return out
 
 
@@ -201,7 +199,7 @@ def main():
     for name in ("transactions.csv.gz", "line_items.csv.gz", "totals.csv"):
         if (d / name).exists():
             assert header(d / name) == ",".join(cols[name]), f"{name}: header differs from the data contract"
-    for name in ("sources.csv", "agency_sources.csv", "vendor_map_additions.csv"):
+    for name in ("sources.csv", "agency_sources.csv"):
         assert header(common.config_dir(ST) / name) == ",".join(cols[name]), f"{name}: header differs from contract"
     for r in tx + tot:
         assert re.fullmatch(r"-?\d+\.\d\d", r["amount"]), f"amount {r['amount']!r}"
@@ -275,38 +273,25 @@ def main():
     counts = collections.Counter(a["coverage"] for a in agencies["agencies"])
     assert agencies["coverage_counts"] == {str(t): counts.get(t, 0) for t in (1, 2, 3, 4)}
 
-    # 6. vendor_map_additions.csv
-    vm_rows = list(csv.DictReader(open(ROOT / "config" / "vendor_map.csv", encoding="utf-8")))
-    add_rows = common.read_config(ST, "vendor_map_additions.csv")
-    cats = {r["id"]: r for r in csv.DictReader(open(ROOT / "config" / "categories.csv", encoding="utf-8"))}
-    assert all(r["category"] in cats and r["category"] != "individuals" for r in add_rows), "additions: category"
-    assert all(r["confidence"] in ("high", "medium", "low") and r["vendor"] for r in add_rows), "additions: row"
-    assert len({r["name_key"] for r in add_rows}) == len(add_rows), "vendor_map_additions.csv: duplicate name_key"
-    assert [r["name_key"] for r in add_rows] == sorted(r["name_key"] for r in add_rows), \
-        "vendor_map_additions.csv: not sorted by name_key"
-    assert not {r["name_key"] for r in add_rows} & {r["name_key"] for r in vm_rows}, \
-        "vendor_map_additions.csv repeats a vendor_map.csv key"
-    spend, ags = collections.Counter(), collections.defaultdict(set)
+    # 6. vendor map: payees classified the way pipeline/build.py classifies them (config/vendor_map.csv, then the
+    #    vendor and keyword rules); proposals are folded into config/vendor_map.csv by merge_vendor_maps.py
+    assert not (common.config_dir(ST) / "vendor_map_additions.csv").exists(), \
+        "config/states/id/vendor_map_additions.csv: fold it into config/vendor_map.csv (merge_vendor_maps.py)"
+    spend = collections.Counter()
     for r in tx:
         spend[common.norm(r["payee_name"])] += cents(r["amount"])
-        ags[common.norm(r["payee_name"])].add(r["agency_id"])
-    for r in add_rows:
-        assert r["name_key"] in spend, f"vendor_map_additions.csv: {r['name_key']!r} not among published payees"
-        assert cents(r["spend"]) == spend[r["name_key"]] and int(r["agencies"]) == len(ags[r["name_key"]]), \
-            f"vendor_map_additions.csv: stale spend or agencies for {r['name_key']!r}"
-    cat = {r["name_key"]: r["category"] for r in vm_rows}
-    cat.update({r["name_key"]: r["category"] for r in add_rows})
-    # as the other states count it: payees with net spend above zero, purchasing category or unmapped
-    purch = sum(v for k, v in spend.items() if v > 0 and (k not in cat or cats[cat[k]]["purchasing"] == "yes"))
-    mapped = sum(v for k, v in spend.items() if v > 0 and k in cat and cats[cat[k]]["purchasing"] == "yes")
-    assert mapped >= 0.9 * purch, f"vendor maps cover {mapped / purch:.1%} of purchasing dollars, under 90%"
+    cov = vendor_coverage.Classifier().coverage(spend)
+    share = cov["share_real"]
+    assert share >= 0.9, f"vendor map gives a real category to {share:.1%} of purchasing dollars, under 90%"
 
     by_source = collections.Counter()
     for r in tx + tot:
         by_source[r["source"]] += float(r["amount"])
     print(f"{ST}: ok ({len(tx)} payment lines from {n_raw} raw lines, {dropped} identical lines dropped; "
           f"{len(tot)} totals rows; " + ", ".join(f"{s} ${v:,.0f}" for s, v in sorted(by_source.items()))
-          + f"; vendor maps cover {mapped / purch:.1%} of purchasing; "
+          + f"; config/vendor_map.csv and the rules give a real category to {share:.1%} of "
+          + f"${cov['purchasing'] / 100:,.0f} purchasing dollars (map {cov['by_map'] / cov['purchasing']:.1%}, rules "
+          + f"{cov['by_rule'] / cov['purchasing']:.1%}); "
           + f"tiers {dict(sorted(agencies['coverage_counts'].items()))})")
 
 

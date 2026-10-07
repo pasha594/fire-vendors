@@ -22,8 +22,8 @@ common.py is used only to read files (read_gz, latest_raw, read_config, read_dat
   5. no duplicate source_record_id within a source; no empty ids
   6. columns and their order exactly as docs/multistate/data-contract.md; dates YYYY-MM-DD; amounts with two decimals;
      each city line's posting date falls inside its fiscal year
-  7. vendor_map_additions.csv: valid categories, no key repeated from config/vendor_map.csv, spend and agency counts equal
-     the data, and with config/vendor_map.csv it covers at least 90% of purchasing dollars
+  7. vendor map: no unmerged config/states/tx/vendor_map_additions.csv; config/vendor_map.csv, then the vendor and keyword
+     rules (as pipeline/build.py applies them), give a real category to at least 90% of purchasing dollars
   8. every table source is registered in sources.csv; coverage tiers and coverage_counts agree with the rows present
 """
 import collections
@@ -36,7 +36,9 @@ import re
 import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "pipeline" / "sources"))
-import common  # noqa: E402  (file readers only)
+import common  # noqa: E402  (file readers and norm)
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import vendor_coverage  # noqa: E402  (pipeline/build.py's vendor classification over config/vendor_map.csv)
 
 ST = "TX"
 ROOT = common.ROOT
@@ -326,33 +328,16 @@ def main():
     for r in tot:
         assert money.fullmatch(r["amount"]) and r["fiscal_year"].isdigit(), r
 
-    # 7. vendor_map_additions.csv
-    add_rows = common.read_config(ST, "vendor_map_additions.csv")
-    vm = {r["name_key"]: r for r in csv.DictReader(open(ROOT / "config" / "vendor_map.csv", encoding="utf-8"))}
-    cats = {r["id"]: r["purchasing"] == "yes" for r in csv.DictReader(open(ROOT / "config" / "categories.csv", encoding="utf-8"))}
-    assert all(r["category"] in cats for r in add_rows), "vendor_map_additions.csv: unknown category"
-    assert len({r["name_key"] for r in add_rows}) == len(add_rows), "vendor_map_additions.csv: duplicate name_key"
-    assert [r["name_key"] for r in add_rows] == sorted(r["name_key"] for r in add_rows), \
-        "vendor_map_additions.csv: not sorted by name_key"
-    assert not {r["name_key"] for r in add_rows} & set(vm), "vendor_map_additions.csv repeats a vendor_map.csv key"
-    spend, ags = collections.Counter(), collections.defaultdict(set)
+    # 7. vendor map: payees classified the way pipeline/build.py classifies them (config/vendor_map.csv, then the
+    #    vendor and keyword rules); proposals are folded into config/vendor_map.csv by merge_vendor_maps.py
+    assert not (common.config_dir(ST) / "vendor_map_additions.csv").exists(), \
+        "config/states/tx/vendor_map_additions.csv: fold it into config/vendor_map.csv (merge_vendor_maps.py)"
+    spend = collections.Counter()
     for r in tx:
-        k = common.norm(r["payee_name"])
-        spend[k] += cents(r["amount"])
-        ags[k].add(r["agency_id"])
-    for r in add_rows:
-        assert r["name_key"] in spend, f"vendor_map_additions.csv: {r['name_key']} not in the data"
-        assert cents(r["spend"]) == spend[r["name_key"]] and int(r["agencies"]) == len(ags[r["name_key"]]), \
-            f"vendor_map_additions.csv: spend or agencies of {r['name_key']} differ from the data"
-    category = {**{k: r["category"] for k, r in vm.items()}, **{r["name_key"]: r["category"] for r in add_rows}}
-    purchasing = mapped = 0
-    for k, v in spend.items():
-        c = category.get(k)
-        if v > 0 and (c is None or cats[c]):
-            purchasing += v
-            mapped += v if c else 0
-    share = mapped / purchasing
-    assert share >= 0.9, f"vendor maps cover only {share:.1%} of purchasing dollars"
+        spend[common.norm(r["payee_name"])] += cents(r["amount"])
+    cov = vendor_coverage.Classifier().coverage(spend)
+    share = cov["share_real"]
+    assert share >= 0.9, f"vendor map gives a real category to only {share:.1%} of purchasing dollars"
 
     # 8. Sources and coverage tiers
     sources = {r["source"]: r for r in common.read_config(ST, "sources.csv")}
@@ -377,7 +362,9 @@ def main():
         by_source[r["source"]] += cents(r["amount"])
     print(f"{ST}: ok ({len(tx)} payment lines, {len(li)} item lines, {len(tot)} totals rows; "
           + ", ".join(f"{s} ${v / 100:,.0f}" for s, v in sorted(by_source.items()))
-          + f"; vendor maps cover {share:.1%} of purchasing; tiers {dict(sorted(agencies['coverage_counts'].items()))}; "
+          + f"; config/vendor_map.csv and the rules give a real category to {share:.1%} of "
+          + f"${cov['purchasing'] / 100:,.0f} purchasing dollars (map {cov['by_map'] / cov['purchasing']:.1%}, rules "
+          + f"{cov['by_rule'] / cov['purchasing']:.1%}); tiers {dict(sorted(agencies['coverage_counts'].items()))}; "
           + "identical lines dropped (owner rule of 2026-10-07): "
           + ", ".join(f"{s} {n} (${c / 100:,.2f}, {g} sets)" for s, (g, n, c) in sorted(DROPPED.items())) + ")")
 
