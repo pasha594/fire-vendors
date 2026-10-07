@@ -19,8 +19,9 @@ csv and json, applies each source's published rule and compares
   trans_id, line and check numbers are content) are kept once, the lowest row Id; void-safe, n identical positive
   lines keep min(n, distinct reversals + 1), a reversal being a negative line of the same payee and account with
   the amount negated in the same or next fiscal year; identical voids (owner decision A of 2026-10-07): in a family
-  with a payment (same payee and account, amount up to sign, years chained by same or next year) identical negative
-  copies go only with identical positive copies, and every family the fix touches has its raw net;
+  with a payment (same payee and account, amount up to sign, negative lines linked to the payments of their fiscal
+  year and the one before, transitively) identical negative copies go only with identical positive copies, and
+  every family the fix touches has its raw net;
 - lines and dollars per agency, source and fiscal year with data/states/oh/transactions.csv.gz;
 - every published line, field by field, with its raw line (agency, fiscal year, date, payee, account, amount).
 Also checks: the contract's column names and order; attribution (Cincinnati: every linked code is a fire
@@ -105,11 +106,12 @@ def copies_kept(lines, amount, year, reversal_of, order, src):
     identical to each other (every raw column but the row ids equal), grouped as {identity: [lines]}. Every
     identity is kept once; a positive identity with copies keeps min(copies, reversals + 1), reversals being the
     distinct negative identities with the same reversal fields, the amount negated, dated in the positive line's
-    fiscal year or the next. Identical voids (owner decision A of 2026-10-07): lines with the same reversal fields
-    and the amount up to sign whose fiscal years form a chain of same-or-next years are one family; in a family
-    with a positive line, the negative identities (in the order order(identity, lines) gives) give up their extra
-    copies only while the family's positive identities have dropped copies left to pair with; a family of
-    negative lines only keeps each identity once. Asserts that every family the fix changes nets as its raw lines
+    fiscal year or the next. Identical voids (owner decision A of 2026-10-07): identities with the same reversal
+    fields and the amount up to sign are linked when one is negative and the other positive, the negative one dated
+    in the positive one's fiscal year or the next; a family is a set of identities linked directly or through
+    others. In a family with a positive line, the negative identities (in the order order(identity, lines) gives)
+    give up their extra copies only while the family's positive identities have dropped copies left to pair with;
+    a family of negative lines only keeps each identity once. Asserts that every family the fix changes nets as its raw lines
     and that no family with a payment nets more than its raw lines."""
     negative = collections.defaultdict(list)
     for ident, g in lines.items():
@@ -123,17 +125,26 @@ def copies_kept(lines, amount, year, reversal_of, order, src):
             continue
         reversals = {i for i, na, ny in negative[reversal_of(g[0])] if na == -a and ny in (y, y + 1)}
         keep[ident] = min(len(g), len(reversals) + 1)
-    # families: (reversal fields, amount up to sign), split where the next fiscal year present is 2 or more later
+    # families: identities with the same reversal fields and amount up to sign, a negative identity linked to every
+    # positive one of its fiscal year or the year before; families are the connected sets (merged label by label)
     by_sign_free = collections.defaultdict(list)
     for ident, g in lines.items():
         if amount(g[0]):
             by_sign_free[(reversal_of(g[0]), abs(amount(g[0])))].append(ident)
     for idents in by_sign_free.values():
-        years = sorted({year(lines[i][0]) for i in idents})
-        cut = [y for prev, y in zip(years, years[1:]) if y - prev >= 2]  # first year of each later family
+        label = {i: n for n, i in enumerate(idents)}
+        neg = [i for i in idents if amount(lines[i][0]) < 0]
+        pos = [i for i in idents if amount(lines[i][0]) > 0]
+        for n_i in neg:
+            for p_i in pos:
+                if year(lines[n_i][0]) - year(lines[p_i][0]) in (0, 1) and label[n_i] != label[p_i]:
+                    old, new = label[p_i], label[n_i]
+                    for i in idents:
+                        if label[i] == old:
+                            label[i] = new
         family = collections.defaultdict(list)
         for i in idents:
-            family[sum(year(lines[i][0]) >= c for c in cut)].append(i)
+            family[label[i]].append(i)
         for members in family.values():
             if all(amount(lines[i][0]) < 0 for i in members):
                 continue

@@ -80,10 +80,10 @@ where reversals counts the distinct lines (identical reversals once) of the same
 department and object with the amount negated, dated in the group's year or the next (REVERSAL); so a payment,
 its void and its identical reissue keep their net. Negative amounts (voids, refunds, reversals) are kept so they
 net out. Identical voids (owner decision A of 2026-10-07): in a payment and reversal family (same REVERSAL fields,
-amount up to sign, years chained by same or next year) that has a payment, identical negative copies are dropped
-only as often as the family's identical positive copies, so the family keeps its raw net; identical negative lines
-of a family without payments are kept once. Every fetched slice is checked against the dashboard's own summary
-totals for the same filters, per year.
+amount up to sign, negative lines joined to the payments of their year and the year before) that has a payment,
+identical negative copies are dropped only as often as the family's identical positive copies, so the family keeps
+its raw net; identical negative lines of a family without payments are kept once. Every fetched slice is checked
+against the dashboard's own summary totals for the same filters, per year.
 """
 import argparse
 import collections
@@ -855,22 +855,25 @@ def identity(r):
 
 
 def families(groups, year):
-    """Payment and reversal families (owner decision A of 2026-10-07): the identities of groups whose lines share
-    the REVERSAL fields and the amount up to sign, split into runs of years where each year is the same as or the
-    next after the one before (a reversal is dated in its payment's year or the next). Lines of amount 0 belong to
-    no family. Returns lists of identities, each family once, in a fixed order."""
+    """Payment and reversal families (owner decision A of 2026-10-07): groups whose lines share the REVERSAL fields
+    and the amount up to sign, joined the way the void rule links a payment to its reversals (a negative line dated
+    in a payment's year or the next): the negative groups of year y join the positive groups of years y - 1 and y.
+    Placing a year's negative groups at 2y and its positive groups at 2y + 1, a family is a run of consecutive
+    places. Lines of amount 0 belong to no family. Returns lists of identities, each family once, in a fixed
+    order."""
     by_key = collections.defaultdict(lambda: collections.defaultdict(list))
     for k, g in groups.items():
-        if money(g[0]["Amt"]) != 0:
-            by_key[(tuple(g[0][c] for c in REVERSAL), abs(money(g[0]["Amt"])))][year(g[0])].append(k)
+        amount = money(g[0]["Amt"])
+        if amount != 0:
+            by_key[(tuple(g[0][c] for c in REVERSAL), abs(amount))][2 * year(g[0]) + (amount > 0)].append(k)
     out = []
     for key in sorted(by_key):
         prev = None
-        for y in sorted(by_key[key]):
-            if prev is None or y > prev + 1:
+        for place in sorted(by_key[key]):
+            if prev is None or place > prev + 1:
                 out.append([])
-            out[-1] += by_key[key][y]
-            prev = y
+            out[-1] += by_key[key][place]
+            prev = place
     return out
 
 

@@ -12,8 +12,13 @@ redaction rule) and common's file helpers and norm(). Checks:
      document numbers (voucher, invoice, payment, PO and their line numbers) being content; void-safe: n identical
      positive lines keep min(n, r + 1) copies, r = distinct negative lines with the same reversal fields (agency,
      payee, account and the document fields the source repeats on a void), the amount negated and the same or next
-     fiscal year. The multiset of (agency, fiscal year, date, payee, amount) lines is equal too; for ca_fiscal the rule
-     applies to the raw distribution lines before they are summed per voucher
+     fiscal year; identical voids (owner decision A of 2026-10-07): in a family that has payments (same reversal
+     fields, amount up to sign, a payment linked to the negative lines of its fiscal year and the next), an identical
+     negative copy is dropped only together with a dropped identical positive copy of the family, and every family
+     where this keeps a negative copy nets exactly its raw lines (asserted). SCPRS purchase-order item lines are
+     exempt (owner decision B of 2026-10-07): every line is kept. The multiset of (agency, fiscal year, date, payee,
+     amount) lines is equal too; for ca_fiscal the rule applies to the raw distribution lines before they are summed
+     per voucher
   2. payee names are shown as published (owner decision of 2026-10-06): every published payee is a raw payee
      name (whitespace collapsed), or "Payee name withheld" where the raw name matches a redaction pattern; the
      old person marker never appears; no published payee matches a redaction pattern; no payee, description or
@@ -35,6 +40,7 @@ import collections
 import csv
 import difflib
 import gzip
+import hashlib
 import io
 import json
 import pathlib
@@ -79,32 +85,93 @@ def ws(text):
 
 
 DROPPED = {}  # source -> (sets with a dropped copy, copies dropped, cents dropped, copies kept by the void rule, cents)
+FIXED = {}  # source -> (negative copies kept by the void fix, cents, families touched; each nets its raw lines)
+EXEMPT = {}  # source -> raw lines equal in every column to another line, all kept (exempt source)
+
+
+def family_root(nodes):
+    """Union-find over family nodes (reversal fields, amount > 0, fiscal year, sign): a payment (sign 1) of year y is
+    linked with the negative lines (sign -1) of y and y + 1. Returns find(node) -> the family's root node."""
+    parent = {node: node for node in nodes}
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    for rev, a, fy, sign in nodes:
+        if sign > 0:
+            for y in (fy, fy + 1):
+                if (rev, a, y, -1) in parent:
+                    parent[find((rev, a, y, -1))] = find((rev, a, fy, 1))
+    return find
+
+
+def fix_voids(negatives, positives, find):
+    """Owner decision A of 2026-10-07 (written from docs/sources/ca.md): copies kept of each set of identical negative
+    lines. negatives: [(order, node, copies)] per negative identity with copies >= 2 (order: fiscal year, then lowest
+    row id or the raw line); positives: [(node, copies dropped)] per positive identity. A family with no payment keeps
+    each set once; otherwise each copy dropped needs a positive copy dropped in the same family, sets taking them in
+    order. Returns {order: copies kept}."""
+    budget, paid = collections.Counter(), set()
+    for node, gone in positives:
+        budget[find(node)] += gone
+        paid.add(find(node))
+    out = {}
+    for order, node, copies in sorted(negatives):
+        root = find(node)
+        gone = copies - 1 if root not in paid else min(copies - 1, budget[root])
+        budget[root] -= gone
+        out[order] = copies - gone
+    return out
 
 
 def identical_rule(source, lines):
-    """The owner's rule of 2026-10-07 as corrected, written here from docs/sources/ca.md (not imported).
-    lines: (identity, reversal fields, fiscal year, cents, published tuple) per raw line; identity is every raw column
-    but the row and load ids. Copies of one identity are kept once; a positive identity keeps min(n, r + 1) copies,
-    r = how many distinct negative identities have its reversal fields, the negated amount and the same or the next
-    fiscal year. Returns the kept published tuples (a list, one entry per kept line)."""
+    """The owner's rule of 2026-10-07 as corrected, with the void fix of the same day, written here from
+    docs/sources/ca.md (not imported). lines: (identity, row id, reversal fields, fiscal year, cents, published tuple)
+    per raw line; identity is every raw column but the row and load ids. Copies of one identity are kept once; a
+    positive identity keeps min(n, r + 1) copies, r = how many distinct negative identities have its reversal fields,
+    the negated amount and the same or the next fiscal year; a negative identity keeps the copies fix_voids gives.
+    Asserts that every family where a negative set keeps more than one copy nets its raw lines. Returns the kept
+    published tuples (a list, one entry per kept line)."""
     n = collections.Counter(ident for ident, *_ in lines)
     first = {}
-    for ident, rev, fy, c, out in lines:
-        first.setdefault(ident, (rev, fy, c, out))
-    voids = collections.Counter((rev, -c, fy) for rev, fy, c, _ in first.values() if c < 0)
-    kept, sets, dropped, cents_dropped, void_kept, void_cents = [], 0, 0, 0, 0, 0
-    for ident, (rev, fy, c, out) in first.items():
-        copies = 1
-        if c > 0:
-            copies = min(n[ident], voids[(rev, c, fy)] + voids[(rev, c, fy + 1)] + 1)
-        kept += [out] * copies
-        if copies < n[ident]:
+    for ident, rid, rev, fy, c, out in lines:
+        if ident not in first or rid < first[ident][0]:
+            first[ident] = (rid, rev, fy, c, out)
+    voids = collections.Counter((rev, -c, fy) for _, rev, fy, c, _ in first.values() if c < 0)
+    copies = {}
+    for ident, (_, rev, fy, c, _) in first.items():
+        copies[ident] = min(n[ident], voids[(rev, c, fy)] + voids[(rev, c, fy + 1)] + 1) if c > 0 else 1
+    node = {ident: (rev, abs(c), fy, 1 if c > 0 else -1) for ident, (_, rev, fy, c, _) in first.items() if c}
+    find = family_root(set(node.values()))
+    negatives = [((fy, rid), node[i], n[i]) for i, (rid, rev, fy, c, _) in first.items() if c < 0 and n[i] > 1]
+    by_order = {(fy, rid): i for i, (rid, rev, fy, c, _) in first.items() if c < 0 and n[i] > 1}
+    fixed = fix_voids(negatives, [(node[i], n[i] - copies[i]) for i, (_, _, _, c, _) in first.items() if c > 0], find)
+    for order, kept in fixed.items():
+        copies[by_order[order]] = kept
+    raw_net, kept_net, touched = collections.Counter(), collections.Counter(), set()
+    kept, sets, dropped, cents_dropped, void_kept, void_cents, fix_kept, fix_cents = [], 0, 0, 0, 0, 0, 0, 0
+    for ident, (_, rev, fy, c, out) in first.items():
+        kept += [out] * copies[ident]
+        if copies[ident] < n[ident]:
             sets += 1
-            dropped += n[ident] - copies
-            cents_dropped += (n[ident] - copies) * c
-        void_kept += copies - 1
-        void_cents += (copies - 1) * c
+            dropped += n[ident] - copies[ident]
+            cents_dropped += (n[ident] - copies[ident]) * c
+        if c > 0:
+            void_kept += copies[ident] - 1
+            void_cents += (copies[ident] - 1) * c
+        elif c < 0 and copies[ident] > 1:
+            fix_kept += copies[ident] - 1
+            fix_cents += (copies[ident] - 1) * c
+            touched.add(find(node[ident]))
+        if c:
+            raw_net[find(node[ident])] += n[ident] * c
+            kept_net[find(node[ident])] += copies[ident] * c
+    off = [(root, raw_net[root], kept_net[root]) for root in touched if raw_net[root] != kept_net[root]]
+    assert not off, f"{source}: {len(off)} families touched by the void fix do not net their raw lines: {off[:3]}"
     DROPPED[source] = (sets, dropped, cents_dropped, void_kept, void_cents)
+    FIXED[source] = (fix_kept, fix_cents, len(touched))
     return kept
 
 
@@ -130,7 +197,7 @@ def expect_sf():
             continue
         fy, payee, c = int(r["fiscal_year"]), published(r["vendor"]), cents(r["vouchers_paid"])
         # row and load ids: :id, data_as_of ("updated in the source system"), data_loaded_at; no payment date
-        lines.append((socrata(r, (":id", "data_as_of", "data_loaded_at")),
+        lines.append((socrata(r, (":id", "data_as_of", "data_loaded_at")), r[":id"],
                       fields(r, ("department_code", "vendor", "purchase_order", "contract_number", "program_code",
                                  "character_code", "object_code", "sub_object_code", "fund_code")),
                       fy, c, (agency, str(fy), "", payee, c)))
@@ -147,7 +214,7 @@ def expect_la():
         if r["department_name"] != "FIRE" or r.get("dollar_amount") in (None, ""):
             continue
         fy, payee, c = int(r["fiscal_year"]), published(r.get("vendor_name")), cents(r["dollar_amount"])
-        lines.append((socrata(r),
+        lines.append((socrata(r), r[":id"],
                       fields(r, ("department_name", "vendor_name", "program", "fund", "account_code", "inv_num",
                                  "inv_line", "inv_dist_line", "po_num", "po_line_number")),
                       fy, c, (agency, str(fy), (r.get("transaction_date") or "")[:10], payee, c)))
@@ -164,7 +231,7 @@ def expect_riverside():
         if r["department"] != "Fire Protection" or not r.get("vendor_name"):
             continue
         fy, payee, c = int(r["fiscal_year"]), published(r["vendor_name"]), cents(r["amount"])
-        lines.append((socrata(r),
+        lines.append((socrata(r), r[":id"],
                       fields(r, ("department", "vendor_name", "business_unit", "fund_type", "fund", "account_category",
                                  "account", "expense_category", "invoice_id", "payment_id", "description")),
                       fy, c, (agency, str(fy), (r.get("date") or "")[:10], payee, c)))
@@ -182,7 +249,7 @@ def expect_corona():
             continue
         fy, payee, c = int(r["fiscal_year"]), published(r["vendor"]), cents(r["amount"])
         # a void can carry its own payment id and date, so those are not reversal fields
-        lines.append((socrata(r),
+        lines.append((socrata(r), r[":id"],
                       fields(r, ("department_code", "vendor", "department_activity", "fund_name", "expense_category",
                                  "invoice_id", "description")),
                       fy, c, (agency, str(fy), (r.get("payment_date") or "")[:10], payee, c)))
@@ -198,7 +265,7 @@ def expect_moreno_valley():
     lines = []
     for r in raw:
         agency, fy, payee, c = link[r["department"]], int(r["fiscal_year"]), published(r.get("vendor")), cents(r["amount"])
-        lines.append((socrata(r),
+        lines.append((socrata(r), r[":id"],
                       fields(r, ("department", "vendor", "program", "fund", "expense_category", "invoice_id",
                                  "invoice_line", "invoice_distribution_line")),
                       fy, c, (agency, str(fy), (r.get("payment_date") or "")[:10], payee, c)))
@@ -229,27 +296,27 @@ def expect_scprs():
     assert all(r["Department Name"] == dept for r in rows) and dept in link
     raw = list(csv.reader(io.StringIO(gzip.decompress((d / "calfire.csv.gz").read_bytes()).decode("utf-8"))))[1:]
     assert len(raw) == len(rows)
-    lines = []
+    lines, same = [], collections.Counter()
     for r, line in zip(rows, raw):
         c = scprs_money(r["Total Price"])
         if c == 0:
             continue
         fy_end = int(r["Fiscal Year"][5:])
         payee = published(r["Supplier Name"])
-        # no row id or load date in the file: every one of its columns is part of the identity
-        lines.append((tuple(line),
-                      tuple(r[k] for k in ("Department Name", "Supplier Code", "Supplier Name", "Purchase Order Number",
-                                           "Requisition Number", "LPA Number")),
-                      fy_end, c, (link[dept], str(fy_end),
-                                  scprs_day(r["Purchase Date"], fy_end) or scprs_day(r["Creation Date"], fy_end),
-                                  payee, c)))
-    return identical_rule("ca_scprs", lines)
+        lines.append((link[dept], str(fy_end),
+                      scprs_day(r["Purchase Date"], fy_end) or scprs_day(r["Creation Date"], fy_end), payee, c))
+        same[tuple(line)] += 1
+    # PO item lines are exempt from the identical-line rule (owner decision B of 2026-10-07): every line is kept,
+    # also lines equal in all 32 columns inside one PO (no line number in the file)
+    EXEMPT["ca_scprs"] = sum(k for k in same.values() if k > 1)
+    return lines
 
 
 def expect_fiscal():
     """[(agency, fy, date, payee, cents)] rows of the Open FI$Cal files: the owner rule on the raw distribution lines
     (no row id or load date in the files, so a line is identical to another only when all its columns are, document
-    id included; void-safe as identical_rule), then lines summed per voucher, payee, accounting date, program,
+    id included; void-safe and void fix as identical_rule, negative sets ordered by their raw line), then lines summed
+    per voucher, payee, accounting date, program,
     sub-program, fund and account, $0 sums left out. The summed rows are not compared with each other."""
     agency = links("ca_fiscal", "source_entity_id")["3540"]
     d = common.latest_raw(ST, "ca_fiscal")
@@ -257,6 +324,7 @@ def expect_fiscal():
     sums = collections.Counter()
     repeated = {}  # raw line seen more than once -> (sum key, reversal fields, fy, cents, copies)
     voids = collections.Counter()  # (reversal fields, cents negated, fy) -> distinct negative lines
+    paid = set()  # md5 of (reversal fields, cents, fy) of every positive line: families that have payments
     for entry in manifest:
         reader = csv.reader(io.StringIO(gzip.decompress((d / (entry["file"] + ".gz")).read_bytes()).decode("utf-8-sig")))
         header = next(reader)
@@ -282,19 +350,46 @@ def expect_fiscal():
             assert fy == entry["fiscal_year"], (entry["file"], fy)
             if c < 0:
                 voids[(tuple(r[i] for i in rev_ix), -c, fy)] += 1
+            elif c > 0:
+                paid.add(hashlib.md5(repr((tuple(r[i] for i in rev_ix), c, fy)).encode()).digest())
             sums[sum_key] += c
         assert n == entry["rows"] and total == cents(entry["dollars"]), f"ca_fiscal {entry['file']}: differs from manifest"
         del seen
-    sets = dropped = cents_dropped = void_kept = void_cents = 0
-    for sum_key, rev, fy, c, copies in repeated.values():
-        keep = min(copies, voids[(rev, c, fy)] + voids[(rev, c, fy + 1)] + 1) if c > 0 else 1
-        sums[sum_key] += (keep - 1) * c
-        sets += copies > keep
-        dropped += copies - keep
-        cents_dropped += (copies - keep) * c
-        void_kept += keep - 1
-        void_cents += (keep - 1) * c
+    keep = {key: min(copies, voids[(rev, c, fy)] + voids[(rev, c, fy + 1)] + 1) if c > 0 else 1
+            for key, (_, rev, fy, c, copies) in repeated.items()}
+    # void fix: the family nodes of every (reversal fields, amount) that has a set of identical negative lines
+    years = range(min(e["fiscal_year"] for e in manifest) - 1, max(e["fiscal_year"] for e in manifest) + 2)
+    pairs = {(rev, -c) for _, rev, fy, c, _ in repeated.values() if c < 0}
+    nodes = {(rev, a, y, sign) for rev, a in pairs for y in years for sign in (1, -1)
+             if (sign < 0 and voids[(rev, a, y)]) or
+             (sign > 0 and hashlib.md5(repr((rev, a, y)).encode()).digest() in paid)}
+    find = family_root(nodes)
+    fixed = fix_voids([((fy, key), (rev, -c, fy, -1), copies)
+                       for key, (_, rev, fy, c, copies) in repeated.items() if c < 0],
+                      [((rev, c, fy, 1), copies - keep[key])
+                       for key, (_, rev, fy, c, copies) in repeated.items() if c > 0 and (rev, c) in pairs], find)
+    for (_, key), kept in fixed.items():
+        keep[key] = kept
+    sets = dropped = cents_dropped = void_kept = void_cents = fix_kept = fix_cents = 0
+    gone, touched = collections.Counter(), set()  # family -> cents dropped (a touched family must drop $0 net)
+    for key, (sum_key, rev, fy, c, copies) in repeated.items():
+        sums[sum_key] += (keep[key] - 1) * c
+        sets += copies > keep[key]
+        dropped += copies - keep[key]
+        cents_dropped += (copies - keep[key]) * c
+        void_kept += (keep[key] - 1) * (c > 0)
+        void_cents += (keep[key] - 1) * c * (c > 0)
+        if c and (rev, abs(c)) in pairs:
+            root = find((rev, abs(c), fy, 1 if c > 0 else -1))
+            gone[root] += (copies - keep[key]) * c
+            if c < 0 and keep[key] > 1:
+                fix_kept += keep[key] - 1
+                fix_cents += (keep[key] - 1) * c
+                touched.add(root)
+    off = [root for root in touched if gone[root]]
+    assert not off, f"ca_fiscal: {len(off)} families touched by the void fix do not net their raw lines: {off[:3]}"
     DROPPED["ca_fiscal"] = (sets, dropped, cents_dropped, void_kept, void_cents)
+    FIXED["ca_fiscal"] = (fix_kept, fix_cents, len(touched))
     lines = []
     for (fy, _voucher, vendor, day, *acct), c in sorted(sums.items()):
         if c:
@@ -388,9 +483,14 @@ def main():
         rows = [r for r in tx if r["source"] == source]
         same = collections.Counter(tuple(v for k, v in r.items() if k != "source_record_id") for r in rows)
         alike = sum(n_ for n_ in same.values() if n_ > 1)
+        fix_kept, fix_cents, families = FIXED[source]
         report.append(f"{source}: {n} identical raw lines dropped (${dropped / 100:,.2f}, {sets} sets); void rule kept "
-                      f"{void_kept} copies (${void_cents / 100:,.2f}); {alike} published rows share every published "
-                      "column with another row (kept: different documents or void-kept copies)")
+                      f"{void_kept} copies (${void_cents / 100:,.2f}); void fix kept {fix_kept} negative copies "
+                      f"(${fix_cents / 100:,.2f}) in {families} families, each at its raw net; {alike} published rows "
+                      "share every published column with another row (kept: different documents or kept copies)")
+    for source, n in sorted(EXEMPT.items()):
+        report.append(f"{source}: exempt from the identical-line rule (PO item lines); {n} raw lines equal another in "
+                      "every column, all kept")
 
     # tier 3 totals
     for source, name_field, year_field in [("ca_sco_districts", "entityname", "fiscalyear"),

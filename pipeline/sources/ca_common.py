@@ -79,9 +79,10 @@ def negative_copies_to_keep(sets, dropped, present):
     voids"). In a family (see family) that has payments, an identical negative copy is dropped only together with an
     identical positive copy of the same family that copies_to_keep drops, so a payment, void and reissue family keeps
     its raw net; positive lines are not changed. A family without payments keeps its identical copies once (rule 2).
-    sets: [(order, reversal, amount negated (> 0), fiscal year, n)], one per set of n >= 2 identical negative lines;
-    dropped: {(reversal, amount, fiscal year): positive copies dropped}. Within a family, the sets in order of
-    (fiscal year, order) pair their copies with the family's dropped positive copies until none is left.
+    sets: [(order, reversal, amount negated (> 0), fiscal year, n)], one per set of n >= 2 identical negative lines,
+    order being the set's lowest row id (or its raw line where the source has no row id); dropped: {(reversal,
+    amount, fiscal year): positive copies dropped}. Within a family, the sets in order of (fiscal year, order) pair
+    their copies with the family's dropped positive copies until none is left.
     Returns ({order: copies kept}, families where a set keeps more than one copy)."""
     families = collections.defaultdict(list)
     for order, reversal, amount, fy, n in sets:
@@ -135,12 +136,12 @@ def keep_identical(lines, ident, reversal, amount, fiscal_year, first):
         line = lines[members[0]]
         a, fy = amount(line), fiscal_year(line)
         if a < 0:
-            negative.append((members[0], reversal(line), -a, fy, len(members)))
+            negative.append(((first(line), members[0]), reversal(line), -a, fy, len(members)))
             continue
         keep[members[0]] = copies_to_keep(len(members), a, reversal(line), fy, reversals)
         dropped[(reversal(line), a, fy)] += len(members) - keep[members[0]]
     kept_negative, touched = negative_copies_to_keep(negative, dropped, lambda *node: node in present)
-    keep.update(kept_negative)
+    keep.update({i: n for (_, i), n in kept_negative.items()})
     drop, stats = set(), new_stats()
     stats["fix_families"] = touched
     for key, members in groups.items():

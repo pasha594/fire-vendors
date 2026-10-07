@@ -174,7 +174,7 @@ def normalize():
         r, copies = extra[h]
         fy, amount = int(r[ix["fiscal_year_begin"]]) + 1, decimal.Decimal(r[ix["monetary_amount"]] or "0")
         if amount < 0:
-            negative.append((h, tuple(r[i] for i in rev_ix), -amount, fy, copies + 1))
+            negative.append(((tuple(r), h), tuple(r[i] for i in rev_ix), -amount, fy, copies + 1))
             continue
         keep[h] = ca_common.copies_to_keep(copies + 1, amount, tuple(r[i] for i in rev_ix), fy, reversals)
         dropped[(tuple(r[i] for i in rev_ix), amount, fy)] += copies + 1 - keep[h]
@@ -184,7 +184,7 @@ def normalize():
                 else (reversal, amount, fy) in reversals)
 
     kept_negative, touched = ca_common.negative_copies_to_keep(negative, dropped, present)
-    keep.update(kept_negative)
+    keep.update({h: n for (_, h), n in kept_negative.items()})
     identical = ca_common.new_stats()
     identical["fix_families"] = touched
     for h in sorted(extra):

@@ -43,8 +43,9 @@ payments. Identical lines are kept once; void-safe, a group of n identical posit
 min(n, reversals + 1), where reversals counts the distinct negative lines of the same department, fund, account
 and vendor with the amount negated in the same or the next fiscal year (REVERSAL; a credit does not repeat the
 document or check number of the payment it reverses). Identical voids (owner decision A of 2026-10-07): in a
-family with a payment (same REVERSAL fields, amount up to sign, same or next fiscal year), identical negative copies
-are dropped only together with identical positive copies of the family. (trans_id, trans_line_no) is unique in the
+family with a payment (same REVERSAL fields, amount up to sign, credits joined to the payments of their fiscal year
+and the year before), identical negative copies are dropped only together with identical positive copies of the
+family. (trans_id, trans_line_no) is unique in the
 2026-10-06 pull, so no line is dropped. Credits (mostly purchasing-card credits from U.S. Bank and Fifth Third)
 are negative lines and kept, so they net out.
 
@@ -242,23 +243,26 @@ def identical(raw):
             keep[k] = min(len(g), n_rev + 1)
             stats["void_kept"] += keep[k] - 1
             stats["void_kept_dollars"] += (keep[k] - 1) * amount
-    # identical voids (owner decision A of 2026-10-07): in a family (same REVERSAL fields, amount up to sign, fiscal
-    # years chained by same or next year) that has a payment, identical negative copies are dropped only as often as
-    # the family's identical positive copies (negative groups in the order of their raw columns), so the family keeps
-    # its raw net; a family without payments keeps each identical negative line once
+    # identical voids (owner decision A of 2026-10-07): a family is the groups with the same REVERSAL fields and
+    # amount up to sign, a fiscal year's negative groups joined to the positive groups of that year and the year
+    # before (as the void rule links a credit to a payment; negative groups of year y at place 2y, positive ones at
+    # 2y + 1, a family is a run of consecutive places); in a family that has a payment, identical negative copies
+    # are dropped only as often as the family's identical positive copies (negative groups in the order of their
+    # raw columns), so the family keeps its raw net; a family without payments keeps each identical negative once
     by_key = collections.defaultdict(lambda: collections.defaultdict(list))
     for k, g in groups.items():
-        if decimal.Decimal(g[0]["amount"]) != 0:
-            by_key[(tuple(g[0][c] for c in REVERSAL), abs(decimal.Decimal(g[0]["amount"])))][
-                int(g[0]["fiscal_year"])].append(k)
+        amount = decimal.Decimal(g[0]["amount"])
+        if amount != 0:
+            place = 2 * int(g[0]["fiscal_year"]) + (amount > 0)
+            by_key[(tuple(g[0][c] for c in REVERSAL), abs(amount))][place].append(k)
     families = []
     for key in sorted(by_key):
         prev = None
-        for y in sorted(by_key[key]):
-            if prev is None or y > prev + 1:
+        for place in sorted(by_key[key]):
+            if prev is None or place > prev + 1:
                 families.append([])
-            families[-1] += by_key[key][y]
-            prev = y
+            families[-1] += by_key[key][place]
+            prev = place
     for fam in families:
         if not any(decimal.Decimal(groups[k][0]["amount"]) > 0 for k in fam):
             continue
