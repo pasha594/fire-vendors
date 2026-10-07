@@ -45,8 +45,8 @@ and vendor with the amount negated in the same or the next fiscal year (REVERSAL
 document or check number of the payment it reverses). Identical voids (owner decision A of 2026-10-07): in a
 family with a payment (same REVERSAL fields, amount up to sign, same or next fiscal year), identical negative copies
 are dropped only together with identical positive copies of the family. (trans_id, trans_line_no) is unique in the
-2026-10-06 pull, so no line is dropped. Credits (mostly purchasing-card credits from U.S. Bank and Fifth Third) are negative lines
-and kept, so they net out.
+2026-10-06 pull, so no line is dropped. Credits (mostly purchasing-card credits from U.S. Bank and Fifth Third)
+are negative lines and kept, so they net out.
 
 Payees: published as the source has them (owner decision, 2026-10-06), through common.withhold_person, which
 only cuts payee text with an email address or bank account text.

@@ -82,7 +82,8 @@ its void and its identical reissue keep their net. Negative amounts (voids, refu
 net out. Identical voids (owner decision A of 2026-10-07): in a payment and reversal family (same REVERSAL fields,
 amount up to sign, years chained by same or next year) that has a payment, identical negative copies are dropped
 only as often as the family's identical positive copies, so the family keeps its raw net; identical negative lines
-of a family without payments are kept once. Every fetched slice is checked against the dashboard's own summary totals for the same filters, per year.
+of a family without payments are kept once. Every fetched slice is checked against the dashboard's own summary
+totals for the same filters, per year.
 """
 import argparse
 import collections
