@@ -9,7 +9,7 @@ and 5), checked on 2026-10-06 from the cloud session on branch `multistate-sourc
 Two Ohio sources give vendor data for fire agencies:
 
 - **Ohio Checkbook's local-government pages** (`oh_checkbook_local`, section 2): 186 participating fire agencies
-  (1 fire district, 97 township and 88 city or village fire departments), 696,305 payment lines, $1.91 billion,
+  (1 fire district, 97 township and 88 city or village fire departments), 702,661 payment lines, $1.93 billion,
   calendar years 2021 to September 2026. The first run of this note skipped it because checkbook.ohio.gov's
   robots.txt disallows all paths; the owner allowed ignoring that robots.txt on 2026-10-06. For townships the
   lines of a fund or department named for fire and, since the owner's decision of 2026-10-07, every line of
@@ -28,19 +28,19 @@ tier 3 source for Ohio yet.
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `usfa`, `openfema` | Federal layer (done before this run) | 4 | built | 1,148 | | | |
 | `oh_checkbook_state` | Ohio Checkbook state expenditures, DataOhio bulk files | 1 | skipped: no fire agency identifiable | 0 | | | FY2022-FY2026 |
-| `oh_checkbook_local` | Ohio Checkbook local governments | 1 | **built** | 186 | 696,305 | $1,914,105,997.92 | 2021-2026 |
+| `oh_checkbook_local` | Ohio Checkbook local governments | 1 | **built** | 186 | 702,661 | $1,925,866,499.97 | 2021-2026 |
 | (in `oh_checkbook_state`) | Ohio Division of Forestry (ODNR) | 1 | kept as state fire agency, no vendor data | 1 | | | |
 | `oh_aos` | Auditor of State, Summarized Annual Financial Reports | 3 | skipped: not fire-specific | 0 | | | 2016-2025 |
-| `oh_cincinnati` | City of Cincinnati Vendor Payments | 1 | **built** | 1 | 22,868 | $38,916,623.96 | FY2021-FY2027 |
+| `oh_cincinnati` | City of Cincinnati Vendor Payments | 1 | **built** | 1 | 33,762 | $40,036,497.68 | FY2021-FY2027 |
 
 Coverage after this run (`data/states/oh/agencies.json`, 1,153 agencies: the 1,148 registry departments and 5
 in `config/states/oh/agencies_added.csv`): tier 1: 187 agencies (186 from the local checkbooks, 4 of them added
 because the registry lacks them, and the Cincinnati Fire Department, OH-31015); tier 2: 0; tier 3: 0; tier 4:
 966. No agency was given a $0 amount.
 
-Cincinnati's $38.9 million is the fire department codes only. The City buys fire apparatus and ambulances through
+Cincinnati's $40.0 million is the fire department codes only. The City buys fire apparatus and ambulances through
 its citywide vehicle account (981 "Motorized & Construction Equip"): $18.7 million in FY2021-FY2027 to Vogelpohl
-Fire Equipment and Halcore Group, equal to 48% of the fire codes' total. Those lines carry no fire department code,
+Fire Equipment and Halcore Group, equal to 47% of the fire codes' total. Those lines carry no fire department code,
 so they are not attributed (section 5). The page note in `sources.csv` says so.
 
 ## Federal layer (done)
@@ -279,40 +279,57 @@ checkbook.ohio.gov's robots.txt on 2026-10-06, and the source was then built as
 
   | Year | Lines | Dollars | Agencies |
   | --- | --- | --- | --- |
-  | 2021 | 168,069 | $375,195,436.89 | 170 |
-  | 2022 | 148,612 | $391,382,193.67 | 170 |
-  | 2023 | 135,048 | $389,876,337.52 | 150 |
-  | 2024 | 129,690 | $373,414,808.14 | 136 |
-  | 2025 | 95,406 | $292,966,126.65 | 117 |
-  | 2026 (partial) | 19,480 | $91,271,095.05 | 52 |
-  | Total | 696,305 | $1,914,105,997.92 | 186 |
+  | 2021 | 169,928 | $379,135,058.13 | 170 |
+  | 2022 | 149,921 | $393,248,922.25 | 170 |
+  | 2023 | 136,171 | $392,185,460.78 | 150 |
+  | 2024 | 130,900 | $375,237,126.57 | 136 |
+  | 2025 | 96,197 | $294,425,219.73 | 117 |
+  | 2026 (partial) | 19,544 | $91,634,712.51 | 52 |
+  | Total | 702,661 | $1,925,866,499.97 | 186 |
 
-  By kind: townships 430,428 lines ($1,094,166,365.34, 97 agencies); cities and villages 260,711 lines
-  ($815,087,032.18, 88 agencies); fire district (Valley Fire) 5,166 lines ($4,852,600.40). The dollars include
+  By kind: townships 435,395 lines ($1,103,986,868.78, 97 agencies); cities and villages 262,023 lines
+  ($816,916,323.19, 88 agencies); fire district (Valley Fire) 5,243 lines ($4,963,308.00). The dollars include
   payroll, pensions and benefits paid through the checkbook; purchasing (by the vendor map categories) is about
   $395 million of the Ohio total.
 - **Duplicates and broken uploads:** rows are keyed by the checkbook's row `Id`; a row fetched by two
   overlapping requests is kept once (an Id fetched twice with different values stops normalize). Then, in this
-  order: months uploaded twice, reloads, broken uploads (each below), and last the owner's rule of 2026-10-07:
-  lines identical in every published field except the source's own ids (`TransactionId` and row `Id`; the
-  payment `Type` code is not published) are one line, so the lowest row Id is kept and the others dropped. The
-  published fields are the date (the fiscal year follows from it), the payee as published, the account (fund,
-  department and object labels), the published category (object description) and the amount; there is no
-  description. Negative lines are compared like any other line, so a reversal is never identical to the payment
-  it reverses. The rule drops 24,073 lines ($18,266,767.61 net) in 16,360 groups at 184 of the 186 agencies,
-  among them the 10 days that were doubled inside one upload (123 extra lines, $264,476.25 net, mostly Hamilton
-  Township (Warren) on 2021-01-18, 2021-01-20 and 2021-02-01: Paycor payroll and supplier lines twice each),
-  which the earlier rule had kept; largest by dollars: Walnut Township (Fairfield) 45 lines ($1,585,604.48),
-  Beavercreek Township (Greene) 3,019 ($1,291,168.40), Jackson Township (Franklin) 372 ($1,173,194.87), Violet
-  Township (Fairfield) 388 ($1,064,773.02), City of Niles 1,302 ($731,157.99). Most dropped lines are payroll and
-  benefit lines (salaries, Medicare, hospitalization, fire pension) that a participant uploads as several equal
-  lines a day. 7,566 of the dropped lines ($10,622,312.31 net) are copies of a line whose exact negative is also
-  published: a payment voided and issued again (payment, void, reissue) now nets to zero, because the reissue
-  is identical to the first payment and dropped while the void stays. The largest: Walnut Township (Fairfield)
-  published three payments and two voids of $1,551,069.41 of bond principal to Vinton County National Bank on
-  2021-11-24 (net $1,551,069.41); one payment and one void remain (net $0). Where voids and payments pair off
-  evenly the net does not change (Hamilton Township (Franklin): two $281,250 payments to Global Emergency
-  Vehicles and two voids on 2025-08-26, net $0 before and after). Open question below.
+  order: months uploaded twice, reloads, broken uploads (each below), and last the owner's rule of 2026-10-07 as
+  corrected the same day ("drop identical lines, drop identical days", applied to every column the source
+  publishes, not only the contract columns):
+  - *Identical:* two lines are identical when every column of the raw rows is equal except the columns that only
+    identify the row or the load. Ignored here: `Id` (the checkbook's row id) and `TransactionId` (the number the
+    checkbook gives each line in upload order; uploads are told apart by its jumps, see reloads). The source has
+    no load timestamp and publishes no invoice, check, voucher or PO number, so the content compared is the
+    payment `Type` code (`AW`, `EP`, `EW`, `CH`, `NEG REAL`, ...; empty on 73% of lines), the date, the payee as
+    published, the fund, department and object codes and names, the amount and the participant; the dashboard's
+    calculated columns (labels such as "Fire District - 2111", the year) are built from these and were checked
+    to never separate two lines that are equal in them. Identical lines are kept once, the lowest row `Id`.
+  - *Void-safe:* a group of n identical positive lines keeps min(n, reversals + 1) of them (the lowest row Ids),
+    where reversals counts the negative lines of the same participant, payee, fund, department and object with
+    the amount negated, dated in the group's calendar year or the next, lines identical among themselves
+    counting once. Identical negative lines are kept once.
+  - *Numbers:* before the rule 720,378 lines ($1,932,372,765.53). It drops 17,717 lines ($6,506,265.56 net) in
+    10,823 groups at 168 of the 186 agencies; 3,743 of the dropped lines are negative (-$4,461,382.42). The void
+    rule keeps 6,267 identical copies ($11,634,680.14) in 6,084 groups that the plain rule would have dropped.
+    After: 702,661 lines, $1,925,866,499.97. The payment `Type` code keeps 89 lines apart that the first
+    reading of the rule (contract columns only) had dropped. The first reading dropped 24,073 lines
+    ($18,266,767.61); the corrected rule restores 6,356 lines ($11,760,502.05 net).
+  - *Examples:* Walnut Township (Fairfield) published three payments and two voids of $1,551,069.41 of bond
+    principal to Vinton County National Bank on 2021-11-24 (one reissue): two payments and one void are kept,
+    net $1,551,069.41 as published (the first reading left net $0). Days doubled inside one upload (Hamilton
+    Township (Warren), 2021-01-05, -18 and -20 and 2021-02-01: Paycor payroll and supplier lines twice each, 107
+    extra lines) are still dropped. Largest drops by dollars: City of Niles 1,233 lines ($728,042.24), Beavercreek Township
+    (Greene) 2,585 ($667,015.91), Violet Township (Fairfield) 187 ($587,061.09), Hamilton Township (Warren) 135
+    ($529,578.92), City of Grandview Heights 976 ($471,930.54); most dropped lines are payroll and benefit lines
+    (salaries, Medicare, hospitalization, fire pension) that a participant uploads as several equal lines a day.
+  - *Where the rule raises a net:* identical negative lines are kept once and count once as reversals, so where two
+    payments (identical or not) were reversed by two identical voids, one void goes while both payments stay: 607
+    payment and reversal families (same participant, payee, account and amount, both signs present) net $874,766.22
+    more than as published. Largest: Hamilton Township (Franklin), two $281,250 payments to Global Emergency
+    Vehicles and two voids on 2025-08-26 (net $0 as published, now $281,250, beside the payment of 2025-08-17);
+    Scioto Township (Pickaway), two $44,974.46 payroll lines and two voids on 2022-03-08 ($44,974.46); City of
+    Amherst, two $599 payments to Almur Construction on 2021-05-19, both voided on 2021-06-09 and reissued once on
+    2021-06-16 (net $599 as published, now $1,198). Open question below.
   Months uploaded twice: a month of 10 or more lines in which every group of identical lines (date, payee, fund,
   department, object and amount) has a size divisible by k >= 2 keeps size/k lines of each group: Beavercreek
   Township (Greene), March 2023 (113 lines, $1,044,570.30 dropped) and City of East Liverpool, September 2022
@@ -321,15 +338,15 @@ checkbook.ohio.gov's robots.txt on 2026-10-06, and the source was then built as
   upload's lines of one date (3 or more, none negative) only repeat lines of that date from earlier uploads,
   they are a reload and dropped. Perkins Township (Erie) uploaded 2025-12-18 and 2026-01-09 again about 1.1
   million TransactionIds later (82 lines, $86,589.34, payee "N/A"). These two rules run before the identical-line
-  rule (they compare codes, not labels) and their counts are reported separately. Broken
+  rule (both copies are identical under it anyway) and their counts are reported separately. Broken
   uploads: three participants' recent months carry batch totals instead of line amounts (most lines of a day show
   the same $0.5-5.6 million for different payees and objects): Jackson Township (Stark), 2026-01, -02, -03, -05,
   -06, -09, -10; City of Dover, 2025-12 and 2026-01, -02, -03, -08, -09; City of Bellevue, 2026-01 to -06. Those
   19 months (1,733 lines, $6.56 billion of batch totals) are left out, so these three agencies have no data for
   them. The rule needs two or more payees and two or more objects to share the date and amount, so equal
   stipends paid to several firefighters (York Township (Athens), November 2022: seven $500 reimbursements) stay.
-- **Reversals:** 26,175 negative lines (-$54,085,701.27) are kept as published so they net out; 19,440 of them
-  (-$43,921,940.52) equal a positive line of the same agency, payee and amount (voids and re-issues, payroll
+- **Reversals:** 26,181 negative lines (-$54,091,379.94) are kept as published so they net out; 19,446 of them
+  (-$43,927,619.19) equal a positive line of the same agency, payee and amount (voids and re-issues, payroll
   reclassifications, note rollovers). Every fetched slice was checked against the dashboard's own summary
   totals for the same filters, per year (normalize stops on a difference over one cent).
 - **Data quality:** the payee "N/A" carries $292.1 million at 45 agencies (mostly payroll, pension and benefit
@@ -458,7 +475,7 @@ city payments dataset; Cleveland's and Columbus's open data hubs have no payment
   accounts carry those codes, so they are not attributed even when the vendor is a fire vendor. The largest is
   the citywide vehicle capital account 981 "Motorized & Construction Equip": FY2021-FY2027 it paid Vogelpohl Fire
   Equipment $16,843,685.58 (22 lines, fire apparatus) and Halcore Group $1,901,457.11 (8 lines, Horton and
-  Leader ambulances), $18.7 million, 48% of the fire codes' $38.9 million. Fleet Services (256) paid Fire Service,
+  Leader ambulances), $18.7 million, 47% of the fire codes' $40.0 million. Fleet Services (256) paid Fire Service,
   Inc. $468,531, Vogelpohl $304,157 and All American Fire Equipment $82,708 (apparatus repairs). Source:
   `vehicle_accounts.json.gz` (server-side totals by vendor for codes 981 and 256, FY2021 on; context only, added
   in the review). The `sources.csv` note states the gap with the 981 amount, so the page does not suggest that
@@ -467,30 +484,34 @@ city payments dataset; Cleveland's and Columbus's open data hubs have no payment
 
   | FY | Lines | Dollars |
   | --- | --- | --- |
-  | 2021 | 2,944 | $4,438,555.15 |
-  | 2022 | 3,000 | $5,777,780.12 |
-  | 2023 | 3,708 | $6,610,663.88 |
-  | 2024 | 4,046 | $6,175,817.52 |
-  | 2025 | 4,158 | $6,615,727.47 |
-  | 2026 | 3,794 | $7,332,619.01 |
-  | 2027 (partial) | 1,218 | $1,965,460.81 |
-  | Total | 22,868 | $38,916,623.96 |
+  | 2021 | 4,116 | $4,512,893.35 |
+  | 2022 | 3,583 | $5,869,147.83 |
+  | 2023 | 5,013 | $6,809,877.85 |
+  | 2024 | 6,286 | $6,409,850.08 |
+  | 2025 | 6,580 | $6,825,353.79 |
+  | 2026 | 6,121 | $7,546,646.42 |
+  | 2027 (partial) | 2,063 | $2,062,728.36 |
+  | Total | 33,762 | $40,036,497.68 |
 
-  Before the owner's rule of 2026-10-07 on identical lines: 33,762 lines, $40,036,497.68 (FY2021-FY2027).
-
-- **Duplicates:** (trans_id, trans_line_no) is unique; no exact duplicate lines (the adapter would keep one copy
-  of one). Owner rule of 2026-10-07: lines identical in every published field (fiscal year, record date, vendor,
-  account, category and amount) except the source's ids are one line; the check number is not published, so it
-  is not compared. 2,593 groups (13,487 lines) are identical in that sense, 2,578 of them on one check (separate
-  invoice lines of one transaction, for example 24 identical Galls jackets on one EFT, or one pest-control
-  charge per station) and 15 on different checks; one line of each is kept and 10,894 lines are dropped
-  ($1,119,873.72 net, 16 of them negative). The raw page total equals the server-side control totals per fiscal
+- **Duplicates:** owner rule of 2026-10-07 as corrected the same day: two lines are identical when all 14
+  columns of the raw file are equal. No column of this file only identifies the row or the load: the fetch does
+  not select Socrata's `:id` and the dataset has no load timestamp, while `trans_id` (the financial system's
+  document, for example `AD134CHK2021000153` or `EFT134EFT2022015999`), `trans_line_no` (its line) and `check_no`
+  (check or EFT number) are content, so separate invoice lines on one check or EFT stay separate payments.
+  Void-safe: n identical positive lines would keep min(n, reversals + 1), a reversal being a negative line of
+  the same department, fund, account category and vendor with the amount negated in the same or the next fiscal
+  year (a P-card credit does not repeat the document or check number of the charge it reverses). (trans_id,
+  trans_line_no) is unique and no two raw lines are identical, so no line is dropped and the void rule keeps
+  nothing: 33,762 lines, $40,036,497.68. The first reading of the rule (published contract columns only, which
+  leave out the document, line and check numbers) dropped 10,894 of them ($1,119,873.72 net), mostly separate
+  invoice lines of one transaction (for example 24 identical Galls jackets on one EFT, or one pest-control charge
+  per station); they are back. The raw page total equals the server-side control totals per fiscal
   year and department (checked by `tests/multistate/check_oh.py`), and a second live query in the review,
   filtered by department name ("Fire%") instead of code, gave the same lines and dollars for every fiscal year.
-- **Reversals:** 87 negative lines (-$15,926.44), all purchasing-card credits from U.S. Bank (83) and Fifth Third
-  (4); 36 of them equal a positive line of the same bank. Kept as negative amounts so they net out.
-- **Payees:** 270 vendor names. Purchasing-card statements are paid to the bank (U.S. Bank $1.72 million,
-  Fifth Third $0.28 million), so the merchants behind them are not visible. "MISCELLANEOUS" ($393,660, account
+- **Reversals:** 103 negative lines (-$16,923.69), all purchasing-card credits from U.S. Bank (99) and Fifth Third
+  (4); 43 of them equal a positive line of the same bank. Kept as negative amounts so they net out.
+- **Payees:** 270 vendor names. Purchasing-card statements are paid to the bank (U.S. Bank $1.78 million,
+  Fifth Third $0.29 million), so the merchants behind them are not visible. "MISCELLANEOUS" ($393,660, account
   "Medical Services", 51 lines) names no vendor: 21 lines of $1,000 or more ($385,586, mostly $351,253 on two
   checks in July 2020, partly from the Fire Grants fund) and 30 small checks of $32.50 to $767 ($8,074), which
   look like EMS billing refunds to patients. The text "MISCELLANEOUS" names nobody, so it is published as the
@@ -533,7 +554,8 @@ Tyler Anderson) are mapped to `individuals` for the same reason; and Ohio payees
 `tests/multistate/check_oh.py` counts it (by payee, net spend above zero, a payee in no row counted as
 purchasing; payees classified the way `pipeline/build.py` does, `config/vendor_map.csv` first and then the vendor
 and keyword rules): a real category for 93.7% of $395,598,494 purchasing dollars (90.2% by map rows, 3.4% by
-rules); before the merge, 92.0% of $395,198,185 with the two files.
+rules); before the merge, 92.0% of $395,198,185 with the two files. After the corrected identical-line rule
+(2026-10-07, the lines it restores): 93.7% of $399,549,631 (map 90.2%, rules 3.5%), map unchanged.
 
 History of the proposals (how the rows were made, kept for the record): 2,522 purchasing payees ($302.0
 million) were in the file; the largest purchasing payee in neither file was Cabol, Inc ($149,207); payees in
@@ -588,16 +610,19 @@ only) it recomputes lines and dollars per agency, source and fiscal year and com
 
 - Cincinnati: the raw pages against the source's own server-side control totals per fiscal year and department;
   every linked department code is named as a fire department in the source (not police, insurance, pension or
-  the shared 911 center) and every fire-named department is linked or a known exclusion; identical lines (every
-  published field equal, check number not compared) kept once, the lowest trans_id and line.
+  the shared 911 center) and every fire-named department is linked or a known exclusion; identical lines (all
+  14 raw columns equal, trans_id, line and check numbers included) kept once, with the void rule below.
 - Ohio Checkbook local: every linked participant's raw Tableau responses (underlying rows) against the summary
   totals the dashboard gave for the same filters, per year; each row inside its request's filters and of the
   linked participant only; the fire-line rule written out independently (fire districts whole; townships,
   cities and villages by fire-named fund or department, minus the excluded names and the escrow funds; fire
   funds only where the fire department carries police fund lines); calendar years 2021 on; one line per row Id;
   re-uploads once; months uploaded k times once; reloads (a date's lines repeated in a later upload) once;
-  broken-upload months left out; then identical lines (date, payee as published, fund, department and object
-  labels, object description, amount) kept once, the lowest row Id (owner rule of 2026-10-07); townships:
+  broken-upload months left out; then identical lines (every raw column equal except the row `Id` and
+  `TransactionId`) kept once, the lowest row Id, and n identical positive lines min(n, distinct reversals + 1),
+  the lowest row Ids (owner rule of 2026-10-07 as corrected; written out in the check's own `copies_kept`, a
+  reversal being a negative line of the same participant or department, payee and account with the amount
+  negated in the same or next fiscal year); townships:
   program 220 lines counted and police-named lines never, from the entity files and the `program220_<id>`
   files (each such file's rows checked against its summary totals; its program 220 slice must be every fund
   not named for fire and every program 220 value not named for fire; every police-named fund and department
@@ -608,7 +633,8 @@ only) it recomputes lines and dollars per agency, source and fiscal year and com
   district or a township, city or village, is not an EMS-only district, is linked once, has at least 25 fire
   lines a year and not only a pension fund).
 - Every published line traced to its raw line: agency, fiscal year, date, payee, account, category and amount.
-  No two published lines (either source) are identical in every field but `source_record_id`.
+  Each set of raw lines identical under the rule is published exactly as often as the rule keeps it (the kept
+  copies are the ones with the lowest row Ids, checked by record id).
   Payees must equal the source's text (spaces collapsed) unless it matches `config/payee_name_redactions.csv`
   (owner decision 2026-10-06).
 - The contract's column names and order for every Ohio file; agency ids, links, `coverage_counts` and tiers (an
@@ -621,35 +647,41 @@ only) it recomputes lines and dollars per agency, source and fiscal year and com
 - Added in review: an added agency (`agencies_added.csv`) may not share its place name with a registry
   department of the same county unless the pair is listed as reviewed; Forestry keeps kind "State fire agency".
 
-Result after the owner's rules of 2026-10-07 (identical lines, program 220): `OH: ok (719173 transaction lines,
-$1,953,022,621.88, 187 agencies at tier 1 (oh_checkbook_local: 696305, oh_cincinnati: 22868); config/vendor_map.csv
-and the rules give a real category to 93.7% of $395,598,494 purchasing dollars (map 90.2%, rules 3.4%))` (after the
-vendor merge; before it the two files covered 92.0% of $395,198,185; before the owner's rules: 707,567 lines,
-$1,840,788,454.03, 184 agencies). Fault tests for the local source, on scratch copies of the repository files (never the
-working tree), one fault each: a published amount changed by one cent, a payee changed, a link moved to an
-agency in another county, the local sample deleted, a vendor map spend changed, an extra published line with no
-raw line; the check failed on every one. The first review (Cincinnati) had done the same with ten other faults. The second review added three more, each
-failing as it should: the Proctorville duplicate put back into `agencies_added.csv`, the Perkins reload put back
-(normalize run on a scratch copy with the reload rule switched off), and a canonical name changed away from
-`config/vendor_map.csv`. The 2026-10-07 update added five, each failing as it should: normalize with the
-identical-line rule switched off (local, and Cincinnati), normalize counting a township's police-named lines,
-a `program220_<id>.json.gz` file removed, and the "mixed Public Safety lines" sentence removed from the link
-note of a township that runs police.
+Result after the owner's corrected identical-line rule of 2026-10-07: `OH: ok (736423 transaction lines,
+$1,965,902,997.65, 187 agencies at tier 1 (oh_checkbook_local: 702661, oh_cincinnati: 33762); config/vendor_map.csv
+and the rules give a real category to 93.7% of $399,549,631 purchasing dollars (map 90.2%, rules 3.5%))`, with
+`identical lines dropped: oh_cincinnati 0, oh_checkbook_local 17717 (168 participants); identical copies kept by
+the void rule: oh_checkbook_local 6267 ($11,634,680.14), oh_cincinnati 0 ($0.00)`. (Under the first reading of the
+rule: 719,173 lines, $1,953,022,621.88; before the owner's rules: 707,567 lines, $1,840,788,454.03, 184 agencies.)
+Fault tests for the local source, on scratch copies of the repository files (never the working tree), one fault
+each: a published amount changed by one cent, a payee changed, a link moved to an agency in another county, the
+local sample deleted, a vendor map spend changed, an extra published line with no raw line; the check failed on
+every one. The first review (Cincinnati) had done the same with ten other faults. The second review added three
+more, each failing as it should: the Proctorville duplicate put back into `agencies_added.csv`, the Perkins reload
+put back (normalize run on a scratch copy with the reload rule switched off), and a canonical name changed away
+from `config/vendor_map.csv`. The 2026-10-07 update added five, each failing as it should: normalize with the
+identical-line rule switched off (local, and Cincinnati), normalize counting a township's police-named lines, a
+`program220_<id>.json.gz` file removed, and the "mixed Public Safety lines" sentence removed from the link note of
+a township that runs police. The corrected rule added three: a copy the void rule keeps removed (Walnut Township
+(Fairfield), 2021-11-24), an identical copy the rule drops put back (same group), and a kept void swapped for its
+identical higher-Id copy (Hamilton Township (Franklin), 2025-08-26); the check failed on each.
 `python3 tests/multistate/check_federal.py OH` passes (`OH: ok (1148 registry agencies, 302 with grants,
 $110,580,051)`).
 
 ## Open questions
 
 - Decided 2026-10-07 (owner): identical lines and doubled days are dropped (section 2 and 5), and a linked
-  township's program 220 lines count, never its police-named lines (section 2). Questions those rules leave:
-- Identical lines: a payment voided and issued again (payment, void, reissue) now nets to zero, because the
-  reissue is identical to the first payment and dropped while the void is kept: 7,566 dropped local lines
-  ($10,622,312.31 net) are copies of a line whose exact negative is published (largest: Walnut Township
-  (Fairfield), $1,551,069.41 of bond principal on 2021-11-24, now net $0). Count a copy as identical only when no
-  void stands between the copies?
-- Identical lines, Cincinnati: 10,894 dropped lines ($1,119,873.72) are mostly separate invoice lines of one
-  transaction on one check (24 identical Galls jackets on one EFT); the check number is not published, so lines
-  on different checks are compared the same way. Keep the rule as is, or publish the check number?
+  township's program 220 lines count, never its police-named lines (section 2). The identical-line rule was
+  corrected the same day: lines are identical only when every raw column but the row and load ids is equal
+  (Ohio Checkbook: `Id`, `TransactionId`; Cincinnati: none), and identical positive copies keep one more than
+  the line's distinct reversals. Questions those rules leave:
+- Identical voids: identical negative lines are kept once and count once as reversals, so where two payments
+  (identical or not) were reversed by two identical voids, both payments stay and one void goes: 607 local families
+  of payment and reversal lines (same participant, payee, account and amount) now net $874,766.22 more than as
+  published (largest: Hamilton Township (Franklin), $281,250 to Global Emergency Vehicles on 2025-08-26, net $0 as
+  published, now $281,250; Scioto Township (Pickaway) $44,974.46; Liverpool Township (Columbiana) $40,200; City of
+  Trenton $33,425 and $31,850). Keep identical negative lines as often as the identical payments they reverse are
+  kept? 3,743 identical negative lines (-$4,461,382.42) are dropped in all.
 - Program 220: police is found by name only. Genoa Township (Delaware) and Orange Township (Delaware) run police
   departments whose funds are not named for police, so they count as not running police; their program 220
   lines are fire protection by the chart of accounts either way. Seven townships with "Public Safety - 220" and
