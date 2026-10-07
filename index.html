@@ -2099,17 +2099,18 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const t = mainTable(m);
     TABLES[t.id] = t;
     let h = '';
+    if (m.nodata) t.filter = null;                             // an agency without vendor data: nothing to search, show by year or download
     if (t.filter) {
       h += '<div class="tsearch" role="search"><label for="tq">' + esc(SEARCH[S.g]) + '</label>' +
         '<input type="search" id="tq" autocomplete="off" spellcheck="false" placeholder="' + esc(t.searchHint) + '" value="' + esc(S.q) + '"></div>';
     }
-    if (S.g === 'category' || S.g === 'vendor' || S.g === 'agency') {
+    if (!m.nodata && (S.g === 'category' || S.g === 'vendor' || S.g === 'agency')) {
       h += '<div class="chk"><input type="checkbox" id="tyears"' + (S.years ? ' checked' : '') + '><label for="tyears">Show amounts by year</label></div>';
     }
-    h += '<span class="tcount" id="tcount">' + countText(t) + '</span><span class="vh" id="tstatus" aria-live="polite"></span>';
+    h += '<span class="tcount" id="tcount">' + (m.nodata ? '' : countText(t)) + '</span><span class="vh" id="tstatus" aria-live="polite"></span>';
     // Shown by renderMore when the single payments section is below the table
     h += '<button type="button" class="btn" id="tpay" hidden>Largest single payments</button>';
-    h += '<button type="button" class="btn" id="tcsv" data-csv="' + t.id + '">Download CSV</button>';
+    if (!m.nodata) h += '<button type="button" class="btn" id="tcsv" data-csv="' + t.id + '">Download CSV</button>';
     $('tbar').innerHTML = h;
     h = t.hint ? '<p class="hint">' + esc(t.hint) + '</p>' : '';
     h += '<div id="tb-' + t.id + '" class="tmain">' + tableBody(t) + '</div>' + t.notes;
@@ -2366,7 +2367,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
           foot: [Object.assign({ _label: 'Total', total: money(tots.reduce((x, t) => x + t[3], 0)) },
             Object.fromEntries(tys.map(y => ['y' + y, money(yt[y])])))],
         });
-        b += '<p class="note">Totals as published, one row per line of the source\'s report; the agency\'s annual expenses (the Annual expenses filter) are the median of the yearly totals of the last three fully reported fiscal years. No vendors are named. Source:</p>' + srcNotes(tsrc, a.state);
+        b += '<p class="note">Totals as published, one row per line of the source\'s report; the agency\'s annual expenses (the Annual expenses filter) are the median of the yearly totals of the last three fully reported fiscal years. No vendors are named. Source: ' +
+          srcList(tsrc) + ' (notes below).</p>';
         h += details('d-tot', 'Annual totals', b, true);
       }
     }
@@ -3121,7 +3123,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       s += ', ' + esc(yearSpan(S)) + (S.cat ? ', in ' + catsText(S.cat, true) : '') + (m.onlyPurch ? '; purchasing categories only.' : '.');
       const nd = m.peers.size - pd.size;
       if (S.agency == null && nd) {
-        s += ' ' + (nd === 1 ? '1 agency in these filters has' : int(nd) + ' agencies in these filters have') + ' no vendor data and ' +
+        const inF = S.state || S.county || S.size ? ' in these filters' : '';
+        s += ' ' + (nd === 1 ? '1 agency' + inF + ' has' : int(nd) + ' agencies' + inF + ' have') + ' no vendor data and ' +
           (nd === 1 ? 'is' : 'are') + ' not counted.';
       }
       if (m.nodata) {                                           // a selected agency with totals only, or in the directory only
