@@ -11,18 +11,26 @@ to June and are written as the year they end in (FY2024 = July 2023 to June 2024
 | `usfa`, `openfema` | Federal layer (USFA registry, OpenFEMA grants) | 4 | built earlier (`federal.py`) | 853 registry departments, 195 with grants | 579 matched awards | $255.3M matched | grants FY2005-FY2024 |
 | `ca_sco_districts` | State Controller, Special Districts - Expenditures | 3 | **built** | 363 | 5,960 totals rows | $20.33B | FY2021-FY2024 |
 | `ca_sco_cities` | State Controller, City - Expenditures (Fire function) | 3 | **built** | 224 | 892 totals rows | $22.80B | FY2021-FY2024 |
-| `ca_sf` | San Francisco Vendor Payments (Vouchers) | 1 | **built** | 1 (San Francisco Fire Department) | 34,637 lines | $220.6M | FY2021-FY2027 (FY2027 partial) |
-| `ca_la` | Checkbook L.A. (Los Angeles City Controller) | 1 | **built** | 1 (Los Angeles Fire Department) | 175,405 lines | $696.8M | FY2021-FY2027 (FY2027 partial) |
-| `ca_riverside_county` | County of Riverside Check Book | 1 | **built** | 1 (Riverside County Fire Department) | 276,946 lines | $1,666.1M | FY2021-FY2027 (FY2027 partial) |
-| `ca_corona` | City of Corona Open Expenditures (CorStat) | 1 | **built** | 1 (Corona Fire Department) | 14,481 lines | $21.8M | FY2021-FY2026 |
-| `ca_moreno_valley` | City of Moreno Valley Open Expenditures | 1 | **built** | 1 (Moreno Valley Fire Service) | 2,369 lines | $140.2M | FY2021-FY2026 |
-| `ca_fiscal` | Open FI$Cal department vendor transactions (CAL FIRE) | 1 | **built** | 1 (CAL FIRE, state fire agency) | 873,016 rows (3,226,425 source lines) | $10,127.5M | FY2021-FY2026 (FY2026 to 2026-06-30) |
-| `ca_scprs` | SCPRS Purchase Order Data (CAL FIRE purchase orders) | 2 | **built** (old years only) | 1 (CAL FIRE) | 22,766 item lines | $884.4M | FY2013-FY2015 only |
+| `ca_sf` | San Francisco Vendor Payments (Vouchers) | 1 | **built** | 1 (San Francisco Fire Department) | 26,903 lines | $202.3M | FY2021-FY2027 (FY2027 partial) |
+| `ca_la` | Checkbook L.A. (Los Angeles City Controller) | 1 | **built** | 1 (Los Angeles Fire Department) | 141,106 lines | $645.8M | FY2021-FY2027 (FY2027 partial) |
+| `ca_riverside_county` | County of Riverside Check Book | 1 | **built** | 1 (Riverside County Fire Department) | 237,228 lines | $1,580.6M | FY2021-FY2027 (FY2027 partial) |
+| `ca_corona` | City of Corona Open Expenditures (CorStat) | 1 | **built** | 1 (Corona Fire Department) | 13,355 lines | $20.7M | FY2021-FY2026 |
+| `ca_moreno_valley` | City of Moreno Valley Open Expenditures | 1 | **built** | 1 (Moreno Valley Fire Service) | 2,338 lines | $140.2M | FY2021-FY2026 |
+| `ca_fiscal` | Open FI$Cal department vendor transactions (CAL FIRE) | 1 | **built** | 1 (CAL FIRE, state fire agency) | 818,704 rows (3,226,425 source lines) | $9,727.3M | FY2021-FY2026 (FY2026 to 2026-06-30) |
+| `ca_scprs` | SCPRS Purchase Order Data (CAL FIRE purchase orders) | 2 | **built** (old years only) | 1 (CAL FIRE) | 21,654 item lines | $880.3M | FY2013-FY2015 only |
 | `ca_sandiego` | City of San Diego Operating Actuals | - | skipped: no payee; sample kept | 0 | - | - | - |
 | `ca_sacramento` | City of Sacramento Checks Issued, Purchase Orders | - | skipped: no department field; samples kept | 0 | - | - | - |
 | `ca_lacounty` | County of Los Angeles Open Expenditures | - | skipped: no payee; sample kept | 0 | - | - | - |
 | `ca_modesto` | City of Modesto Weekly AP Transactions | - | skipped: weekly figures only; sample kept | 0 | - | - | - |
 | (none) | San Jose, Indio, West Hollywood, Marin County, others | - | skipped (see "Other candidates") | 0 | - | - | - |
+
+**Owner dedup rule of 2026-10-07, applied to every line source above:** lines equal in every published field but
+the source's own row, voucher, invoice, payment or PO ids are kept once. It drops 139,312 lines and $562.6M (tier 1:
+138,168 lines, $556.8M, 4.3% of tier-1 dollars; SCPRS 1,144 item lines, $5.8M). In these sources almost none of
+that is a reloaded batch or a doubled day: most dropped lines are separate items or payments of one price (several
+ambulances or engines on one invoice, quarterly contract installments, employee reimbursements), because three
+sources have no description (FI$Cal) or no payment date (SF) or no line number (Riverside County, Corona, SCPRS).
+Numbers per source and the largest cases: "Duplicates and reversals: summary" below.
 
 `data/states/ca/agencies.json` after this run: 926 agencies (853 registry rows plus 73 fire districts and fire
 authorities added from the State Controller's data), coverage tier 1: 6, tier 2: 0, tier 3: 584, tier 4: 336. CAL FIRE
@@ -153,15 +161,19 @@ and universities), 36 federal, 31 county fire departments, and others; kinds as 
 - **Years:** FY2007 on; taken FY2021-FY2027 (FY2027 partial, data loaded 2026-10-05).
 - **Fire agency:** department code FIR ("FIR Fire Department") -> San Francisco Fire Department (CA-38005). Purchases
   other City departments make for Fire are not included.
-- **Rows:** 35,749 raw lines (control agrees) -> 34,637 lines with a paid amount ($220.6M); 1,112 lines with only
-  pending or retainage amounts left out. FY2022 ($62.2M) is about twice a normal year because of one $38.8M capital
-  outlay payment to Chicago Title Company (a property purchase through escrow; $5.9M more in FY2023); FY2021 ($15.1M)
-  is about half a normal year.
+- **Rows:** 35,749 raw lines (control agrees) -> 34,637 lines with a paid amount ($220.6M) -> 26,903 lines ($202.3M)
+  after the owner's dedup rule; 1,112 lines with only pending or retainage amounts left out. FY2022 ($57.2M) is about
+  twice a normal year because of one $38.8M capital outlay payment to Chicago Title Company (a property purchase
+  through escrow; $5.9M more in FY2023); FY2021 ($13.6M) is about half a normal year.
 - **Data quality:** no documented payment date (`data_as_of` is undocumented and often outside the fiscal year), so
   `posting_date` is empty for every SF row.
-- **Duplicates and reversals:** lines identical in every column but the Socrata row id are kept once (0 in this
-  pull); the voucher number repeats across lines, so the record id is voucher plus a running number. 313 negative
-  (credit) lines kept.
+- **Duplicates and reversals:** owner rule of 2026-10-07: lines equal in fiscal year, payee, contract title, program,
+  character, object, sub-object, fund and amount paid are kept once (the voucher and PO numbers are ids). With no
+  payment date this drops 7,734 lines, **$18.2M (8.3% of SF dollars)**, all on different vouchers: fleet bought at one
+  price in one year (Ferrara engines $4.2M, Braun ambulances $2.3M, Rosenbauer hose tenders $1.4M) and equal recurring
+  payments ("Single Payment Payees" $1.8M, UCSF/SFGH Medical Group $1.2M). No line was identical in every raw column.
+  The voucher number repeats across lines, so the record id is voucher plus a running number. 300 negative (credit)
+  lines kept.
 - **Decision:** built.
 
 ## `ca_la`: Checkbook L.A. (tier 1, built)
@@ -175,12 +187,21 @@ and universities), 36 federal, 31 county fire departments, and others; kinds as 
   and line, item description, quantity and unit price (for payments against a PO).
 - **Fire agency:** department FIRE (number 38) -> Los Angeles Fire Department (CA-19105). General Services fleet and
   fuel bought for LAFD are not included.
-- **Rows:** 175,405 lines ($696.8M), FY2021-FY2027 (FY2027 partial, payments through 2026-09-09).
+- **Rows:** 175,405 lines ($696.8M) -> 141,106 lines ($645.8M) after the owner's dedup rule, FY2021-FY2027 (FY2027
+  partial, payments through 2026-09-09).
 - **Data quality:** every line has a check date inside its fiscal year; item description, quantity and unit price
-  only where the payment is against a purchase order; 722 negative lines (698 cancellations, other credits).
+  only where the payment is against a purchase order; 586 negative lines kept (722 before the dedup rule; 698
+  cancellations, other credits).
 - **Payees:** the City publishes most refunds of ambulance charges and fire service fees to "PRIVACY-FIRE" (12,802 of
-  12,808 ambulance-refund lines; $11.6M); a few refund payees are named and shown as named.
-- **Duplicates and reversals:** exact duplicates kept once (0 in this pull). Cancelled checks are their own negative
+  12,808 ambulance-refund lines, $11.6M, before the dedup rule; 11,422 lines, $9.2M after it, because refunds of one
+  amount to different people on one day are identical lines); a few refund payees are named and shown as named.
+- **Duplicates and reversals:** owner rule of 2026-10-07: lines equal in payment date, payee, description, program,
+  fund, account, expenditure type and amount are kept once (transaction id, invoice and PO numbers and their line
+  numbers are ids). This drops 34,299 lines, **$51.0M (7.3% of LA dollars)**; 25,098 of them ($47.8M) are other
+  lines of the same payment, mostly invoices that list several vehicles at one price on separate lines (Braun
+  Northwest ambulances $26.3M, for example 12 at $205,625 on one invoice of 2022-12-12; Pierce aerial ladder trucks
+  $3.6M); 9,201 ($3.2M) are on other payments. PRIVACY-FIRE refunds are $2.4M of the $51.0M. No line was identical in
+  every raw column. Cancelled checks are their own negative
   lines (payment status CANCELLED; 698 lines, 677 carrying the same transaction, invoice line and distribution line as
   the payment they cancel) and are kept, so a cancelled payment nets to zero; record id gets "-cancelled".
 - **Decision:** built.
@@ -197,16 +218,21 @@ and universities), 36 federal, 31 county fire departments, and others; kinds as 
 - **Fire agency:** department "Fire Protection" = Riverside County Fire Department (CA-33090; operated by CAL FIRE
   under the County's cooperative agreement). The registry's second row for the same operation, "Cal Fire - Riverside
   County Fire Department" (CA-33555), is not linked. The largest payee is the State (CAL FIRE) for contract staffing.
-- **Rows:** 277,875 raw lines -> 276,946 lines, $1,666.1M, FY2021-FY2027 (FY2027 partial, to 2026-08-26).
+- **Rows:** 277,875 raw lines ($1,666.8M) -> 237,228 lines, $1,580.6M, after the owner's dedup rule, FY2021-FY2027
+  (FY2027 partial, to 2026-08-26).
 - **Data quality:** ledger lines with a date inside the fiscal year; vendor names as keyed (one company can appear
-  in several spellings); $1.40B of the dollars are the County's contract payments to the State (CAL FIRE), an
+  in several spellings); $1.32B of the dollars are the County's contract payments to the State (CAL FIRE), an
   inter-agency payment rather than a purchase. One line of the department "Coachella Fire Protection Dist" exists in
   the source and is not taken (the district is tier 3 through `ca_sco_districts`).
-- **Duplicates and reversals:** no line number, and identical lines are ordinary (one line per phone on a wireless
-  bill): 25,211 lines ($9.5M, 0.6%) repeat another exactly, spread over every period with no reload burst, and in
-  2,239 of 2,524 invoices concerned only some lines repeat. Only an invoice whose every line repeats the same number
-  of times is treated as loaded twice and kept once (929 lines, $725,008 dropped); 24,282 identical lines kept as
-  separate charges. 5,642 negative lines (credits, reversals) kept.
+- **Duplicates and reversals:** owner rule of 2026-10-07: lines equal in date, payee, description, business unit,
+  fund, account, expense category and amount are kept once (invoice and payment ids are ids). The source has no line
+  number, so this drops 40,647 lines, **$86.2M (5.2% of the dollars)**: 22,609 lines ($8.7M) inside one invoice (one
+  line per phone on a wireless bill, several items at one price; 25,211 lines, $9.5M, repeat another in every raw
+  column, spread over every period with no reload burst) and 18,038 lines ($77.6M) on other invoices, of which
+  **$72.4M are two CAL FIRE contract invoices** (176557 and 176845, both paid 2026-03-16, each with lines of
+  $36,159,244.27 and $36,227,427.80): either one quarter paid twice or two quarters billed at the same amount; the
+  source does not say which. The earlier rule (drop only invoices loaded twice) dropped 929 lines ($725,008). 5,262
+  negative lines (credits, reversals) kept.
 - **Decision:** built.
 
 ## `ca_corona`: City of Corona Open Expenditures (tier 1, built)
@@ -218,12 +244,16 @@ and universities), 36 federal, 31 county fire departments, and others; kinds as 
   state and zip, payment id and date, invoice id, expense category, description, amount.
 - **Fire agency:** department 30 -> Corona Fire Department (CA-33025). Lines include pension and benefit payments
   naming the person paid (shown, owner decision).
-- **Rows:** 14,500 raw -> 14,481 lines, $21.8M, FY2021-FY2026 (payments through 2026-06-30).
+- **Rows:** 14,500 raw ($21.8M) -> 13,355 lines, $20.7M, after the owner's dedup rule, FY2021-FY2026 (payments
+  through 2026-06-30).
 - **Data quality:** payment dates inside the fiscal year; many small lines (pension, benefit, refund and
   reimbursement payments name the person paid, shown as published).
-- **Duplicates and reversals:** same rule as Riverside County (per payment and invoice): 19 lines dropped as reloaded
-  invoices, 925 identical lines kept as separate charges (copier and hotel invoices). 752 negative lines (voids,
-  credits) kept.
+- **Duplicates and reversals:** owner rule of 2026-10-07: lines equal in payment date, payee, description, department
+  activity, fund, expense category and amount are kept once (payment and invoice ids are ids). No line number, so
+  this drops 1,145 lines, **$1.14M (5.2%)**: 903 ($0.39M) inside one invoice (copier and hotel invoices) and 242
+  ($0.76M) across invoices, mostly one $690,075.97 KME custom pumper line paid on 2020-09-25 on two invoices
+  (G11148001, G11149001; probably two pumpers). The earlier rule dropped 19 lines. 688 negative lines (voids, credits)
+  kept.
 - **Decision:** built.
 
 ## `ca_moreno_valley`: City of Moreno Valley Open Expenditures (tier 1, built)
@@ -237,12 +267,16 @@ and universities), 36 federal, 31 county fire departments, and others; kinds as 
 - **Fire agency:** "Fire Operations", "Fire Prevention" and "Fire - Office of Emergency Mgmt" -> Moreno Valley Fire
   Service (CA-33054). Fire-station programs booked to Fleet & Facilities (Public Works; about $4.1M) and Technology
   Services are not included.
-- **Rows:** 2,369 lines, $140.2M, FY2021-FY2026 (payments through 2026-06-24). Most dollars are the City's contract
+- **Rows:** 2,369 lines -> 2,338 lines, $140.2M, after the owner's dedup rule, FY2021-FY2026 (payments through
+  2026-06-24). Most dollars are the City's contract
   payments to the County of Riverside for fire staffing.
 - **Data quality:** payment dates inside the fiscal year; "Fire - Office of Emergency Mgmt" is small ($0.9M, radios,
   satellite phones, supplies); Fire Operations ($132.2M) is mostly the County contract.
-- **Duplicates and reversals:** identified by payment id, invoice id, invoice line and distribution line; exact
-  duplicates kept once (0); 3 negative lines kept.
+- **Duplicates and reversals:** owner rule of 2026-10-07: lines equal in payment date, payee, description,
+  department, program, fund, expense category and amount are kept once (payment id, invoice id, invoice line and
+  distribution line are ids): 31 lines, $15,487 (15 inside one invoice, 16 across invoices; largest: N95 masks from
+  Office Depot, $3,043.94 on three invoices of 2022-03-21). No line was identical in every raw column. 3 negative
+  lines kept.
 - **Decision:** built.
 
 ## Other city and county candidates (skipped)
@@ -303,16 +337,29 @@ and universities), 36 federal, 31 county fire departments, and others; kinds as 
   resource management (forest health and urban forestry grants), not only suppression.
 - **Rows:** 60% of lines are CalCard (procurement card) lines whose payee is the card issuer, US Bank ($605.9M over
   the years). Lines are summed to one row per voucher, payee, account, fund, program and accounting date (keeps every
-  published field but the line number): 873,016 rows, $10,127.5M (FY2021 $1,562M, FY2022 $1,480M, FY2023 $1,459M,
-  FY2024 $1,295M, FY2025 $2,370M, FY2026 $1,963M to 2026-06-30). Rows summing to $0.00 are dropped (34,994).
+  published field but the line number): 873,016 rows, $10,127.5M; after the owner's dedup rule 818,704 rows,
+  $9,727.3M (FY2021 $1,491M, FY2022 $1,418M, FY2023 $1,421M, FY2024 $1,228M, FY2025 $2,277M, FY2026 $1,893M to
+  2026-06-30). Rows summing to $0.00 are dropped (34,994).
 - **Data quality:** raw and unaudited (terms of use); accounting dates inside the fiscal year; CalCard lines name the
   card issuer, not the merchant; much of the money is payments to other governments (contract counties, cities and
   fire districts reimbursed for mutual aid) and grants (forest health, urban forestry), which are not purchases.
-- **Payees:** the State publishes employee travel, per diem and training reimbursements to "CONFIDENTIAL" ($35.1M);
+- **Payees:** the State publishes employee travel, per diem and training reimbursements to "CONFIDENTIAL" ($35.1M;
+  $31.9M after the dedup rule);
   other payees, sole proprietors included, are named and shown as published.
 - **Duplicates and reversals:** lines identical in every column (same document id, line and distribution, amount and
-  date) are kept once (1,308 dropped across six years). Lines repeating a document id with another date or amount are
-  later postings (corrections, reversals) and are kept, negative where published so (5,739 negative rows).
+  date) are kept once before summing (1,308 dropped across six years). Then the owner rule of 2026-10-07 on the
+  summed rows: rows equal in accounting date, payee, program, sub-program, fund, account, account category and
+  amount are kept once (the voucher number is an id). FI$Cal has **no description field**, so this drops 54,312
+  rows, **$400.1M (4.0% of CAL FIRE dollars)**, all on different vouchers: cooperative fire protection installments
+  to contract counties paid in equal amounts on one day ($147.0M to governments: Kern $35.8M, Los Angeles $30.0M,
+  Ventura $24.7M, Santa Barbara $22.6M), equipment bought at one price (Air Methods aircraft $24.5M, Holt of
+  California seven vehicles of $617,325.88 on 2024-04-02, Downtown Ford $16.1M), Perimeter Solutions retardant
+  ($18.3M), 17,366 "CONFIDENTIAL" employee reimbursements ($3.2M) and 852 US Bank CalCard rows ($1.8M). The raw lines
+  of these vouchers are identical in every column but the document id (checked for the largest sets). Source lines
+  inside one voucher that differ only in line or distribution number (205,953 lines, $106.2M, mostly CalCard
+  statement lines) are summed into the voucher's row, not dropped. Lines repeating a document id with another date
+  or amount are later postings (corrections, reversals) and are kept, negative where published so (5,401 negative
+  rows).
 - **Decision:** built. It is the current source for CAL FIRE that the PRD asked for under SCPRS ("bulk access to
   current data").
 
@@ -332,27 +379,59 @@ and universities), 36 federal, 31 county fire departments, and others; kinds as 
   search with no bulk export; the host answers 403 to `/robots.txt`. Not scraped. Current CAL FIRE payments come from
   `ca_fiscal` instead.
 - **Fire agency:** department "Forestry and Fire Protection, Department of" -> CA-00555 (CAL FIRE).
-- **Rows:** 23,244 raw lines -> 22,766 item lines ($884.4M: FY2013 $192.3M, FY2014 $132.5M, FY2015 $559.6M), also
-  rolled into `transactions.csv.gz` (payee = supplier). 443 $0.00 lines (contract-amendment text) left out.
+- **Rows:** 23,244 raw lines -> 21,654 item lines after the owner's dedup rule ($880.3M: FY2013 $191.5M, FY2014
+  $131.7M, FY2015 $557.1M), also rolled into `transactions.csv.gz` (payee = supplier). 446 $0.00 lines
+  (contract-amendment text) left out.
   Amounts are purchase order amounts (commitments), not payments.
 - **Data quality:** some purchase dates are typos (1912, 2511) and are left empty; PO dates of long-running agreements
   can precede the fiscal year the line is registered in; no brand field.
-- **Duplicates and reversals:** no line number; a PO whose every line repeats the same number of times is kept once
-  (35 lines dropped, for example a $952,295 Nomex line listed twice as the only line of its PO); 270 identical lines
-  inside larger POs kept. 427 negative lines kept.
+- **Duplicates and reversals:** owner rule of 2026-10-07 on the item lines: lines equal in date, supplier, product
+  type, description, quantity, unit price and amount are kept once (PO and requisition numbers are ids); the
+  transaction copy of a dropped item line is dropped with it. No line number, so this drops 1,144 lines, **$5.8M
+  (0.7%)**: 555 ($3.6M) inside one PO (AT&T network maintenance, 38 lines of $6,500 on one PO; CompuCom licences
+  $1.0M) and 589 ($2.2M) across POs (a $952,295 Prison Industry Authority Nomex line listed twice). The earlier rule
+  dropped 35 lines. 406 negative lines kept. Two SCPRS transaction rows can still be equal where their item lines
+  differ in quantity, unit price or product type (21 such sets).
 - **Decision:** built with years labelled 2013-2015 in `sources.csv`; tier 2 (brand is absent; product type is the
   UNSPSC commodity).
 
 ## Duplicates and reversals: summary
 
-Every adapter keeps credits, voids and reversals as published (negative lines), so totals are net. Exact duplicate
-lines are dropped where the source has a line identifier (SF, LA, Moreno Valley, FI$Cal: 1,308 lines; the others 0).
-Sources without a line number (Riverside County, Corona, SCPRS) drop only whole documents loaded twice
-(`ca_common.collapse_reloads`; 929, 19 and 35 lines), because identical lines inside an invoice are ordinary there.
-No duplicated batches of the Utah kind were found: control queries (rows and dollars per year, taken at fetch time)
-match the raw files, and where identical lines were profiled (Riverside County, Corona) most sit in invoices where
-only some lines repeat, which a reloaded batch cannot produce (Riverside County's are also spread evenly over every
-period).
+Owner decision of 2026-10-07: drop identical lines and identical (doubled) days. A line is identical to another
+when every published field except the source's own row or transaction id is equal: agency, fiscal year, posting
+date, payee as published, description, account, published category and amount (item lines: also vendor, brand,
+product type, quantity and unit price). One is kept, the rest dropped; a doubled day is a set of identical lines;
+lines without a date compare on fiscal year; negative lines compare like any other (a reversal is not identical to
+the payment it reverses). Applied by `ca_common.drop_identical` to every row an adapter writes (FI$Cal: to the rows
+summed per voucher; SCPRS: to the item lines, transaction copies follow), and mirrored independently in
+`check_ca.py`. The totals sources (`ca_sco_*`) are not affected.
+
+| Source | Lines before | Lines dropped | Dollars dropped | Share of dollars | Sets | Same document | Other documents | Negative lines dropped |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `ca_fiscal` (summed rows) | 873,016 | 54,312 | $400,143,042.18 | 3.95% | 29,445 | 0 | 54,312 ($400.1M) | 338 (-$2.3M) |
+| `ca_riverside_county` | 277,875 | 40,647 | $86,244,041.95 | 5.17% | 14,908 | 22,609 ($8.7M) | 18,038 ($77.6M) | 380 (-$128K) |
+| `ca_la` | 175,405 | 34,299 | $51,021,623.97 | 7.32% | 15,040 | 25,098 ($47.8M) | 9,201 ($3.2M) | 136 (-$68K) |
+| `ca_sf` (no date) | 34,637 | 7,734 | $18,242,008.80 | 8.27% | 2,154 | 0 | 7,734 ($18.2M) | 13 (-$4K) |
+| `ca_corona` | 14,500 | 1,145 | $1,142,201.41 | 5.23% | 462 | 903 ($0.39M) | 242 ($0.76M) | 65 (-$17K) |
+| `ca_moreno_valley` | 2,369 | 31 | $15,487.12 | 0.01% | 23 | 15 ($4K) | 16 ($12K) | 0 |
+| `ca_scprs` (item lines) | 22,798 | 1,144 | $5,824,389.82 | 0.66% | 506 | 555 ($3.6M) | 589 ($2.2M) | 21 (-$11K) |
+| All | 1,400,600 | 139,312 | $562,632,795.25 | | 62,538 | | | |
+
+"Lines before" counts lines with an amount (SF: with a paid amount; SCPRS: not $0) before the rule; "same document"
+means the same voucher, invoice, payment or PO as the line kept. **What the rule drops here is mostly not
+duplication.** No source has a reloaded batch: control queries (rows and dollars per year, taken at fetch time)
+match the raw files, and no (fiscal year, date) in any dated source has every line repeated the same number of times
+(SCPRS aside: two PO dates, 8 lines, $16,615). The sets are separate items and payments of one price that the
+source cannot tell apart once its ids are set aside:
+- Open FI$Cal has no description: equal installments to contract counties on one day ($147.0M), vehicles and
+  aircraft bought at one price ($24.5M Air Methods, $16.1M Downtown Ford, $16.2M Holt of California), employee
+  reimbursements to CONFIDENTIAL ($3.2M).
+- San Francisco has no payment date, so equal payments within a fiscal year count once (vehicles $10.6M).
+- Los Angeles, Riverside County and Corona list several identical items on separate lines of one invoice (LA
+  ambulances $26.3M), and Riverside County has two CAL FIRE contract invoices of $72.4M each paid the same day.
+Before this rule the adapters dropped only lines identical in every raw column (FI$Cal 1,308) and invoices or POs
+loaded twice in full (Riverside County 929, Corona 19, SCPRS 35). Every adapter keeps credits, voids and reversals
+as published (negative lines), so totals are net.
 
 ## Payee names
 
@@ -360,7 +439,7 @@ Owner decision of 2026-10-06: payee names are shown as published, private person
 `common.withhold_person` directly, which cuts only payee text matching `config/payee_name_redactions.csv` (email
 addresses, bank account text); no California payee matched, so no line is cut. The sources' own masking stays as the
 sources publish it ("PRIVACY-FIRE" in Los Angeles, "CONFIDENTIAL" in FI$Cal, the SF Controller's removal of payments
-to employees). `check_ca.py` reports 141,075 lines whose payee looks like a person's name (shown).
+to employees). `check_ca.py` reports 126,232 lines whose payee looks like a person's name (shown).
 
 ## Agencies, overlaps and state fire agency
 
@@ -369,7 +448,7 @@ to employees). `check_ca.py` reports 141,075 lines whose payee looks like a pers
   CA-00555), whatever the registry's organization type. A county department that CAL FIRE runs under contract
   ("Cal Fire - Riverside County Fire Department", CA-33555) has kind "County fire department".
 - **Money flowing between agencies:** Moreno Valley pays the County of Riverside for fire staffing; the County Fire
-  Department pays the State (CAL FIRE) for contract staffing ("STATE OF CALIFORNIA DEPT OF FORESTRY", $1.40B); CAL FIRE
+  Department pays the State (CAL FIRE) for contract staffing ("STATE OF CALIFORNIA DEPT OF FORESTRY", $1.32B); CAL FIRE
   pays contract counties (Kern, Los Angeles, Ventura, Santa Barbara, Marin, Orange) for state responsibility area
   protection. The same dollars can therefore appear once as one agency's payment to another and again as that agency's
   payments to vendors. These payees are mapped to the category `government` (not purchasing), so they do not count as
@@ -379,12 +458,17 @@ to employees). `check_ca.py` reports 141,075 lines whose payee looks like a pers
 
 ## Vendor categories (`config/states/ca/vendor_map_additions.csv`)
 
-2,777 rows proposing canonical names and categories for California payees, with `spend` and `agencies` recomputed
-from `transactions.csv.gz`. "Purchasing dollars" = net positive spend per `common.norm(payee)` key, excluding keys
+2,753 rows proposing canonical names and categories for California payees, with `spend` and `agencies` recomputed
+from `transactions.csv.gz` after the dedup rule of 2026-10-07. 24 keys that `config/vendor_map.csv` now carries
+(merged from `main` with the Utah BigQuery work: US Bank, Allstar Fire Equipment, US Foods, Braun Northwest, Tablet
+Command and others) were removed from this file; 9 of them take that file's category instead of the one proposed
+here (Carahsoft software, Entenmann-Rovin and Sun Badge uniforms, OHD scba, Sigtronics radios, Highway Products
+apparatus, Vortex Industries facilities, Lawson Products fleet, Ricoh it). "Purchasing dollars" = net positive spend per `common.norm(payee)` key, excluding keys
 mapped (in `config/vendor_map.csv` or this file) to a category whose `purchasing` is `no` (government, payroll,
-finance, placeholder, individuals). Mapped share: **91.4%** of $6.25B purchasing dollars (by source: FI$Cal 92.0%,
-LA 94.7%, SF 88.9%, Riverside County 86.3%, SCPRS 87.1%, Moreno Valley 74.1%, Corona 66.6%). $64.6M of that is mapped
-to `unclassified` (mostly CAL FIRE forest-health and urban-forestry grantees); mapped to a real category: **90.4%**.
+finance, placeholder, individuals). Mapped share: **91.3%** of $5.93B purchasing dollars (by source: FI$Cal 91.9%,
+LA 94.5%, SF 89.2%, Riverside County 86.7%, SCPRS 87.1%, Moreno Valley 75.3%, Corona 69.2%); this file alone 80.7%.
+$62.6M of that is mapped to `unclassified` (mostly CAL FIRE forest-health and urban-forestry grantees); mapped to a
+real category: **90.2%**.
 Categories: names first (keywords: aviation, apparatus makers, logging and water tenders, vehicles, utilities,
 telecom, governments), else the payee's dominant published account (confidence low); the top payees were reviewed by
 hand. Review of 2026-10-06 added 441 rows for payees of $25,000 or more that are governments or public fire agencies
@@ -393,8 +477,8 @@ state prisons and departments, universities; $64.0M, almost all CAL FIRE mutual-
 `government` (confidence medium), which takes them out of purchasing dollars; names with business words (Inc, LLC,
 Supply, Association, Foundation, Council) were left out of that rule. Canonical names from `config/vendor_map.csv`
 are reused when the company is the same (Verizon, AT&T, Comcast, Goodyear, FedEx, Grainger, Staples, Municipal
-Emergency Services, Rush Truck Centers). Confidence: 29 high, 1,776 medium, 972 low. No row classifies a name as a
-person (owner decision 1). CalCard payments (US Bank, $605.9M) are `finance` and the "CONFIDENTIAL" and
+Emergency Services, Rush Truck Centers). Confidence: 26 high, 1,765 medium, 962 low. No row classifies a name as a
+person (owner decision 1). CalCard payments (US Bank, $604.1M) are `finance` and the "CONFIDENTIAL" and
 "PRIVACY-FIRE" placeholders are `placeholder`, so they are outside purchasing dollars.
 
 ## Checks
@@ -402,9 +486,11 @@ person (owner decision 1). CalCard payments (US Bank, $605.9M) are `finance` and
 `python3 tests/multistate/check_ca.py` recomputes, independently of the adapters (its own filters and duplicate rules,
 sharing only `agency_sources.csv`, the redaction patterns and common's file helpers):
 
-1. per source, agency and fiscal year, line counts and dollars to the cent (the multiset of fiscal year, payee and
-   amount lines) for SF, LA, Riverside County, Corona, Moreno Valley and SCPRS; dollars per fiscal year and payee for
-   FI$Cal (from the six raw files, checked against the manifest's rows and dollars); totals per agency and year for both
+1. per source, agency and fiscal year, line counts and dollars to the cent (the multiset of agency, fiscal year,
+   payee and amount lines) after the owner's dedup rule, whose line identity the check builds from the raw columns
+   itself, for SF, LA, Riverside County, Corona, Moreno Valley, SCPRS and FI$Cal (rows summed per voucher from the six
+   raw files, checked against the manifest's rows and dollars); no two published rows of one source equal in every
+   column but `source_record_id` (SCPRS transaction copies aside, see above); totals per agency and year for both
    SCO sources (every Fire Protection district linked);
 2. payee names as published (only redaction-pattern text cut; the old person marker never appears; no payee,
    description or account carries an email address); person-shaped names are only counted (shown, owner decision);
@@ -421,8 +507,9 @@ sharing only `agency_sources.csv`, the redaction patterns and common's file help
 
 Normalize is deterministic: every adapter's normalize was run twice; the data files were byte-identical (re-run in the
 review of 2026-10-06 after its changes: all nine normalizes twice, every file in `data/states/ca/` and
-`config/states/ca/` byte-identical between the runs; `transactions.csv.gz` and `line_items.csv.gz` also unchanged from
-before the review).
+`config/states/ca/` byte-identical between the runs; and again on 2026-10-07 after the dedup rule: the seven line
+adapters twice, all 12 files byte-identical). The check was fault-tested with an injected copy of one SF line under a
+new record id (fails on the line multiset).
 
 ## Open questions
 
@@ -433,6 +520,10 @@ before the review).
   runs ambulances?
 - Moreno Valley fire-station costs booked to Fleet & Facilities (about $4.1M) are excluded; include them?
 - San Francisco has no payment date; should the page show SF rows by fiscal year only?
+- Dedup rule of 2026-10-07: in California it removes $562.6M, mostly separate items and payments of one price
+  (table under "Duplicates and reversals: summary"). Keep it as decided, or exempt lines on the same document with
+  different line numbers (LA, $47.8M) and sources without a description or date (FI$Cal $400.1M, SF $18.2M)?
+  Riverside County's two $72.4M CAL FIRE invoices of 2026-03-16 need the County's answer either way.
 - SCPRS gives only FY2013-FY2015; keep it, given FI$Cal covers CAL FIRE from FY2021?
 - LA County Open Expenditures (FY2025 on, monthly totals by expenditure class) could later replace or extend the SCO
   totals for the Los Angeles County Fire Department.
