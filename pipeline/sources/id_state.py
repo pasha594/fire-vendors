@@ -42,26 +42,34 @@ normalize  data/states/id/transactions.csv.gz   one row per line in a payment ca
 Attribution: all lines go to the registry's "Idaho Department of Lands Fire Department" (no FDID) through
 config/states/id/agency_sources.csv. IDL is a state fire agency (PRD open question: main table or separate view).
 
-Duplicates and reversals: owner rule of 2026-10-07, drop identical lines and identical (doubled) days (function
-identical). Lines identical in every column but unique_id, date_of_load and zz_extract_date (the source's own id and
-load stamps) are kept once: the copy of the earliest load batch with the lowest unique_id. Applied before the
-payment-category filter, it drops 709 lines ($5,094,771.54, 559 sets) from the raw files of 2026-10-06: (a) copies
-loaded again by a later batch, 567 lines, $4,880,745.10: the same line (same unique_id) loaded again by a later
-extract (108 lines, $4.6 million, extracts of 2024-12-07 and 2025-11-15, for example a $3,451,591 payment to the US
-Department of Agriculture twice), and purchase-card lines loaded again under new unique_ids, mostly in the loads of
-2024-08-21 and 2024-08-22, with no reversal; (b) copies inside one load batch, 142 lines, $214,026.44: blocks of
-purchase-card lines inserted twice (116 lines in 8 batches from 2024-08-19 to 2025-07-07, unique_ids in a parallel
-series at a near-constant offset, the same airline ticket and marketplace order numbers twice) and 26 lines
-($138,820.11) in smaller sets that were kept as possible repeat purchases before the owner's rule (among them two
-$97,378.20 vehicles from one dealer on one day). On these files, grouping on the normalized columns (agency, fiscal
-year, posting date, payee as published, description, account, published category, amount) gives the same sets;
-normalize then drops any normalized row equal to an earlier one in every column but source_record_id (none now), so
-the rule holds on the published fields too. fetch asserts each year's paging matches the row count, normalize that
-no line appears twice in the raw files. unique_id can also be reused by a different line (FY2021: a transfer and its
-reversal), so source_record_id is unique_id, or unique_id-<n> when the id repeats (record_ids). Negative lines
-(credits, reversals, refunds) are kept and are never identical to the payment they reverse, so amounts are net.
-Lines in EXCLUDED_CATEGORIES are accounting entries, not payments (encumbrances, accrual adjustments, transfers),
-and are dropped with their totals printed.
+Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day ("drop identical lines, drop identical
+days", applied to every column the source publishes, not only the contract columns), function dedup:
+(1) Identical: two lines are identical when every column of the raw line is equal except the columns that only
+identify the row or the load: unique_id (the portal's row id), date_of_load and zz_extract_date (load and extract
+stamps); ROW_LOAD_IDS. Compared are the other 27 columns the saved view publishes: fund (category, type, title,
+code), state goal and objective, agency, function, account type, account category, summary account, account,
+vendor, fiscal year, effective date, amount, the empty zz_filler columns and the account number string. Idaho
+publishes no voucher, invoice, check or PO number. (2) Upload errors first (rule of 2026-10-06, kept): copies of a
+line from a later load batch (date_of_load, zz_extract_date) than its first copy (567 lines, $4,880,745.10: the same
+unique_id loaded again by a later extract, and purchase-card lines loaded again under new unique_ids, mostly the
+loads of 2024-08-21 and 2024-08-22), and blocks of purchase-card lines inserted twice inside one load batch, the
+extra copies of a batch that holds BLOCK_COPIES or more (116 lines, $75,206.33; unique_ids in a parallel series at a
+near-constant offset). In all 683 lines, $4,955,951.43. (3) Of the remaining identical lines, a set of n identical
+positive lines keeps min(n, reversals + 1) copies, the earliest load batch's lowest unique_ids first, where
+reversals counts the lines of the same fund, function, objective, account and vendor (REVERSAL_KEYS) with the
+amount negated in the same or the next fiscal year, lines identical among themselves counting once; a set of
+negative or zero lines keeps one. On the raw files of 2026-10-06 this drops 26 lines ($138,820.11, 25 sets; among
+them two $97,378.20 vehicles from one dealer on one day, two $31,500 payments to one contractor, and one copy each of
+a -$84 and a -$1,529.87 credit) and the void rule keeps none (no such set has a reversal); 709 lines dropped in all,
+$5,094,771.54. The -$1,529.87 credit (no vendor, 2026-06-22) is reversed once by a +$1,529.87 line of FY2027, so
+keeping it once raises that family's net from $0 as published to $1,529.87 (open question in docs/sources/id.md).
+Two upload-error copies have a reversal of their amount: a $122.58 purchase-card line whose reversal moves the one
+payment to another account, and a $116.77 hotel line whose reversal pairs with a later $116.77 line; they stay
+dropped. fetch asserts each year's paging matches the row count, normalize that no line appears twice in
+the raw files. unique_id can also be reused by a different line (FY2021: a transfer and its reversal), so
+source_record_id is unique_id, or unique_id-<n> when the id repeats (record_ids). Negative lines (credits,
+reversals, refunds) are kept, so amounts are net. Lines in EXCLUDED_CATEGORIES are accounting entries, not payments
+(encumbrances, accrual adjustments, transfers), and are dropped with their totals printed.
 
 Payees: shown as published, private persons included (owner decision of 2026-10-06): every vendor goes through
 common.withhold_person, which only replaces payee text matching config/payee_name_redactions.csv (e-mail addresses,
@@ -84,6 +92,9 @@ CONFIG = "9711ec09-4057-47c6-8ebc-1f27ee4261d3"   # saved view "Expenditure Tran
 FUNCTION = "320-07H"
 FIRST_FY = 2021
 PAGE = 250
+ROW_LOAD_IDS = ("unique_id", "date_of_load", "zz_extract_date")  # row id and load stamps: not compared
+BLOCK_COPIES = 4  # same-batch identical copies that make a block inserted twice (upload error)
+REVERSAL_KEYS = ("fund_code", "agency_code_function_code", "state_objective_code", "account", "vendor")
 AGENCY_ID = "ID-X-IDAHO-DEPARTMENT-OF-LANDS-FIRE-DEPARTMENT-COEUR-D-ALENE"
 PAYMENT_CATEGORIES = {"Operating", "Capital Expenditures", "Trustee & Benefit Payments", "FED PAYMENTS TO SUBGRANTES",
                       "Refunds"}
@@ -189,34 +200,49 @@ def lines(raw):
     return out
 
 
-def identical(rows):
-    """Owner decision of 2026-10-07 (dedup rule): drop identical lines and identical (doubled) days.
-
-    Two lines are identical when every column but the source's own ids and load stamps (unique_id, date_of_load,
-    zz_extract_date) is equal: fund, function, account category, account, vendor, fiscal year, effective date,
-    amount and the rest. On the raw files of 2026-10-06 these are the same sets as the lines whose normalized rows
-    are equal in every column but source_record_id (agency, fiscal year, posting date, payee as published,
-    description, account, published category, amount); normalize repeats the rule on the normalized rows, which
-    drops nothing more today. Of each set, the copy of the earliest load batch
-    (date_of_load, zz_extract_date) with the lowest unique_id is kept and the rest dropped, whether a copy came in a
-    later batch (a reload) or in the same batch (a doubled block, or what could be a repeat purchase: the rule no
-    longer tells them apart). A negative line is never identical to the payment it reverses (the amount differs).
-    Returns {index of a dropped line: "later batch" or "same batch"} and the number of sets with a dropped line."""
-    batch = lambda i: (rows[i]["date_of_load"] or "", rows[i]["zz_extract_date"] or "")
+def dedup(rows):
+    """Lines to drop (owner rule of 2026-10-07 as corrected; see the module docstring). Returns {index: reason},
+    reason "later batch" or "doubled block" (upload errors, dropped first) or "identical" (rule 1 with the void
+    rule), and the number of positive identical copies the void rule keeps."""
+    content = lambda r: tuple((k, v) for k, v in sorted(r.items()) if k not in ROW_LOAD_IDS)
+    order = lambda i: (rows[i]["date_of_load"] or "", rows[i]["zz_extract_date"] or "", int(rows[i]["unique_id"]))
     groups = collections.defaultdict(list)
     for i, r in enumerate(rows):
-        groups[tuple((k, v) for k, v in sorted(r.items())
-                     if k not in ("unique_id", "date_of_load", "zz_extract_date"))].append(i)
-    drop, sets = {}, 0
+        groups[content(r)].append(i)
+    drop, extra = {}, collections.defaultdict(list)  # load batch -> same-batch copies beyond the first
     for idx in groups.values():
         if len(idx) < 2:
             continue
-        sets += 1
-        keep = min(idx, key=lambda i: (batch(i), int(rows[i]["unique_id"])))
-        for i in idx:
-            if i != keep:
-                drop[i] = "later batch" if batch(i) != batch(keep) else "same batch"
-    return drop, sets
+        idx.sort(key=order)
+        first = order(idx[0])[:2]
+        for i in idx[1:]:
+            if order(i)[:2] != first:
+                drop[i] = "later batch"
+            else:
+                extra[first].append(i)
+    for copies in extra.values():
+        if len(copies) >= BLOCK_COPIES:
+            drop.update(dict.fromkeys(copies, "doubled block"))
+    left = [i for i in range(len(rows)) if i not in drop]
+    reversals = collections.defaultdict(set)  # (REVERSAL_KEYS, amount, fiscal year) -> distinct negative lines
+    for i in left:
+        r = rows[i]
+        if (r["amount"] or 0) < 0:
+            reversals[(tuple(r[k] for k in REVERSAL_KEYS), -r["amount"], int(r["fiscal_year"]))].add(content(r))
+    kept_by_void = 0
+    for idx in groups.values():
+        idx = [i for i in idx if i not in drop]
+        if len(idx) < 2:
+            continue
+        r = rows[idx[0]]
+        keep = 1
+        if (r["amount"] or 0) > 0:
+            key, fy = (tuple(r[k] for k in REVERSAL_KEYS), r["amount"]), int(r["fiscal_year"])
+            n_rev = len(reversals.get((*key, fy), set()) | reversals.get((*key, fy + 1), set()))
+            keep = min(len(idx), n_rev + 1)
+            kept_by_void += keep - 1
+        drop.update(dict.fromkeys(idx[keep:], "identical"))
+    return drop, kept_by_void
 
 
 def record_ids(rows):
@@ -242,11 +268,12 @@ def normalize():
     rows_in = lines(raw)
     exact = collections.Counter(json.dumps(r, sort_keys=True) for r in rows_in)
     assert max(exact.values()) == 1, "a line appears twice in the raw files"
-    drop, sets = identical(rows_in)
+    drop, kept_by_void = dedup(rows_in)
     cents = lambda idx: sum(round((rows_in[i]["amount"] or 0) * 100) for i in idx)
-    print(f"  identical lines dropped (owner rule of 2026-10-07): {len(drop)} lines, ${cents(drop) / 100:,.2f}, "
-          f"{sets} sets; " + ", ".join(f"{k} {len(v)} lines ${cents(v) / 100:,.2f}" for k, v in sorted(
-              {k: [i for i, w in drop.items() if w == k] for k in set(drop.values())}.items())))
+    by_reason = {k: [i for i, w in drop.items() if w == k] for k in ("later batch", "doubled block", "identical")}
+    print(f"  dropped: {len(drop)} lines, ${cents(drop) / 100:,.2f} (" + ", ".join(
+        f"{k} {len(v)} lines ${cents(v) / 100:,.2f}" for k, v in by_reason.items())
+        + f"); identical copies kept by the void rule: {kept_by_void}")
     rows_in = [r for i, r in enumerate(rows_in) if i not in drop]
     record_id = record_ids(rows_in)
     excluded, out = collections.defaultdict(lambda: [0, 0.0]), []
@@ -268,15 +295,9 @@ def normalize():
             "amount": f"{r['amount']:.2f}", "source_record_id": record_id[i],
         })
     fields = [f for f in common.TABLES["transactions.csv.gz"] if f not in ("source", "source_record_id")]
-    seen, kept = set(), []
-    for r in out:  # the owner's rule on the published fields: none left after identical() on these raw files
-        key = tuple(r[f] for f in fields)
-        if key not in seen:
-            seen.add(key)
-            kept.append(r)
-    if len(kept) < len(out):
-        print(f"  identical normalized rows dropped: {len(out) - len(kept)}")
-    out = kept
+    same = collections.Counter(tuple(r[f] for f in fields) for r in out)
+    print(f"  rows equal to another in every published column (kept: they differ in a raw column or the void rule "
+          f"keeps them): {sum(n for n in same.values() if n > 1)}")
     years = sorted({r["fiscal_year"] for r in out})
     write_source_row(f"{years[0]}-{years[-1]}", raw.parent.parent.name)
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, out)
