@@ -55,17 +55,18 @@ Fiscal year: Ohio local governments use the calendar year (fy_start 01); fiscal_
 year. Years 2021 on.
 
 Duplicates and broken uploads (normalize): rows are keyed by the checkbook's row Id; a row fetched twice
-(overlapping requests) is kept once. TransactionId is unique per line in every fetched participant, so lines that
-match in every field but TransactionId are separate lines (several identical invoices or benefit lines paid the
-same day) and are kept, except in a month uploaded k times: a month of DOUBLED_MIN lines or more in which every
+(overlapping requests) is kept once. A month uploaded k times: a month of DOUBLED_MIN lines or more in which every
 group of lines identical in date, payee, fund, department, object and amount has a size divisible by k >= 2
 keeps size/k lines of each group (Beavercreek Township, March 2023). A later upload (TransactionId jump of more
 than RELOAD_GAP) whose lines of a date only repeat lines already uploaded for that date is a reload and dropped
 (Perkins Township (Erie), December 2025 and January 2026). A month whose lines carry batch totals
 instead of line amounts (BROKEN_SHARE rule; Jackson Township (Stark), City of Dover and City of Bellevue,
-2025-2026) is left out. Negative amounts
-(voids, refunds, reversals) are kept so they net out. Every fetched slice is checked against the dashboard's
-own summary totals for the same filters, per year.
+2025-2026) is left out. Then the owner's rule of 2026-10-07: lines identical in every published field except the
+source's ids (TransactionId, row Id) are one line; the lowest row Id is kept (unidentical). That covers lines
+re-uploaded under a new row Id, days doubled inside one upload (Hamilton Township (Warren), January-February
+2021) and several equal lines paid the same day. Negative amounts (voids, refunds, reversals) are kept so they
+net out and are compared like any other line, so a payment voided and issued again keeps the payment and the
+void. Every fetched slice is checked against the dashboard's own summary totals for the same filters, per year.
 """
 import argparse
 import collections
@@ -132,7 +133,7 @@ DOUBLED_MIN = 10  # lines in a month before the month can be judged as uploaded 
 # uploads, a new one starting where the TransactionId jumps by more than RELOAD_GAP. A later upload's lines of one
 # date (RELOAD_MIN or more, none negative) that are each an exact copy of a line of that date in an earlier upload
 # are a reload (Perkins Township (Erie): 2025-12-18 and 2026-01-09 uploaded again about 1.1 million TransactionIds
-# later). Identical lines inside one upload are separate payments and kept.
+# later). Identical lines left after these rules are dropped by unidentical (owner rule of 2026-10-07).
 RELOAD_GAP = 100000
 RELOAD_MIN = 3
 # Special districts that are fire agencies (whole checkbook), and the ones whose name suggests fire or EMS but
@@ -144,6 +145,7 @@ SKIP = {"City of Cincinnati": "Cincinnati Fire Department comes from the City's 
                               "taking it here as well would count it twice"}
 SOURCE_COLUMNS = ["source", "name", "tier", "url", "years", "fiscal_year", "fetched", "note"]
 CENTS = decimal.Decimal("0.01")
+IDENTICAL = {}  # participant -> (identical lines dropped, dollars), for the normalize report
 
 
 def fire_line_name(name):
@@ -648,7 +650,7 @@ def broken_months(rows):
 def undouble(entity, rows, stats):
     """A month uploaded k times: with DOUBLED_MIN lines or more, every group of lines identical in date, payee,
     fund, department, object and amount has a size divisible by k >= 2 (the gcd of the group sizes). Keep the
-    first size/k lines of each group (lowest row Ids). Elsewhere identical lines are separate payments and kept."""
+    first size/k lines of each group (lowest row Ids). Other identical lines are left to unidentical."""
     groups = collections.defaultdict(list)
     for r in rows:
         groups[(r["TransDate"][:7], r["TransDate"][:10], r["Payee"], r["FundCode"], r["DeptCode"], r["ObjCode"],
@@ -706,9 +708,50 @@ def unreload(entity, rows, stats):
     return [r for r in rows if r["Id"] not in drop]
 
 
+def account(r):
+    """The published account: 'Fund - code / Department - code / Object - code' as the dashboard labels them."""
+    return " / ".join(x for x in (label(r, "Fund"), label(r, "Dept"), label(r, "Obj")) if x)
+
+
+def payee(r):
+    return "" if r["Payee"] == NULL else r["Payee"]
+
+
+def published(r):
+    """A line's published fields other than its row id: posting date (the fiscal year follows from it), payee as
+    published (spaces collapsed), description (none in this source), account, published category and amount."""
+    return (r["TransDate"][:10], " ".join(payee(r).split()), account(r),
+            "" if r["ObjDescription"] == NULL else r["ObjDescription"], str(money(r["Amt"])))
+
+
+def unidentical(entity, rows, stats):
+    """Owner rule of 2026-10-07: lines identical in every published field except the row id (TransactionId and
+    row Id are the source's own ids; the payment type code is not published) are one line: keep the lowest row
+    Id, drop the rest. A day uploaded twice inside one upload is a set of identical lines, so it is covered too.
+    Negative lines compare like any other (a reversal is not identical to the payment it reverses)."""
+    first, drop = {}, set()
+    for r in sorted(rows, key=lambda r: int(r["Id"])):
+        k = published(r)
+        if k in first:
+            drop.add(r["Id"])
+        else:
+            first[k] = r["Id"]
+    lines = [r for r in rows if r["Id"] in drop]
+    stats["identical_lines"] += len(lines)
+    stats["identical_dollars"] += sum(money(r["Amt"]) for r in lines)
+    stats["identical_groups"] += len({published(r) for r in lines})
+    # reported, not treated differently: a dropped copy whose negative (same fields, opposite amount) is also
+    # published, as in a payment voided and issued again (payment, void, reissue: the rule keeps payment and void)
+    negated = {k[:-1] + (str(-money(k[-1])),) for k in first}
+    voided = [r for r in lines if published(r) in negated]
+    stats["identical_voided_lines"] += len(voided)
+    stats["identical_voided_dollars"] += sum(money(r["Amt"]) for r in voided)
+    return [r for r in rows if r["Id"] not in drop], lines
+
+
 def entity_rows(eid, entity, by_id, stats):
     """The entity's published lines: fire lines from FIRST_FY, re-uploads and reloads once, broken-upload months
-    dropped."""
+    dropped, then identical lines once (owner rule of 2026-10-07)."""
     seen, rows = set(), []
     trusted = dept_trusted(by_id)
     if not trusted:
@@ -734,7 +777,10 @@ def entity_rows(eid, entity, by_id, stats):
         stats["broken_dollars"] += sum(money(r["Amt"]) for r in lines)
         print(f"  {entity['name']}: {m}: {len(lines)} lines dropped (upload carries batch totals, "
               f"${sum(money(r['Amt']) for r in lines):,.2f})")
-    return [r for r in rows if r["TransDate"][:7] not in broken]
+    rows, dropped = unidentical(entity, [r for r in rows if r["TransDate"][:7] not in broken], stats)
+    if dropped:
+        IDENTICAL[entity["name"]] = (len(dropped), sum(money(r["Amt"]) for r in dropped))
+    return rows
 
 
 def normalize():
@@ -749,11 +795,15 @@ def normalize():
         for r in entity_rows(eid, entity, by_id, stats):
             out.append({
                 "agency_id": link["agency_id"], "fiscal_year": r["TransDate"][:4], "posting_date": r["TransDate"][:10],
-                "payee_name": common.withhold_person("" if r["Payee"] == NULL else r["Payee"]), "description": "",
-                "account": " / ".join(x for x in (label(r, "Fund"), label(r, "Dept"), label(r, "Obj")) if x),
+                "payee_name": common.withhold_person(payee(r)), "description": "", "account": account(r),
                 "category_published": "" if r["ObjDescription"] == NULL else r["ObjDescription"],
                 "amount": str(money(r["Amt"])),
-                "source_record_id": f"{eid}-{r['Id']}"})
+                "source_record_id": f"{eid}-{r['Id']}", "_payee": " ".join(payee(r).split())})
+    # the owner's rule of 2026-10-07 holds across the whole output: no two lines identical in every published
+    # field but the record id (the payee compared as the source has it, so two withheld payees stay distinct)
+    ident = collections.Counter((*[r[c] for c in common.TABLES["transactions.csv.gz"] if c not in (
+        "source", "source_record_id", "payee_name")], r.pop("_payee")) for r in out)
+    assert max(ident.values()) == 1, f"identical lines left: {[k for k, n in ident.items() if n > 1][:3]}"
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, out)
     years = sorted({int(r["fiscal_year"]) for r in out})
     last = max(r["posting_date"] for r in out)
@@ -774,8 +824,13 @@ def normalize():
           f"{stats['doubled_lines']} lines of months uploaded twice dropped (${stats['doubled_dollars']:,.2f}); "
           f"{stats['reload_lines']} reloaded lines dropped (${stats['reload_dollars']:,.2f}); "
           f"{stats['broken_lines']} lines of broken-upload months dropped (${stats['broken_dollars']:,.2f}); "
+          f"{stats['identical_lines']} identical lines dropped (${stats['identical_dollars']:,.2f}, "
+          f"{stats['identical_groups']} groups, {len(IDENTICAL)} agencies; of them {stats['identical_voided_lines']} "
+          f"lines (${stats['identical_voided_dollars']:,.2f}) are copies of a line that is also reversed); "
           f"{stats['outside']} fetched lines outside the rule or years; {len(neg)} negative lines "
           f"(${sum(decimal.Decimal(r['amount']) for r in neg):,.2f}) kept")
+    top = sorted(IDENTICAL.items(), key=lambda kv: -abs(kv[1][1]))[:5]
+    print("  identical lines dropped, largest: " + "; ".join(f"{k} {n} (${v:,.2f})" for k, (n, v) in top))
 
 
 def register_source(row):

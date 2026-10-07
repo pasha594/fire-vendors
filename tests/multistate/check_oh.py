@@ -81,6 +81,7 @@ EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+")
 BROKEN = set()  # (participant, month) left out as broken uploads, for the summary line
 DOUBLED = set()  # (participant, month) uploaded more than once
 RELOADED = set()  # (participant, date) uploaded again in a later upload
+IDENTICAL = {}  # participant (or source) -> identical lines dropped (owner rule of 2026-10-07)
 
 
 def rows_of(path):
@@ -153,7 +154,7 @@ def expected_cincinnati():
         by[(r["fiscal_year"], r["dept_code"])][1] += D(r["amount"])
     assert {(c["fiscal_year"], c["dept_code"]): (int(c["n"]), D(c["amount"]).quantize(CENTS)) for c in control} \
         == {k: (n, a.quantize(CENTS)) for k, (n, a) in by.items()}, "raw pages differ from control_totals.json"
-    seen, out, lines = set(), collections.defaultdict(lambda: [0, D(0)]), {}
+    seen, out, lines, candidates = set(), collections.defaultdict(lambda: [0, D(0)]), {}, []
     for r in raw:
         key = tuple(r.values())
         if key in seen:
@@ -161,6 +162,16 @@ def expected_cincinnati():
         seen.add(key)
         if int(r["fiscal_year"]) < FIRST_FY or r["dept_code"] not in links:
             continue
+        candidates.append(r)
+    # owner rule of 2026-10-07: identical lines (every published field equal; the source's trans_id, line number
+    # and check number are not compared) are kept once, the lowest trans_id and line number
+    first = {}
+    for r in sorted(candidates, key=lambda r: (r["trans_id"], int(r["trans_line_no"]))):
+        first.setdefault((r["fiscal_year"], r["record_date"][:10], " ".join(r["vendor_name"].split()), r["dept_desc"],
+                          r["fund_code"], r["fund_desc"], r["exp_acct_cat"], r["exp_acct_cat_desc"],
+                          str(D(r["amount"]).quantize(CENTS))), r)
+    IDENTICAL["oh_cincinnati"] = len(candidates) - len(first)
+    for r in first.values():
         k = (links[r["dept_code"]], r["fiscal_year"])
         out[k][0] += 1
         out[k][1] += D(r["amount"])
@@ -327,9 +338,16 @@ def expected_checkbook_local(agency_county):
         pension = [r for r in kept if re.search(r"pension|disab", r["FundDescription"], re.I)
                    and not (by_department and FIRE_WORD.search(r["DeptDescription"]))]
         assert len(pension) < 0.9 * len(kept), f"{eid} {p['Name']}: fire lines are a pension fund only"
-        for r in kept:
-            if r["TransDate"][:7] in broken:
-                continue
+        # owner rule of 2026-10-07: lines identical in every published field (date, payee as published, fund,
+        # department and object labels, object description, amount) are one line; the lowest row Id is kept
+        first = {}
+        for r in sorted((r for r in kept if r["TransDate"][:7] not in broken), key=lambda r: int(r["Id"])):
+            first.setdefault((r["TransDate"][:10], " ".join(r["Payee"].split()) if r["Payee"] != "%null%" else "",
+                              *[(r[d], r[c]) for d, c in (("FundDescription", "FundCode"), ("DeptDescription", "DeptCode"),
+                                                          ("ObjDescription", "ObjCode"))],
+                              str(D(r["Amt"]).quantize(CENTS))), r)
+        IDENTICAL[p["Name"]] = sum(r["TransDate"][:7] not in broken for r in kept) - len(first)
+        for r in first.values():
             fy = r["TransDate"][:4]
             amount = D(r["Amt"]).quantize(CENTS)
             k = (link["agency_id"], fy)
@@ -443,6 +461,12 @@ def main():
     assert not dupes, f"duplicate source_record_id: {dupes[:5]}"
     keys = [tuple(r[c] for c in TX_COLUMNS) for r in tx]
     assert keys == sorted(keys), "transactions.csv.gz is not sorted"
+    # owner rule of 2026-10-07 (no exception in Ohio): no two published lines identical in every field but the
+    # record id; payees compared as the source has them, so two withheld payees would not count as identical
+    same = collections.Counter((*[r[c] for c in TX_COLUMNS if c not in ("payee_name", "source_record_id")],
+                                " ".join(raw_lines[(r["source"], r["source_record_id"])]["_payee"].split()))
+                               for r in tx)
+    assert max(same.values()) == 1, f"identical lines published: {[k for k, n in same.items() if n > 1][:3]}"
 
     # 5. no email address in any published text (payee text with one is withheld)
     for r in tx:
@@ -515,6 +539,8 @@ def main():
         by_source[s] += n
     print(f"{ST}: oh_checkbook_local: months uploaded twice {sorted(DOUBLED)}; dates reloaded {sorted(RELOADED)}; "
           f"broken uploads left out {sorted(BROKEN)}")
+    print(f"{ST}: identical lines dropped: oh_cincinnati {IDENTICAL.pop('oh_cincinnati')}, oh_checkbook_local "
+          f"{sum(IDENTICAL.values())} ({sum(1 for v in IDENTICAL.values() if v)} participants)")
     print(f"{ST}: ok ({len(tx)} transaction lines, ${dollars:,.2f}, {len(with_rows)} agencies at tier 1 "
           f"({', '.join(f'{s}: {n}' for s, n in sorted(by_source.items()))}); vendor maps cover "
           f"{share:.1%} of ${purchasing:,.0f} purchasing dollars, vendor_map_additions alone {share_add:.1%})")

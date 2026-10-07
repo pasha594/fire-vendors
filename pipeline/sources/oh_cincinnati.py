@@ -36,9 +36,11 @@ show), and Fleet Services repairs or IT purchases. The vendor alone does not mak
 out; the sources.csv note states the gap, with the amount computed from vehicle_accounts.json.
 
 Duplicates: (trans_id, trans_line_no) is unique in the source; exact duplicate lines would be kept once (none in
-the 2026-10-06 pull). Lines with the same vendor, amount and date on one check are separate invoice lines and
-are kept. Credits (mostly purchasing-card credits from U.S. Bank and Fifth Third) are negative lines and kept,
-so they net out.
+the 2026-10-06 pull). Owner rule of 2026-10-07: lines identical in every published field (fiscal year, record
+date, vendor, account, category, amount) except the source's ids are one line, so lines with the same vendor,
+amount, date and account are kept once, whether on one check or several (unidentical). Credits (mostly
+purchasing-card credits from U.S. Bank and Fifth Third) are negative lines and kept, so they net out; they are
+compared like any other line.
 
 Payees: published as the source has them (owner decision, 2026-10-06), through common.withhold_person, which
 only cuts payee text with an email address or bank account text.
@@ -186,7 +188,10 @@ def normalize():
                                    f"{r['exp_acct_cat']} {r['exp_acct_cat_desc']}"]),
             "category_published": r["exp_acct_cat_desc"],
             "amount": str(decimal.Decimal(r["amount"]).quantize(cents)), "source_record_id": rid,
+            "_order": (r["trans_id"], int(r["trans_line_no"]), ids[f"{r['trans_id']}-{r['trans_line_no']}"]),
+            "_payee": " ".join(r["vendor_name"].split()),
         })
+    rows, identical = unidentical(rows)
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
 
     years = sorted({int(r["fiscal_year"]) for r in rows})
@@ -205,7 +210,29 @@ def normalize():
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
     withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
     print(f"{ST}: {SOURCE}: {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {dropped} exact duplicate "
-          f"lines dropped; {withheld} lines with the payee withheld")
+          f"lines dropped; {len(identical)} identical lines dropped (${sum(identical):,.2f}; "
+          f"{sum(1 for a in identical if a < 0)} negative); {withheld} lines with the payee withheld")
+
+
+PUBLISHED = ["agency_id", "fiscal_year", "posting_date", "description", "account", "category_published", "amount"]
+
+
+def unidentical(rows):
+    """Owner rule of 2026-10-07: lines identical in every published field except the source's ids (trans_id and
+    trans_line_no; the check number is not published) are one line: keep the lowest trans_id and line, drop the
+    rest. Payees compare as the source has them (spaces collapsed). Negative lines compare like any other line.
+    Returns the kept rows (without the helper fields) and the dropped amounts."""
+    first, dropped = {}, []
+    for r in sorted(rows, key=lambda r: r["_order"]):
+        k = (*[r[c] for c in PUBLISHED], r["_payee"])
+        if k in first:
+            dropped.append(decimal.Decimal(r["amount"]))
+        else:
+            first[k] = r
+    kept = sorted(first.values(), key=lambda r: r["_order"])
+    for r in kept:
+        del r["_order"], r["_payee"]
+    return kept, dropped
 
 
 def register_source(row):
