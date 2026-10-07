@@ -19,9 +19,10 @@ has a $0 row.
 
 Checks: `python3 tests/multistate/check_id.py` and `python3 tests/multistate/check_federal.py ID` both pass.
 `check_id.py` imports neither adapter: it re-reads the raw files, checks the `id_state` raw lines against the
-control file's server-side line counts and dollars per account category, applies the owner's dedup rule on its own,
-checks that no two published rows are identical, and compares every kept payment line with `transactions.csv.gz`
-(unique_id, fiscal year, date, amount, account title and payee as published); it recomputes each district-year total
+control file's server-side line counts and dollars per account category, applies the owner's dedup rule on its own
+(upload-error copies, identical lines, void-safe copies), and compares every kept payment line with
+`transactions.csv.gz` (unique_id, fiscal year, date, amount, account, account title and payee as published, so a
+published row can repeat only as a copy the rule keeps); it recomputes each district-year total
 of `id_lgr`, checks the contract's column lists, the coverage tiers, the redaction patterns and the vendor map
 coverage.
 
@@ -32,10 +33,13 @@ districts are a separate registry type and are not linked, see `id_lgr`); state 
 (IDL's fire program, see `id_state`). Decisions 2 (Texas DIR) and 5 (Ohio) do not apply to Idaho.
 
 **Owner decisions of 2026-10-07 applied:** this is an internal tool, so the State Controller's terms of use are
-accepted as is (see Access). Dedup rule: identical lines and identical (doubled) days are dropped, one copy kept;
-`id_state` now drops every identical copy, including the 26 lines ($138,820.11) in small same-batch sets that were
-kept as possible repeat purchases (see `id_state`, Duplicates). `id_lgr` holds one total per district and year and
-has no identical rows. The Ohio program-220 rule and the California double-counting decision do not apply to Idaho.
+accepted as is (see Access). Dedup rule ("drop identical lines, drop identical days"), as corrected the same day:
+lines are identical when every column the source publishes is equal except the row id and load stamps
+(`unique_id`, `date_of_load`, `zz_extract_date`); identical lines are kept once, except that a set of identical
+payments keeps one copy more per reversal (void-safe). For `id_state` the first reading already compared every raw
+column, and Idaho publishes no voucher, invoice or check number, so the corrected rule drops the same 709 lines and
+the void rule keeps none: 47,000 payment lines, $329,402,882.55, unchanged (see `id_state`, Duplicates). `id_lgr`
+holds one total per district and year and has no identical rows. The Ohio program-220 rule and the California double-counting decision do not apply to Idaho.
 
 ## Access to Transparent Idaho (applies to `id_lgr`, `id_cities`, `id_state`)
 
@@ -193,30 +197,59 @@ unmatched (`grant_recipients_unmatched.csv`). This run did not change it; `check
   Range Protection (historical) $97.4M, Forest and Range Fire Protection $24.9M, Fire Management (historical) $24.2M.
   7,749 distinct payee names. `description` is empty (the source has no line description); `category_published` is the
   summary account title; `account` joins fund, function, account category and account.
-- **Duplicates and reversals:** owner rule of 2026-10-07: identical lines and identical (doubled) days are dropped,
-  one copy kept. Lines identical in every column but `unique_id`, `date_of_load` and `zz_extract_date` (the source's
-  own id and load stamps) are kept once: the copy of the earliest load batch (load date, extract date) with the lowest
-  `unique_id`. In all 709 raw lines ($5,094,771.54, 559 sets) are dropped, before the payment-category filter: (a)
-  copies from a later load batch, 567 lines, $4,880,745.10: the same line, same `unique_id`, every column equal but
-  the extract date, loaded again by a later extract (108 lines, $4.61M, extracts of 2024-12-07 and 2025-11-15, for
-  example a $3,451,591 payment to the US Department of Agriculture and a dozen fire district and protective
-  association payments of 2025-10-31, each twice), and purchase-card lines loaded again under new `unique_id`s with no
-  reversal, mostly in the loads of 2024-08-21 and 2024-08-22, which consist almost entirely of such copies; (b) copies
-  inside one load batch, 142 lines, $214,026.44: blocks of purchase-card lines inserted twice (116 lines, $75,206, in
-  8 batches from 2024-08-19 to 2025-07-07; the copies' `unique_id`s run in a parallel series at a near-constant
-  offset, all 26 copies of the 2025-07-07 batch at +14,313 or +14,764, and include the same airline ticket numbers
-  ("UNITED 0162410148953") and marketplace order numbers twice), and 26 lines ($138,820.11, 25 sets) that the earlier
-  rule kept as possible repeat purchases, for example two $97,378.20 vehicles from one dealer on one day and two
-  $31,500 payments to one contractor; under the owner's rule they are dropped too. On these files the sets are the
-  same whether lines are compared on all raw columns or on the published columns (agency, fiscal year, posting date,
-  payee as published, description, account, published category, amount); normalize repeats the rule on the normalized
-  rows (nothing more to drop) and `check_id.py` asserts that no two published rows are identical. Change from the
-  earlier rule: 26 lines and $138,820.11 fewer (47,026 lines, $329,541,702.66 before). A `unique_id` can also be
-  reused by a different line (a transfer and its reversal), so `source_record_id` is `unique_id`, or `unique_id-<n>`
-  when the id repeats (32 lines, 26 of them payment lines). Reversals and credits are kept as negative lines (2,974
-  lines, -$14.6M) and are never identical to the payment they reverse, so amounts are net. Accounting entries that are
-  not payments are dropped: encumbrances (14 lines, $3.34M), year-end accrual "GAAP Expenses" (36, $0.08M), loss on
-  disposal (4, $0.14M), transfers (27, $0.04M).
+- **Duplicates and reversals:** owner rule of 2026-10-07 ("drop identical lines, drop identical days"), as corrected
+  the same day to compare every column the source publishes, not only the contract columns. Applied to the raw lines
+  before the payment-category filter, in this order (`id_state.dedup`):
+  - *Identical, and the columns ignored:* two lines are identical when every raw column is equal except `unique_id`
+    (the portal's row id), `date_of_load` and `zz_extract_date` (load and extract stamps). Compared are the other 27
+    columns of the saved view: fund category, type, title and code; state goal, objective title and code; agency
+    title, code and function, `agency_code_function_code`; account type, category, summary account and account;
+    vendor; fiscal year; effective date; amount; the seven `zz_filler` columns (empty on every line); the account
+    number string. Idaho publishes no voucher, invoice, check, PO or line number, so no document number keeps two
+    lines apart. The report's lens also defines OpenGov's `__og_quasi_id` and `__og_upload_id` (row and upload ids,
+    which the rule ignores anyway) and `__og_fiscal_year_fiscal_period` (a fiscal period OpenGov computes); the saved
+    view leaves them out, the raw files lack them and nothing was refetched.
+  - *Upload errors first (rule of 2026-10-06, kept):* (a) copies from a later load batch (load date, extract date)
+    than the line's first copy, 567 lines, $4,880,745.10: the same line, same `unique_id`, loaded again by a later
+    extract (108 lines, $4.61M, extracts of 2024-12-07 and 2025-11-15, for example a $3,451,591 payment to the US
+    Department of Agriculture and a dozen fire district and protective association payments of 2025-10-31, each
+    twice), and purchase-card lines loaded again under new `unique_id`s, mostly in the loads of 2024-08-21 and
+    2024-08-22, which consist almost entirely of such copies; (b) blocks of purchase-card lines inserted twice inside
+    one load batch (the extra copies of a batch that holds 4 or more), 116 lines, $75,206.33, in 8 batches from
+    2024-08-19 to 2025-07-07; the copies' `unique_id`s run in a parallel series at a near-constant offset (all 26
+    copies of the 2025-07-07 batch at +14,313 or +14,764) and include the same airline ticket numbers ("UNITED
+    0162410148953") and marketplace order numbers twice. In all 683 lines, $4,955,951.43; every one is identical to
+    the copy kept.
+  - *Identical lines:* each remaining identical set keeps the copy of the earliest load batch with the lowest
+    `unique_id`. 26 lines dropped, $138,820.11, in 25 sets, each set inside one load batch: 18 payment copies
+    ($140,433.98, for example two $97,378.20 vehicles from Mountain Home Auto Ranch on 2026-03-03 and two $31,500
+    payments to one contractor on 2024-09-06), 6 zero-dollar lines and 2 credits (-$1,613.87).
+  - *Void-safe:* a set of n identical positive lines keeps min(n, reversals + 1) copies, where reversals counts the
+    lines of the same fund, function, objective, account and vendor with the amount negated, in the same or the next
+    fiscal year, lines identical among themselves counting once; identical negative lines are kept once. **The void
+    rule keeps no line here:** none of the 18 payment sets has a reversal. Two upload-error copies do have a
+    reversal of their amount and stay dropped, because the reversal belongs to another line: a $122.58 US Bank
+    purchase-card line of 2024-09-01 loaded again on 2024-10-08, whose reversal of 2025-02-24 moves the one payment
+    from account 698000 to 698100 (reversal and repost the same day), and a $116.77 Westlock Inn line in the doubled
+    block of 2025-07-07, whose reversal pairs with a separate $116.77 line of 2025-06-25 loaded with it on
+    2025-07-09. Kept, each would count its payment twice.
+  - *Numbers:* raw 47,790 lines ($338,100,490.00), 47,709 in payment categories ($334,497,654.09). With the upload
+    errors dropped (the rule before 2026-10-07): 47,026 payment lines, $329,541,702.66. With the owner's rule, first
+    reading and corrected alike: 709 lines dropped ($5,094,771.54, all in payment categories), 47,000 payment lines,
+    $329,402,882.55; `transactions.csv.gz` is byte-identical to the first reading's. The first reading's second pass
+    over the published columns was removed (it dropped nothing here); normalize prints how many published rows
+    repeat (0), and `check_id.py` no longer requires none.
+  - *Where the rule changes a net:* the -$1,529.87 credit (no vendor, account 599400 Employee In State Travel Costs,
+    2026-06-22, twice in the load of 2026-07-06) is reversed once by a +$1,529.87 line of 2026-07-22 (FY2027), after
+    a $1,529.87 Enterprise Holdings payment of 2025-09-08 to the same account: as published the four lines net $0;
+    with one credit kept, $1,529.87. The -$84 Super 8 credit (2025-01-28, twice) has no counterpart. Open question
+    below.
+
+  A `unique_id` can also be reused by a different line (a transfer and its reversal), so `source_record_id` is
+  `unique_id`, or `unique_id-<n>` when the id repeats (32 lines, 26 of them payment lines). Reversals and credits are
+  kept as negative lines (2,974 lines, -$14.6M) and are never identical to the payment they reverse, so amounts are
+  net. Accounting entries that are not payments are dropped: encumbrances (14 lines, $3.34M), year-end accrual "GAAP
+  Expenses" (36, $0.08M), loss on disposal (4, $0.14M), transfers (27, $0.04M).
 - **Payees:** shown as published, private persons included (owner decision of 2026-10-06): `common.withhold_person`
   only cuts payee text matching `config/payee_name_redactions.csv`. Since main's Utah work was merged (2026-10-07)
   that file also holds patterns for a named officer, a sole member and an owner's name after "LLC"; one `id_state`
@@ -310,3 +343,7 @@ merging. Low-confidence rows were inferred from the account the payment was code
 - A wildland suppression services / aviation category (see Vendor categories): helicopter and air tanker services
   are `apparatus` in the shared map (California's choice, by spend) and contract crews and equipment `wildland`.
 - Yellow Pine: one district registered twice in the Local Government Registry, or two? (see `id_lgr` data quality)
+- Identical credits: the void rule protects identical payments only, so identical negative lines are kept once even
+  when a later line reverses one of them. In `id_state` this raises one family's net from $0 to $1,529.87 (see
+  `id_state`, Duplicates). Count re-reversals for identical credits the same way (keep min(n, re-reversals + 1))?
+  Ohio raises the same question.
