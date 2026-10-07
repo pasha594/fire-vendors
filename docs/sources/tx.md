@@ -11,9 +11,9 @@ Output format: `docs/multistate/data-contract.md`. All sources were reached and 
 | `usfa`, `openfema` | USFA registry and OpenFEMA grants (federal layer) | Done earlier | 4 | grants FY2005-2026 | 1,530 agencies; 641 matched awards | $130.2M grants | 1,530 |
 | `tx_dir` | Texas DIR cooperative contract sales | Built | 2 | FY2021-2026 | 28,491 item lines | $15.63M | 318 |
 | `tx_spd` | Comptroller Special Purpose District Public Information Database | Skipped: no spending fields | - | - | sample only | - | - |
-| `tx_houston` | City of Houston checkbook, Houston Fire Department | Built | 1 | FY2021-2027 | 105,471 lines | $296.5M | 1 |
-| `tx_dallas` | City of Dallas vendor payments, Dallas Fire-Rescue | Built | 1 | FY2026-2027 | 2,343 lines | $54.0M | 1 |
-| `tx_austin` | City of Austin eCheckbook, Austin Fire Department | Built | 1 | FY2021-2027 | 12,275 lines | $158.1M | 1 |
+| `tx_houston` | City of Houston checkbook, Houston Fire Department | Built | 1 | FY2021-2027 | 102,956 lines | $279.8M | 1 |
+| `tx_dallas` | City of Dallas vendor payments, Dallas Fire-Rescue | Built | 1 | FY2026-2027 | 2,247 lines | $53.0M | 1 |
+| `tx_austin` | City of Austin eCheckbook, Austin Fire Department | Built | 1 | FY2021-2027 | 11,842 lines | $157.7M | 1 |
 | - | San Antonio Open Checkbook (OpenGov) | Skipped: no department field, no bulk download | - | - | - | - | - |
 | `tx_fortworth` | Fort Worth accounts payable check register | Skipped: no department field | - | - | sample only | - | - |
 | - | El Paso | Skipped: no vendor payment data found | - | - | - | - | - |
@@ -29,12 +29,22 @@ included; only email addresses and bank account text are cut (`config/payee_name
 monthly report are kept as real repeat purchases, and only lines re-reported in a later month are dropped; (3) ESDs that provide only
 EMS (ambulance districts) are excluded; (4) Texas A&M Forest Service stays in the main data with kind "State fire agency".
 
+Owner decisions of 2026-10-07 applied: Dallas from FY2026 only is accepted. Dedup rule: identical lines and identical (doubled)
+days are dropped. A line is identical to another when every published field but the source's own row or transaction id is equal
+(agency, fiscal year, posting date, payee as published, description, account, published category, amount); one is kept. Houston,
+Austin and Dallas apply it through `tx_common.drop_identical` on their normalized rows: 3,068 lines ($18,644,840.38) dropped in all
+(Houston 2,539, $17,164,086.63; Austin 433, $422,692.05; Dallas 96, $1,058,061.70; details per source below). Texas DIR is the one
+exception (owner decision 2 of 2026-10-06) and is unchanged: identical lines inside one monthly report stay. `tx_cpa` holds
+published totals only. Negative lines are compared like any other line, so a reversal never cancels the payment it reverses.
+
 Fiscal years differ by source and are kept as each source defines them: DIR and the Comptroller use the Texas state FY (September to
 August); Dallas and Austin use October to September; Houston uses July to June. `agency_sources.csv` records each link's `fy_start`, so an
 agency with DIR and city rows (Houston, Austin) has two fiscal-year starts.
 
 Tests: `python3 tests/multistate/check_tx.py` (no import of the adapters) recomputes from the raw files every total per source, agency
-and fiscal year, every (agency, year, payee, amount) line and the row counts, and also checks DIR attribution (every raw customer name
+and fiscal year, every (agency, year, payee, amount) line and the row counts (city sources after the dedup rule, built there from the
+raw columns; it also asserts no two published rows of a city source are equal in every column but `source_record_id`), and also checks
+DIR attribution (every raw customer name
 linked or on a listed exclusion), redaction patterns, contract columns, dates, record ids, vendor map coverage and coverage tiers; it
 passes. `python3 tests/multistate/check_federal.py TX` still passes. Running every adapter's normalize twice gives byte-identical files.
 
@@ -167,15 +177,24 @@ $130.2M, 362 agencies) and 684 names are left unmatched in `grant_recipients_unm
 
   Raw keeps only Department ID 1200 lines (`checkbook-<fy>-hfd.csv.gz`, 1.2 MB in all) plus the dataset page and a 100-line sample.
 - **Fire identification**: Department ID 1200 "Houston Fire Department (HFD)" -> TX-KA926 (`department code`).
-- **Rows written**: 105,471 lines, $296.5M (FY2021 $36.2M, FY2022 $43.3M, FY2023 $30.8M, FY2024 $38.8M, FY2025 $70.1M, FY2026 $62.1M,
-  FY2027 to date $15.2M). Description = type of procurement, project, PO and contract; account = fund and GL account; category_published
-  = GL account description.
-- **Duplicates and reversals**: 24 lines identical in every column ($438,798) dropped, for example one invoice's PO lines listed twice in
-  the same payment document. 1,457 negative lines (-$11.7M: early payment discounts, credits, vendor offsets on the reconciliation
-  account) are kept, so amounts are net.
+- **Rows written**: 102,956 lines, $279,774,571.40 (FY2021 $35.1M, FY2022 $40.7M, FY2023 $30.6M, FY2024 $37.0M, FY2025 $63.1M,
+  FY2026 $60.2M, FY2027 to date $13.0M), from 105,495 raw lines. Description = type of procurement, project, PO and contract; account
+  = fund and GL account; category_published = GL account description.
+- **Duplicates and reversals**: owner dedup rule of 2026-10-07. Lines equal in fiscal year, clearing date, payee, description (type of
+  procurement, WBS description, PO number and item, contract), account (fund name, GL account) and amount are kept once; the payment
+  document number and vendor invoice number are the source's ids and are not published (nor are the WBS and fund codes; their names
+  are). 2,539 lines ($17,164,086.63, 1,384 sets) are dropped, against 24 ($438,798.19) under the former rule (identical in every raw
+  column, for example one invoice's PO lines listed twice in one payment document); those 24 are among the 2,539. Compared with the
+  line kept, 2,423 dropped lines ($16,449,541.10) differ only in the vendor invoice number, 81 in payment document and invoice, 8 only
+  in payment document, 5 in WBS code. 122 of them ($15,233,937.90) are GL "Cap Exp - Vehicles": vehicles of one price bought on one
+  PO line, paid on one day with one invoice each (Frazer: 10 ambulances at $252,745.00 paid 2025-06-12, 9 dropped; Knapp Chevrolet and
+  Sterling McCall Ford in sets of 4 and 5). Under the rule each such set counts as one vehicle, so Houston's fleet spending is
+  understated. If the vendor invoice number were published (in the description), the rule would drop only 36 lines ($616,720.40).
+  1,445 negative lines (-$11,637,179.15: early payment discounts, credits, vendor offsets on the reconciliation account) are kept, so
+  amounts are net; 12 negative lines equal to another negative line are among those dropped.
 - **Names**: published as the City publishes them (owner decision 1), individuals included; `common.withhold_person` cuts only email
-  addresses and bank account text (none in the HFD lines). The City itself pays deceased employees' unclaimed wages (GL 220550, 88
-  lines, $4.27M) through "GENERAL ONE-TIME VENDOR" ($4.7M in all) and masks some vendors as `*` (vehicle and equipment leases, $5.46M);
+  addresses and bank account text (none in the HFD lines). The City itself pays deceased employees' unclaimed wages (GL 220550, 80
+  lines, $4.09M) through "GENERAL ONE-TIME VENDOR" ($4.55M in all) and masks some vendors as `*` (vehicle and equipment leases, $5.46M);
   both are kept as published.
 - **Data quality**: lines can be charged to inventory (GL "COH General Inventory Account") rather than an expense account; capital
   projects for fire stations appear under HFD when coded to HFD.
@@ -190,9 +209,13 @@ $130.2M, 362 agencies) and 684 names are left unmatched in `grant_recipients_unm
   FY2027 (93,790 rows in all, $2.14 billion). Earlier years are not published in it any more; the separate FY2016-2018 dataset
   (`awax-wfz9`) and 2012-2016 payment registers are older than FY2021 and not used. Updated daily.
 - **Fire identification**: department `DFD` "Dallas Fire-Rescue" -> TX-DH807 (registry name "Dallas Fire Department").
-- **Rows written**: 2,343 lines: FY2026 $53.9M (Capital Outlay $35.0M, mostly apparatus), FY2027 to date $0.13M. Raw: `dfd.json.gz`
+- **Rows written**: 2,247 lines, $52,964,828.19: FY2026 $52.8M (Capital Outlay $34.2M, mostly apparatus), FY2027 to date $0.13M,
+  from 2,343 raw lines. Raw: `dfd.json.gz`
   (server-side filter), metadata, 100-row sample.
-- **Duplicates and reversals**: no lines identical apart from the Socrata row id. 14 negative lines (-$763K) kept.
+- **Duplicates and reversals**: owner dedup rule of 2026-10-07. No line is identical to another in every raw column but the Socrata
+  row id, but 96 lines ($1,058,061.70, 39 sets) equal another in every published field (fiscal year, run date, payee, commodity,
+  activity, fund type, object, object group, amount) and differ only in the payment document id; they are dropped. 14 negative lines
+  (-$762,978.62) kept.
 - **Names**: published as the City publishes them (owner decision 1), payees on claims, refund and reimbursement objects included.
   The City itself leaves out some payments "for vendor anonymity", so totals are below the budget.
 
@@ -206,11 +229,16 @@ $130.2M, 362 agencies) and 684 names are left unmatched in `grant_recipients_unm
   as competitive matters (none concern Fire).
 - **Fire identification**: department 83 "Fire" -> TX-WP801. Emergency Medical Services (93, Austin-Travis County EMS) and Public
   Safety & Emergency Management (96) are separate departments and not linked.
-- **Rows written**: 12,275 lines, $158.1M (FY2021 $27.8M, FY2022 $23.1M, FY2023 $31.7M, FY2024 $44.5M, FY2025 $23.0M, FY2026 $8.0M,
+- **Rows written**: 11,842 lines, $157,713,176.40, from 12,275 raw lines (FY2021 $27.7M, FY2022 $23.1M, FY2023 $31.6M, FY2024
+  $44.3M, FY2025 $23.0M, FY2026 $8.0M,
   FY2027 to date $0.05M). FY2024 is high from station construction contracts; FY2026 is low because few construction contracts were paid
   under department 83 that year (Contractuals $4.6M against $16-40M before). Raw: `fire.json.gz`, metadata, 100-row sample.
-- **Duplicates and reversals**: no identical lines; no negative lines. Check statuses Paid (12,129), Outstanding (136, issued not yet
-  cashed) and Escheat (10, uncashed and sent to the state) are all kept, since the City's expense stands.
+- **Duplicates and reversals**: owner dedup rule of 2026-10-07. No line is identical to another in every raw column but the Socrata
+  row id, but 433 lines ($422,692.05, 256 sets) equal another in every published field (fiscal year, issue date, payee, accounting
+  line description, fund, division, group, object, object category, amount) and differ only in the source's ids (payment document,
+  commodity and accounting line numbers, referenced PO or contract); they are dropped. No negative lines. Check statuses Paid
+  (11,697 kept of 12,129 raw), Outstanding (135 of 136, issued not yet cashed) and Escheat (10, uncashed and sent to the state) are
+  all kept, since the City's expense stands.
 - **Names**: published as the City publishes them (owner decision 1); individuals paid as vendors (artists, consultants, mileage and
   expense refunds) appear by name.
 - **Data quality**: one line per accounting line, so one check can be several rows; capital projects for fire stations appear under
@@ -282,19 +310,27 @@ collapsed) and asserts that no redaction pattern matches any published text.
 
 ## Vendor map additions
 
-`config/states/tx/vendor_map_additions.csv`: 210 payee keys (82 high, 99 medium, 29 low confidence), reusing `config/vendor_map.csv`
-canonical names when the company is the same (Grainger, AT&T, Verizon, Stryker, SHI International, CDW Government, Esri, Staples, Home
-Depot, Rush Truck Centers, Municipal Emergency Services, Jones & Bartlett Learning). Payees already in `vendor_map.csv` under the same
-key are not repeated; `spend` and `agencies` are recomputed from the data after review. Texas purchasing dollars (positive net spend of
-payees not mapped to a non-purchasing category) are $502.3M; the additions cover 77.4% and keys already in `vendor_map.csv` another
-18.0%: 95.4% together (`check_tx.py` asserts at least 90%). Unmapped: $23.0M across 1,577 smaller payees, the largest being Houston's
-masked `*` vendor ($5.46M) and payees named after a person or a person's firm (now shown by name).
+`config/states/tx/vendor_map_additions.csv`: 200 payee keys (78 high, 93 medium, 29 low confidence), reusing `config/vendor_map.csv`
+canonical names when the company is the same (16 rows, among them Grainger, AT&T, Verizon, Stryker, SHI International, Esri, Staples,
+Home Depot, Rush Truck Centers, Jones & Bartlett Learning); no remaining name differs from `vendor_map.csv`'s spelling of the same
+company. Payees already in `vendor_map.csv` under the same key are not repeated: after main's vendor map merge (2026-10-07) 10 keys
+were removed for that reason (Carahsoft Technology, CDW, Digitech Computer, Firetrol Protection Systems, Frazer, FTS Forest Technology
+Systems, Gear Grid, MES I Acquisition, RS Hughes, SWCA). `spend` and `agencies` are recomputed from the data after the dedup rule (41
+keys changed, -$9.53M, mostly Houston fleet dealers; agency counts unchanged). Texas purchasing dollars (positive net spend of payees
+not mapped to a non-purchasing category) are $484,549,731.91; the additions cover 67.7% and keys already in `vendor_map.csv` another
+27.7%: 95.4% together (95.2% with a real category, not unclassified; `check_tx.py` asserts at least 90%). Unmapped: $22.4M across
+1,551 smaller payees, the largest being Houston's masked `*` vendor ($5.46M) and payees named after a person or a person's firm (now
+shown by name).
 
 ## Open questions
 
 - Resolved by the owner on 2026-10-06 and applied: names shown as published (decision 1); identical DIR lines inside one monthly report
   kept (decision 2); EMS-only ESDs excluded (decision 3; seven DIR names, above); Texas A&M Forest Service in the main data as "State
-  fire agency" (decision 4).
+  fire agency" (decision 4). Resolved on 2026-10-07 and applied: Dallas from FY2026 only is accepted; identical lines and doubled
+  days are dropped in Houston, Austin and Dallas (DIR exempt).
+- Houston's vendor invoice number is not a published field, so vehicles bought several at one price on one PO line and paid on one day
+  count once (122 lines, $15.2M dropped; section on Houston). Publishing the invoice number in the description would keep them and
+  leave 36 lines ($616,720.40) dropped by the rule. Owner to confirm.
 - ESD service checks rest on web sources read on 2026-10-06 (district and county pages, local news); five small added ESDs could not be
   confirmed (section 1). An ESD-to-department table would let the directory merge ESDs with the departments they fund.
 - Dallas publishes only the current and previous fiscal year in its open data set (confirmed 2026-10-06 by a grouped SoQL query: FY2026
@@ -304,4 +340,5 @@ masked `*` vendor ($5.46M) and payees named after a person or a person's firm (n
   departments carry two `fy_start` values in `agencies.json`.
 - Totals cross-checked on 2026-10-06 with separate grouped SoQL queries: Dallas DFD FY2026 $53,891,181.76 and FY2027 $131,708.13, Austin
   department 83 FY2021-2027 (each year to the cent) and the Comptroller FY2024 Texas A&M Forest Service total $153,278,599.18 all equal
-  the normalized files.
+  the raw files; the normalized Dallas and Austin files are lower by the identical lines the 2026-10-07 dedup rule drops (Dallas FY2026
+  $52,833,120.06), and the Comptroller total equals the normalized file.
