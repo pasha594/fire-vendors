@@ -2,3 +2,7 @@ pattern,note
 [\w.+-]+@[\w-]+\.[\w.]+,Payee text with an email address
 REF ?#,Bank payment text that can include the account holder name
 ^Checking \d+ to Checking \d+,Transfers between the agency's own bank accounts (account digits)
+"\b(acct|account)\.? ?(#|no\.?)? ?\d{6,}",The agency's account number with a vendor
+/[a-z]\. [a-z'\-]+-treasurer\b|\batt: [a-z]\.[a-z]\. [a-z]+,Named officer or contact of an organization
+\bsold mbr\b,Sole member (owner) named in a business name
+"\bllc - [a-z]+ [a-z]+ [a-z]+$|\bllc, dba [a-z]+ [a-z]+ designs$",Owner's name after LLC

@@ -6,7 +6,7 @@
 <title>Utah Vendor Finances</title>
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<meta name="description" content="Net payments from Utah fire districts and interlocal fire agencies to vendors, by category, FY2021 to FY2026. Source: Transparent Utah.">
+<meta name="description" content="Net payments from Utah fire districts, interlocal fire agencies and city, town and county fire departments to vendors, by category, FY2021 to FY2026. Source: Transparent Utah.">
 <style>
 :root {
   color-scheme: light;
@@ -19,6 +19,7 @@
   --hover: #eaf0f7;
   --accent: #1d4f91;
   --accent-fg: #ffffff;
+  --shadow: rgba(0, 0, 0, .18);
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -41,7 +42,7 @@ p { margin: 6px 0; }
 
 /* Header */
 .site { border-bottom: 1px solid var(--rule); }
-.hdr { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; padding-top: 10px; padding-bottom: 10px; }
+.hdr { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; padding-top: 7px; padding-bottom: 7px; }
 .site-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 .site-title a { color: var(--fg); text-decoration: none; }
 .asof { margin: 0; font-size: .85rem; color: var(--muted); }
@@ -62,46 +63,52 @@ input[type=checkbox] { margin: 0; accent-color: var(--accent); }
 .chk { display: flex; gap: 6px; align-items: flex-start; }
 .chk input { margin-top: 3px; flex: none; }
 
-/* Layout: filter panel on the left, table area on the right */
-main { padding-bottom: 40px; }
-.layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 0 24px; align-items: start; }
+/* Layout. Phones and short windows: the page scrolls as usual. Windows at least 1000px wide and 560px
+   tall, or 700px wide and 660px tall (where the filter bar wraps to more rows; see "Fixed layout" below):
+   the page fills the window and never scrolls. The header, filter bar and table controls stay in place,
+   and only the region with the table (#scroller) scrolls. */
+:root { --gut: max(16px, calc((100vw - 1408px) / 2)); }     /* side gutter, lines up with .wrap */
+.page, .scroller { padding: 0 var(--gut) 40px; }
 .ftoggle { display: none; }
-.fpanel {
-  position: sticky; top: 0; max-height: 100vh; overflow-y: auto;
-  padding: 14px 16px 20px 0; border-right: 1px solid var(--rule); font-size: .875rem;
-}
-.area { min-width: 0; padding-top: 14px; }
+.fwrap { border-bottom: 1px solid var(--rule); }
+.top { width: 100%; padding-top: 8px; }   /* full width: auto margins would shrink it in the flex column */
 
-/* Filter panel */
-.fpanel h2 { font-size: 1rem; font-weight: 600; margin: 0 0 10px; }
-.field { margin: 0 0 10px; }
-.field > label, .field > legend { display: block; font-weight: 600; font-size: .8125rem; margin: 0 0 3px; padding: 0; }
-fieldset.field { border: 0; padding: 0; min-width: 0; }
-.field select, .field input[type=text] { width: 100%; }
-.range { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 8px; align-items: center; }
+/* Filter bar */
+.fbar { font-size: .875rem; }
+.flabel, .field > label { font-weight: 600; font-size: .8125rem; }
+.field { margin: 0; }
+.range { display: flex; align-items: center; gap: 6px; }
 .range label { font-size: .8125rem; color: var(--muted); }
-.fsec { border-top: 1px solid var(--rule); padding-top: 10px; margin-top: 12px; }
 .fcount { margin: 0; color: var(--muted); font-size: .8125rem; }
 .fmsg { margin: 3px 0 0; font-size: .8125rem; color: var(--muted); }
 .fmsg:empty { display: none; }
-.fpanel .btn { margin-top: 12px; }
-.fpanel .fshow { display: none; }
-/* Category: checkboxes by group, in a box with its own scroll. The legend and Clear float, so they share a line. */
-.cats > legend { float: left; margin: 0 0 4px; line-height: 22px; }
-.cats .ncat { font-weight: 400; color: var(--muted); }
-.fpanel .cats .catclr { float: right; margin: 0 0 4px; padding: 0 8px; font-size: .75rem; line-height: 20px; }
+.fshow { display: none; }
+/* Category: a button that opens the checkboxes by group */
+.catf { position: relative; }
+.dd {
+  font: inherit; font-size: .875rem; color: var(--fg); background: var(--bg); text-align: left; white-space: nowrap;
+  border: 1px solid var(--rule-strong); border-radius: 3px; padding: 4px 8px; cursor: pointer;
+}
+.dd:hover, .dd[aria-expanded="true"] { background: var(--shade); }
+.dd .car { margin-left: 8px; color: var(--muted); font-size: .75rem; }
+.catpop { background: var(--bg); border: 1px solid var(--rule-strong); border-radius: 3px; }
+.catpop[hidden] { display: none; }
+.cathead { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 10px; border-bottom: 1px solid var(--rule); }
+.ncat { font-weight: 400; color: var(--muted); }
+.catclr { padding: 0 8px; font-size: .75rem; line-height: 20px; }
 .catclr:disabled { color: var(--muted); border-color: var(--rule); cursor: default; background: var(--bg); }
-.catbox { clear: both; max-height: 300px; overflow-y: auto; border: 1px solid var(--rule-strong); border-radius: 3px; padding: 2px 8px 6px; }
-.cgrp { border: 0; margin: 0; padding: 0; min-width: 0; }
+.catbox { padding: 0 10px 8px; }
+.catcols { column-gap: 24px; }
+.cgrp { border: 0; margin: 0; padding: 0; min-width: 0; break-inside: avoid; }
 .cgrp > legend { padding: 6px 0 1px; font-size: .75rem; font-weight: 600; color: var(--muted); }
 .catbox .chk { padding: 2px 0; font-size: .8125rem; line-height: 1.3; cursor: pointer; }
 .catbox .chk input { margin-top: 2px; }
-.catbox > .chk { margin-top: 6px; }
+.catcols > .chk { padding-top: 8px; }
 
 /* Group by */
 .gbar { display: flex; align-items: center; gap: 10px; }
 .gbar-l { font-weight: 600; font-size: .875rem; white-space: nowrap; }
-.seg { display: flex; min-width: 0; overflow-x: auto; padding: 3px; margin: -3px; }
+.seg { display: flex; min-width: 0; overflow-x: auto; overflow-y: hidden; padding: 3px; margin: -3px; }
 .seg button {
   flex: none; font: inherit; font-size: .875rem; color: var(--fg); background: var(--bg);
   border: 1px solid var(--rule-strong); border-radius: 0; padding: 4px 12px; margin: 0 0 0 -1px;
@@ -114,7 +121,7 @@ fieldset.field { border: 0; padding: 0; min-width: 0; }
 .seg button:focus-visible { position: relative; z-index: 1; outline-offset: 1px; }
 
 /* Active filters */
-.chipbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 12px; font-size: .8125rem; min-height: 28px; }
+.chipbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 8px; font-size: .8125rem; min-height: 28px; }
 .chips-l { color: var(--muted); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .chip { display: inline-flex; align-items: center; border: 1px solid var(--rule-strong); border-radius: 3px; padding-left: 8px; line-height: 24px; }
@@ -125,7 +132,7 @@ fieldset.field { border: 0; padding: 0; min-width: 0; }
 .chip button:hover { color: var(--fg); background: var(--shade); }
 .badnote { flex-basis: 100%; margin: 0; color: var(--muted); }
 
-.summary { margin: 12px 0 0; }
+.summary { margin: 6px 0 0; }
 
 /* Context for the selected category, vendor or agency (above the table), and more for it (below) */
 #context { border: 1px solid var(--rule); margin-top: 12px; }
@@ -151,7 +158,7 @@ dl.facts dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
 ul.plain { margin: 4px 0; padding-left: 18px; font-size: .875rem; columns: 2 18em; }
 
 /* Table toolbar */
-.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 16px 0 6px; font-size: .875rem; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 8px 0; font-size: .875rem; }
 .tsearch { display: flex; align-items: center; gap: 6px; }
 .tsearch label { font-weight: 600; }
 .tsearch input { width: 18em; }
@@ -162,7 +169,7 @@ ul.plain { margin: 4px 0; padding-left: 18px; font-size: .875rem; columns: 2 18e
 .tbl { margin-top: 10px; }
 .thead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; margin-bottom: 4px; }
 .thead h3 { font-size: .875rem; font-weight: 600; margin: 0; }
-.tw { overflow-x: auto; }
+.tw { overflow-x: auto; overflow-y: hidden; }
 table { border-collapse: collapse; font-size: .875rem; }
 .tbl.wide table { width: 100%; }
 th, td { padding: 5px 10px; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: top; overflow-wrap: break-word; }
@@ -199,6 +206,7 @@ button.sort:hover { text-decoration: underline; }
 .sarr { color: var(--muted); }
 .more { margin: 8px 0; font-size: .8125rem; }
 .empty { color: var(--muted); }
+td.desc { min-width: 16em; max-width: 40em; }
 
 /* About */
 .prose { max-width: 46em; padding-top: 14px; }
@@ -206,32 +214,96 @@ button.sort:hover { text-decoration: underline; }
 .prose h2 { font-size: 1.05rem; font-weight: 600; margin: 26px 0 6px; }
 .prose li { margin: 3px 0; }
 
-footer { border-top: 1px solid var(--rule); padding: 12px 0 24px; font-size: .8125rem; color: var(--muted); }
-
-@media (min-width: 900px) and (max-width: 1199px) {
-  .layout { grid-template-columns: 200px minmax(0, 1fr); gap: 0 16px; }
+/* Filter bar: one row of labelled controls that wraps */
+@media (min-width: 700px) {
+  .fbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; padding: 7px 0 8px; }
+  .fbar .field, .fbar .range { display: flex; align-items: center; gap: 6px; }
+  .flabel, .fbar .field > label { white-space: nowrap; }
+  #f-vendor { width: 13em; }
+  #f-agency { width: 14em; }
+  .catf .dd { min-width: 12.5em; display: flex; justify-content: space-between; align-items: center; }   /* same width for All and "2 selected" */
+  .chipbar [data-clear] { display: none; }        /* the filter bar's Clear all filters is right above */
+  /* Chips wrap beside the label, not under it; the label lines up with the first line of chips */
+  .chipbar { align-items: flex-start; }
+  .chips-l { line-height: 26px; }
+  .chips { flex: 1 1 0; min-width: 0; }
+  .vendf { position: relative; }
+  /* The vendor message shows under the box, over the content below, until the next click or change */
+  .vendf .fmsg {
+    position: absolute; left: 0; top: calc(100% + 3px); z-index: 20; margin: 0; padding: 3px 8px; white-space: nowrap;
+    color: var(--fg); background: var(--bg); border: 1px solid var(--rule-strong); border-radius: 3px;
+  }
+  /* Category popover: the header row stays, the list scrolls when the window is too short for it */
+  .catpop {
+    position: absolute; top: calc(100% + 4px); left: 0; z-index: 20; display: flex; flex-direction: column;
+    width: 36em; max-width: calc(100vw - 32px); max-height: 70vh; box-shadow: 0 6px 18px var(--shadow);
+  }
+  .catpop[hidden] { display: none; }
+  .cathead { flex: none; }
+  .catbox { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  .catcols { columns: 2 15em; }
+}
+@media (min-width: 700px) and (max-width: 1199px) {
   th, td { padding: 5px 7px; }
   #tbl-main tbody th { min-width: 11em; }
 }
-@media (max-width: 899px) {
-  .layout { display: block; }
+
+/* Fixed layout: the page does not scroll. The table region scrolls in both directions, so its header
+   row can stay at the top while the first column stays at the left. Everything in the region except the
+   main table keeps the region's width and stays in place when the table is scrolled sideways. */
+@media (min-width: 1000px) and (min-height: 560px), (min-width: 700px) and (min-height: 660px) {
+  html { overflow: hidden; }
+  body { height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+  .site, .fwrap, .top { flex: none; }
+  main, .explore, .area { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .explore[hidden] { display: none; }
+  .page, .scroller { flex: 1 1 auto; min-height: 0; padding-bottom: 24px; }
+  .page { overflow-y: auto; scrollbar-gutter: stable; }
+  .page[hidden] { display: none; }
+  /* A classic scrollbar keeps its own gutter, so 100cqi below is the width beside it, not under it */
+  .scroller { overflow: auto; scrollbar-gutter: stable; container-type: inline-size; border-top: 1px solid var(--rule); }
+  .sc-in { width: fit-content; min-width: 100%; }
+  /* Sticky insets count from the region's content edge, inside its padding (the gutter) */
+  .sc-in > *, #tbl-main > *, .tmain > * { position: sticky; left: 0; width: 100cqi; }
+  .sc-in > #tbl-main, #tbl-main > .tmain, .tmain > .tw { position: static; width: auto; }
+  #tbl-main .tw { overflow: visible; }
+  /* Separate borders, so the borders of the sticky cells move with them */
+  #tbl-main table { border-collapse: separate; border-spacing: 0; }
+  #tbl-main tbody tr:last-child > * { border-bottom: 0; }
+  #tbl-main thead th { position: sticky; top: 0; z-index: 2; }
+  #tbl-main .tw thead tr > :first-child { z-index: 3; }
+  /* Covers the gutter left of the first column, where the table passes when scrolled sideways */
+  #tbl-main .tw tr > :first-child::before {
+    content: ""; position: absolute; top: 0; bottom: -1px; right: 100%; width: var(--gut); background: var(--bg); pointer-events: none;
+  }
+}
+
+/* Phones: the filters fold away behind a Filters button and stack */
+@media (max-width: 699px) {
+  .fwrap { border-bottom: 0; }
   .ftoggle { display: inline-block; margin-top: 12px; min-height: 40px; }
-  .fpanel .fshow { display: block; width: 100%; min-height: 40px; }
-  .fpanel .cats .catclr { min-height: 36px; padding: 0 12px; }
-  .cats > legend { line-height: 36px; }
+  .fbar { display: none; border: 1px solid var(--rule); padding: 10px 12px; margin-top: 8px; }
+  .fbar.open { display: block; }
+  .fbar .field, .fbar .npf { margin: 0 0 12px; }
+  .flabel, .fbar .field > label { display: block; margin: 0 0 3px; }
+  .fbar select, .fbar input[type=text], .dd { width: 100%; min-height: 40px; }
+  .range select { flex: 1 1 0; min-width: 0; }
+  .dd { display: flex; justify-content: space-between; align-items: center; }
+  .catpop { margin-top: 6px; }
+  .catclr { min-height: 36px; padding: 0 12px; }
   .catbox .chk { padding: 7px 0; }
   .catbox .chk input { margin-top: 1px; width: 18px; height: 18px; }
+  #f-clear { min-height: 40px; }
+  .fcount { margin: 10px 0 0; }
+  .fshow { display: block; width: 100%; min-height: 40px; margin-top: 12px; }
+  .top { padding-top: 12px; }
   .seg button { min-height: 40px; }
-  .chip button { min-height: 36px; min-width: 36px; }
+  .chip button { min-height: 32px; min-width: 32px; }
+  .chipbar [data-clear] { display: none; }        /* the Filters panel has Clear all filters */
+  #tcsv { margin-left: auto; }
   button.sort { display: block; width: 100%; }
   thead th:has(> button.sort) { padding: 0; }
   thead th > button.sort { padding: 9px 10px; }
-  .fpanel {
-    display: none; position: static; max-height: none; overflow: visible;
-    border: 1px solid var(--rule); padding: 10px 12px; margin-top: 8px;
-  }
-  .fpanel.open { display: block; }
-  .area { padding-top: 12px; }
   .tsearch { flex: 1 1 100%; }
   .tsearch input { flex: 1; width: auto; min-width: 0; }
   .tcount { margin-left: 0; }
@@ -243,6 +315,7 @@ footer { border-top: 1px solid var(--rule); padding: 12px 0 24px; font-size: .81
   thead th > button.sort { padding: 9px 5px; }
   tbody th, #tbl-main tbody th { min-width: 7em; }
   .opt { display: none; }
+  td.desc { min-width: 12em; }
   dl.facts > div { grid-template-columns: 8.5em minmax(0, 1fr); gap: 6px; }
   .gbar { align-items: flex-start; gap: 8px; }
   .gbar-l { line-height: 40px; }
@@ -261,43 +334,50 @@ footer { border-top: 1px solid var(--rule); padding: 12px 0 24px; font-size: .81
   </div>
 </header>
 
-<main id="main" class="wrap" tabindex="-1">
-  <div id="page"><p>Loading data...</p></div>
-  <div id="explore" hidden>
+<main id="main" tabindex="-1">
+  <div id="page" class="page" tabindex="-1"><p>Loading data...</p></div>
+  <div id="explore" class="explore" hidden>
     <h1 class="vh" id="page-h">Payments by category</h1>
-    <div class="layout">
-      <button type="button" class="btn ftoggle" id="ftoggle" aria-expanded="false" aria-controls="fpanel">Filters</button>
-      <aside class="fpanel" id="fpanel" aria-labelledby="fp-h">
-        <h2 id="fp-h">Filters</h2>
-        <fieldset class="field">
-          <legend>Fiscal years</legend>
-          <div class="range">
-            <label for="f-from">From</label><select id="f-from"></select>
-            <label for="f-to">To</label><select id="f-to"></select>
+    <div class="fwrap">
+      <div class="wrap">
+        <button type="button" class="btn ftoggle" id="ftoggle" aria-expanded="false" aria-controls="fpanel">Filters</button>
+        <section class="fbar" id="fpanel" aria-labelledby="fp-h">
+          <h2 class="vh" id="fp-h">Filters</h2>
+          <div class="field" role="group" aria-labelledby="f-yrs-l">
+            <span class="flabel" id="f-yrs-l">Fiscal years</span>
+            <span class="range">
+              <label for="f-from" class="vh">From</label><select id="f-from"></select>
+              <label for="f-to">to</label><select id="f-to"></select>
+            </span>
           </div>
-        </fieldset>
-        <fieldset class="field cats" id="f-cat">
-          <legend>Category <span class="ncat" id="f-cat-n"></span></legend>
-          <button type="button" class="btn catclr" id="f-cat-clear" aria-label="Clear categories" disabled>Clear</button>
-          <div class="catbox" id="f-cat-box"></div>
-        </fieldset>
-        <div class="field">
-          <label for="f-vendor">Vendor</label>
-          <input type="text" id="f-vendor" list="vendor-list" autocomplete="off" spellcheck="false" placeholder="Pick a vendor" aria-describedby="f-vendor-msg">
-          <datalist id="vendor-list"></datalist>
-          <p class="fmsg" id="f-vendor-msg" aria-live="polite"></p>
-        </div>
-        <div class="field"><label for="f-agency">Agency</label><select id="f-agency"></select></div>
-        <div class="fsec">
+          <div class="field catf" id="f-cat-wrap">
+            <button type="button" class="dd" id="f-cat-btn" aria-expanded="false" aria-controls="f-cat-pop"><span id="f-cat-txt">Category: All</span><span class="car" aria-hidden="true">▼</span></button>
+            <div class="catpop" id="f-cat-pop" role="group" aria-labelledby="f-cat-l" tabindex="-1" hidden>
+              <div class="cathead">
+                <span class="flabel" id="f-cat-l">Category <span class="ncat" id="f-cat-n"></span></span>
+                <button type="button" class="btn catclr" id="f-cat-clear" aria-label="Clear categories" disabled>Clear</button>
+              </div>
+              <div class="catbox" id="f-cat-box"></div>
+            </div>
+          </div>
+          <div class="field vendf">
+            <label for="f-vendor">Vendor</label>
+            <input type="text" id="f-vendor" list="vendor-list" autocomplete="off" spellcheck="false" placeholder="Pick a vendor" aria-describedby="f-vendor-msg">
+            <datalist id="vendor-list"></datalist>
+            <p class="fmsg" id="f-vendor-msg" aria-live="polite"></p>
+          </div>
+          <div class="field"><label for="f-agency">Agency</label><select id="f-agency"></select></div>
           <div class="field"><label for="f-county">County</label><select id="f-county"></select></div>
-          <div class="field"><label for="f-size">Annual expenses</label><select id="f-size" aria-describedby="f-size-desc"></select><span id="f-size-desc" class="vh">Total expenses in the latest fully reported fiscal year</span></div>
+          <div class="field"><label for="f-size">Annual expenses</label><select id="f-size" aria-describedby="f-size-desc"></select><span id="f-size-desc" class="vh">Median of total expenses in the last three fully reported fiscal years; for cities, towns and counties, their fire expenses</span></div>
           <p class="fcount" id="f-count"></p><span class="vh" id="f-live" aria-live="polite"></span>
-        </div>
-        <div class="fsec chk"><input type="checkbox" id="f-np"><label for="f-np">Include non-purchasing payments</label></div>
-        <button type="button" class="btn" id="f-clear">Clear all filters</button>
-        <button type="button" class="btn fshow" id="fshow">Show rows</button>
-      </aside>
-      <div class="area" id="area">
+          <div class="chk npf"><input type="checkbox" id="f-np"><label for="f-np">Include non-purchasing payments</label></div>
+          <button type="button" class="btn" id="f-clear">Clear all filters</button>
+          <button type="button" class="btn fshow" id="fshow">Show rows</button>
+        </section>
+      </div>
+    </div>
+    <div class="area" id="area">
+      <div class="wrap top">
         <div class="gbar">
           <span class="gbar-l" id="gb-l">Group by</span>
           <div class="seg" role="group" aria-labelledby="gb-l">
@@ -310,20 +390,18 @@ footer { border-top: 1px solid var(--rule); padding: 12px 0 24px; font-size: .81
         </div>
         <div class="chipbar" id="chips"></div>
         <p class="summary" id="summary" tabindex="-1"></p>
-        <div id="context"></div>
-        <section class="tbl wide" id="tbl-main" aria-labelledby="page-h"></section>
-        <div id="more"></div>
+        <div class="toolbar" id="tbar"></div>
+      </div>
+      <div class="scroller" id="scroller" tabindex="-1">
+        <div class="sc-in">
+          <div id="context"></div>
+          <section class="tbl wide" id="tbl-main" aria-labelledby="page-h"></section>
+          <div id="more"></div>
+        </div>
       </div>
     </div>
   </div>
 </main>
-
-<footer>
-  <div class="wrap">
-    Public data from Transparent Utah, the USFA National Fire Department Registry and OpenFEMA.
-    Code and data: <a href="https://github.com/pasha594/utah-fire-procurement">github.com/pasha594/utah-fire-procurement</a>.
-  </div>
-</footer>
 
 <script>
 'use strict';
@@ -333,7 +411,7 @@ footer { border-top: 1px solid var(--rule); padding: 12px 0 24px; font-size: .81
    runs in node (see the test script). Every number on the page comes from here.
    ========================================================================== */
 const Core = (function () {
-  // Size by total expenses in the latest fully reported fiscal year (lo inclusive, hi exclusive)
+  // Size by annual expenses: the median of the last three fully reported fiscal years (lo inclusive, hi exclusive)
   const SIZES = [
     { id: 'under-1m', label: 'Under $1M', lo: -Infinity, hi: 1e6 },
     { id: '1m-5m', label: '$1M–$5M', lo: 1e6, hi: 5e6 },
@@ -347,11 +425,11 @@ const Core = (function () {
     ? s.replace(/&(amp|lt|gt|quot|apos|#39);/g, (m, e) => ENT[e]) : s);
 
   // Build lookup tables once after load.
+  // D.rows: [agency id, vendor index, fiscal year, category index, net amount, payee name index (-1: withheld)]
   function buildIndex(D) {
     const meta = D.meta;
     for (const v of D.vendors) v.name = decodeEntities(v.name);
     D.aliases = D.aliases.map(decodeEntities);
-    D.payments = D.payments || [];
     const years = meta.years.slice().sort((a, b) => a - b);
     const partial = new Set(meta.partial_years || []);
     const cat = new Map();
@@ -360,15 +438,22 @@ const Core = (function () {
       cat.set(c.id, Object.assign({ pos: i }, c));
       if (!groups.includes(c.group)) groups.push(c.group);
     });
-    const vcat = D.vendors.map(v => v.category);              // category id by vendor index
+    const catIds = D.categories.map(c => c.id);                // category id by category index
     const vendorPos = new Map(D.vendors.map((v, i) => [v.id, i]));
+    // Categories each vendor's rows are in (all years and agencies), in category order
+    const vcatSets = D.vendors.map(() => new Set());
+    for (const r of D.rows) vcatSets[r[1]].add(r[3]);
+    const vcats = vcatSets.map(s => [...s].sort((a, b) => a - b).map(i => catIds[i]));
     const agency = new Map(D.agencies.map(a => [a.id, a]));
-    const latest = new Map();                                  // agency id -> {year, amount}
+    // agency id -> {year: latest of the years used, years, amount}: annual expenses are the median of the last three
+    // fully reported fiscal years, so one year of capital spending does not move an agency to a larger size range
+    const latest = new Map();
     for (const a of D.agencies) {
-      const ys = Object.keys(a.budget || {}).map(Number).filter(y => !partial.has(y));
+      const ys = Object.keys(a.budget || {}).map(Number).filter(y => !partial.has(y) && a.budget[y] != null).sort((x, y) => x - y).slice(-3);
       if (ys.length) {
-        const y = Math.max(...ys);
-        latest.set(a.id, { year: y, amount: a.budget[y] });
+        const v = ys.map(y => a.budget[y]).sort((x, y) => x - y);
+        const mid = v.length >> 1;
+        latest.set(a.id, { year: ys[ys.length - 1], years: ys, amount: v.length % 2 ? v[mid] : (v[mid - 1] + v[mid]) / 2 });
       }
     }
     const grantsBy = new Map();                                // agency id -> FEMA grants
@@ -381,7 +466,31 @@ const Core = (function () {
     const counties = [...new Set(D.agencies.map(a => a.county).filter(Boolean))].sort();
     // Category search terms ("air pack; breathing apparatus" -> ["air pack", "breathing apparatus"])
     const catTerms = new Map(D.categories.map(c => [c.id, (c.terms || '').split(';').map(s => s.trim()).filter(Boolean)]));
-    return { D, meta, years, partial, cat, groups, vcat, vendorPos, agency, latest, grantsBy, vendorText, counties, catTerms };
+    return {
+      D, meta, years, partial, cat, groups, catIds, vcats, vendorPos, agency, latest, grantsBy, vendorText, counties, catTerms,
+      P: null,                                                 // single payments, set by setPayments
+    };
+  }
+
+  // Single payments from data/payments.json, loaded when a view first needs them:
+  // P.payments: [agency id, posting date, vendor index, category index, amount, description index, payee name index, fiscal year]
+  // The indexes point into the data.json of the same build, so a file from another build is refused.
+  function setPayments(ix, P) {
+    if (!P || !Array.isArray(P.payments) || !Array.isArray(P.descriptions)) throw new Error('data/payments.json has no payments list');
+    if (P.built !== ix.meta.built) {
+      throw new Error('data/payments.json (built ' + P.built + ') is not from the same build as data/data.json (built ' + ix.meta.built + ')');
+    }
+    const nv = ix.D.vendors.length, nc = ix.catIds.length, na = ix.D.aliases.length, nd = P.descriptions.length;
+    for (const p of P.payments) {
+      if (!ix.agency.has(p[0]) || !(p[2] >= 0 && p[2] < nv) || !(p[3] >= 0 && p[3] < nc) ||
+          !(p[5] >= 0 && p[5] < nd) || !(p[6] >= -1 && p[6] < na)) {
+        throw new Error('data/payments.json does not match data/data.json');
+      }
+    }
+    // Some descriptions carry control characters between items; show them as spaces
+    const descriptions = P.descriptions.map(s => decodeEntities(String(s)).replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/ {2,}/g, ' ').trim());
+    ix.P = { payments: P.payments, descriptions };
+    return ix.P;
   }
 
   // Global filters from URL parameters (strings). Unknown values fall back to defaults.
@@ -414,21 +523,30 @@ const Core = (function () {
     return out;
   }
 
-  // The category of a payment row, r = [agency id, vendor index, fiscal year, net amount, alias index],
-  // and of a single payment, p = [agency id, fiscal year, rank, vendor index, amount, alias index].
-  // Both take their vendor's category for now. Everything that filters or groups by category
-  // looks the category up here.
-  const rowCat = (ix, r) => ix.vcat[r[1]];
-  const payCat = (ix, p) => ix.vcat[p[3]];
+  // The category id of a row, r = [agency id, vendor index, fiscal year, category index, net amount, alias index],
+  // and of a single payment, p = [agency id, date, vendor index, category index, amount, description, alias, fiscal year].
+  // Each row and payment carries its own category (one vendor's lines can be in several). Everything
+  // that filters or groups by category looks the category up here.
+  const rowCat = (ix, r) => ix.catIds[r[3]];
+  const payCat = (ix, p) => ix.catIds[p[3]];
 
+  // Purchasing categories only: the default, unless g.np is set, or the filters name a category, group
+  // or purchasing flag, or a vendor none of whose payments are in a purchasing category. A vendor with
+  // payments in both kinds keeps the default, so its row in the vendor grouping and the table it leads
+  // to have the same total.
+  function purchOnly(ix, g, f) {
+    f = f || {};
+    if (g.np || f.cat != null || f.group != null || f.purch != null) return false;
+    if (f.vendor == null) return true;
+    return vendorCats(ix, f.vendor).some(id => ix.cat.get(id).purchasing === 'yes');
+  }
   // Which categories pass global filters g and row filters f: {category id: true|false}.
   // f.cat is one category id or a list of them; a category passes when it is any of them.
-  // Non-purchasing categories are left out unless g.np is set or the filter names a
-  // category, group, purchasing flag or vendor explicitly.
+  // Non-purchasing categories are left out when purchOnly.
   function catFilter(ix, g, f) {
     f = f || {};
     const cats = f.cat == null ? null : new Set([].concat(f.cat));
-    const onlyPurch = !g.np && cats == null && f.group == null && f.purch == null && f.vendor == null;
+    const onlyPurch = purchOnly(ix, g, f);
     const ok = {};
     for (const [id, c] of ix.cat) {
       ok[id] = (cats == null || cats.has(id)) &&
@@ -462,11 +580,24 @@ const Core = (function () {
     return out;
   }
   // Categories a vendor's rows are in (all years and agencies), in category order.
-  function vendorCats(ix, vendorId) {
-    const vi = ix.vendorPos.get(vendorId);
-    const s = new Set();
-    for (const r of ix.D.rows) if (r[1] === vi) s.add(rowCat(ix, r));
-    return [...s].sort((a, b) => ix.cat.get(a).pos - ix.cat.get(b).pos);
+  const vendorCats = (ix, vendorId) => (ix.vendorPos.has(vendorId) ? ix.vcats[ix.vendorPos.get(vendorId)].slice() : []);
+  // Categories of each vendor in the given rows, main one first: Map vendor index -> [category id, ...].
+  // The main category is the one with the largest net amount (positive amounts first; a tie goes to the
+  // later category id in alphabetical order), as in the build.
+  function catsByVendor(ix, rows) {
+    const net = new Map();
+    for (const r of rows) {
+      let m = net.get(r[1]);
+      if (!m) net.set(r[1], (m = new Map()));
+      m.set(r[3], (m.get(r[3]) || 0) + r[4]);
+    }
+    const out = new Map();
+    for (const [vi, m] of net) {
+      const list = [...m].map(([c, x]) => [ix.catIds[c], x]);
+      list.sort((a, b) => (b[1] > 0) - (a[1] > 0) || (a[1] > 0 ? b[1] - a[1] : Math.abs(b[1]) - Math.abs(a[1])) || (a[0] < b[0] ? 1 : a[0] > b[0] ? -1 : 0));
+      out.set(vi, list.map(x => x[0]));
+    }
+    return out;
   }
 
   function emptyAgg(key) {
@@ -474,22 +605,23 @@ const Core = (function () {
   }
 
   // Group rows by keyFn: net spend, row count, spend per year, and who paid whom.
-  // An agency paid a vendor in a fiscal year when the net of its rows for that agency, vendor
-  // and year (all payee names) is positive. Agencies (ag), vendors (ve) and the last year paid
-  // come from those agency-vendor-years only, so an agency with nothing but refunds or credits
-  // from a vendor is in the spend but not in the counts.
+  // An agency paid a vendor in a fiscal year when the net of its rows for that agency, vendor, year
+  // and category (all payee names) is positive. Agencies (ag), vendors (ve) and the last year paid
+  // come from those agency-vendor-year-categories only, so an agency with nothing but credits or
+  // corrections from a vendor is in the spend but not in the counts. Every grouping (category, vendor,
+  // agency, year) keeps each agency-vendor-year-category whole, so grouped counts add up to the totals.
   function agg(rows, keyFn) {
     const m = new Map();
-    const net = new Map();                                   // group key -> agency|vendor|year -> net
+    const net = new Map();                                   // group key -> agency|vendor|year|category -> net
     for (const r of rows) {
       const k = keyFn(r);
       let o = m.get(k);
       if (!o) { m.set(k, (o = emptyAgg(k))); net.set(k, new Map()); }
-      o.spend += r[3];
+      o.spend += r[4];
       o.n++;
-      o.yr[r[2]] = (o.yr[r[2]] || 0) + r[3];
-      const nm = net.get(k), nk = r[0] + '|' + r[1] + '|' + r[2];
-      nm.set(nk, (nm.get(nk) || 0) + r[3]);
+      o.yr[r[2]] = (o.yr[r[2]] || 0) + r[4];
+      const nm = net.get(k), nk = r[0] + '|' + r[1] + '|' + r[2] + '|' + r[3];
+      nm.set(nk, (nm.get(nk) || 0) + r[4]);
     }
     for (const [k, nm] of net) {
       const o = m.get(k);
@@ -516,9 +648,10 @@ const Core = (function () {
     return s;
   }
 
-  // Single payments matching global filters g and f = {cat, group, purch, vendor, agency, year}, with the same
-  // rules as selectRows. A payment is [agency id, fiscal year, rank, vendor index, amount, alias index], taken
-  // from each agency's 100 largest payments per fiscal year (purchasing vendors, $1,000 or more only).
+  // Single payments (setPayments) matching global filters g and f = {cat, group, purch, vendor, agency, year}, with
+  // the same rules as selectRows; the fiscal year is the one the line was reported in, not the year of its date.
+  // p = [agency id, posting date, vendor index, category index, amount, description index, alias index, fiscal year]:
+  // transaction lines of $1,000 or more in purchasing categories.
   function selectPayments(ix, g, f) {
     f = f || {};
     const y0 = f.year != null ? f.year : g.from;
@@ -528,9 +661,9 @@ const Core = (function () {
     if (f.vendor != null) vi = ix.vendorPos.has(f.vendor) ? ix.vendorPos.get(f.vendor) : -2;
     const okCat = catFilter(ix, g, f);
     const out = [];
-    for (const p of ix.D.payments) {
-      if (p[1] < y0 || p[1] > y1) continue;
-      if (vi != null && p[3] !== vi) continue;
+    for (const p of ix.P ? ix.P.payments : []) {
+      if (p[7] < y0 || p[7] > y1) continue;
+      if (vi != null && p[2] !== vi) continue;
       if (!okCat[payCat(ix, p)]) continue;
       if (f.agency != null ? p[0] !== f.agency : !peers.has(p[0])) continue;
       out.push(p);
@@ -541,7 +674,7 @@ const Core = (function () {
     const pays = selectPayments(ix, g, f);
     let total = 0;
     const ag = new Set(), ve = new Set();
-    for (const p of pays) { total += p[4]; ag.add(p[0]); ve.add(p[3]); }
+    for (const p of pays) { total += p[4]; ag.add(p[0]); ve.add(p[2]); }
     return { pays, n: pays.length, total, ag, ve };
   }
 
@@ -679,7 +812,7 @@ const Core = (function () {
   //   &size=..&np=1&q=search&years=1. cat is one or more category ids, separated by commas; in the
   //   state it is null or a list in category order. year=Y is read as from=Y&to=Y. group and purch
   //   are kept from older links (category group; purchasing flag). type and staff (agency type and
-  //   staffing filters, since removed) are ignored.
+  //   staffing filters, since removed) are ignored and reported in bad.
   const GROUPS = ['category', 'vendor', 'agency', 'year', 'none'];
 
   // Category ids (a list, or text separated by commas) -> {ids: known ids in category order, bad: unknown ones}
@@ -720,23 +853,26 @@ const Core = (function () {
     const ag = Number(p.agency);
     take('agency', 'agency', /^\d+$/.test(String(p.agency)) && ix.agency.has(ag), ag);
     // Category and vendor together are an intersection (it can be empty). The category group and
-    // purchasing flag from older links are dropped when they contradict the vendor's category, or
-    // every selected category.
-    const vi = s.vendor != null ? ix.vendorPos.get(s.vendor) : null;
-    const vc = vi != null ? ix.cat.get(ix.vcat[vi]) : null;
-    const fcs = vc ? [vc] : s.cat ? s.cat.map(id => ix.cat.get(id)) : [];
-    const who = vc ? ix.D.vendors[vi].name : fcs.length === 1 ? fcs[0].name : 'the selected categories';
+    // purchasing flag from older links are dropped when they contradict every category of the
+    // vendor's rows, or every selected category.
+    const ven = s.vendor != null ? ix.D.vendors[ix.vendorPos.get(s.vendor)] : null;
+    const fcs = (ven ? vendorCats(ix, s.vendor) : s.cat || []).map(id => ix.cat.get(id));
+    const one = ven || fcs.length === 1;                       // the subject is one vendor or one category
+    const who = ven ? ven.name : fcs.length === 1 ? fcs[0].name : 'the selected categories';
     if (fcs.length && s.group != null && !fcs.some(c => c.group === s.group)) {
-      bad.push('category group "' + p.group + '" (' + who + (fcs.length === 1 ? ' is in ' + fcs[0].group : ' are not in it') + ')');
+      const gs = [...new Set(fcs.map(c => c.group))];
+      bad.push('category group "' + p.group + '" (' + who + (gs.length === 1 ? (one ? ' is in ' : ' are in ') + gs[0] : (one ? ' is' : ' are') + ' not in it') + ')');
       s.group = null;
     }
     if (fcs.length && s.purch != null && !fcs.some(c => c.purchasing === s.purch)) {
-      bad.push('purchasing flag "' + p.purch + '" (' + who + (fcs.length === 1 ? (fcs[0].purchasing === 'yes' ? ' is' : ' is not') : (s.purch === 'yes' ? ' are not' : ' are')) + ' purchasing)');
+      // Every category contradicts the flag, so they all have the other one
+      bad.push('purchasing flag "' + p.purch + '" (' + who + (one ? ' is' : ' are') + (s.purch === 'yes' ? ' not' : '') + ' purchasing)');
       s.purch = null;
     }
     if (s.purch === 'yes') { s.purch = null; s.np = false; }   // purchasing only is the default
     s.q = s.g !== 'year' && typeof p.q === 'string' ? p.q : '';
     s.years = p.years === '1';
+    if (has('type') || has('staff')) bad.push('agency type and staffing filters (no longer available)');
     s.bad = bad;
     return s;
   }
@@ -779,7 +915,9 @@ const Core = (function () {
     return f;
   }
   // Filtered to one value of a grouping. Several categories still leave something to group by.
-  // A vendor has one category, so a vendor filter also fixes the category.
+  // A vendor filter counts as filtering the category too: a drill-down that has a vendor never moves
+  // to the category grouping (most vendors are in one category; the yearly totals show the category
+  // of each row, and Group by Category still splits a vendor that has several).
   function isFiltered(s, dim) {
     if (dim === 'vendor') return s.vendor != null;
     if (dim === 'agency') return s.agency != null;
@@ -816,7 +954,7 @@ const Core = (function () {
     return ix.D.categories.filter(c => ok[c.id]);
   }
   // The table for a state: items are one aggregate per category, vendor, agency or year, or
-  // the payment rows themselves for g = 'none'. Category and year groupings list every value in
+  // the rows themselves for g = 'none'. Category and year groupings list every value in
   // the filters, with zero when nothing was paid (with a vendor filter, only categories with its
   // rows); vendors are listed when they have rows. Agencies: every agency in the filters, or only
   // those with rows when a category or vendor filter is set. When category, vendor or other row
@@ -826,7 +964,7 @@ const Core = (function () {
     const peers = s.agency != null ? new Set([s.agency]) : peerIds(ix, s);
     const rows = selectRows(ix, s, f);
     const sum = summary(rows);
-    const onlyPurch = !s.np && f.cat == null && f.group == null && f.purch == null && f.vendor == null;
+    const onlyPurch = purchOnly(ix, s, f);
     const narrowed = f.cat != null || f.group != null || f.purch != null || f.vendor != null;
     let items;
     if (!peers.size || (narrowed && !rows.length)) items = [];
@@ -848,7 +986,7 @@ const Core = (function () {
   }
 
   return {
-    SIZES, buildIndex, normGlobal, peerIds, rowCat, payCat, catFilter, selectRows, vendorCats, emptyAgg, agg, summary, grantsIn,
+    SIZES, buildIndex, setPayments, normGlobal, peerIds, rowCat, payCat, purchOnly, catFilter, selectRows, vendorCats, catsByVendor, emptyAgg, agg, summary, grantsIn,
     selectPayments, paymentsModel, fullYear, rangeYears, staffModel, revenueModel, peopleIn, revenueIn, fyStarts,
     searchRe, searchCategories,
     homeModel, categoryModel, vendorModel, agencyModel, vendorsModel, agenciesModel, rowsModel,
@@ -859,7 +997,7 @@ const Core = (function () {
 if (typeof module !== 'undefined' && module.exports) module.exports = Core;
 
 /* ==========================================================================
-   UI: one table with a filter panel, group-by buttons and active filters.
+   UI: one table with a filter bar, group-by buttons and active filters.
    Browser only.
    ========================================================================== */
 if (typeof window !== 'undefined' && typeof document !== 'undefined') (function () {
@@ -901,7 +1039,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ESC[c]);
   const int = v => nf.format(v);
-  const pct = v => (v > 0 && v < 0.0005 ? '<0.1%' : (v * 100).toFixed(1) + '%');
+  const pct = v => (v > 0 && v < 0.0005 ? '<0.1%' : v < 0 && v > -0.0005 ? '0.0%' : (v * 100).toFixed(1) + '%');
   const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
   let negSeen = false;                               // set when a negative amount is rendered
   let negNoted = false;                              // the page already explains negative amounts
@@ -929,6 +1067,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   }
   const fy = y => 'FY' + y + (ix.partial.has(y) ? ' (partial)' : '');
   const fyHtml = y => 'FY' + y + (ix.partial.has(y) ? ' <span class="nw">(partial)</span>' : '');   // may wrap before "(partial)"
+  // The fiscal years annual expenses are the median of: "FY2023–FY2025", or one year
+  const spanText = l => (l.years.length > 1 ? 'FY' + l.years[0] + '–FY' + l.years[l.years.length - 1] : 'FY' + l.year);
   const yearList = Core.rangeYears;
   function yearSpan(g) {
     if (g.from === g.to) return fy(g.from);
@@ -949,14 +1089,27 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   const V = () => ix.D.vendors;
   const vendorOf = id => V()[ix.vendorPos.get(id)];
   const agName = id => ix.agency.get(id).name;
-  const rawVendorFile = id => BLOB + ix.meta.raw_path + '/transparent_utah/vendors/' + id + '.json.gz';
   const tuLink = () => A(safeUrl(ix.meta.transparent_utah) || LINKS.tu, 'Transparent Utah');
+  const gh = p => A(BLOB + p, esc(p));                         // a file in the repository, by its path
   const staffingText = a => (a.usfa ? (a.staffing || 'Unknown') : 'Not in USFA registry');
   const staffingCell = a => (a.usfa ? (a.staffing || 'Unknown') : 'Not listed');
+  // Fire districts and interlocal agencies have expense totals, revenue and compensation from the public
+  // Transparent Utah service; cities, towns and counties have their fire-coded expenses only.
+  const districtLike = a => a.type === 'Special district' || a.type === 'Interlocal agency';
+  const fireExp = a => a.budget_source === 'fire_expenses_by_year';
+  // "a, b and c"
+  const andList = xs => (xs.length > 1 ? xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1] : xs.join(''));
   const fullRange = s => s.from === ix.years[0] && s.to === ix.years[ix.years.length - 1];
   // Selected categories in a few words: the name of one, or "3 categories" (html: escaped)
   const catsText = (ids, html) => (ids.length === 1 ? (html ? esc : String)(ix.cat.get(ids[0]).name) : int(ids.length) + ' categories');
-  const narrow = () => !!(window.matchMedia && window.matchMedia('(max-width: 899px)').matches);
+  const mq = q => (window.matchMedia ? window.matchMedia(q) : { matches: false });
+  const narrowMq = mq('(max-width: 699px)');                         // phones: filters fold away (see the CSS)
+  // The page does not scroll, the table region does (same query as the CSS "Fixed layout" block)
+  const fixedMq = mq('(min-width: 1000px) and (min-height: 560px), (min-width: 700px) and (min-height: 660px)');
+  const narrow = () => narrowMq.matches;
+  const fixed = () => fixedMq.matches;
+  // What scrolls: the table region (or the About page) in the fixed layout, otherwise the page
+  const scrollBox = () => (fixed() ? (view === 'explore' ? $('scroller') : $('page')) : document.scrollingElement || document.documentElement);
 
   /* ---- URLs and navigation ---- */
   function parseHash() {
@@ -986,7 +1139,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     clearTimeout(urlTimer);
     const all = Object.keys(TSTATE).filter(k => TSTATE[k].all && TABLES[k]);
     const h = view === 'explore' && S ? stateHash(S) : location.hash;
-    try { history.replaceState({ y: window.scrollY, all }, '', h); rendered = h; } catch (e) { /* rate limited */ }
+    const b = scrollBox();
+    try { history.replaceState({ y: b.scrollTop, x: b.scrollLeft, all }, '', h); rendered = h; } catch (e) { /* rate limited */ }
   }
 
   /* ---- Tables ----
@@ -1104,7 +1258,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     }
     // Explain negative amounts once per page, under the first table that shows one
     if (t.negNote == null && negSeen && !negNoted) { t.negNote = true; negNoted = true; }
-    if (t.negNote) h += '<p class="note">Negative amounts are refunds or credits larger than the payments in that period.</p>';
+    if (t.negNote) h += '<p class="note">Negative amounts are credits or corrections larger than the payments in that period.</p>';
     return h + (t.tail ? t.tail() : '');
   }
   // Scroll regions get a tab stop and a name only when they actually scroll sideways.
@@ -1120,6 +1274,17 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         w.removeAttribute('aria-labelledby');
       }
     }
+    // Fixed layout: a row that gets focus is scrolled into view below the sticky header row, not under it
+    const sc = $('scroller'), head = sc.querySelector('#tbl-main thead');
+    sc.style.scrollPaddingTop = fixed() && head ? head.offsetHeight + 'px' : '';
+  }
+  // Fixed layout: when the region is scrolled past the start of the main table, scroll back to it, so
+  // a table that was just sorted or searched shows its first rows under the header row.
+  function toTableTop() {
+    const sc = $('scroller'), tb = S && $('tb-main-' + S.g);
+    if (!fixed() || view !== 'explore' || !tb) return;
+    const at = tb.getBoundingClientRect().top - sc.getBoundingClientRect().top - sc.clientTop + sc.scrollTop;
+    if (sc.scrollTop > at) sc.scrollTop = at;
   }
   function rerender(id, focusSel) {
     const el = $('tb-' + id);
@@ -1218,7 +1383,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       if (S.vendor) {
         const vcs = Core.vendorCats(ix, S.vendor);
         if (vcs.length && !vcs.some(id => S.cat.includes(id))) {
-          why = ' ' + esc(vendorOf(S.vendor).name) + ' is in ' + vcs.map(id => esc(ix.cat.get(id).name)).join(' and ') +
+          why = ' Payments to ' + esc(vendorOf(S.vendor).name) + ' are in ' + andList(vcs.map(id => esc(ix.cat.get(id).name))) +
             ', not in ' + (S.cat.length === 1 ? esc(ix.cat.get(S.cat[0]).name) : 'the selected categories') + '.';
         }
       }
@@ -1246,9 +1411,17 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     } else if (g === 'vendor') {
       const isNeris = o => !!V()[o.key].neris;
       const nerisCol = { key: 'neris', label: 'NERIS partner', nw: true, opt: true, val: o => (isNeris(o) ? 'Yes' : null), html: o => (isNeris(o) ? 'Yes' : '') };
+      // A vendor's rows in these filters can be in several categories: the main one (largest net amount) is
+      // shown, with the number of others; the CSV lists them all
+      const vcs = Core.catsByVendor(ix, m.rows);
+      const catsOf = o => vcs.get(o.key) || [];
+      const catName = id => ix.cat.get(id).name;
       t.cols = [
         { key: 'vendor', label: 'Vendor', th: true, val: o => V()[o.key].name },
-        { key: 'cat', label: 'Category', opt: true, hidden: oneCat || byYear, val: o => ix.cat.get(ix.vcat[o.key]).name },
+        { key: 'cat', label: 'Category', csvLabel: 'Main category', opt: true, hidden: oneCat || byYear,
+          val: o => (catsOf(o).length ? catName(catsOf(o)[0]) : null),
+          html: o => { const cs = catsOf(o); return cs.length ? esc(catName(cs[0])) + (cs.length > 1 ? '<br><span class="muted">and ' + plural(cs.length - 1, 'other', 'others') + '</span>' : '') : ''; } },
+        { key: 'cats', label: 'All categories', hidden: true, val: o => catsOf(o).map(catName).join('; ') },
         nAg, paid,
         { key: 'last', label: 'Last year paid', num: true, opt: true, hidden: byYear, val: o => o.last, html: o => (o.last == null ? '' : 'FY' + o.last) },
         nerisCol,
@@ -1272,27 +1445,55 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     } else if (g === 'agency') {
       const yP = m.year;
       const ag = o => ix.agency.get(o.key);
-      // Annual expenses: the most common latest full year; cells from another year say which
+      // Annual expenses: median of the last three full years; the most common span is named in the notes, cells
+      // from another span say which
       const yc = new Map();
-      for (const o of m.items) { const l = ix.latest.get(o.key); if (l) yc.set(l.year, (yc.get(l.year) || 0) + 1); }
-      const top = [...yc].sort((x, y) => y[1] - x[1] || y[0] - x[0])[0];
+      for (const o of m.items) { const l = ix.latest.get(o.key); if (l) yc.set(spanText(l), (yc.get(spanText(l)) || 0) + 1); }
+      const top = [...yc].sort((x, y) => y[1] - x[1] || (x[0] < y[0] ? 1 : -1))[0];
       const expY = top ? top[0] : null;
+      // With a category filter, the vendors each agency paid in it (positive net, largest first)
+      const byAgV = new Map();
+      if (S.cat && S.vendor == null) {
+        for (const r of m.rows) {
+          let mv = byAgV.get(r[0]);
+          if (!mv) byAgV.set(r[0], (mv = new Map()));
+          mv.set(r[1], (mv.get(r[1]) || 0) + r[4]);
+        }
+      }
+      const topV = new Map();
+      const vnames = o => {
+        if (!topV.has(o.key)) {
+          const mv = byAgV.get(o.key) || new Map();
+          topV.set(o.key, [...mv].filter(([, x]) => x > 0.005).sort((x, y) => y[1] - x[1]).map(([vi]) => V()[vi].name));
+        }
+        return topV.get(o.key);
+      };
+      const peopleCol = { key: 'people', label: 'People paid ' + fy(yP), labelHtml: 'People paid <span class="nw">' + esc(fy(yP)) + '</span>', num: true, opt: true, hidden: byYear,
+        val: o => Core.peopleIn(ix, o.key, yP), html: o => { const v = Core.peopleIn(ix, o.key, yP); return v == null ? '' : int(v); } };
       t.cols = [
         { key: 'agency', label: 'Agency', th: true, val: o => ag(o).name },
-        { key: 'type', label: 'Type', hidden: true, val: o => ag(o).type },
+        { key: 'kind', label: 'Kind', hidden: byYear, val: o => ag(o).kind },
         { key: 'staffing', label: 'Staffing', nw: true, hidden: byYear, val: o => staffingCell(ag(o)), csv: o => staffingText(ag(o)) },
-        { key: 'county', label: 'County', nw: true, opt: true, hidden: byYear, val: o => ag(o).county },
-        nVend, paid,
+        { key: 'county', label: 'County', nw: true, opt: true, hidden: byYear || !!S.county, val: o => ag(o).county },
+        nVend,
+      ].concat(S.cat && S.vendor == null ? [{
+        key: 'topv', label: 'Main vendors', hidden: byYear, val: o => vnames(o)[0] || null, csv: o => vnames(o).join('; ') || null,
+        html: o => { const ns = vnames(o); return esc(ns.slice(0, 2).join(', ')) + (ns.length > 2 ? ' <span class="muted">and ' + plural(ns.length - 2, 'other', 'others') + '</span>' : ''); },
+      }] : [], [
+        paid,
         { key: 'exp', label: 'Annual expenses', num: true, hidden: byYear,
           val: o => (ix.latest.get(o.key) ? ix.latest.get(o.key).amount : null),
-          html: o => { const l = ix.latest.get(o.key); return l ? money(l.amount) + (l.year !== expY ? '<br><span class="muted">FY' + l.year + '</span>' : '') : ''; } },
-        { key: 'expyear', label: 'Annual expenses fiscal year', hidden: true, val: o => (ix.latest.get(o.key) ? ix.latest.get(o.key).year : null) },
-        { key: 'people', label: 'People paid ' + fy(yP), labelHtml: 'People paid <span class="nw">' + esc(fy(yP)) + '</span>', num: true, opt: true, hidden: byYear,
-          val: o => Core.peopleIn(ix, o.key, yP), html: o => { const v = Core.peopleIn(ix, o.key, yP); return v == null ? '' : int(v); } },
+          html: o => { const l = ix.latest.get(o.key); return l ? money(l.amount) + (spanText(l) !== expY ? '<br><span class="muted">' + esc(spanText(l)) + '</span>' : '') : ''; } },
+        { key: 'expyear', label: 'Annual expenses fiscal years (median of)', hidden: true, val: o => (ix.latest.get(o.key) ? spanText(ix.latest.get(o.key)) : null) },
+        { key: 'expwhat', label: 'Annual expenses measure', hidden: true,
+          val: o => (!ix.latest.get(o.key) ? null : fireExp(ag(o)) ? 'Fire-coded expenses' : 'Total expenses') },
+        peopleCol,
         { key: 'revenue', label: 'Revenue ' + fy(yP), hidden: true, val: o => Core.revenueIn(ix, o.key, yP) },
         { key: 'grants', label: 'FEMA grants ' + shortSpan(S), labelHtml: 'FEMA grants <span class="nw">' + esc(shortSpan(S)) + '</span>', num: true, opt: true, hidden: byYear,
           val: o => Core.grantsIn(ix, o.key, S), html: o => money(Core.grantsIn(ix, o.key, S)) },
-      ].concat(yearCols());
+      ], yearCols());
+      // People paid shows only when a row in view has it (fire districts and interlocal agencies); kept in the CSV
+      t.onSearch = () => { peopleCol.hidden = byYear || !t.rows.some(o => Core.peopleIn(ix, o.key, yP) != null); };
       t.sort = [['paid', 'desc'], ['agency', 'asc']];
       t.drill = Object.assign(drill(o => ag(o).name), { value: o => o.key });
       t.searchHint = 'Agency name';
@@ -1305,8 +1506,10 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       if (m.narrowed) t.notes += '<p class="note">Agencies with no payments in these filters are not listed.</p>';
       if (!byYear) {
         t.notes += '<p class="note">Staffing: USFA registry department type; Not listed: not in the registry. ' +
-          'Annual expenses: total expenses in the latest fully reported fiscal year' + (expY ? ' (FY' + expY + ' unless shown)' : '') + '. ' +
-          'People paid: everyone with pay that year, including part-time staff, paid-per-call firefighters and board members. ' +
+          (S.cat && S.vendor == null ? 'Main vendors: the vendors each agency paid in ' + catsText(S.cat, true) + ', largest first (the CSV lists all). ' : '') +
+          'Annual expenses: the median of total expenses in the last three fully reported fiscal years' + (expY ? ' (' + esc(expY) + ' unless shown)' : '') +
+          '; for cities, towns and counties, the expenses coded fire, including payroll. ' +
+          'People paid (fire districts and interlocal agencies only): everyone with pay that year, including part-time staff, paid-per-call firefighters and board members. ' +
           'FEMA grants: awards with a federal fiscal year in the range.</p>';
       }
     } else if (g === 'year') {
@@ -1320,27 +1523,30 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       t.drill = Object.assign(drill(o => fy(o.key)), { value: o => o.key });
       t.foot = rows => { const a = total(rows); return [{ _label: 'Total', vendors: int(a.ve.size), agencies: int(a.ag.size), paid: money(a.spend) }]; };
     } else {
-      // Yearly totals: r = [agency id, vendor index, fiscal year, net amount, alias index]
-      // Columns fixed by a filter would repeat one value on every row, so they are hidden (kept in the CSV)
-      const payee = r => (r[4] < 0 ? 'Name withheld' : ix.D.aliases[r[4]]);
+      // Yearly totals: r = [agency id, vendor index, fiscal year, category index, net amount, alias index]
+      // Columns fixed by a filter would repeat one value on every row, so they are hidden (kept in the CSV).
+      // With a vendor filter, the category column shows when the vendor's rows are in more than one.
+      const payee = r => (r[5] < 0 ? 'Name withheld' : ix.D.aliases[r[5]]);
+      const oneRowCat = new Set(m.rows.map(r => r[3])).size <= 1;
       t.cols = [
         { key: 'agency', label: 'Agency', hidden: S.agency != null, val: r => agName(r[0]) },
         { key: 'year', label: 'Fiscal year', val: r => r[2], html: r => fyHtml(r[2]) },
         { key: 'partial', label: 'Partial year', hidden: true, val: r => (ix.partial.has(r[2]) ? 'yes' : '') },
         { key: 'payee', label: 'Payee as reported', th: true, val: payee },
         { key: 'vendor', label: 'Vendor', opt: true, hidden: S.vendor != null, val: r => V()[r[1]].name },
-        { key: 'cat', label: 'Category', opt: true, hidden: oneCat || S.vendor != null, val: r => ix.cat.get(Core.rowCat(ix, r)).name },
-        { key: 'amount', label: 'Net amount', num: true, val: r => r[3], html: r => cents(r[3]) },
+        { key: 'cat', label: 'Category', opt: true, hidden: oneCat || (S.vendor != null && oneRowCat), val: r => ix.cat.get(Core.rowCat(ix, r)).name },
+        { key: 'amount', label: 'Net amount', num: true, val: r => r[4], html: r => cents(r[4]) },
       ];
       t.sort = S.agency != null || S.vendor != null ? [['year', 'desc'], ['amount', 'desc']] : [['amount', 'desc'], ['agency', 'asc']];
-      t.hint = 'Each row is the net total one agency paid one payee name in one fiscal year, as reported to Transparent Utah.';
+      t.hint = 'Each row is the net total one agency paid one payee name in one fiscal year and category, from the transaction lines reported to Transparent Utah.';
       t.searchHint = 'Payee, vendor or agency';
       t.filter = (rows, re) => rows.filter(r => re.test(payee(r).toLowerCase()) || re.test(V()[r[1]].name.toLowerCase()) || re.test(agName(r[0]).toLowerCase()));
-      t.foot = rows => [{ _label: totalLabel(), amount: cents(rows.reduce((s, r) => s + r[3], 0)) }];
-      t.notes += '<p class="note">Source: ' + tuLink() + ' vendor payment summaries, fetched ' + esc(dateText(ix.meta.fetched)) + '.</p>';
+      t.foot = rows => [{ _label: totalLabel(), amount: cents(rows.reduce((s, r) => s + r[4], 0)) }];
+      t.notes += '<p class="note">Source: ' + tuLink() + ' transaction lines (' + A(BLOB + 'pipeline/sql/fire_transactions.sql', 'query') + '), fetched ' +
+        esc(dateText(ix.meta.transactions_fetched || ix.meta.fetched)) + '. ' + A(BLOB + ix.meta.transactions_file, 'Raw data file') + ' (gzipped CSV, all agencies).</p>';
     }
     if (g !== 'none') {
-      t.notes += '<p class="note">Amounts are net of refunds and credits. Vendors and agencies are counted when the net payment is positive in at least one year of the range.</p>';
+      t.notes += '<p class="note">Amounts are net of credits and corrections. Vendors and agencies are counted when the net payment is positive in at least one fiscal year and category of the range.</p>';
     }
     if (S.np) {
       t.notes += '<p class="note">Non-purchasing payments include transfers between agencies in this list (for example Unified Fire Service Area to Unified Fire Authority), so totals can count that money twice.</p>';
@@ -1349,10 +1555,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     return t;
   }
 
+  // The toolbar goes above the table region (it stays in view); the table, its notes and the hint go in it.
   function renderMain(m) {
     const t = mainTable(m);
     TABLES[t.id] = t;
-    let h = '<div class="toolbar">';
+    let h = '';
     if (t.filter) {
       h += '<div class="tsearch" role="search"><label for="tq">' + esc(SEARCH[S.g]) + '</label>' +
         '<input type="search" id="tq" autocomplete="off" spellcheck="false" placeholder="' + esc(t.searchHint) + '" value="' + esc(S.q) + '"></div>';
@@ -1361,9 +1568,12 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       h += '<div class="chk"><input type="checkbox" id="tyears"' + (S.years ? ' checked' : '') + '><label for="tyears">Show amounts by year</label></div>';
     }
     h += '<span class="tcount" id="tcount">' + countText(t) + '</span><span class="vh" id="tstatus" aria-live="polite"></span>';
-    h += '<button type="button" class="btn" id="tcsv" data-csv="' + t.id + '">Download CSV</button></div>';
-    if (t.hint) h += '<p class="hint">' + esc(t.hint) + '</p>';
-    h += '<div id="tb-' + t.id + '">' + tableBody(t) + '</div>' + t.notes;
+    // Shown by renderMore when the single payments section is below the table
+    h += '<button type="button" class="btn" id="tpay" hidden>Largest single payments</button>';
+    h += '<button type="button" class="btn" id="tcsv" data-csv="' + t.id + '">Download CSV</button>';
+    $('tbar').innerHTML = h;
+    h = t.hint ? '<p class="hint">' + esc(t.hint) + '</p>' : '';
+    h += '<div id="tb-' + t.id + '" class="tmain">' + tableBody(t) + '</div>' + t.notes;
     $('tbl-main').innerHTML = h;
     $('tbl-main').classList.toggle('by-year', !!t.byYear);
     $('fshow').textContent = 'Show ' + countText(t);
@@ -1399,37 +1609,49 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const c = ix.cat.get(id);
     let n = '';
     if (c.note) n += '<p class="note">' + noteHtml(c) + '</p>';
-    if (id === 'unclassified') n += '<p class="note">These vendors did not match the vendor map or any keyword rule. See ' + A('#/about', 'About') + '.</p>';
+    if (id === 'unclassified') n += '<p class="note">Payments to payees that match no vendor map row or keyword rule, where no account or description rule gave the line a category. See ' + A('#/about', 'About') + '.</p>';
     if (c.ael) {
       n += '<p class="note">FEMA Authorized Equipment List: ' + A(safeUrl(c.ael_url) || LINKS.ael, esc(c.ael)) +
         (c.ael_title ? ' (' + esc(c.ael_title) + ')' : '') + '.</p>';
     }
     if (!n && c.purchasing === 'yes') return '';
     const hid = 'ctx-cat-' + id;
+    const groupFact = c.group !== c.name ? 'Group: ' + esc(c.group) : '';
+    // On a phone the notes start collapsed, with the group in them, so the heading is one line and the table
+    // stays near the top
+    const small = narrow() && !!n;
     const h = '<section class="ctx" aria-labelledby="' + hid + '">' + ctxHead(hid, 'Category: ' + c.name, [
-      c.group !== c.name ? 'Group: ' + esc(c.group) : '',
+      small ? '' : groupFact,
       c.purchasing === 'no' ? 'Not counted as purchasing' : '',
     ]);
-    // On a phone the notes start collapsed, so the table stays near the top
-    if (n && narrow()) n = details('d-catnotes-' + id, 'Category notes', n);
+    if (small) n = details('d-catnotes-' + id, 'Category notes', (groupFact ? '<p class="note">' + groupFact + '.</p>' : '') + n);
     return h + n + '</section>';
   }
   function ctxVendor(vid) {
     const v = vendorOf(vid);
-    const method = vid === 'individuals' ? 'payee names that look like a person (Last, First)'
-      : v.method === 'map' ? 'vendor map (config/vendor_map.csv)'
-      : v.method === 'rule' ? 'keyword rule (config/keyword_rules.csv)'
-      : 'no rule matched';
+    const method = vid === 'individuals' ? 'payee names that look like a person'
+      : v.method === 'map' ? 'the vendor map (config/vendor_map.csv)'
+      : v.method === 'rule' ? 'a vendor or keyword rule (config/vendor_rules.csv, config/keyword_rules.csv)'
+      : 'no rule (Unclassified)';
+    // Categories of the vendor's rows (all years and agencies), the main one (vendor.category) first
+    const cats = Core.vendorCats(ix, vid).sort((a, b) => (b === v.category) - (a === v.category));
+    const names = cats.map(id => esc(ix.cat.get(id).name));
+    const catText = !cats.length ? ''
+      : cats.length === 1 ? (S.cat && S.cat.length === 1 && S.cat[0] === cats[0] ? '' : 'Category: ' + names[0])
+      : cats.length <= 3 ? 'Categories: ' + andList(names)
+      : 'Categories: ' + names[0] + ' and ' + plural(cats.length - 1, 'other', 'others');
     let h = '<section class="ctx" aria-labelledby="ctx-ven">' + ctxHead('ctx-ven', 'Vendor: ' + v.name, [
-      !(S.cat && S.cat.length === 1 && S.cat[0] === v.category) ? 'Category: ' + esc(ix.cat.get(v.category).name) : '',
+      catText,
       v.neris ? 'NERIS integration partner (' + A(LINKS.neris, 'FSRI list') + ')' : '',
     ]);
+    const how = 'Vendor category from ' + esc(method) + '.' +
+      (cats.length > 1 ? ' Account and description rules put some of its payments in other categories.' : '');
     if (v.aliases.length) {
       h += details('d-names', 'Names as paid (' + int(v.aliases.length) + ')',
         '<ul class="plain">' + v.aliases.map(i => '<li>' + esc(ix.D.aliases[i]) + '</li>').join('') + '</ul>' +
-        '<p class="note">Category assigned by ' + esc(method) + '.</p>');
+        '<p class="note">' + how + '</p>');
     } else {
-      h += '<p class="note">Payee names withheld. Category assigned by ' + esc(method) + '.</p>';
+      h += '<p class="note">Payee names withheld. ' + how + '</p>';
     }
     return h + '</section>';
   }
@@ -1437,17 +1659,21 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const a = ix.agency.get(id);
     const site = a.website ? safeUrl(/^https?:\/\//i.test(a.website) ? a.website : 'https://' + a.website) : null;
     const lat = ix.latest.get(id);
-    const line = [esc(a.type), a.county ? esc(a.county) + ' County' : '', esc(staffingText(a)),
-      lat ? money(lat.amount) + ' annual expenses (FY' + lat.year + ')' : ''];
+    const med = lat ? (lat.years.length > 1 ? 'median of ' : '') + spanText(lat) : '';
+    const expText = lat ? money(lat.amount) + ' (' + med + (fireExp(a) ? ', expenses coded fire' : '') + ')' : '';
+    const line = [esc(a.kind), a.county ? esc(a.county) + ' County' : '', esc(staffingText(a)),
+      lat ? money(lat.amount) + ' annual ' + (fireExp(a) ? 'fire ' : '') + 'expenses (' + med + ')' : ''];
     // On a phone the facts line moves into the collapsed details
     const small = narrow();
     let h = '<section class="ctx" aria-labelledby="ctx-ag">' + ctxHead('ctx-ag', 'Agency: ' + a.name, small ? [] : line);
     let f = '';
     if (small) {
-      f += fact('Type', esc(a.type)) + fact('Staffing', esc(staffingText(a)));
-      if (lat) f += fact('Annual expenses', money(lat.amount) + ' (FY' + lat.year + ')');
+      f += fact('Kind', esc(a.kind)) + fact('Staffing', esc(staffingText(a)));
+      if (lat) f += fact('Annual expenses', expText);
+    } else {
+      f += fact('Kind', esc(a.kind));
     }
-    f += fact('County', esc(a.county) + (a.city ? ' <span class="muted">(' + esc(a.city) + ')</span>' : ''));
+    if (a.county) f += fact('County', esc(a.county) + (a.city ? ' <span class="muted">(' + esc(a.city) + ')</span>' : ''));
     if (a.usfa) {
       const u = a.usfa;
       if (u.stations != null) f += fact('Stations', int(u.stations));
@@ -1466,82 +1692,99 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       : ''));
     return h + '</section>';
   }
-  // Below the table: staff, revenue, expenses and FEMA grants for the selected agency
+  // Below the table: staff, revenue, expenses and FEMA grants for the selected agency. Fire districts and
+  // interlocal agencies have all of them; cities, towns and counties have their fire-coded expenses and
+  // FEMA grants (staff and revenue would show only if the data had them).
   function moreAgency(id) {
     const a = ix.agency.get(id);
+    const dl = districtLike(a);
     let h = '';
+    let b;
     // Staff: people paid, wages and benefits per fiscal year, and job titles
     const sm = Core.staffModel(ix, id, S);
-    let b = table({
-      id: 'ag-s', title: 'Staff', hideTitle: true, file: 'agency-' + id + '-staff', negNote: false,
-      empty: 'No compensation reported to Transparent Utah' + (sm.any ? ' for ' + yearSpan(S) : '') + '.',
-      rows: sm.rows,
-      cols: [
-        { key: 'year', label: 'Fiscal year', val: r => r.y, html: r => esc(fy(r.y)) },
-        { key: 'partial', label: 'Partial year', hidden: true, val: r => (ix.partial.has(r.y) ? 'yes' : '') },
-        { key: 'people', label: 'People paid', num: true, val: r => r.people, html: r => int(r.people) },
-        { key: 'wages', label: 'Wages', num: true, opt: true, val: r => r.wages, html: r => money(r.wages) },
-        { key: 'benefits', label: 'Benefits', num: true, opt: true, val: r => r.benefits, html: r => money(r.benefits) },
-        { key: 'total', label: 'Wages and benefits', num: true, val: r => r.total, html: r => money(r.total) },
-      ],
-      sort: [['year', 'asc']],
-    });
-    if (sm.titles.length) {
-      b += table({
-        id: 'ag-t', title: 'Job titles, ' + fy(sm.titleYear), file: 'agency-' + id + '-job-titles-fy' + sm.titleYear, page: 15,
-        rows: sm.titles,
+    if (dl || sm.any) {
+      b = table({
+        id: 'ag-s', title: 'Staff', hideTitle: true, file: 'agency-' + id + '-staff', negNote: false,
+        empty: 'No compensation reported to Transparent Utah' + (sm.any ? ' for ' + yearSpan(S) : '') + '.',
+        rows: sm.rows,
         cols: [
-          { key: 'title', label: 'Title', th: true, val: r => r.title },
-          { key: 'people', label: 'People', num: true, val: r => r.n, html: r => int(r.n) },
+          { key: 'year', label: 'Fiscal year', val: r => r.y, html: r => esc(fy(r.y)) },
+          { key: 'partial', label: 'Partial year', hidden: true, val: r => (ix.partial.has(r.y) ? 'yes' : '') },
+          { key: 'people', label: 'People paid', num: true, val: r => r.people, html: r => int(r.people) },
+          { key: 'wages', label: 'Wages', num: true, opt: true, val: r => r.wages, html: r => money(r.wages) },
+          { key: 'benefits', label: 'Benefits', num: true, opt: true, val: r => r.benefits, html: r => money(r.benefits) },
+          { key: 'total', label: 'Wages and benefits', num: true, val: r => r.total, html: r => money(r.total) },
         ],
-        sort: [['people', 'desc'], ['title', 'asc']],
+        sort: [['year', 'asc']],
       });
+      if (sm.titles.length) {
+        b += table({
+          id: 'ag-t', title: 'Job titles, ' + fy(sm.titleYear), file: 'agency-' + id + '-job-titles-fy' + sm.titleYear, page: 15,
+          rows: sm.titles,
+          cols: [
+            { key: 'title', label: 'Title', th: true, val: r => r.title },
+            { key: 'people', label: 'People', num: true, val: r => r.n, html: r => int(r.n) },
+          ],
+          sort: [['people', 'desc'], ['title', 'asc']],
+        });
+      }
+      if (sm.rows.length) {
+        b += '<p class="note">From ' + tuLink() + ' compensation reports. People paid: everyone with pay that year, including part-time staff, paid-per-call firefighters and board members. Wages leave out reimbursements; benefits are employer-paid. ' +
+          A(REPO + '/tree/main/' + ix.meta.raw_path + '/transparent_utah/compensation/' + id, 'Raw data files') + ' (gzipped JSON, one per year).</p>';
+      }
+      h += details('d-staff', 'Staff', b);
     }
-    if (sm.rows.length) {
-      b += '<p class="note">From ' + tuLink() + ' compensation reports. People paid: everyone with pay that year, including part-time staff, paid-per-call firefighters and board members. Wages leave out reimbursements; benefits are employer-paid. ' +
-        A(REPO + '/tree/main/' + ix.meta.raw_path + '/transparent_utah/compensation/' + id, 'Raw data files') + ' (gzipped JSON, one per year).</p>';
-    }
-    h += details('d-staff', 'Staff', b);
 
     // Revenue in the agency's own account names
     const rm = Core.revenueModel(ix, id, S);
-    b = table({
-      id: 'ag-r', title: 'Revenue', hideTitle: true, file: 'agency-' + id + '-revenue', wide: true, negNote: false, page: 15,
-      empty: 'No revenue reported to Transparent Utah' + (rm.any ? ' for ' + yearSpan(S) : '') + '.',
-      rows: rm.rows,
-      cols: [{ key: 'cat', label: 'Category', th: true, val: o => o.key + (o.excluded ? ' (not in total)' : ''),
-        html: o => esc(o.key) + (o.excluded ? ' <span class="muted">(not in total)</span>' : '') }]
-        .concat(rm.years.map(y => ({
-          key: 'y' + y, label: fy(y), num: true,
-          val: o => (o.yr[y] == null ? null : o.yr[y]), html: o => (o.yr[y] == null ? '' : money(o.yr[y])),
-        })), [{ key: 'total', label: 'Total ' + shortSpan(S), labelHtml: 'Total <span class="nw">' + esc(shortSpan(S)) + '</span>',
-          num: true, val: o => o.total, html: o => money(o.total) }]),
-      sort: [['total', 'desc'], ['cat', 'asc']],
-      foot: [Object.assign({ _label: rm.anyExcluded ? 'Total revenue' : 'Total', total: money(rm.total) },
-        Object.fromEntries(rm.years.map(y => ['y' + y, rm.yr[y] == null ? '' : money(rm.yr[y])])))],
-    });
-    if (rm.rows.length) {
-      b += '<p class="note">As reported to ' + tuLink() + ', in the agency\'s own account names. Totals leave out borrowing, transfers between the agency\'s own funds and donated infrastructure' +
-        (rm.anyExcluded ? ' (rows marked "not in total")' : '') + '. Some names are expense accounts where refunds were recorded. ' +
-        A(BLOB + ix.meta.raw_path + '/transparent_utah/revenue_categories/' + id + '.json.gz', 'Raw data file') + ' (gzipped JSON).</p>';
+    if (dl || rm.any) {
+      b = table({
+        id: 'ag-r', title: 'Revenue', hideTitle: true, file: 'agency-' + id + '-revenue', wide: true, negNote: false, page: 15,
+        empty: 'No revenue reported to Transparent Utah' + (rm.any ? ' for ' + yearSpan(S) : '') + '.',
+        rows: rm.rows,
+        cols: [{ key: 'cat', label: 'Category', th: true, val: o => o.key + (o.excluded ? ' (not in total)' : ''),
+          html: o => esc(o.key) + (o.excluded ? ' <span class="muted">(not in total)</span>' : '') }]
+          .concat(rm.years.map(y => ({
+            key: 'y' + y, label: fy(y), num: true,
+            val: o => (o.yr[y] == null ? null : o.yr[y]), html: o => (o.yr[y] == null ? '' : money(o.yr[y])),
+          })), [{ key: 'total', label: 'Total ' + shortSpan(S), labelHtml: 'Total <span class="nw">' + esc(shortSpan(S)) + '</span>',
+            num: true, val: o => o.total, html: o => money(o.total) }]),
+        sort: [['total', 'desc'], ['cat', 'asc']],
+        foot: [Object.assign({ _label: rm.anyExcluded ? 'Total revenue' : 'Total', total: money(rm.total) },
+          Object.fromEntries(rm.years.map(y => ['y' + y, rm.yr[y] == null ? '' : money(rm.yr[y])])))],
+      });
+      if (rm.rows.length) {
+        b += '<p class="note">As reported to ' + tuLink() + ', in the agency\'s own account names. Totals leave out borrowing, transfers between the agency\'s own funds and donated infrastructure' +
+          (rm.anyExcluded ? ' (rows marked "not in total")' : '') + '. Some names are expense accounts where refunds were recorded. ' +
+          A(BLOB + ix.meta.raw_path + '/transparent_utah/revenue_categories/' + id + '.json.gz', 'Raw data file') + ' (gzipped JSON).</p>';
+      }
+      h += details('d-rev', 'Revenue', b);
     }
-    h += details('d-rev', 'Revenue', b);
 
-    // Total expenses per fiscal year (all years reported)
+    // Expenses per fiscal year (all years reported): total expenses of a district, or the fire-coded
+    // expenses of a city, town or county
     const years = Object.keys(a.budget || {}).map(Number).sort((x, y) => x - y);
-    b = table({
-      id: 'ag-b', title: 'Total expenses', hideTitle: true, file: 'agency-' + id + '-expenses',
-      empty: 'No expense totals reported to Transparent Utah.',
-      rows: years.map(y => ({ y, v: a.budget[y] })),
-      cols: [
-        { key: 'year', label: 'Fiscal year', nw: true, val: r => r.y, html: r => esc(fy(r.y)) },
-        { key: 'amount', label: 'Total expenses', num: true, val: r => r.v, html: r => money(r.v) },
-      ],
-      sort: [['year', 'asc']],
-    });
-    b += '<p class="note">Source: ' + tuLink() + ' expense totals for the agency, all categories. ' +
-      A(BLOB + ix.meta.raw_path + '/transparent_utah/expense_categories/' + id + '.json.gz', 'Raw data file') + ' (gzipped JSON).</p>';
-    h += details('d-exp', 'Total expenses', b);
+    const fx = fireExp(a);
+    if (dl || years.length) {
+      const what = fx ? 'Fire expenses' : 'Total expenses';
+      b = table({
+        id: 'ag-b', title: what, hideTitle: true, file: 'agency-' + id + (fx ? '-fire-expenses' : '-expenses'),
+        empty: 'No expense totals reported to Transparent Utah.',
+        rows: years.map(y => ({ y, v: a.budget[y] })),
+        cols: [
+          { key: 'year', label: 'Fiscal year', nw: true, val: r => r.y, html: r => esc(fy(r.y)) },
+          { key: 'amount', label: what, num: true, val: r => r.v, html: r => money(r.v) },
+        ],
+        sort: [['year', 'asc']],
+      });
+      b += fx
+        ? '<p class="note">Source: ' + tuLink() + ' transaction lines coded fire (function 2009xx in the account number, or "fire" in the department names), all accounts including payroll (' +
+          A(BLOB + 'pipeline/sql/fire_expenses_by_year.sql', 'query') + ').' +
+          (ix.meta.fire_expenses_file ? ' ' + A(BLOB + ix.meta.fire_expenses_file, 'Raw data file') + ' (gzipped CSV, all cities, towns and counties).' : '') + '</p>'
+        : '<p class="note">Source: ' + tuLink() + ' expense totals for the agency, all categories. ' +
+          A(BLOB + ix.meta.raw_path + '/transparent_utah/expense_categories/' + id + '.json.gz', 'Raw data file') + ' (gzipped JSON).</p>';
+      h += details('d-exp', what, b);
+    }
 
     // FEMA grants (all years)
     const grants = ix.grantsBy.get(id) || [];
@@ -1561,45 +1804,84 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     } else {
       b = '<p>No FEMA firefighter grants matched to this agency.</p>';
     }
-    b += '<p class="note">Source: ' + A(LINKS.grants, 'OpenFEMA firefighter grants') + ', matched to agencies by recipient name. ' +
+    b += '<p class="note">Source: ' + A(LINKS.grants, 'OpenFEMA firefighter grants') + ', matched to agencies by recipient name (' + gh('config/grant_recipients.csv') + '). ' +
       A(BLOB + ix.meta.raw_path + '/openfema/firefighter_grants_ut.json.gz', 'Raw data file') + ' (gzipped JSON).</p>';
     h += details('d-grants', 'FEMA grants (' + int(grants.length) + ')', b);
-    h += '<p class="note">Vendor payments of ' + esc(a.name) + ': ' + tuLink() + '. ' + A(rawVendorFile(id), 'Raw data file') + ' (gzipped JSON).</p>';
+    h += '<p class="note">Vendor payments of ' + esc(a.name) + ': ' + tuLink() + ' transaction lines, ' +
+      (dl ? 'every expense line' : 'the lines coded fire') + ' except payroll, benefits and refunds (' +
+      A(BLOB + 'pipeline/sql/fire_transactions.sql', 'query') + '). ' + A(BLOB + ix.meta.transactions_file, 'Raw data file') + ' (gzipped CSV, all agencies).</p>';
     return h;
   }
 
-  // Largest single payments: p = [agency id, fiscal year, rank, vendor index, amount, alias index]
+  // Largest single payments: p = [agency id, posting date, vendor index, category index, amount,
+  // description index, alias index, fiscal year]. Columns fixed by a filter are hidden on the page
+  // and kept in the CSV.
+  const descOf = p => ix.P.descriptions[p[5]];
   const PCOL = {
-    year: { key: 'year', label: 'Fiscal year', nw: true, val: p => p[1], html: p => esc(fy(p[1])) },
-    partial: { key: 'partial', label: 'Partial year', hidden: true, val: p => (ix.partial.has(p[1]) ? 'yes' : '') },
-    vendor: { key: 'vendor', label: 'Vendor', th: true, val: p => V()[p[3]].name },
+    vendor: { key: 'vendor', label: 'Vendor', th: true, val: p => V()[p[2]].name },
     agency: { key: 'agency', label: 'Agency', val: p => agName(p[0]) },
+    date: { key: 'date', label: 'Date', nw: true, val: p => p[1], html: p => esc(dateText(p[1])) },
+    desc: { key: 'desc', label: 'Description', cls: 'desc', val: p => descOf(p) || null, html: p => esc(descOf(p)) },
     cat: { key: 'cat', label: 'Category', val: p => ix.cat.get(Core.payCat(ix, p)).name },
+    year: { key: 'year', label: 'Fiscal year', nw: true, val: p => p[7], html: p => esc(fy(p[7])) },
+    partial: { key: 'partial', label: 'Partial year', hidden: true, val: p => (ix.partial.has(p[7]) ? 'yes' : '') },
     amount: { key: 'amount', label: 'Amount', num: true, val: p => p[4], html: p => money(p[4]) },
-    payee: { key: 'payee', label: 'Payee as reported', val: p => (p[5] < 0 ? null : ix.D.aliases[p[5]]) },
+    payee: { key: 'payee', label: 'Payee as reported', val: p => (p[6] < 0 ? null : ix.D.aliases[p[6]]) },
   };
-  const PAY_NOTE = 'From each agency\'s 100 largest payments per fiscal year, $1,000 or more, to vendors in purchasing categories. ' +
-    'No dates or descriptions are published, and one payment can cover several items. ' +
-    'The published lists include payments that were later voided or entered twice, so a payment is left out when it would push the total past the net amount paid to that vendor that year.';
+  // Payments load on demand (data/payments.json), the first time a view shows them
+  let payLoad = null;     // the pending or finished load
+  let payError = null;    // why the last load failed
+  function loadPayments() {
+    if (payLoad) return payLoad;
+    payError = null;
+    payLoad = fetch(ix.meta.payments_file || 'data/payments.json', { cache: 'no-cache' })
+      .then(r => { if (!r.ok) throw new Error('data/payments.json returned HTTP ' + r.status); return r.json(); })
+      .then(P => { Core.setPayments(ix, P); })
+      .catch(err => { console.error(err); payError = err; payLoad = null; })   // the next view that needs them tries again
+      .then(() => { if (view === 'explore' && S && $('d-pay')) renderMore(true); });
+    return payLoad;
+  }
   function morePayments() {
     // Single payments cover purchasing categories only
     const np = id => ix.cat.get(id).purchasing !== 'yes';
-    if (S.purch === 'no' || (S.cat && S.cat.every(np)) || (S.vendor && np(vendorOf(S.vendor).category))) return '';
+    if (S.purch === 'no' || (S.cat && S.cat.every(np))) return '';
+    if (S.vendor) {
+      const vcs = Core.vendorCats(ix, S.vendor);
+      if (vcs.length && vcs.every(np)) return '';
+    }
+    const title = 'Largest single payments';
+    if (!ix.P) {
+      if (payError) {
+        return details('d-pay', title + ' <span class="muted">(did not load)</span>', '<p>Payments did not load' + (payError.message ? ': ' + esc(payError.message) : '') + '. Change a filter to try again.</p>');
+      }
+      loadPayments();
+      return details('d-pay', title + ' <span class="muted">(Loading payments...)</span>', '<p>Loading payments...</p>');
+    }
     const pm = Core.paymentsModel(ix, S, Core.rowFilter(S));
     if (!pm.n) return '';
-    const cols = [];
-    if (!S.vendor) cols.push(PCOL.vendor);
-    if (S.agency == null) cols.push(PCOL.agency);
-    if ((!S.cat || S.cat.length > 1) && !S.vendor) cols.push(Object.assign({}, PCOL.cat, { opt: true }));
-    cols.push(PCOL.year, PCOL.partial, PCOL.amount, Object.assign({}, PCOL.payee, S.vendor ? { opt: true } : { hidden: true }));
+    const oneCat = !!S.cat && S.cat.length === 1;
+    const cols = [
+      Object.assign({}, PCOL.vendor, { hidden: S.vendor != null }),
+      Object.assign({}, PCOL.agency, { hidden: S.agency != null }),
+      PCOL.date,
+      PCOL.amount,
+      PCOL.desc,
+      Object.assign({}, PCOL.cat, { opt: true, hidden: oneCat || (S.vendor != null && new Set(pm.pays.map(p => p[3])).size <= 1) }),
+      Object.assign({}, PCOL.year, { opt: true }),
+      PCOL.partial,
+      Object.assign({}, PCOL.payee, S.vendor ? { opt: true } : { hidden: true }),
+    ];
     let b = '<p>' + plural(pm.n, 'payment', 'payments') + ' of $1,000 or more, ' + esc(yearSpan(S)) + '.</p>';
     b += table({
-      id: 'pay', title: 'Largest single payments', hideTitle: true, file: fileName().replace(/^[a-z-]+/, 'single-payments'), wide: true, page: 25,
-      rows: pm.pays, cols, sort: [['amount', 'desc'], ['year', 'desc']],
+      id: 'pay', title: title, hideTitle: true, file: fileName().replace(/^[a-z-]+/, 'single-payments'), wide: true, page: 25,
+      rows: pm.pays, cols, sort: [['amount', 'desc'], ['date', 'desc']],
     });
-    b += '<p class="note">' + PAY_NOTE + (S.agency != null ? ' ' + A(REPO + '/tree/main/' + ix.meta.raw_path + '/transparent_utah/top_payments/' + S.agency, 'Raw data files') +
-      ' (gzipped JSON, one per year).' : '') + '</p>';
-    return details('d-pay', 'Largest single payments (' + int(pm.n) + ')', b);
+    b += '<p class="note">Single transaction lines of $1,000 or more in purchasing categories, as posted. One line can cover several items, and an invoice can be split over several lines. ' +
+      'A line is left out when a credit or reversal of the same amount to the same payee cancels it. Smaller credits, such as discounts and trade-ins, are not matched to a line, so these lines can add up to more than the net amount paid in the table above. ' +
+      'Fiscal year: the year the agency reported the line in. ' +
+      'A blank description was not reported, or was withheld because it may identify a person. ' +
+      tuLink() + ' (' + A(BLOB + 'pipeline/sql/fire_transactions.sql', 'query') + '); ' + A(BLOB + ix.meta.transactions_file, 'raw data file') + ' (gzipped CSV, all agencies).</p>';
+    return details('d-pay', title + ' (' + int(pm.n) + ')', b);
   }
   function renderContext() {
     let h = '';
@@ -1608,11 +1890,28 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     if (S.agency != null) h += ctxAgency(S.agency);
     $('context').innerHTML = h;
   }
-  function renderMore() {
+  // again: the single payments just loaded (or failed to), so the section is drawn again in place. Focus
+  // stays on the same control, or moves to the summary of the section it was in.
+  function renderMore(again) {
+    let sel = null;
+    const a = document.activeElement;
+    const wasIn = !!(again && a && $('more').contains(a));
+    if (wasIn) {
+      const d = a.closest('details');
+      if (a.dataset.csv) sel = '[data-csv="' + a.dataset.csv + '"]';
+      else if (a.dataset.t && a.dataset.c != null) sel = 'button[data-t="' + a.dataset.t + '"][data-c="' + a.dataset.c + '"]';
+      if (d && d.id) sel = (sel ? sel + ', ' : '') + '#' + d.id + ' > summary';
+    }
     let h = '';
     if (S.cat || S.vendor || S.agency != null) h += morePayments();
     if (S.agency != null) h += moreAgency(S.agency);
     $('more').innerHTML = h ? '<section aria-labelledby="more-h"><h2 id="more-h">More for this selection</h2>' + h + '</section>' : '';
+    if ($('tpay')) $('tpay').hidden = !$('d-pay');
+    if (!again) return;
+    fitRegions($('more'));
+    const f = sel && $('more').querySelector(sel);
+    if (f) f.focus({ preventScroll: true });
+    else if (wasIn) $('summary').focus({ preventScroll: true });
   }
 
   /* ---- Active filters ---- */
@@ -1655,7 +1954,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     return fs.length;
   }
 
-  /* ---- Filter panel ---- */
+  /* ---- Filter bar ---- */
   const opt = (v, label) => '<option value="' + esc(v) + '">' + esc(label) + '</option>';
   function fillControls() {
     const yrs = ix.years.map(y => opt(y, fy(y))).join('');
@@ -1687,7 +1986,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       // A group that is a single category of the same name (Unclassified) needs no heading
       h += cs.length === 1 && cs[0].name === gr ? chk(cs[0]) : '<fieldset class="cgrp"><legend>' + esc(gr) + '</legend>' + cs.map(chk).join('') + '</fieldset>';
     }
-    box.innerHTML = h;
+    box.innerHTML = '<div class="catcols">' + h + '</div>';   // columns inside the box, so the box scrolls down, not sideways
     // Focus was on a checkbox that is gone (a non-purchasing category unchecked): move to the one before it
     for (let i = at; i >= 0; i--) { const el = $('fc-' + before[i]); if (el) { el.focus(); break; } }
   }
@@ -1698,6 +1997,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const sel = new Set(S.cat || []);
     for (const el of $('f-cat-box').querySelectorAll('input')) el.checked = sel.has(el.value);
     $('f-cat-n').innerHTML = sel.size ? '(' + int(sel.size) + '<span class="vh"> selected</span>)' : '';
+    $('f-cat-txt').textContent = 'Category: ' + (sel.size ? int(sel.size) + ' selected' : 'All');
     $('f-cat-clear').disabled = !sel.size;
     $('f-vendor').value = S.vendor ? vendorOf(S.vendor).name : '';
     $('f-vendor-msg').textContent = '';
@@ -1723,9 +2023,10 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   function setVendor(vid) {
     const n = withS({ vendor: vid });
     if (vid) {
-      const c = ix.cat.get(vendorOf(vid).category);
-      if (n.group && n.group !== c.group) n.group = null;
-      if (n.purch && n.purch !== c.purchasing) n.purch = null;
+      // A category group or purchasing flag (from older links) that none of the vendor's payments are in is dropped
+      const cs = Core.vendorCats(ix, vid).map(id => ix.cat.get(id));
+      if (n.group && cs.length && !cs.some(c => c.group === n.group)) n.group = null;
+      if (n.purch && cs.length && !cs.some(c => c.purchasing === n.purch)) n.purch = null;
       if (S.g === 'vendor') { n.g = Core.nextGroup(n, 'vendor'); n.q = ''; }
     }
     return n;
@@ -1757,6 +2058,33 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   function likeState(id) {
     const size = sizeOf(id);
     return withS({ agency: null, county: '', size: size ? size.id : '' });
+  }
+  // Category checkboxes, opened from the Category button. On a phone they open in place, in the panel.
+  const catOpen = () => !$('f-cat-pop').hidden;
+  function placeCat() {
+    const pop = $('f-cat-pop');
+    pop.style.left = '';
+    pop.style.maxHeight = '';
+    if (narrow() || pop.hidden) return;
+    // Below the button, as tall as the window allows, and inside the window on the right
+    const b = $('f-cat-btn').getBoundingClientRect();
+    pop.style.maxHeight = Math.max(180, window.innerHeight - b.bottom - 16) + 'px';
+    const r = pop.getBoundingClientRect();
+    const over = r.right - (document.documentElement.clientWidth - 16);
+    if (over > 0) pop.style.left = -Math.min(over, r.left - 16) + 'px';
+  }
+  function catPanel(open, focusButton) {
+    const pop = $('f-cat-pop'), btn = $('f-cat-btn');
+    if (open === catOpen()) return;
+    pop.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+    if (open) {
+      placeCat();
+      const first = pop.querySelector('input:checked') || pop.querySelector('input');
+      if (first) first.focus();
+    } else if (focusButton) {
+      btn.focus();
+    }
   }
   function bindControls() {
     $('fpanel').addEventListener('change', e => {
@@ -1795,7 +2123,42 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       if (first) first.focus();
       go(withS({ cat: null }));
     });
+    // Category button: opens the checkboxes below it. Ticking boxes keeps it open; Escape, a click
+    // outside it or moving focus out of it closes it. On a phone the list is part of the filter panel,
+    // not a popover: closing it would move everything below it under the finger, so it stays open
+    // until the Category button, Escape or Show rows closes it.
+    $('f-cat-btn').addEventListener('click', () => catPanel(!catOpen()));
+    $('f-cat-wrap').addEventListener('keydown', e => {
+      if (e.key !== 'Escape' || !catOpen()) return;
+      e.preventDefault();
+      catPanel(false, true);
+    });
+    $('f-cat-wrap').addEventListener('focusout', e => {
+      if (narrow()) return;
+      if (catOpen() && e.relatedTarget && !$('f-cat-wrap').contains(e.relatedTarget)) catPanel(false);
+    });
+    // A click on the table region that closes the popover only closes it: the popover covers most of
+    // the table, and a click anywhere on a row would otherwise also open that row.
+    let swallowClick = false;
+    document.addEventListener('pointerdown', e => {
+      const t = e.target;
+      swallowClick = false;
+      if (catOpen() && !narrow() && !$('f-cat-wrap').contains(t)) {
+        catPanel(false);
+        swallowClick = $('scroller').contains(t);
+      }
+      if (!(t.closest && t.closest('.vendf'))) $('f-vendor-msg').textContent = '';
+    });
+    document.addEventListener('click', e => {
+      if (!swallowClick) return;
+      swallowClick = false;
+      if (!e.detail) return;                  // a click from the keyboard (Enter or Space) is never swallowed
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }, true);
+    document.addEventListener('keydown', () => { swallowClick = false; }, true);
     const panel = open => {
+      if (!open) catPanel(false);
       $('fpanel').classList.toggle('open', open);
       $('ftoggle').setAttribute('aria-expanded', String(open));
     };
@@ -1819,6 +2182,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       TSTATE[t.id].all = false;
       TSTATE[t.id].limit = 0;
       rerender(t.id, false);
+      toTableTop();
       $('tcount').textContent = countText(t);
       $('fshow').textContent = 'Show ' + countText(t);
       // URL without a new history entry, at most every 300 ms (browsers limit replaceState calls)
@@ -1856,6 +2220,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         TSTATE[t.id].sort = cur[0] === c ? [colKey(col), cur[1] === 'asc' ? 'desc' : 'asc']
           : [colKey(col), col.num ? 'desc' : 'asc'];
         rerender(t.id, 'button[data-c="' + c + '"]');
+        if (S && t.id === 'main-' + S.g) toTableTop();          // sorted from the sticky header: show the first rows
       } else if (d.all) {                                       // show all rows
         if (!TABLES[d.all]) return;
         TSTATE[d.all].all = true;
@@ -1875,6 +2240,13 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         $('f-clear').click();
       } else if (d.like) {
         go(likeState(Number(d.like)));
+      } else if (b.id === 'tpay') {                             // open the single payments below the table
+        const dp = $('d-pay');
+        if (!dp) return;
+        dp.open = true;
+        openDetails.add('d-pay');
+        dp.scrollIntoView({ block: 'start' });
+        dp.querySelector('summary').focus({ preventScroll: true });
       }
       return;
     }
@@ -1909,6 +2281,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     for (const k of keepAll || []) (TSTATE[k] || (TSTATE[k] = {})).all = true;
     for (const k in TABLES) delete TABLES[k];
     negNoted = false;
+    if (!ix.P && !payLoad) payError = null;                    // a new view tries a failed payments load again
     const nActive = renderChips(notes);
     syncPanel(nActive);
     for (const b of document.querySelectorAll('.seg button')) b.setAttribute('aria-pressed', String(b.dataset.g === S.g));
@@ -1941,57 +2314,114 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   function viewAbout() {
     const meta = ix.meta;
     const share = meta.purchasing_classified_share;
-    const gh = p => A(BLOB + p, esc(p));
     const py = (meta.partial_years || []).map(y => 'FY' + y);
+    const span = 'FY' + meta.years[0] + ' to FY' + meta.years[meta.years.length - 1];
+    const sql = 'pipeline/sql/fire_transactions.sql';
     let h = '<div class="prose"><h1 tabindex="-1">About</h1>';
-    h += '<p>This prototype shows what Utah fire districts and interlocal fire agencies paid to vendors. It is for a fire chief or purchasing officer who wants to see, for one kind of purchase, which vendors similar agencies use, how many agencies use each, and what they paid.</p>';
-    h += '<p>Pick filters and a grouping for the table. Selecting a row adds it as a filter and moves to the next grouping. Yearly totals shows the rows every number is built from: what one agency paid one payee name in one fiscal year.</p>';
+    h += '<p>This prototype shows what Utah fire agencies paid to vendors: fire districts and service areas, interlocal fire agencies, and the fire departments of cities, towns and counties. It is for a fire chief or purchasing officer who wants to see, for one kind of purchase, which vendors similar agencies use, how many agencies use each, and what they paid.</p>';
+    h += '<p>Pick filters and a grouping for the table. Selecting a row adds it as a filter and moves to the next grouping. Yearly totals shows the rows every number is built from: what one agency paid one payee name in one fiscal year and category. With a category, vendor or agency selected, the largest single payments are listed below the table, with date and description.</p>';
+
+    // Agencies by kind
+    const withLines = new Set(ix.D.rows.map(r => r[0]));
+    const kinds = new Map();
+    for (const a of ix.D.agencies) {
+      const k = kinds.get(a.kind) || { kind: a.kind, n: 0, lines: 0 };
+      k.n++;
+      if (withLines.has(a.id)) k.lines++;
+      kinds.set(a.kind, k);
+    }
+    const kindRows = [...kinds.values()];
+    h += '<h2>Agencies</h2>';
+    h += '<p>' + int(ix.D.agencies.length) + ' agencies, ' + esc(span) + ' (' + A(BLOB + 'config/agencies.csv', 'config/agencies.csv') + '). Cities, towns and counties that only pay another agency for fire service are not listed; the file gives the reason for each.</p>';
+    h += table({
+      id: 'about-kinds', title: 'Agencies by kind', hideTitle: true, file: 'agencies-by-kind', negNote: false,
+      rows: kindRows,
+      cols: [
+        { key: 'kind', label: 'Kind', th: true, val: k => k.kind },
+        { key: 'n', label: 'Agencies', num: true, val: k => k.n, html: k => int(k.n) },
+        { key: 'lines', label: 'With payments', num: true, val: k => k.lines, html: k => int(k.lines) },
+      ],
+      sort: [['n', 'desc'], ['kind', 'asc']],
+      foot: [{ _label: 'Total', n: int(ix.D.agencies.length), lines: int(withLines.size) }],
+    });
+
     h += '<h2>Sources</h2><ul>';
-    h += '<li>' + A(LINKS.tu, 'Transparent Utah') + ', for ' + int(meta.counts.agencies) + ' agencies, FY' + meta.years[0] + ' to FY' + meta.years[meta.years.length - 1] + '. Fetched ' + esc(dateText(meta.fetched)) + '. Raw files: ' + A(REPO + '/tree/main/' + meta.raw_path, esc(meta.raw_path)) + '.<ul>';
-    h += '<li>Vendor payments: net yearly totals per payee name.</li>';
-    h += '<li>Total expenses per year, and revenue in each agency\'s own account names. Revenue totals leave out borrowing, transfers between the agency\'s own funds and donated infrastructure (' + A(REPO + '/blob/main/config/revenue_exclusions.csv', 'config/revenue_exclusions.csv') + ').</li>';
-    h += '<li>Largest single payments: each agency\'s 100 largest payments per fiscal year, without dates or descriptions. Kept here: ' +
-      (meta.counts.payments != null ? 'the ' + int(meta.counts.payments) : 'those') + ' of $1,000 or more to vendors in purchasing categories. ' +
-      'The lists include payments later voided or entered twice; a payment is left out when it would push the total past the net amount paid to that vendor that year.</li>';
-    h += '<li>Compensation reports: wages, benefits and job title per employee. Employee names are replaced by numbers in the raw files.</li>';
+    h += '<li>' + A(LINKS.tu, 'Transparent Utah') + ' transaction lines, from its BigQuery database (' + gh(sql) + '): every expense line of the fire districts, service areas and interlocal fire agencies, and the lines of cities, towns and counties coded fire (function 2009xx in the account number, or "fire" in the department names, not fireworks), ' + esc(span) + '. ' +
+      (meta.counts.lines != null ? int(meta.counts.lines) + ' lines, fetched ' : 'Fetched ') + esc(dateText(meta.transactions_fetched || meta.fetched)) + '. ' +
+      'Raw file: ' + gh(meta.transactions_file) + ' (gzipped CSV).<ul>';
+    h += '<li>Left out by the query: payroll and benefits (account names that mention salaries, wages, payroll, personnel, employee benefits, employer-paid costs, compensation or retirement) and refunds (lines whose account names or description mention a refund; refunds can name patients). Payroll and benefits recorded under other account names, such as "Regular Employees" or "Benefits", are kept; the account rules put them under payroll, which is not counted as purchasing.</li>';
+    h += '<li>Duplicate uploads: some entities uploaded the same transactions more than once, sometimes with a corrected account or renumbered transaction ids. A line is dropped when an earlier upload batch has a line with the same entity, transaction id, posting date, payee and amount; or, for renumbered ids, the same accounting period, posting date, payee, amount and description; or when the later batch repeats the earlier one line for line' +
+      (meta.counts.lines_reuploaded ? ' (' + int(meta.counts.lines_reuploaded) + ' lines)' : '') + '. Each transaction is counted once.</li>';
+    h += '<li>Police: Lone Peak Public Safety District also runs a police department. Its police department lines are left out' + (meta.counts.lines_police ? ' (' + int(meta.counts.lines_police) + ' lines)' : '') + '; its annual expenses, revenue and people paid still include police.</li>';
+    h += '<li>Single payments: the ' + (meta.counts.payments != null ? int(meta.counts.payments) + ' ' : '') + 'lines of $1,000 or more in purchasing categories, with posting date and description. A line is left out when a credit or reversal of the same amount to the same payee cancels it. Smaller credits are not matched to a line, so the lines can add up to more than the net amount for the same agency, vendor and year. Descriptions that may identify a person are not shown (' + gh('config/description_privacy_patterns.csv') + ').</li>';
     h += '</ul></li>';
+    h += '<li>' + A(LINKS.tu, 'Transparent Utah') + ' public query service, for fire districts and interlocal agencies: total expenses per year, revenue in each agency\'s own account names, compensation reports (wages, benefits and job title per employee; employee names are replaced by numbers in the raw files), fiscal year start and website. Revenue totals leave out borrowing, transfers between the agency\'s own funds and donated infrastructure (' + gh('config/revenue_exclusions.csv') + '). Fetched ' + esc(dateText(meta.fetched)) + '. Raw files: ' + A(REPO + '/tree/main/' + meta.raw_path, esc(meta.raw_path)) + '.</li>';
+    h += '<li>For cities, towns and counties, annual expenses are their expenses coded fire, including payroll, from the same BigQuery database (' + gh('pipeline/sql/fire_expenses_by_year.sql') + ').</li>';
     h += '<li>' + A(LINKS.usfa, 'USFA National Fire Department Registry') + ': department type, stations and firefighter counts.</li>';
     h += '<li>' + A(LINKS.grants, 'OpenFEMA firefighter grants') + ': Assistance to Firefighters, SAFER and Fire Prevention and Safety awards, matched to agencies by recipient name (' + gh('config/grant_recipients.csv') + ').</li>';
     h += '<li>' + A(LINKS.neris, 'NERIS integration partners') + ': vendors listed by FSRI as integrated with NERIS, the national fire incident reporting system replacing NFIRS.</li>';
     h += '<li>' + A(LINKS.ael, 'FEMA Authorized Equipment List') + ': codes shown when a category with an AEL section is selected. The list governs Homeland Security Grant Program awards, not AFG; FEMA limits many fire and medical items to surge or CBRN use.</li>';
     h += '</ul>';
-    h += '<h2>How vendors are named and categorized</h2>';
-    h += '<p>Payee names are normalized: upper case, punctuation removed, and words such as Inc, LLC, Corp and The dropped. Payee names that normalize to the same text are one vendor. Each vendor gets one category, in this order:</p><ol>';
-    h += '<li>' + gh('config/vendor_map.csv') + ': normalized name to vendor name and category, set by hand.</li>';
-    h += '<li>' + gh('config/keyword_rules.csv') + ': the first pattern that matches the normalized name sets the category.</li>';
-    h += '<li>Otherwise the vendor is Unclassified.</li></ol>';
-    h += '<p>Payee names that look like a person (Last, First) are combined into one entry, Individuals (names withheld). The category list is ' + gh('config/categories.csv') + '. Categories marked as not purchasing (payroll and benefits, debt and card payments, payments to other governments, placeholder names, individuals) are left out unless Include non-purchasing payments is checked. The build script is ' + gh('pipeline/build.py') + '.</p>';
-    if (share != null) {
-      h += '<p>Share of purchasing spend in a named category: ' + pct(share) + ' of ' + money(meta.purchasing_total) + ' (all agencies, all years). The rest is Unclassified.</p>';
+
+    h += '<h2>How payments are categorized</h2>';
+    h += '<p>Payee names are normalized: upper case, punctuation removed, and words such as Inc, LLC, Corp and The dropped. Payee names that normalize to the same text are one vendor. Each vendor gets a vendor category from ' + gh('config/vendor_map.csv') + ' (set by hand), ' + gh('config/vendor_rules.csv') + ' (other spellings of a mapped vendor) or ' + gh('config/keyword_rules.csv') + ' (the first pattern that matches the name); otherwise it is Unclassified.</p>';
+    h += '<p>Each transaction line then gets its own category, in this order:</p><ol>';
+    h += '<li>Account rules marked override (' + gh('config/account_rules.csv') + '): the line\'s account names decide, whoever the payee is. These cover payroll, debt, transfers to other governments and similar accounts.</li>';
+    h += '<li>The vendor category of the payee, unless the payee is broad: fire equipment distributors, general retail, unclassified payees, lines with no vendor named, and card programs (' + gh('config/card_programs.csv') + ').</li>';
+    h += '<li>Broad payees: description rules (' + gh('config/description_rules.csv') + '), the first pattern that matches the line\'s description.</li>';
+    h += '<li>Broad payees: account rules marked refine. Lines with no vendor named that are journal entries, reclassifications or corrections, in accounts the agency also pays named vendors from, stay under No vendor named instead: they correct those payments.</li>';
+    h += '<li>Otherwise the vendor category of the payee. Card statement lines with no rule for their account are Unclassified purchases, unless the account or description is a debt, loan, lease or transfer.</li></ol>';
+    const cov = meta.coverage || {};
+    const STEPS = [['override', '1. Account rule (override)'], ['vendor', '2. Vendor category'], ['description', '3. Description rule'],
+      ['refine', '4. Account rule (refine)'], ['fallback', '5. Vendor category of a broad payee']];
+    const covRows = STEPS.filter(([k]) => cov[k]).map(([k, label]) => Object.assign({ key: k, label }, cov[k]));
+    if (covRows.length) {
+      const tp = meta.purchasing_total;
+      const sum = k => covRows.reduce((s, r) => s + r[k], 0);
+      h += table({
+        id: 'about-cov', title: 'Lines by how their category was set', file: 'category-coverage', negNote: false,
+        rows: covRows,
+        cols: [
+          { key: 'step', label: 'Category set by', th: true, val: r => r.label },
+          { key: 'lines', label: 'Lines', num: true, val: r => r.lines, html: r => int(r.lines) },
+          { key: 'all', label: 'All lines, net', num: true, val: r => r.all, html: r => money(r.all) },
+          { key: 'purch', label: 'Purchasing, net', num: true, val: r => r.purchasing, html: r => money(r.purchasing) },
+          { key: 'share', label: 'Share of purchasing', csvLabel: 'Share of purchasing (%)', csvDp: 3, num: true,
+            val: r => (tp ? r.purchasing / tp : null), html: r => (tp ? pct(r.purchasing / tp) : ''), csv: r => (tp ? r.purchasing / tp * 100 : null) },
+        ],
+        sort: [['step', 'asc']],
+        foot: [{ _label: 'Total', lines: int(sum('lines')), all: money(sum('all')), purch: money(sum('purchasing')), share: tp ? pct(sum('purchasing') / tp) : '' }],
+      });
+      h += '<p class="note">All agencies, ' + esc(span) + '. Purchasing: lines in categories counted as purchasing.</p>';
     }
+    if (share != null) {
+      h += '<p>Purchasing payments in a named category: ' + pct(share) + ' of ' + money(meta.purchasing_total) + ' (all agencies, all years). The rest is Unclassified.</p>';
+    }
+    h += '<p>One vendor\'s payments can be in several categories. The vendor table shows the main one, with the largest net amount in the filters. Payees that look like a person are combined into one entry, Individuals (names withheld). The category list is ' + gh('config/categories.csv') + '. Categories marked as not purchasing (payroll and benefits, debt, banking and card payments, payments to other governments, No vendor named, individuals, and spending that is not for fire service, such as streets, recreation and fireworks shows coded fire by a city) are left out unless Include non-purchasing payments is checked. Lines with no vendor named are under No vendor named unless an account or description rule names what was bought. The build script is ' + gh('pipeline/build.py') + '.</p>';
+
     h += '<h2>How agencies and vendors are counted</h2>';
-    h += '<p>Amounts are net: refunds and credits are subtracted. An agency counts as using a vendor when its net payment to that vendor is positive in at least one fiscal year in the selected range. Last year paid is the latest such year. An agency or vendor with only refunds or credits in the range is listed with its net amount but not counted.</p>';
+    h += '<p>Amounts are net: credits and corrections are subtracted. An agency counts as using a vendor when its net payment to that vendor in one category is positive in at least one fiscal year in the selected range. Last year paid is the latest such year. An agency or vendor with only credits in the range is listed with its net amount but not counted.</p>';
     h += '<h2>Filters and agency columns</h2>';
-    h += '<p>Category takes one or more categories; a payment is included when it is in any of them. Annual expenses uses total expenses in the latest fully reported fiscal year, from Transparent Utah; agencies without that figure are left out when a range is selected. Selecting one agency sets the county and annual expenses filters aside.</p>';
-    h += '<p>Staffing in the agency table is the USFA registry department type: Career, Mostly career, Mostly volunteer or Volunteer. Mostly career and Mostly volunteer are combination departments. Agencies not found in the registry are shown as Not listed. FEMA grants in the agency grouping count awards with a federal fiscal year in the selected range.</p>';
+    h += '<p>Category takes one or more categories; a payment is included when its own category is any of them. Annual expenses is the median of total expenses in the last three fully reported fiscal years, from Transparent Utah, so one year of large capital spending does not move an agency into a larger range; for cities, towns and counties it uses their expenses coded fire, including payroll. Agencies without that figure are left out when a range is selected. Selecting one agency sets the county and annual expenses filters aside.</p>';
+    h += '<p>Kind in the agency table is fire district or service area, interlocal fire agency, or the fire department of a city, town or county. Staffing is the USFA registry department type: Career, Mostly career, Mostly volunteer or Volunteer. Mostly career and Mostly volunteer are combination departments. Agencies not found in the registry are shown as Not listed. People paid comes from compensation reports, which only fire districts and interlocal agencies have here. FEMA grants in the agency grouping count awards with a federal fiscal year in the selected range.</p>';
     h += '<h2>Limitations</h2><ul>';
-    h += '<li>Amounts are net yearly totals per agency and payee name, not invoices or line items. Refunds and corrections can make a total negative.</li>';
-    h += '<li>There are no item descriptions, so categories are assigned per vendor. A distributor that sells many kinds of goods sits in one category.</li>';
-    h += '<li>Purchasing card payments show the card company as the payee, so the actual merchant is hidden.</li>';
-    h += '<li>City and county fire departments are not included yet. Their fire spending is not separable by vendor in the public data.</li>';
+    h += '<li>Rows are net yearly totals per agency, payee name and category, built from transaction lines. Credits and corrections can make a total negative.</li>';
+    h += '<li>Many descriptions are short or generic, such as "ACCOUNTS PAYABLE". A payment to a distributor or retailer that no description or account rule matches keeps the payee\'s vendor category.</li>';
+    h += '<li>Card statements are paid to the bank that issued the card. Their lines get a category where a description or account rule matches; the rest are Unclassified, except lines in debt, loan, lease or transfer accounts, which stay under Debt, banking and card payments (not counted as purchasing). A loan payment to a bank booked in an ordinary expense account can still show as Unclassified.</li>';
+    h += '<li>City, town and county lines are the ones coded fire. Fire spending recorded under another department is missed.</li>';
     const fs = Core.fyStarts(ix);
     const fyParts = [];
     if (fs.January) fyParts.push(plural(fs.January, 'agency runs its', 'agencies run their') + ' fiscal year January to December');
     if (fs.July) fyParts.push(plural(fs.July, 'runs', 'run') + ' July to June');
-    if (fs['']) fyParts.push(plural(fs[''], 'does', 'do') + ' not report when theirs starts');
-    h += '<li>FY is each agency\'s own fiscal year as reported to Transparent Utah. ' +
-      cap(fyParts.length > 1 ? fyParts.slice(0, -1).join(', ') + ' and ' + fyParts[fyParts.length - 1] : fyParts.join('')) +
+    if (fs['']) fyParts.push('for ' + int(fs['']) + ' it is not known');
+    h += '<li>FY is each agency\'s own fiscal year as reported to Transparent Utah (for cities, towns and counties, the start month is read from the posting dates). ' +
+      cap(andList(fyParts)) +
       (py.length ? '; ' + py.join(' and ') + ' may be incomplete for any agency (calendar-year agencies are mid-year) and ' +
-        (py.length === 1 ? 'is' : 'are') + ' marked partial throughout.' : '.') + '</li>';
+        (py.length === 1 ? 'is' : 'are') + ' marked partial throughout.' : '.') + ' A payment\'s posting date can fall outside the fiscal year it was reported in.</li>';
     h += '<li>People paid counts employee numbers in the compensation reports. Unified Fire Authority reports several of its fire investigations staff under one employee number each year, so its count is a few people low and they appear under one job title.</li>';
-    h += '<li>Payee names written like a person (Last, First) are withheld. Names of people written another way may still appear.</li>';
+    h += '<li>Payee names that look like a person are withheld, and descriptions that may identify a person are not shown. Names of people written another way may still appear.</li>';
     h += '<li>The USFA registry is self-reported and some agencies are missing from it.</li>';
-    h += '<li>Some agencies fund others. For example, Unified Fire Service Area pays Unified Fire Authority. Those transfers are under Payments to other governments, which is not counted as purchasing.</li>';
+    h += '<li>Some agencies fund others. For example, Unified Fire Service Area pays Unified Fire Authority, and some cities pay a fire district or another city for fire service. Those payments are under Payments to other governments, which is not counted as purchasing.</li>';
     h += '</ul>';
     h += '<h2>Code</h2><p>' + A(REPO, 'github.com/pasha594/utah-fire-procurement') + '. Data built ' + esc(dateText(meta.built)) + '.</p>';
     h += '</div>';
@@ -1999,19 +2429,33 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   }
 
   /* ---- Router ---- */
-  // Focus after a change: the summary when it is on screen, otherwise the first row in view
-  // (after Back or Forward restores a position further down the table)
+  // Focus after a change: the summary, unless Back or Forward restored a position further down the
+  // table; then the first row in view. In the fixed layout the summary is always on screen, so what
+  // counts is whether the table region is scrolled past the start of the table.
   function focusMain() {
     const sum = $('summary');
-    const r = sum.getBoundingClientRect();
-    if (r.top >= 0 && r.top < window.innerHeight) { sum.focus({ preventScroll: true }); return; }
     const tb = $('tb-main-' + S.g);
-    if (!tb) { sum.focus({ preventScroll: true }); return; }
+    const sc = fixed() ? $('scroller') : null;
+    let top = 0, bottom = window.innerHeight;
+    if (sc) {
+      top = sc.getBoundingClientRect().top + sc.clientTop;
+      bottom = top + sc.clientHeight;
+    }
+    const r = sum.getBoundingClientRect();
+    const sumOn = r.top >= 0 && r.top < window.innerHeight;
+    if (!tb || (sumOn && (!sc || tb.getBoundingClientRect().top >= top - 1))) { sum.focus({ preventScroll: true }); return; }
+    // Rows under the sticky header row are hidden (its cells stick; the thead box itself does not move)
+    const hc = sc && tb.querySelector('thead th');
+    const from = hc ? Math.max(top, hc.getBoundingClientRect().bottom - 1) : top;
     for (const b of tb.querySelectorAll('button.drill')) {
       const q = b.getBoundingClientRect();
-      if (q.top > window.innerHeight) break;
-      if (q.top >= 0) { b.focus({ preventScroll: true }); return; }
+      if (q.top > bottom) break;
+      if (q.top >= from) { b.focus({ preventScroll: true }); return; }
     }
+    // No row button in view: the table itself when it is in view (rows without buttons), otherwise
+    // the summary when it is on screen (the region is scrolled to the sections below the table)
+    const t = tb.getBoundingClientRect();
+    if (sumOn && (t.bottom <= from || t.top >= bottom)) { sum.focus({ preventScroll: true }); return; }
     tb.tabIndex = -1;
     tb.focus({ preventScroll: true });
   }
@@ -2055,16 +2499,24 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     rendered = location.hash;
     const about = $('about-link');
     if (view === 'about') about.setAttribute('aria-current', 'page'); else about.removeAttribute('aria-current');
+    if (view !== 'explore') catPanel(false);
 
-    // Scroll: Back and Forward return to the saved position; other changes keep the table in view
+    // Scroll: Back and Forward return to the saved position; other changes show the new table from its
+    // start (the table region in the fixed layout; otherwise the page, when it is scrolled past the table)
+    const box = scrollBox();
     if (!own && prevView !== null) {
       const st = history.state;
-      window.scrollTo(0, st && typeof st.y === 'number' ? st.y : 0);
+      box.scrollTop = st && typeof st.y === 'number' ? st.y : 0;
+      box.scrollLeft = st && typeof st.x === 'number' ? st.x : 0;
     } else if (own && view === 'explore') {
-      const top = $('area').getBoundingClientRect().top;
-      if (top < 0) window.scrollBy(0, top - 8);
+      if (fixed()) { box.scrollTop = 0; box.scrollLeft = 0; }
+      else {
+        const top = $('area').getBoundingClientRect().top;
+        if (top < 0) window.scrollBy(0, top - 8);
+      }
     } else if (own && view !== prevView) {
-      window.scrollTo(0, 0);
+      box.scrollTop = 0;
+      box.scrollLeft = 0;
     }
     // Focus: stay on the control that made the change when it is still there; otherwise the summary
     if (view !== 'explore') {
@@ -2074,19 +2526,43 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       if (prevView !== 'explore') focusMain();
       else if (again && document.activeElement !== again && $('area').contains(again)) again.focus({ preventScroll: true });
       else if (inArea && !document.contains(active)) focusMain();
-      else if (own && (!active || active === document.body || active === $('main'))) focusMain();   // e.g. a click on a row cell
+      else if (own && (!active || active === document.body || active === $('main') || active === $('scroller'))) focusMain();   // e.g. a click on a row cell
       else if (!own && inArea) focusMain();
     }
   }
 
-  // Remember the scroll position of each history entry
+  // Remember the scroll position of each history entry (of the page, or of the table region)
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  window.addEventListener('scroll', () => {
+  document.addEventListener('scroll', e => {
+    const b = scrollBox();
+    if (e.target !== b && !(e.target === document && b === (document.scrollingElement || document.documentElement))) return;
     clearTimeout(scrollTimer);
     scrollTimer = setTimeout(saveEntry, 200);
-  }, { passive: true });
+  }, { passive: true, capture: true });
   let resizeTimer = null;
-  window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => fitRegions($('main')), 200); });
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { fitRegions($('main')); placeCat(); }, 200);
+  });
+  // Fixed layout: the page itself does not scroll, so the scroll keys do nothing while focus is outside
+  // the region (on the page, or on the summary after a change). They scroll the region instead.
+  const SCROLL_KEYS = { PageDown: 1, PageUp: -1, ' ': 1, ArrowDown: 1, ArrowUp: -1, Home: -1, End: 1 };
+  document.addEventListener('keydown', e => {
+    if (!fixed() || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.isComposing) return;
+    const dir = SCROLL_KEYS[e.key];
+    if (!dir) return;
+    const a = document.activeElement;
+    if (a && a !== document.body && a !== $('main') && a !== $('summary')) return;
+    const sc = scrollBox();
+    if (sc === document.scrollingElement || sc === document.documentElement) return;
+    const page = Math.max(40, sc.clientHeight - 40);
+    let top;
+    if (e.key === 'Home' || e.key === 'End') top = dir * sc.scrollHeight;
+    else if (e.key.startsWith('Arrow')) top = dir * 40;
+    else top = (e.key === ' ' && e.shiftKey ? -1 : dir) * page;
+    e.preventDefault();
+    sc.scrollBy({ top });
+  });
   $('skip').addEventListener('click', e => {
     e.preventDefault();
     const target = view === 'explore' ? $('summary') : $('page').querySelector('h1');

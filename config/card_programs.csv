@@ -1,0 +1,5 @@
+pattern,note
+^(Zions Bank|Wells Fargo|U\.S\. Bank|Capital One|Citi|American Express|Elan Financial Services|First National Bank of Omaha)$,Card issuers whose lines are card statements (purchasing cards); loan payments to the same banks are left alone by the description rules
+^(State Bank of Southern Utah|Mountain America Credit Union|First Community Bank|Bank of Utah|Cache Valley Bank|Desert Rivers Credit Union|Western Security Bank|Altabank|Banner Bank|Utah Community Credit Union|Firefighters Credit Union)$,Local banks and credit unions paid for agency card statements
+^(Visa|Cardmember Service|Credit card charges|State of Utah Purchasing Card|Divvy|PayPal|Venmo)$,Card programs and payment services that hide the merchant
+^(?!.*(PROCESSING|MERCHANT|\bDISC\b|\bFEES?\b)).*(\bVISA\b|\bP-?CARD\b|CREDIT CARD|BUSINESS CARD|CARD SERVICES|CARDMEMBER|PURCHASING CARD|\bWEX\b),Unmapped payee names of card statements and fuel cards (card processing and merchant fees left out)

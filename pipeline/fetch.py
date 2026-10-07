@@ -10,6 +10,8 @@ Sources:
   openfema          Firefighter grant awards (AFG, SAFER, FP&S) to Utah recipients
 
 Raw files are written once per fetch date and never edited. Python standard library only.
+The Transparent Utah BigQuery files (raw/<date>/transparent_utah_bigquery/) are not fetched here: run the queries in
+pipeline/sql/ in BigQuery and save the results under the names given at the top of each query.
 
     python3 pipeline/fetch.py            # all sources
     python3 pipeline/fetch.py usfa       # one source
@@ -67,9 +69,14 @@ def tu(function, parameter):
     return get(TU_API + "?" + q)
 
 
+API_KINDS = {"Fire district or service area", "Interlocal fire agency"}  # as in build.py
+
+
 def agencies():
+    """Included fire districts and interlocal agencies. City, town and county fire departments come from the
+    Transparent Utah BigQuery files; the public query service only reports whole cities and counties."""
     with open(ROOT / "config" / "agencies.csv", newline="") as f:
-        return [r for r in csv.DictReader(f) if r["include"] == "yes"]
+        return [r for r in csv.DictReader(f) if r["include"] == "yes" and r["kind"] in API_KINDS and r["tu_id"]]
 
 
 def fetch_transparent_utah():
