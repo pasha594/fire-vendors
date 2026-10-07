@@ -26,7 +26,7 @@ ID-09366,Saint Maries Fire Protection District,Fire district,Benewah,Saint Marie
 ID-11101,Blackfoot Fire Department,Local fire department,Bingham,Blackfoot,11101,Mostly volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",2,23,3,20,,3
 ID-11301,Shelley Firth Fire District,Fire district,Bingham,Firth,11301,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",2,0,0,40,,0
 ID-11303,Aberdeen/Springfield Fire District,Fire district,Bingham,Aberdeen,11303,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",2,0,0,25,,0
-ID-11334,Fort Hall Fire & EMS District,Tribal government,Bingham,Fort Hall,11334,Mostly career,Tribal government (includes Native American and Alaska Native tribal fire departments),1,16,0,5,,0
+ID-11334,Fort Hall Fire & EMS District,Fire district,Bingham,Fort Hall,11334,Mostly career,Tribal government (includes Native American and Alaska Native tribal fire departments),1,16,0,5,,0
 ID-11355,Shelley Firth Rural Fire Department,Local fire department,Bingham,Shelley,11355,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,0,16,,0
 ID-13203,Ketchum Fire Department,Local fire department,Blaine,Ketchum,13203,Mostly volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",3,13,0,37,https://www.ketchumfire.org/,3
 ID-13301,Hailey Fire Department,Local fire department,Blaine,Hailey,13301,Mostly volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,4,0,25,https://www.haileycityhall.org/,0
@@ -59,7 +59,7 @@ ID-19317,Ucon Volunteer Fire Department,Volunteer fire department,Bonneville,Uco
 ID-19340,Greater Swan Valley Fire Protection District #2,Fire district,Bonneville,Swan Valley,19340,Mostly volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",2,1,27,0,,0
 ID-21301,Bonners Ferry Fire Department,Local fire department,Boundary,Bonners Ferry,21301,Mostly volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",2,1,0,24,https://www.bonnersferry.id.gov/index.asp?Type=B_BASIC&SEC=%7B65F73358-CB23-4193-AD50-84240D524CD5%7D,0
 ID-21315,Moyie Springs Volunteer Fire Department,Volunteer fire department,Boundary,Moyie Springs,21315,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,12,0,,0
-ID-21333,"Curley Creek Volunteer Fire District, Inc.",Other,Boundary,Moyie Springs,21333,Volunteer,Other,2,0,8,0,,0
+ID-21333,"Curley Creek Volunteer Fire District, Inc.",Fire district,Boundary,Moyie Springs,21333,Volunteer,Other,2,0,8,0,,0
 ID-21341,"North Bench Volunteer Fire District, Inc.",Fire district,Boundary,Bonners Ferry,21341,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",3,0,16,0,https://www.boundarycountyfire.com/,0
 ID-21344,Hall Mountain Volunteer Fire Association,Other,Idaho,Bonners Ferry,21344,Volunteer,Other,3,0,20,0,http://boundarycountyfire.com/,1
 ID-21346,South Boundary Fire Protection District,Fire district,Boundary,Naples,21346,Mostly volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",2,1,14,0,https://www.boundarycountyfire.com,8
@@ -137,7 +137,7 @@ ID-57301,Moscow Fire Department,Local fire department,Latah,Moscow,57301,Mostly 
 ID-57303,Genesee City Fire Department,Local fire department,Latah,Genesee,57303,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,25,0,,0
 ID-57306,Kendrick Volunteer Fire Department,Volunteer fire department,Latah,Kendrick,57306,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,9,0,,0
 ID-57307,Juliaetta Volunteer Fire Department,Volunteer fire department,Latah,Juliaetta,57307,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,6,0,,0
-ID-57309,Bovill Fire Protection District,State government,Latah,Bovill,57309,Volunteer,State government (includes state forest fire agencies and state institution fire departments),1,0,18,0,,0
+ID-57309,Bovill Fire Protection District,Fire district,Latah,Bovill,57309,Volunteer,State government (includes state forest fire agencies and state institution fire departments),1,0,18,0,,0
 ID-57338,Genesee Rural Fire District,Fire district,Latah,Genesee,57338,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,24,0,,0
 ID-57340,Troy Fire Department,Contract fire department,Latah,Troy,57340,Volunteer,Contract fire department,1,0,44,0,,0
 ID-57342,Deary Rural Fire District,Fire district,Latah,Deary,57342,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",2,0,30,0,https://community.palouse.net/dearyfire/,1
@@ -194,6 +194,6 @@ ID-87334,Weiser Area Rural Fire District,Fire district,Washington,Weiser,87334,M
 ID-87336,Midvale Fire Protection District,Fire district,Washington,Midvale,87336,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",2,0,25,0,,2
 ID-88172,Clearwater Potlatch Fire Protection District,Fire district,Clearwater,Orofino,88172,Mostly volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",4,18,80,0,https://www.cptpa.com,0
 ID-F7020,Mountain Home AFB Fire Department,Federal government,Elmore,Mountain Home AFB,F7020,Career,Federal government (Department of Defense fire department),2,78,0,0,,0
-ID-X-IDAHO-DEPARTMENT-OF-LANDS-FIRE-DEPARTMENT-COEUR-D-ALENE,Idaho Department of Lands Fire Department,Local fire department,Kootenai,Coeur D Alene,,Mostly volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",18,41,0,150,https:/www.state.id.us/lands,0
+ID-X-IDAHO-DEPARTMENT-OF-LANDS-FIRE-DEPARTMENT-COEUR-D-ALENE,Idaho Department of Lands Fire Department,State fire agency,Kootenai,Coeur D Alene,,Mostly volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",18,41,0,150,https:/www.state.id.us/lands,0
 ID-X-SMILEY-CREEK-FIRE-PROTECTION-DISTRICT-STANLEY,Smiley Creek Fire Protection District,Fire district,Blaine,Stanley,,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,4,0,,0
 ID-X-UNITED-STATES-FISH-AND-WILDLIFE-SERVICE-BOISE,United States Fish & Wildlife Service,Federal government,Ada,Boise,,Career,Federal government (Executive branch agency fire department),84,658,0,0,https://fire.r9.fws.gov,0

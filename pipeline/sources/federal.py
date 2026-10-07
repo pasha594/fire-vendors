@@ -50,15 +50,25 @@ def fetch(states):
         print(f"  {len(rows)} awards")
 
 
+STATE_FIRE = re.compile(r"\bCAL ?FIRE\b|\bCDF\b|\bFORESTRY AND FIRE PROTECTION\b|\bDEPARTMENT OF FORESTRY\b|^CALIFORNIA FORESTRY$"
+                        r"|\bDEPARTMENT OF LANDS\b|\bTEXAS (A&M )?FOREST SERVICE\b|\bDIVISION OF FORESTRY\b")
+
+
 def kind(name, org_type):
-    """Department kind from the registry name and organization type (the registry has no finer field)."""
+    """Department kind from the registry name and organization type (the registry has no finer field).
+    Names win over the organization type for state wildland agencies and for districts, because the registry's
+    organization type is often wrong for them (Bovill Fire Protection District and several Texas ESDs are filed
+    as 'State government'). State fire agencies stay in the main data (owner decision, 2026-10-06); a county
+    department that CAL FIRE runs under contract ('Cal Fire - Riverside County Fire Department') stays a county one."""
     n = name.upper()
-    if not org_type.startswith("Local"):
-        return org_type.split(" (")[0]  # State, Federal, Private or industrial, Contract, ...
-    if re.search(r"\bESD\b|EMERGENCY SERVICES? DIST", n):
+    if STATE_FIRE.search(n) and "COUNTY FIRE" not in n:
+        return "State fire agency"
+    if re.search(r"\bESD\b|\bE\.S\.D\.|EMERGENCY SERVICES? DIST", n):
         return "Emergency services district"
     if re.search(r"\bFIRE (PROTECTION )?(DISTRICT|DIST)\b|\bFPD\b|\bFIRE AUTHORITY\b|\bJOINT FIRE\b|\bFIRE (AND|&) (RESCUE|EMS) DISTRICT\b", n):
         return "Fire district"
+    if not org_type.startswith("Local"):
+        return org_type.split(" (")[0]  # State, Federal, Private or industrial, Contract, ...
     if re.search(r"\bTOWNSHIP\b|\bTWP\b", n):
         return "Township fire department"
     if re.search(r"\bCOUNTY\b", n):

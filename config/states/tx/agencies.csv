@@ -390,7 +390,7 @@ TX-DP203,Pecan Gap Volunteer Fire Department,Volunteer fire department,Delta,Pec
 TX-DP205,Enloe Volunteer Fire Department,Volunteer fire department,Delta,Enloe,DP205,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,18,0,,0
 TX-DP402,Cooper Volunteer Fire Department,Volunteer fire department,Delta,Cooper,DP402,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,19,0,,0
 TX-DR215,"Ponder Volunteer Fire Department, Inc.",Volunteer fire department,Denton,Ponder,DR215,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,20,0,http://www.ponderfire.com/,2
-TX-DR301,Argyle Fire District,Other,Denton,Argyle,DR301,Mostly career,Other,3,33,8,0,https://www.argylefire.com/,0
+TX-DR301,Argyle Fire District,Fire district,Denton,Argyle,DR301,Mostly career,Other,3,33,8,0,https://www.argylefire.com/,0
 TX-DR302,Aubrey Fire Department,Local fire department,Denton,Aubrey,DR302,Mostly volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",2,15,25,0,,0
 TX-DR306,Highland Village Fire Department,Local fire department,Denton,Highland Village,DR306,Career,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,21,0,0,https://www.highlandvillage.org/,0
 TX-DR307,"Justin Community Volunteer Fire Department, Inc.",Volunteer fire department,Denton,Justin,DR307,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,26,12,,0
@@ -1056,7 +1056,7 @@ TX-SA412,South Montgomery County Volunteer Fire Department,County fire departmen
 TX-SA416,The Woodlands Fire Department,Local fire department,Montgomery,The Woodlands,SA416,Career,"Local (includes career, combination, and volunteer fire departments and fire districts)",8,138,0,0,https://www.thewoodlandstownship-tx.gov/,2
 TX-SA420,River Plantation Fire Department,Contract fire department,Montgomery,Conroe,SA420,Volunteer,Contract fire department,2,0,25,8,,0
 TX-SA601,Conroe Fire Department,Local fire department,Montgomery,Conroe,SA601,Career,"Local (includes career, combination, and volunteer fire departments and fire districts)",7,131,0,0,http://www.cityofconroe.org/,0
-TX-SA603,Montgomery County ESD #1,Other,Montgomery,Willis,SA603,Mostly career,Other,5,50,15,0,https://www.mcesd1.org/,1
+TX-SA603,Montgomery County ESD #1,Emergency services district,Montgomery,Willis,SA603,Mostly career,Other,5,50,15,0,https://www.mcesd1.org/,1
 TX-SA605,Montgomery County ESD 9,Emergency services district,Montgomery,Conroe,SA605,Mostly career,"Local (includes career, combination, and volunteer fire departments and fire districts)",7,35,1,0,www.mcesd9.org,0
 TX-SB403,Sunray Fire and EMS,Local fire department,Moore,Sunray,SB403,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,20,0,https://cityofsunray.com/,0
 TX-SB502,Dumas Fire Department,Local fire department,Moore,Dumas,SB502,Mostly volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,16,24,0,http://www.dumastx.gov/departments/fire/index.php,1
@@ -1081,7 +1081,7 @@ TX-SG613,Nacogdoches Fire Department,Local fire department,Nacogdoches,Nacogdoch
 TX-SH101,Mustang Volunteer Fire Department,Volunteer fire department,Navarro,Corsicana,SH101,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,2,0,,0
 TX-SH202,Barry Volunteer Fire Department,Volunteer fire department,Navarro,Barry,SH202,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,14,0,,0
 TX-SH204,Chatfield Volunteer Fire Department,Volunteer fire department,Navarro,Chatfield,SH204,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,13,0,,0
-TX-SH211,Navarro County E.S.D. #1 Fire Department,State government,Navarro,Powell,SH211,Volunteer,State government (includes state forest fire agencies and state institution fire departments),1,0,16,0,,0
+TX-SH211,Navarro County E.S.D. #1 Fire Department,Emergency services district,Navarro,Powell,SH211,Volunteer,State government (includes state forest fire agencies and state institution fire departments),1,0,16,0,,0
 TX-SH212,Retreat Volunteer Fire Department,Volunteer fire department,Navarro,Corsicana,SH212,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,19,0,https://retreatfire.org/,0
 TX-SH214,Richland Volunteer Fire Department,Volunteer fire department,Navarro,Richland,SH214,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,15,0,,0
 TX-SH215,Navarro Mills Volunteer Fire Department,Volunteer fire department,Navarro,Purdon,SH215,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,11,0,,1
@@ -1339,7 +1339,7 @@ TX-WN401,Grape Creek Volunteer Fire Department,Volunteer fire department,Tom Gre
 TX-WN402,East Concho Volunteer Fire Department,Other,Tom Green,San Angelo,WN402,Volunteer,Other,1,0,22,0,,0
 TX-WN405,Wall Volunteer Fire Department,Volunteer fire department,Tom Green,Wall,WN405,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,20,0,,0
 TX-WN704,San Angelo Fire Department,Local fire department,Tom Green,San Angelo,WN704,Career,"Local (includes career, combination, and volunteer fire departments and fire districts)",8,166,0,0,,0
-TX-WP202,Travis County Emergency Services District #10/CE-Bar VFD,State government,Travis,Austin,WP202,Mostly career,State government (includes state forest fire agencies and state institution fire departments),1,14,1,0,https://ce-bar.org,0
+TX-WP202,Travis County Emergency Services District #10/CE-Bar VFD,Emergency services district,Travis,Austin,WP202,Mostly career,State government (includes state forest fire agencies and state institution fire departments),1,14,1,0,https://ce-bar.org,0
 TX-WP303,Travis County Emergency Services District No. 6/Lake Travis Fire Rescue,Emergency services district,Travis,Austin,WP303,Career,"Local (includes career, combination, and volunteer fire departments and fire districts)",6,104,0,0,https://www.ltfr.org/,0
 TX-WP305,Travis County Emergency Services District #1,Emergency services district,Travis,Lago Vista,WP305,Mostly career,"Local (includes career, combination, and volunteer fire departments and fire districts)",10,61,2,6,https://www.tcesd1.org,0
 TX-WP309,Travis County ESD No. 12 (Manor Volunteer Fire Department),Emergency services district,Travis,Manor,WP309,Career,"Local (includes career, combination, and volunteer fire departments and fire districts)",3,31,0,0,http://tcesd12.com/,0
@@ -1350,7 +1350,7 @@ TX-WP408,Travis County ESD#5/Manchaca Fire/Rescue,Emergency services district,Tr
 TX-WP411,Pedernales Fire Department,Local fire department,Travis,Spicewood,WP411,Mostly career,"Local (includes career, combination, and volunteer fire departments and fire districts)",3,28,1,0,http://www.pedernalesfd.org/,0
 TX-WP420,Travis County Fire Marshal,County fire department,Travis,Austin,WP420,Career,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,6,0,0,https://www.traviscountytx.gov/fire-marshal,0
 TX-WP510,Oak Hill Fire Department-Travis County Emergency Services District 3,Emergency services district,Travis,Austin,WP510,Mostly career,"Local (includes career, combination, and volunteer fire departments and fire districts)",2,32,2,0,http://www.oakhillfire.org/,0
-TX-WP519,Travis County Emergency Service District 4,Other,Travis,Austin,WP519,Career,Other,3,30,0,0,https://www.esd4.org/,0
+TX-WP519,Travis County Emergency Service District 4,Emergency services district,Travis,Austin,WP519,Career,Other,3,30,0,0,https://www.esd4.org/,0
 TX-WP607,Travis County Emergency Services District #9 (Westlake Fire Department),Emergency services district,Travis,West Lake Hills,WP607,Career,"Local (includes career, combination, and volunteer fire departments and fire districts)",3,34,0,0,http://www.westlakefd.org/,0
 TX-WP801,Austin Fire Department,Local fire department,Travis,Austin,WP801,Career,"Local (includes career, combination, and volunteer fire departments and fire districts)",50,1156,0,0,https://www.austintexas.gov/department/fire,2
 TX-WR202,Pennington Fire & Rescue,Local fire department,Trinity,Pennington,WR202,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",2,0,15,0,,0
@@ -1412,7 +1412,7 @@ TX-X-QUAD-CITY-VOLUNTEER-FIRE-DEPARTMENT-OILTON,Quad-City Volunteer Fire Departm
 TX-X-RIO-BRAVO-FIRE-DEPARTMENT-LAREDO,Rio Bravo Fire Department,Local fire department,Webb,Laredo,,Mostly volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,1,5,0,,0
 TX-X-ROBERTSON-COUNTY-EMERGENCY-SERVICES-DISTRICT-FRANKLIN,Robertson County Emergency Services District,Emergency services district,Robertson,Franklin,,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",10,0,86,0,https://www.robcoesd.org,0
 TX-X-SANTA-MARIA-VOLUNTEER-FIRE-DEPARTMENT-SANTA-MARIA,Santa Maria Volunteer Fire Department,Volunteer fire department,Cameron,Santa Maria,,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,13,0,,0
-TX-X-TEXAS-FOREST-SERVICE-JEFFERSON-DISTRICT-JEFFERSON,Texas Forest Service- Jefferson District,State government,Marion,Jefferson,,Career,State government (includes state forest fire agencies and state institution fire departments),1,2,0,0,,0
+TX-X-TEXAS-FOREST-SERVICE-JEFFERSON-DISTRICT-JEFFERSON,Texas Forest Service- Jefferson District,State fire agency,Marion,Jefferson,,Career,State government (includes state forest fire agencies and state institution fire departments),1,2,0,0,,0
 TX-X-THOMASTON-VOLUNTEER-FIRE-DEPARTMENT-THOMASTON,Thomaston Volunteer Fire Department,Other,Calhoun,Thomaston,,Volunteer,Other,1,0,8,0,,0
 TX-X-TYLER-COUNTY-WOODVILLE,Tyler County,Other,Tyler,Woodville,,Volunteer,Other,1,0,18,0,,0
 TX-X-VIGO-PARK-VOLUNTEER-FIRE-DEPARTMENT-VIGO-PARK,Vigo Park Volunteer Fire Department,Volunteer fire department,Swisher,Vigo Park,,Volunteer,"Local (includes career, combination, and volunteer fire departments and fire districts)",1,0,12,0,,0
