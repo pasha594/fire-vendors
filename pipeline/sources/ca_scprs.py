@@ -34,13 +34,11 @@ Amounts: "Total Price" as published ("$1,234.56", negatives in parentheses). The
 purchase date, else the creation date, when it falls between 2000 and the end of the fiscal year (a few
 purchase dates are typos such as 1912 or 2511); otherwise empty.
 
-Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day (ca_common.keep_identical): raw
-lines equal in all 32 published columns are kept once (the file has no row id and no load date, so every column
-counts; PO, requisition and LPA numbers are content); the transaction copy of a dropped item line is dropped with
-it. There is no line number, so a line repeated inside one PO with the same item, quantity and price counts once.
-Void-safe: a set of n identical positive lines keeps min(n, reversals + 1), where a reversal is a negative line with
-the same department, supplier, PO, requisition and LPA number, the amount negated and the same or next fiscal year
-(REVERSAL). Negative lines are kept; normalize prints the counts and docs/sources/ca.md gives the numbers.
+Duplicates and reversals: exempt from the owner's identical-line rule (owner decision B of 2026-10-07, "keep PO
+lines", like Texas DIR): every item line is kept as published, also lines repeated inside one PO with the same item,
+quantity and price (the file has no line number, so such lines are separate items of one PO). Lines in different POs
+are never identical anyway, since the PO number is content. Negative lines are kept as published; normalize prints
+how many lines repeat another in all 32 columns.
 """
 import collections
 import csv
@@ -61,8 +59,6 @@ URL = ("https://data.ca.gov/dataset/ae343670-f827-4bc8-9d44-2af937d60190/resourc
        "download/purchase-order-data-2012-2015-.csv")
 PAGE = "https://data.ca.gov/dataset/purchase-order-data"
 DEPARTMENT = "Forestry and Fire Protection, Department of"
-REVERSAL = ["Department Name", "Supplier Code", "Supplier Name", "Purchase Order Number", "Requisition Number",
-            "LPA Number"]
 
 
 def money(s):
@@ -147,9 +143,9 @@ def normalize():
             continue
         rids[i] = f"{year[:4]}/{number}/{seq[(number, year)]}"
         lines.append((i, r))
-    lines, dropped = ca_common.keep_identical(
-        lines, lambda x: x[1], lambda x: tuple(x[1][c[k]] for k in REVERSAL),
-        lambda x: money(x[1][c["Total Price"]]), lambda x: int(x[1][c["Fiscal Year"]][5:]), lambda x: x[0])
+    # exempt from the identical-line rule (owner decision B of 2026-10-07): every item line is kept
+    copies = collections.Counter(r for _, r in lines)
+    repeated = sum(n for n in copies.values() if n > 1)
     items, txns = [], []
     for i, r in lines:
         fy, rid = r[c["Fiscal Year"]], rids[i]
@@ -177,12 +173,12 @@ def normalize():
         "fetched": d.parent.parent.name,
         "note": "CAL FIRE (state fire agency) purchase order lines with quantity, unit price and UNSPSC commodity; "
                 "FY2012-13 to FY2014-15 only (the State publishes no later bulk extract); purchase order amounts, "
-                "not payments; no brand field; raw lines identical in every column kept once (no line number, so a "
-                "line repeated inside one PO counts once)"})
+                "not payments; no brand field; item lines kept as published, also equal lines inside one PO (no line "
+                "number; exempt from the identical-line rule like Texas DIR)"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in items)
     print(f"{ST}: {SOURCE}: {len(raw)} source lines -> {len(items)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; "
-          f"{ca_common.dropped_text(dropped)}; {zero} $0 lines left out")
+          f"{repeated} lines repeat another in every column (kept: PO item lines, exempt); {zero} $0 lines left out")
 
 
 if __name__ == "__main__":

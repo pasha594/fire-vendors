@@ -25,16 +25,18 @@ county's cooperative agreement), linked to CA-33090 in agency_sources.csv. The r
 operation a second time as "Cal Fire - Riverside County Fire Department" (CA-33555), which is not linked.
 The department's largest payee is the State (CAL FIRE) for contract staffing.
 
-Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day (ca_common.keep_identical): raw
-lines equal in every published column but the portal's row id (:id, the only row or load id in the raw file) are
-kept once; invoice and payment ids are content, so lines of different invoices or payments are always kept. The
-source has no line number, so lines repeated inside one invoice (same business unit, account, date and amount;
-for example one line per phone on a wireless bill) are identical and kept once. Void-safe: a set of n identical
-positive lines keeps min(n, reversals + 1), where a reversal is a negative line with the same department, vendor,
-business unit, fund, account, expense category, invoice id, payment id and description, the amount negated and
-the same or next fiscal year (REVERSAL). Credits and reversals are their own negative lines and are kept; normalize
-prints the counts and docs/sources/ca.md gives the numbers. The record id is the invoice id plus a running number
-in the sorted order of the invoice's raw lines (before identical lines are dropped).
+Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day (ca_common.keep_identical): raw lines
+equal in every published column but the portal's row id (:id, the only row or load id in the raw file) are kept
+once; invoice and payment ids are content, so lines of different invoices or payments are always kept. The source
+has no line number, so lines repeated inside one invoice (same business unit, account, date and amount; for example
+one line per phone on a wireless bill) are identical and kept once. Void-safe: a set of n identical positive lines
+keeps min(n, reversals + 1), where a reversal is a negative line with the same department, vendor, business unit,
+fund, account, expense category, invoice id, payment id and description, the amount negated and the same or next
+fiscal year (REVERSAL). Identical voids (owner decision of 2026-10-07): in a family that has payments, an identical
+negative copy is dropped only together with an identical positive copy of the family, so the family keeps its raw
+net. Credits and reversals are their own negative lines and are kept; normalize prints the counts and
+docs/sources/ca.md gives the numbers. The record id is the invoice id plus a running number in the sorted order of
+the invoice's raw lines (before identical lines are dropped).
 """
 import collections
 import decimal

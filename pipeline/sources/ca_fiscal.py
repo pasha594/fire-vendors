@@ -39,16 +39,19 @@ and distribution numbers), payee, account, fund, program and accounting date, wh
 field but the line number (about 142,000 rows a year). source_record_id is the voucher plus a running number
 in the sorted order of its rows. Rows that sum to $0.00 are dropped.
 
-Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day, on the raw distribution lines
-before they are summed. The files have no row id and no load or extract date, so two lines are identical only when
-all 26 columns are equal, the document id (voucher, line and distribution number) included; vouchers and their line
-numbers are content, so lines of different vouchers or lines are always kept. Identical lines are kept once (1,308
-copies in the 2026-10-06 files, every one a repeated distribution line). Void-safe (ca_common.copies_to_keep): a
-set of n identical positive lines keeps min(n, reversals + 1), where a reversal is a negative line with the same
-business unit, vendor, document id, account, fund and program (REVERSAL), the amount negated and the same or next
-fiscal year. The summed rows are not deduplicated again: rows of different vouchers are different payments even
-when date, payee, account and amount are equal. Lines that repeat a document id with a different date or amount
-are later postings to the same line (corrections, reversals) and are kept, as negative amounts where published so.
+Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day, on the raw distribution lines before
+they are summed. The files have no row id and no load or extract date, so two lines are identical only when all 26
+columns are equal, the document id (voucher, line and distribution number) included; vouchers and their line numbers
+are content, so lines of different vouchers or lines are always kept. Identical lines are kept once (1,308 copies in
+the 2026-10-06 files, every one a repeated distribution line). Void-safe (ca_common.copies_to_keep): a set of n
+identical positive lines keeps min(n, reversals + 1), where a reversal is a negative line with the same business
+unit, vendor, document id, account, fund and program (REVERSAL), the amount negated and the same or next fiscal
+year. Identical voids (ca_common.negative_copies_to_keep, owner decision of 2026-10-07): in a family that has
+payments, an identical negative copy is dropped only together with an identical positive copy of the family (none in
+the 2026-10-06 files: no set of identical negative lines has a payment in its family). The summed rows are not
+deduplicated again: rows of different vouchers are different payments even when date, payee, account and amount are
+equal. Lines that repeat a document id with a different date or amount are later postings to the same line
+(corrections, reversals) and are kept, as negative amounts where published so.
 """
 import collections
 import csv
@@ -119,6 +122,11 @@ def voucher(document_id):
     return ".".join(parts[:3])
 
 
+def family_digest(reversal, amount, fy):
+    """A payment's family key (REVERSAL fields, amount, fiscal year) as a short digest, to hold one per raw line."""
+    return hashlib.blake2b("\x1f".join(reversal + (str(amount), str(fy))).encode(), digest_size=12).digest()
+
+
 def normalize():
     d = common.latest_raw(ST, SOURCE)
     assert d, f"{ST}: run fetch first"
@@ -137,6 +145,7 @@ def normalize():
     groups = collections.defaultdict(decimal.Decimal)
     extra = {}  # digest of a line seen more than once -> [line, copies after the first]
     reversals = collections.defaultdict(set)  # (REVERSAL fields, -amount, fiscal year) -> digests of negative lines
+    payments = set()  # digests of (REVERSAL fields, amount, fiscal year) of the positive lines (families with payments)
     lines = 0
     for entry in manifest:
         seen = set()
@@ -153,18 +162,36 @@ def normalize():
             amount = decimal.Decimal(r[ix["monetary_amount"]] or "0")
             if amount < 0:
                 reversals[(tuple(r[i] for i in rev_ix), -amount, fy)].add(h)
+            elif amount > 0:
+                payments.add(family_digest(tuple(r[i] for i in rev_ix), amount, fy))
             groups[sum_key(r, fy)] += amount
         assert n == entry["rows"], f"{entry['file']}: {n} rows, manifest says {entry['rows']}"
         lines += n
-    # identical lines are kept once, except copies the void rule keeps (each file is one fiscal year, and the
-    # fiscal year is a column, so identical lines are always in one file)
-    identical = ca_common.new_stats()
+    # identical lines are kept once, except copies the void rule keeps and negative copies the void fix keeps (each
+    # file is one fiscal year, and the fiscal year is a column, so identical lines are always in one file)
+    keep, dropped, negative = {}, collections.Counter(), []
     for h in sorted(extra):
         r, copies = extra[h]
         fy, amount = int(r[ix["fiscal_year_begin"]]) + 1, decimal.Decimal(r[ix["monetary_amount"]] or "0")
-        keep = ca_common.copies_to_keep(copies + 1, amount, tuple(r[i] for i in rev_ix), fy, reversals)
-        groups[sum_key(r, fy)] += (keep - 1) * amount
-        ca_common.count(identical, copies + 1, keep, amount)
+        if amount < 0:
+            negative.append((h, tuple(r[i] for i in rev_ix), -amount, fy, copies + 1))
+            continue
+        keep[h] = ca_common.copies_to_keep(copies + 1, amount, tuple(r[i] for i in rev_ix), fy, reversals)
+        dropped[(tuple(r[i] for i in rev_ix), amount, fy)] += copies + 1 - keep[h]
+
+    def present(reversal, amount, fy, sign):
+        return (family_digest(reversal, amount, fy) in payments if sign > 0
+                else (reversal, amount, fy) in reversals)
+
+    kept_negative, touched = ca_common.negative_copies_to_keep(negative, dropped, present)
+    keep.update(kept_negative)
+    identical = ca_common.new_stats()
+    identical["fix_families"] = touched
+    for h in sorted(extra):
+        r, copies = extra[h]
+        fy, amount = int(r[ix["fiscal_year_begin"]]) + 1, decimal.Decimal(r[ix["monetary_amount"]] or "0")
+        groups[sum_key(r, fy)] += (keep[h] - 1) * amount
+        ca_common.count(identical, copies + 1, keep[h], amount)
     seq, rows, zero = collections.Counter(), [], 0
     for key in sorted(groups):
         fy, vch, vendor, date, acct, acat, adesc, fund, fdesc, prog, sub = key

@@ -22,17 +22,18 @@ Attribution: department code 30 (FIRE), linked to CA-33025 (Corona Fire Departme
 Payees: shown as published (owner decision of 2026-10-06), private persons included (pension, benefit, refund
 and reimbursement payments name the person paid); common.withhold_person cuts only email and bank account text.
 
-Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day (ca_common.keep_identical): raw
-lines equal in every published column but the portal's row id (:id, the only row or load id in the raw file) are
-kept once; payment and invoice ids are content, so lines of different payments or invoices are always kept. The
-source has no line number, so lines repeated inside one invoice and payment (same description, account and
-amount; a copier invoice billing several machines at one price) are identical and kept once. Void-safe: a set of n
-identical positive lines keeps min(n, reversals + 1), where a reversal is a negative line with the same
-department, vendor, department activity, fund, expense category, invoice id and description, the amount negated
-and the same or next fiscal year (REVERSAL; a void can carry a new payment id and date). Negative lines (voids,
-credits) are kept; normalize prints the counts and docs/sources/ca.md gives the numbers. The record id is payment
-id, invoice id and a running number in the sorted order of the invoice's raw lines (before identical lines are
-dropped).
+Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day (ca_common.keep_identical): raw lines
+equal in every published column but the portal's row id (:id, the only row or load id in the raw file) are kept
+once; payment and invoice ids are content, so lines of different payments or invoices are always kept. The source
+has no line number, so lines repeated inside one invoice and payment (same description, account and amount; a copier
+invoice billing several machines at one price) are identical and kept once. Void-safe: a set of n identical positive
+lines keeps min(n, reversals + 1), where a reversal is a negative line with the same department, vendor, department
+activity, fund, expense category, invoice id and description, the amount negated and the same or next fiscal year
+(REVERSAL; a void can carry a new payment id and date). Identical voids (owner decision of 2026-10-07): in a family
+that has payments, an identical negative copy is dropped only together with an identical positive copy of the
+family, so the family keeps its raw net. Negative lines (voids, credits) are kept; normalize prints the counts and
+docs/sources/ca.md gives the numbers. The record id is payment id, invoice id and a running number in the sorted
+order of the invoice's raw lines (before identical lines are dropped).
 """
 import collections
 import decimal

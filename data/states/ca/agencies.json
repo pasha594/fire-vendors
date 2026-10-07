@@ -79,7 +79,7 @@
    "years": "2013-2015",
    "fiscal_year": "California state FY, Jul-Jun",
    "fetched": "2026-10-06",
-   "note": "CAL FIRE (state fire agency) purchase order lines with quantity, unit price and UNSPSC commodity; FY2012-13 to FY2014-15 only (the State publishes no later bulk extract); purchase order amounts, not payments; no brand field; raw lines identical in every column kept once (no line number, so a line repeated inside one PO counts once)"
+   "note": "CAL FIRE (state fire agency) purchase order lines with quantity, unit price and UNSPSC commodity; FY2012-13 to FY2014-15 only (the State publishes no later bulk extract); purchase order amounts, not payments; no brand field; item lines kept as published, also equal lines inside one PO (no line number; exempt from the identical-line rule like Texas DIR)"
   },
   {
    "source": "ca_sf",
