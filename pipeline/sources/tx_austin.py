@@ -20,14 +20,16 @@ normalize  data/states/tx/transactions.csv.gz   one row per Fire department paym
 Attribution: department code 83, "Fire", linked to TX-WP801 in agency_sources.csv. Austin-Travis County EMS
 (department 93) and Public Safety & Emergency Management (96) are separate departments and are not linked.
 
-Duplicates and reversals: owner rule of 2026-10-07 (tx_common.drop_identical): lines identical in every published
-column but the source's ids are kept once: fiscal year, check or EFT issue date, payee, accounting line description
-(or commodity description), account (fund, division, group, object), object category and amount. The source's ids
-are the Socrata row id, the payment document id (rfed_doc_*) with its vendor, commodity and accounting line
-numbers, and the referenced purchase order, delivery order or contract id (rf_doc_*); in the 2026-10-06 pull every
-dropped line differs from the kept one only in those ids (mostly commodity or accounting lines of one payment
-document with the same description and amount), and none is identical in every raw column.
-source_record_id counts every raw line of the document, so a kept line's id does not move when a copy is dropped.
+Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day (tx_common.dedup): two lines are
+identical when every raw column is equal except the Socrata row id (:id), the only column that identifies the row or
+the load (ROW_IDS; the pull selects :id and the published columns, no :created_at or :updated_at). Compared are the
+other 34 columns, the payment document (rfed_doc_*) with its vendor, commodity and accounting line numbers, the
+referenced purchase order, delivery order or contract (rf_doc_*), the commodity and the period fields included:
+lines that differ in any of them are different payments and are kept. Of a set of identical lines the one with the
+lowest :id is kept; a set of n identical positive lines keeps min(n, reversals + 1), reversals being the distinct
+lines equal in every REVERSAL_KEYS column (department, fund, division, group, object, vendor, referenced document)
+with the amount negated in the same or the next fiscal year. In the 2026-10-06 pull no two lines are identical and
+there is no negative line, so nothing is dropped. source_record_id counts every raw line of the document.
 Checks of every status are kept (Outstanding = issued, not yet cashed; Escheat = uncashed and sent to the state as
 unclaimed property; the City's expense stands either way). Payee names are published as the source publishes
 them, employees and customer (non-vendor) payees included (owner decision, 2026-10-06); common.withhold_person
@@ -48,6 +50,9 @@ DATASET = "8c6z-qnmj"
 DEPARTMENT = "83"
 FIRST_FY = 2021
 PAGE = 50000
+ROW_IDS = (":id",)  # Socrata row id: the only raw column that identifies the row or the load
+REVERSAL_KEYS = ("dept_cd", "fund_cd", "div_cd", "gp_cd", "obj_cd", "vend_cust_cd", "lgl_nm", "rf_doc_cd",
+                 "rf_doc_dept_cd", "rf_doc_id")
 
 
 def fetch():
@@ -79,14 +84,15 @@ def normalize():
     assert len(links) == 1 and links[0]["source_entity_id"] == DEPARTMENT, "agency_sources.csv: one Fire row expected"
     aid = links[0]["agency_id"]
     lines = json.loads(common.read_gz(raw / "fire.json.gz"))
-    seen, rows, per_doc, exact = set(), [], collections.Counter(), 0
-    for r in sorted(lines, key=lambda r: r[":id"]):
+    records = sorted(lines, key=lambda r: r[":id"])
+    drop, dropped = tx_common.dedup(records, ROW_IDS, REVERSAL_KEYS, "amount", "fy_dc")
+    rows, per_doc = [], collections.Counter()
+    for i, r in enumerate(records):
         assert str(r["dept_cd"]) == DEPARTMENT
-        k = tuple(sorted((f, v) for f, v in r.items() if f != ":id"))
-        exact += k in seen  # identical in every raw column; drop_identical drops it below (counted for the report)
-        seen.add(k)
         doc = "-".join(r.get(f, "") for f in ("rfed_doc_cd", "rfed_doc_dept_cd", "rfed_doc_id"))
-        per_doc[doc] += 1
+        per_doc[doc] += 1  # counts every raw line, so a kept line's id does not move when a copy is dropped
+        if i in drop:
+            continue
         obj = r.get("obj_nm", "")
         rows.append({
             "agency_id": aid, "fiscal_year": int(r["fy_dc"]), "posting_date": r.get("chk_eft_iss_dt", "")[:10],
@@ -97,8 +103,7 @@ def normalize():
             "category_published": r.get("ocat_nm", ""), "amount": f"{float(r['amount']):.2f}",
             "source_record_id": f"{doc}:{per_doc[doc]}",
         })
-    n_raw = len(rows)
-    rows, dropped = tx_common.drop_identical(rows)
+    n_raw = len(records)
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
     common.assemble_agencies(ST)
     by_fy = collections.Counter()
@@ -107,7 +112,7 @@ def normalize():
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
     print(f"{ST} {SOURCE}: {n_raw} raw lines -> {len(rows)} lines (${total:,.2f}); "
           + ", ".join(f"FY{y} ${v:,.0f}" for y, v in sorted(by_fy.items()))
-          + f"; {tx_common.dropped_text(dropped)}, of which {exact} identical in every raw column")
+          + f"; {tx_common.dropped_text(dropped)}")
 
 
 if __name__ == "__main__":

@@ -19,14 +19,17 @@ normalize  data/states/tx/transactions.csv.gz   one row per DFD payment line
 
 Attribution: department code DFD, "Dallas Fire-Rescue", linked to TX-DH807 in agency_sources.csv.
 
-Duplicates and reversals: owner rule of 2026-10-07 (tx_common.drop_identical): lines identical in every published
-column but the source's ids are kept once: fiscal year, run date, payee, description (commodity, activity),
-account (fund type, activity, object), object group and amount. The source's ids are the Socrata row id and the
-payment document id (docid); in the 2026-10-06 pull every dropped line differs from the kept one only in docid
-(the same payment to one vendor on one run date under another document), and none is identical in every raw
-column. source_record_id counts every raw line of the document. Negative lines are kept and never equal the
-payment they reverse. Payee names are published as the source publishes them
-(owner decision, 2026-10-06); common.withhold_person only cuts email addresses and bank account text.
+Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day (tx_common.dedup): two lines are
+identical when every raw column is equal except the Socrata row id (:id), the only column that identifies the row or
+the load (ROW_IDS). Compared are the other 20 columns, the payment document id (docid), commodity and vendor code
+included: lines that differ in any of them are different payments and are kept. Of a set of identical lines the one
+with the lowest :id is kept; a set of n identical positive lines keeps min(n, reversals + 1), reversals being the
+distinct lines equal in every REVERSAL_KEYS column (department, fund type, activity, object group, object, vendor
+code and name; a Dallas void carries its own document id and often no commodity) with the amount negated in the
+same or the next fiscal year. In the 2026-10-06 pull no two lines are identical, so nothing is dropped; the 14
+negative lines are kept and amounts are net. source_record_id counts every raw line of the document. Payee names
+are published as the source publishes them (owner decision, 2026-10-06); common.withhold_person only cuts email
+addresses and bank account text.
 """
 import collections
 import decimal
@@ -43,6 +46,8 @@ DATASET = "x5ih-idh7"
 DEPARTMENT = "DFD"
 FIRST_FY = 2021
 PAGE = 50000
+ROW_IDS = (":id",)  # Socrata row id: the only raw column that identifies the row or the load
+REVERSAL_KEYS = ("dpt", "ftyp", "actv", "ogrp", "obj", "vcode", "vendor")
 
 
 def fetch():
@@ -74,13 +79,14 @@ def normalize():
     assert len(links) == 1 and links[0]["source_entity_id"] == DEPARTMENT, "agency_sources.csv: one DFD row expected"
     aid = links[0]["agency_id"]
     lines = json.loads(common.read_gz(raw / "dfd.json.gz"))
-    seen, rows, per_doc, exact = set(), [], collections.Counter(), 0
-    for r in sorted(lines, key=lambda r: r[":id"]):
+    records = sorted(lines, key=lambda r: r[":id"])
+    drop, dropped = tx_common.dedup(records, ROW_IDS, REVERSAL_KEYS, "chksubtot", "fy")
+    rows, per_doc = [], collections.Counter()
+    for i, r in enumerate(records):
         assert r["dpt"] == DEPARTMENT
-        k = tuple(sorted((f, v) for f, v in r.items() if f != ":id"))
-        exact += k in seen  # identical in every raw column; drop_identical drops it below (counted for the report)
-        seen.add(k)
-        per_doc[r["docid"]] += 1
+        per_doc[r["docid"]] += 1  # counts every raw line, so a kept line's id does not move when a copy is dropped
+        if i in drop:
+            continue
         obj = r.get("object", "")
         rows.append({
             "agency_id": aid, "fiscal_year": int(r["fy"]), "posting_date": r.get("rundate", "")[:10],
@@ -90,8 +96,7 @@ def normalize():
             "category_published": r.get("objectgroup", ""), "amount": f"{float(r['chksubtot']):.2f}",
             "source_record_id": f"{r['docid']}:{per_doc[r['docid']]}",
         })
-    n_raw = len(rows)
-    rows, dropped = tx_common.drop_identical(rows)
+    n_raw = len(records)
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
     common.assemble_agencies(ST)
     by_fy = collections.Counter()
@@ -100,7 +105,7 @@ def normalize():
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
     print(f"{ST} {SOURCE}: {n_raw} raw lines -> {len(rows)} lines (${total:,.2f}); "
           + ", ".join(f"FY{y} ${v:,.0f}" for y, v in sorted(by_fy.items()))
-          + f"; {tx_common.dropped_text(dropped)}, of which {exact} identical in every raw column")
+          + f"; {tx_common.dropped_text(dropped)}")
 
 
 if __name__ == "__main__":

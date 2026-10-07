@@ -22,17 +22,21 @@ normalize  data/states/tx/transactions.csv.gz   one row per HFD payment line
 
 Attribution: Department ID 1200, "Houston Fire Department (HFD)", linked to TX-KA926 in agency_sources.csv.
 
-Duplicates and reversals: owner rule of 2026-10-07 (tx_common.drop_identical): lines identical in every published
-column but the source's ids are kept once: fiscal year, clearing date, payee, description (type of procurement,
-WBS description, PO number and item, contract number), account (fund name, GL account) and amount. The source's
-ids are the payment document number and the vendor invoice number; WBS and fund codes are not published, their
-names are compared. Lines paid the same day for the same amount on the same PO line therefore count once even
-when they carry different invoice numbers; normalize prints how many lines that drops and how many of them
-were identical in every raw column (the export repeats some purchase-order lines). Negative lines (early payment
-discounts, credits, vendor offsets) are kept and never equal the payment they reverse, so amounts are net. Payee
-names are published as the source publishes them, employees included (owner decision, 2026-10-06);
-common.withhold_person only cuts email addresses and bank account text. Vendor name "*" is the City's own mask
-for a withheld vendor and is kept as published.
+Duplicates and reversals: owner rule of 2026-10-07 as corrected the same day (tx_common.dedup): two lines are
+identical when every column of the raw file is equal, except columns that only identify the row or the load; the
+Houston files have none (no row id, no load stamp; ROW_IDS is empty), so all 18 columns are compared, the payment
+document number, vendor invoice, PO number and item and contract number included: lines that differ in any of them
+are different payments and are kept. Of a set of identical lines the first in file order is kept. Void-safe: a set
+of n identical positive lines keeps min(n, reversals + 1), where reversals counts the distinct lines equal in every
+REVERSAL_KEYS column (fund, department, WBS, GL account, vendor, vendor invoice, type of procurement, PO number and
+item, contract; the City repeats them on a reversal, which can come in another payment document on another day)
+with the amount negated in the same or the next fiscal year; a set of negative lines keeps one. On the raw files of
+2026-10-06: 24 sets of identical lines; 21 of the 23 positive sets are payment, reversal and re-payment sequences
+inside one payment document and keep both copies; 3 lines are dropped ($206.10 and $19.62 to "*", one -$12,400.00
+Life-Assist reversal). Negative lines (early payment discounts, credits, vendor offsets, reversals) are kept, so
+amounts are net. Payee names are published as the source publishes them, employees included (owner decision,
+2026-10-06); common.withhold_person only cuts email addresses and bank account text. Vendor name "*" is the City's
+own mask for a withheld vendor and is kept as published.
 """
 import collections
 import csv
@@ -56,6 +60,10 @@ PAGE = "https://data.houstontx.gov/dataset/checkbook"
 DEPARTMENT = "1200"
 FIRST_FY = 2021
 CRAWL_DELAY = 10  # data.houstontx.gov robots.txt: "Crawl-delay: 10" for every user agent
+ROW_IDS = ()  # raw columns that only identify the row or the load: the Houston files have none
+REVERSAL_KEYS = ("Fund ID", "Fund Name", "Department ID", "Department Name", "WBS ID", "WBS Description",
+                 "GL Account Number", "GL Account Description", "Vendor Name", "Vendor Invoice", "Type of procurement",
+                 "Purchase Order Number", "Purchase Order Item", "Contract Number")
 
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -126,34 +134,34 @@ def normalize():
     links_ = [r for r in common.read_config(ST, "agency_sources.csv") if r["source"] == SOURCE]
     assert len(links_) == 1 and links_[0]["source_entity_id"] == DEPARTMENT, "agency_sources.csv: one HFD row expected"
     aid = links_[0]["agency_id"]
-    seen, rows, exact = set(), [], collections.Counter()
+    records, fys = [], []  # raw lines in file order (files by fiscal year), and each line's file year
     for path in sorted(raw.glob("checkbook-*-hfd.csv.gz")):
         fy_file = int(re.search(r"checkbook-(\d{4})-hfd", path.name).group(1))
-        per_doc = collections.Counter()
         for r in csv.DictReader(io.StringIO(common.read_gz(path).decode("utf-8"))):
             assert r["Department ID"] == DEPARTMENT
             assert int(r["Fiscal Year"]) == fy_file, f"{path.name}: line from FY{r['Fiscal Year']}"
-            doc = r["Payment Document Number"]
-            per_doc[doc] += 1
-            k = tuple(r.values())
-            if k in seen:  # identical in every raw column; drop_identical drops it below (counted for the report)
-                exact["lines"] += 1
-                exact["cents"] += round(float(r["Amount"]) * 100)
-            seen.add(k)
-            gl, gl_desc = r["GL Account Number"], r["GL Account Description"]
-            po = "/".join(x for x in (r["Purchase Order Number"], r["Purchase Order Item"]) if x and x.strip("0"))
-            rows.append({
-                "agency_id": aid, "fiscal_year": fy_file, "posting_date": iso(r["Clearing Date"]),
-                "payee_name": common.withhold_person(r["Vendor Name"]),
-                "description": " / ".join(x for x in (r["Type of procurement"], r["WBS Description"],
-                                                       f"PO {po}" if po else "",
-                                                       f"contract {r['Contract Number']}" if r["Contract Number"] else "") if x),
-                "account": " / ".join(x for x in (r["Fund Name"], f"{gl} {gl_desc}") if x.strip()),
-                "category_published": gl_desc, "amount": f"{float(r['Amount']):.2f}",
-                "source_record_id": f"FY{fy_file}:{doc}:{per_doc[doc]}",
-            })
-    n_raw = len(rows)
-    rows, dropped = tx_common.drop_identical(rows)
+            records.append(r)
+            fys.append(fy_file)
+    drop, dropped = tx_common.dedup(records, ROW_IDS, REVERSAL_KEYS, "Amount", "Fiscal Year")
+    rows, per_doc = [], collections.Counter()
+    for i, (r, fy_file) in enumerate(zip(records, fys)):
+        doc = r["Payment Document Number"]
+        per_doc[(fy_file, doc)] += 1  # counts every raw line, so a kept line's id does not move when a copy is dropped
+        if i in drop:
+            continue
+        gl, gl_desc = r["GL Account Number"], r["GL Account Description"]
+        po = "/".join(x for x in (r["Purchase Order Number"], r["Purchase Order Item"]) if x and x.strip("0"))
+        rows.append({
+            "agency_id": aid, "fiscal_year": fy_file, "posting_date": iso(r["Clearing Date"]),
+            "payee_name": common.withhold_person(r["Vendor Name"]),
+            "description": " / ".join(x for x in (r["Type of procurement"], r["WBS Description"],
+                                                   f"PO {po}" if po else "",
+                                                   f"contract {r['Contract Number']}" if r["Contract Number"] else "") if x),
+            "account": " / ".join(x for x in (r["Fund Name"], f"{gl} {gl_desc}") if x.strip()),
+            "category_published": gl_desc, "amount": f"{float(r['Amount']):.2f}",
+            "source_record_id": f"FY{fy_file}:{doc}:{per_doc[(fy_file, doc)]}",
+        })
+    n_raw = len(records)
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
     common.assemble_agencies(ST)
     by_fy = collections.Counter()
@@ -162,8 +170,7 @@ def normalize():
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
     print(f"{ST} {SOURCE}: {n_raw} raw lines -> {len(rows)} lines (${total:,.2f}); "
           + ", ".join(f"FY{y} ${v:,.0f}" for y, v in sorted(by_fy.items()))
-          + f"; {tx_common.dropped_text(dropped)}, of which {exact['lines']} identical in every raw column "
-          f"(${exact['cents'] / 100:,.2f})")
+          + f"; {tx_common.dropped_text(dropped)}")
 
 
 if __name__ == "__main__":
