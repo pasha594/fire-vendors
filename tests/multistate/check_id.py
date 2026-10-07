@@ -16,7 +16,11 @@ own filters and duplicate rules; shared with the adapters are only the hand-revi
     zz_extract_date is equal): first the upload errors (copies from a later load batch than the first copy; extra
     copies inside one batch when the batch holds 4 or more), then each remaining identical set keeps one line, a
     positive set min(n, reversals + 1) with reversals the distinct negated lines of the same fund, function,
-    objective, account and vendor in the same or next fiscal year; then, line by line, every kept payment line is
+    objective, account and vendor in the same or next fiscal year; identical voids (owner decision A of
+    2026-10-07): in a family with payments (those fields, amount up to sign, a negative line of year y joined to the
+    positive lines of y - 1, y and y + 1, transitively) a negative copy is dropped only with a positive copy the
+    void rule drops, and every family the fix touches nets as its raw lines (less upload-error copies), no family
+    with payments above them; then, line by line, every kept payment line is
     in transactions.csv.gz under its own unique_id (or unique_id-<n>) with the same fiscal year, date, amount,
     account, account title and payee (so published rows that repeat are copies the rule keeps)
   - payee names as published (owner decision 2026-10-06): payee_name is the raw vendor with whitespace collapsed,
@@ -138,9 +142,11 @@ def raw_state_lines():
     return lines
 
 
-def kept_state_lines(lines):
-    """Lines left after the owner's rule of 2026-10-07 as corrected (see the module docstring). Returns the kept
-    lines and the dropped counts {"upload": n, "identical": n} with the copies the void rule keeps."""
+def kept_state_lines(lines, void_fix=True):
+    """Lines left after the owner's rule of 2026-10-07 as corrected, with the fix of identical voids (decision A of
+    the same day); see the module docstring. Returns the kept lines and the counts {"upload", "identical",
+    "void_kept", "fix_kept", "fix_cents", "fix_families"}. Asserts that every family the void fix touches nets as its
+    raw lines (less the upload-error copies) and that no family with payments nets above them."""
     content = lambda r: json.dumps({k: v for k, v in r.items() if k not in LOAD_COLS}, sort_keys=True)
     load = lambda r: (r["date_of_load"] or "", r["zz_extract_date"] or "")
     sets = collections.defaultdict(list)
@@ -157,22 +163,68 @@ def kept_state_lines(lines):
     for copies in per_batch.values():
         if len(copies) >= SAME_BATCH_BLOCK:
             upload.update(copies)
+    left = [r for r in lines if id(r) not in upload]
+    # Families for the void fix: union-find over (keys, cents up to sign, fiscal year, sign); a negative node of year
+    # y is joined to the positive nodes of y - 1, y and y + 1.
+    node = lambda r: (tuple(r[k] for k in VOID_KEYS), abs(cents(r["amount"] or 0)), int(r["fiscal_year"]),
+                      1 if cents(r["amount"] or 0) > 0 else -1)
+    parent = {node(r): node(r) for r in left if cents(r["amount"] or 0)}
+
+    def root(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    for keys, c, fy, sign in list(parent):
+        if sign < 0:
+            for y in (fy - 1, fy, fy + 1):
+                if (keys, c, y, 1) in parent:
+                    parent[root((keys, c, y, 1))] = root((keys, c, fy, -1))
     voids = collections.defaultdict(set)  # (keys, cents reversed) -> {(fiscal year, distinct line)}
-    for r in lines:
-        if id(r) not in upload and cents(r["amount"] or 0) < 0:
+    for r in left:
+        if cents(r["amount"] or 0) < 0:
             voids[(tuple(r[k] for k in VOID_KEYS), -cents(r["amount"]))].add((int(r["fiscal_year"]), content(r)))
-    keep, void_kept = [], 0
+    keep, void_kept, negative_sets = [], 0, []
+    pool = collections.Counter()  # family -> positive copies the void rule drops
     for rs in sets.values():
         rs = [r for r in rs if id(r) not in upload]
         n = min(len(rs), 1)
+        if len(rs) > 1 and cents(rs[0]["amount"] or 0) < 0:
+            negative_sets.append(rs)
+            continue
         if len(rs) > 1 and cents(rs[0]["amount"] or 0) > 0:
             fy = int(rs[0]["fiscal_year"])
             found = {c for f, c in voids.get((tuple(rs[0][k] for k in VOID_KEYS), cents(rs[0]["amount"])), ())
                      if f in (fy, fy + 1)}
             n = min(len(rs), len(found) + 1)
             void_kept += n - 1
+            pool[root(node(rs[0]))] += len(rs) - n
         keep += rs[:n]
-    dropped = {"upload": len(upload), "identical": len(lines) - len(upload) - len(keep), "void_kept": void_kept}
+    has_payments = {root(x) for x in parent if x[3] > 0}
+    fix_kept, fix_cents, touched = 0, 0, set()
+    for rs in sorted(negative_sets, key=lambda rs: (int(rs[0]["fiscal_year"]), load(rs[0]), int(rs[0]["unique_id"]))):
+        fam = root(node(rs[0]))
+        if void_fix and fam in has_payments:
+            n = len(rs) - min(len(rs) - 1, pool[fam])
+            pool[fam] -= len(rs) - n
+        else:
+            n = 1
+        if n > 1:
+            fix_kept, fix_cents = fix_kept + n - 1, fix_cents + (n - 1) * cents(rs[0]["amount"])
+            touched.add(fam)
+        keep += rs[:n]
+    net_raw, net_kept = collections.Counter(), collections.Counter()
+    for net, rs in ((net_raw, left), (net_kept, keep)):
+        for r in rs:
+            if cents(r["amount"] or 0):
+                net[root(node(r))] += cents(r["amount"])
+    for fam in touched:
+        assert net_kept[fam] == net_raw[fam], f"id_state: void-fix family {fam} nets {net_kept[fam]}, raw " \
+                                              f"{net_raw[fam]}"
+    above = [f for f in has_payments if net_kept[f] > net_raw[f]]
+    assert not above, f"id_state: {len(above)} families with payments net above their raw lines, e.g. {above[:2]}"
+    dropped = {"upload": len(upload), "identical": len(lines) - len(upload) - len(keep), "void_kept": void_kept,
+               "fix_kept": fix_kept, "fix_cents": fix_cents, "fix_families": len(touched)}
     assert len(lines) - len(keep) < 0.02 * len(lines), f"id_state: {dropped}, more than 2% of lines"
     return keep, dropped
 
@@ -317,7 +369,9 @@ def main():
     for r in tx + tot:
         by_source[r["source"]] += float(r["amount"])
     print(f"{ST}: ok ({len(tx)} payment lines from {n_raw} raw lines; dropped {dropped['upload']} upload-error "
-          f"copies and {dropped['identical']} identical lines, void rule kept {dropped['void_kept']}; "
+          f"copies and {dropped['identical']} identical lines, void rule kept {dropped['void_kept']}, void fix kept "
+          f"{dropped['fix_kept']} negative copies ({'-' * (dropped['fix_cents'] < 0)}"
+          f"${abs(dropped['fix_cents']) / 100:,.2f}) in {dropped['fix_families']} families, each at its raw net; "
           f"{len(tot)} totals rows; " + ", ".join(f"{s} ${v:,.0f}" for s, v in sorted(by_source.items()))
           + f"; config/vendor_map.csv and the rules give a real category to {share:.1%} of "
           + f"${cov['purchasing'] / 100:,.0f} purchasing dollars (map {cov['by_map'] / cov['purchasing']:.1%}, rules "
