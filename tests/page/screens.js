@@ -129,8 +129,10 @@ async function shoot(ctxs, url, name, prep, log) {
     if (prep) await prep(page);
     await page.waitForTimeout(300);
     if (kind === 'phone') {
-      const w = await page.evaluate(() => [document.documentElement.scrollWidth, window.innerWidth]);
-      ok(w[0] <= w[1], name + ' (phone): the page scrolls sideways (' + w[0] + ' px wide in ' + w[1] + ')');
+      // Against the device width: a mobile browser widens innerWidth to fit content that overflows
+      const vw = page.viewportSize().width;
+      const w = await page.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth, window.innerWidth));
+      ok(w <= vw, name + ' (phone): the page scrolls sideways (' + w + ' px wide in ' + vw + ')');
     }
     await page.screenshot({ path: path.join(SHOTS, name + '-' + kind + '.png'), fullPage: kind === 'phone' });
     ok(!l.errors.length, name + ' (' + kind + '): console errors ' + JSON.stringify(l.errors));

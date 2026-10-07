@@ -226,7 +226,9 @@ td.desc { min-width: 16em; max-width: 40em; }
 .prose h1 { font-size: 1.35rem; font-weight: 600; margin: 4px 0 6px; }
 .prose h2 { font-size: 1.05rem; font-weight: 600; margin: 26px 0 6px; }
 .prose h3 { font-size: .95rem; font-weight: 600; margin: 18px 0 4px; }
-.prose li { margin: 3px 0; }
+.prose li { margin: 3px 0; overflow-wrap: anywhere; }   /* long file paths wrap on a phone */
+/* Tables on the About page may be wider than the text column (up to the window) */
+.prose section.tbl { width: max-content; max-width: calc(100vw - 32px); }
 
 /* Filter bar: one row of labelled controls that wraps */
 @media (min-width: 700px) {
@@ -2083,7 +2085,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     if (io.length) {
       const ids = itemOnlySources(io);
       t.notes += '<p class="note">Item lines only: ' + (S.agency != null ? 'the vendor data of ' + esc(io[0].name) + ' is'
-        : 'for ' + plural(io.length, 'agency', 'agencies') + ' in these filters the only vendor data is') + ' ' +
+        : 'for ' + plural(io.length, 'agency', 'agencies') + (S.state || S.county || S.size ? ' in these filters' : '') + ' the only vendor data is') + ' ' +
         andList(ids.map(id => srcLink(id) + ' (' + firstClause(id) + ')')) + ', so ' + (S.agency != null ? 'its' : 'their') + ' other purchases are not here.</p>';
     }
     if (S.np) {
@@ -2635,8 +2637,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       else if (a.dataset.t && a.dataset.c != null) sel = 'button[data-t="' + a.dataset.t + '"][data-c="' + a.dataset.c + '"]';
       if (d && d.id) sel = (sel ? sel + ', ' : '') + '#' + d.id + ' > summary';
     }
-    // A section opened a moment ago may not have reported its toggle event yet: keep it open
-    for (const d of $('more').querySelectorAll('details[open]')) if (d.id) openDetails.add(d.id);
+    // Drawn again in place: a section opened a moment ago may not have reported its toggle event yet, so keep it open
+    if (again) for (const d of $('more').querySelectorAll('details[open]')) if (d.id) openDetails.add(d.id);
     let h = '';
     if (S.cat || S.vendor || S.agency != null) h += morePayments();
     if (S.vendor || S.agency != null) h += moreItems();
