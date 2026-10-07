@@ -1311,16 +1311,16 @@ const Core = (function () {
   //
   // Before the scope's states are loaded, the default view (isDefault) comes from the precomputed table in
   // data/index.json (pre: true): ag and ve are {size} only, rows is empty and sum has no last year.
-  // peersData: the peers with vendor data (coverage 1 payee lines or 2 item lines); the others are in
-  // nodata, and in the agency grouping (not narrowed) their items have nodata set.
+  // peersData: the peers with vendor data (coverage 1 payee lines or 2 item lines). The others (3 totals only,
+  // 4 directory only) are not counted; in the agency grouping (not narrowed) their items have nodata set.
+  // nodata: the coverage of a selected agency without vendor data, else 0.
   function tableModel(ix, s) {
     const f = rowFilter(s);
     const peers = s.agency != null ? new Set([s.agency]) : peerIds(ix, s);
-    const peersData = new Set(), nodata = new Set();
-    for (const id of peers) {
-      const a = ix.agency.get(id);
-      if (a && a.coverage > 2) nodata.add(id); else peersData.add(id);
-    }
+    const peersData = new Set();
+    for (const id of peers) { const a = ix.agency.get(id); if (!(a && a.coverage > 2)) peersData.add(id); }
+    const sel = s.agency != null ? ix.agency.get(s.agency) : null;
+    const nodata = sel && sel.coverage > 2 ? sel.coverage : 0;
     if (ix.pre && ix.loaded === false && isDefault(ix, s)) {
       const home = new Map(ix.pre.cats.map(c => [ix.catIds[c[0]], c]));
       const pa = c => ({ key: ix.catIds[c[0]], spend: c[1], n: c[2], ag: { size: c[4] }, ve: { size: c[3] }, yr: Object.assign({}, c[6]), last: c[5] });
@@ -1344,7 +1344,7 @@ const Core = (function () {
     } else if (s.g === 'vendor') {
       items = [...by.values()];
     } else if (s.g === 'agency') {
-      items = narrowed ? [...by.values()] : [...peers].map(id => by.get(id) || (nodata.has(id) ? Object.assign(emptyAgg(id), { nodata: true }) : emptyAgg(id)));
+      items = narrowed ? [...by.values()] : [...peers].map(id => by.get(id) || (peersData.has(id) ? emptyAgg(id) : Object.assign(emptyAgg(id), { nodata: true })));
     } else if (s.g === 'year') {
       items = rangeYears(s).map(y => by.get(y) || emptyAgg(y));
     } else {
@@ -2072,7 +2072,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       f += fact('Firefighters', ff.length ? ff.map(([n, w]) => int(n) + ' ' + w).join(', ') : 'None reported');
     }
     if (a.fy_start) f += fact('Fiscal year starts', esc(a.fy_start) + (a.fy_start === 'January' ? ' (calendar year)' : ''));
-    if (a.usfa) f += fact('USFA registry', esc(a.usfa.name) + ', FDID ' + esc(a.usfa.fdid));
+    if (a.usfa) f += fact('USFA registry', esc(a.usfa.name) + (a.usfa.fdid ? ', FDID ' + esc(a.usfa.fdid) : ''));
     if (site) f += fact('Website', A(site, esc(a.website)));
     if (a.notes) f += fact('Notes', esc(a.notes), true);
     // Agencies of the same size: county is left out, since few counties have two agencies of one size
@@ -2790,9 +2790,16 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         : money(sum.spend) + ' paid to ' + plural(sum.ve.size, 'vendor', 'vendors') + ' by ' +
           (pd.size === 1 ? esc(agName([...pd][0])) : agOf(sum.ag.size, pd.size));
       s += ', ' + esc(yearSpan(S)) + (S.cat ? ', in ' + catsText(S.cat, true) : '') + (m.onlyPurch ? '; purchasing categories only.' : '.');
-      if (S.agency == null && m.nodata.size) {
-        s += ' ' + (m.nodata.size === 1 ? '1 agency in these filters has' : int(m.nodata.size) + ' agencies in these filters have') + ' no vendor data and ' +
-          (m.nodata.size === 1 ? 'is' : 'are') + ' not counted.';
+      const nd = m.peers.size - pd.size;
+      if (S.agency == null && nd) {
+        s += ' ' + (nd === 1 ? '1 agency in these filters has' : int(nd) + ' agencies in these filters have') + ' no vendor data and ' +
+          (nd === 1 ? 'is' : 'are') + ' not counted.';
+      }
+      if (m.nodata) {                                           // a selected agency with totals only, or in the directory only
+        const a = ix.agency.get(S.agency);
+        const tot = (a.sources || []).filter(id => (store.meta.sources[id] || {}).tier === 3);
+        s = 'No vendor data for ' + esc(a.name) + ': ' + (m.nodata === 3 ? 'annual totals only' + (tot.length ? ' (' + srcList(tot) + ')' : '') + '.'
+          : 'directory only (USFA registry, FEMA grants).');
       }
     }
     $('summary').innerHTML = s;

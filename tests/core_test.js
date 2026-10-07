@@ -284,8 +284,14 @@ for (const scope of ['ALL'].concat(STATES)) {
   const m = Core.tableModel(v, S);
   const nodata = m.items.filter(o => o.nodata).length;
   const want3 = v.D.agencies.filter(a => a.coverage > 2).length;
-  ok(nodata === want3 && m.peersData.size + m.nodata.size === m.peers.size, scope + ' agencies without vendor data', want3, nodata);
+  ok(nodata === want3 && m.peersData.size + want3 === m.peers.size && m.nodata === 0, scope + ' agencies without vendor data', want3, nodata);
   ok(m.items.filter(o => o.nodata && o.n > 0).length === 0, scope + ' no rows for agencies without vendor data');
+}
+// A selected agency without vendor data
+for (const a of [I.agencies.find(x => x.coverage === 3), I.agencies.find(x => x.coverage === 4), I.agencies.find(x => x.coverage === 1)]) {
+  const S = Core.normState(store, { g: 'vendor', agency: a.id });
+  const m = Core.tableModel(Core.view(store, S.scope), S);
+  ok(m.nodata === (a.coverage > 2 ? a.coverage : 0) && m.peersData.size === (a.coverage > 2 ? 0 : 1), 'selected agency coverage ' + a.coverage, a.coverage, m.nodata);
 }
 // UT view meta is Utah's meta as data.json had it
 {
