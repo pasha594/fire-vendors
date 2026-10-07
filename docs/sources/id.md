@@ -213,7 +213,7 @@ unmatched (`grant_recipients_unmatched.csv`). This run did not change it; `check
   on the normalized rows (nothing more to drop) and `check_id.py` asserts that no two published rows are identical.
   Change from the earlier rule: 26 lines and $138,820.11 fewer (47,026 lines, $329,541,702.66 before). A
   `unique_id` can also be reused by a different line (a transfer and its reversal), so `source_record_id` is
-  `unique_id`, or `unique_id-<n>` when the id repeats (26 lines). Reversals and credits are kept as negative lines
+  `unique_id`, or `unique_id-<n>` when the id repeats (32 lines, 26 of them payment lines). Reversals and credits are kept as negative lines
   (2,974 lines, -$14.6M) and are never identical to the payment they reverse, so amounts are net. Accounting entries
   that are not payments are dropped: encumbrances (14 lines, $3.34M), year-end accrual "GAAP Expenses" (36, $0.08M),
   loss on disposal (4, $0.14M), transfers (27, $0.04M).
