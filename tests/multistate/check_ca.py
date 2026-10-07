@@ -6,9 +6,12 @@ Independent of the adapters' code paths: every raw file is parsed here with its 
 rules (written from the rules in docs/sources/ca.md, not imported). Shared with the adapters are only
 config/states/ca/agency_sources.csv (the hand-reviewed attribution), config/payee_name_redactions.csv (the owner's
 redaction rule) and common's file helpers and norm(). Checks:
-  1. per source, agency and fiscal year: dollars (to the cent) and, for line-level sources, line counts equal the
-     raw files after the source's duplicate rule; for line-level sources the multiset of (fiscal year, payee,
-     amount) lines is equal too; for ca_fiscal (rows summed per voucher) dollars per fiscal year and payee are equal
+  1. per source, agency and fiscal year: dollars (to the cent) and line counts equal the raw files after the owner's
+     dedup rule of 2026-10-07 (lines equal in every published field but the source's own ids are kept once; a
+     doubled day is such a set; lines without a date compare on fiscal year; negative lines compare like any
+     other), and the multiset of (agency, fiscal year, payee, amount) lines is equal too; for ca_fiscal the rule
+     applies to the rows summed per voucher; no two published rows of one source are equal in every column but
+     source_record_id
   2. payee names are shown as published (owner decision of 2026-10-06): every published payee is a raw payee
      name (whitespace collapsed), or "Payee name withheld" where the raw name matches a redaction pattern; the
      old person marker never appears; no published payee matches a redaction pattern; no payee, description or
@@ -67,29 +70,27 @@ def links(source, key="source_entity_name"):
     return out
 
 
-def drop_exact(rows):
-    """Keep one of each line identical in every published column (the portal row id ':id' aside)."""
-    seen, out = set(), []
-    for r in rows:
-        key = json.dumps({k: v for k, v in r.items() if k != ":id"}, sort_keys=True)
-        if key not in seen:
-            seen.add(key)
-            out.append(r)
-    return out
+def ws(text):
+    return " ".join((text or "").split())
 
 
-def drop_reloads(rows, doc):
-    """A document (invoice or PO) whose every distinct line occurs the same number k > 1 of times was loaded k times:
-    keep each line once. Identical lines in any other document are separate charges and are all kept."""
-    by_doc = collections.defaultdict(collections.Counter)
-    for r in rows:
-        by_doc[doc(r)][json.dumps({k: v for k, v in r.items() if k != ":id"}, sort_keys=True)] += 1
-    out = []
-    for lines in by_doc.values():
-        ks = set(lines.values())
-        once = len(ks) == 1 and min(ks) > 1
-        for line, n in lines.items():
-            out += [json.loads(line)] * (1 if once else n)
+DROPPED = {}  # source -> (identical sets, lines dropped, cents dropped), for the report
+
+
+def keep_one(source, lines):
+    """Owner rule of 2026-10-07: of lines whose identity (every published field but the source's own row,
+    voucher, invoice, payment or PO ids, built per source from the raw columns) is equal, keep one.
+    lines: (identity, (agency, fiscal year, payee, cents)) pairs. Returns the kept tuples."""
+    seen, sets, out, n, dropped = set(), set(), [], 0, 0
+    for ident, line in lines:
+        if ident in seen:
+            sets.add(ident)
+            n += 1
+            dropped += line[-1]
+            continue
+        seen.add(ident)
+        out.append(line)
+    DROPPED[source] = (len(sets), n, dropped)
     return out
 
 
@@ -100,8 +101,17 @@ def expect_sf():
     raw = raw_json("ca_sf", "fir.json.gz")
     control = raw_json("ca_sf", "control.json.gz")
     assert len(raw) == sum(int(c["n"]) for c in control), "ca_sf: raw rows differ from control"
-    return [(agency, str(int(r["fiscal_year"])), published(r["vendor"]), cents(r["vouchers_paid"]))
-            for r in drop_exact(raw) if r["department_code"] == "FIR" and cents(r.get("vouchers_paid")) != 0]
+    lines = []
+    for r in raw:
+        if r["department_code"] != "FIR" or cents(r.get("vouchers_paid")) == 0:
+            continue
+        fy, payee, c = str(int(r["fiscal_year"])), published(r["vendor"]), cents(r["vouchers_paid"])
+        # no payment date in the source: lines compare on fiscal year
+        ident = (fy, payee, r.get("contract_title") or "", r.get("program") or "",
+                 *(r.get(f) or "" for f in ("character_code", "character", "object_code", "object", "sub_object_code",
+                                           "sub_object", "fund")), c)
+        lines.append((ident, (agency, fy, payee, c)))
+    return keep_one("ca_sf", lines)
 
 
 def expect_la():
@@ -109,8 +119,16 @@ def expect_la():
     raw = raw_json("ca_la", "fire.json.gz")
     control = raw_json("ca_la", "control.json.gz")
     assert len(raw) == sum(int(c["n"]) for c in control), "ca_la: raw rows differ from control"
-    return [(agency, str(int(r["fiscal_year"])), published(r.get("vendor_name")), cents(r["dollar_amount"]))
-            for r in drop_exact(raw) if r["department_name"] == "FIRE" and r.get("dollar_amount") not in (None, "")]
+    lines = []
+    for r in raw:
+        if r["department_name"] != "FIRE" or r.get("dollar_amount") in (None, ""):
+            continue
+        fy, payee, c = str(int(r["fiscal_year"])), published(r.get("vendor_name")), cents(r["dollar_amount"])
+        ident = (fy, (r.get("transaction_date") or "")[:10], payee,
+                 ws(r.get("detailed_item_description") or r.get("description")),
+                 *(r.get(f) or "" for f in ("program", "fund_name", "account_code", "account_name", "expenditure_type")), c)
+        lines.append((ident, (agency, fy, payee, c)))
+    return keep_one("ca_la", lines)
 
 
 def expect_riverside():
@@ -118,9 +136,15 @@ def expect_riverside():
     raw = raw_json("ca_riverside_county", "fire.json.gz")
     control = raw_json("ca_riverside_county", "control.json.gz")
     assert len(raw) == sum(int(c["n"]) for c in control if str(c["has_vendor"]).lower() == "true")
-    rows = drop_reloads([r for r in raw if r["department"] == "Fire Protection" and r.get("vendor_name")],
-                        lambda r: r.get("invoice_id"))
-    return [(agency, str(int(r["fiscal_year"])), published(r["vendor_name"]), cents(r["amount"])) for r in rows]
+    lines = []
+    for r in raw:
+        if r["department"] != "Fire Protection" or not r.get("vendor_name"):
+            continue
+        fy, payee, c = str(int(r["fiscal_year"])), published(r["vendor_name"]), cents(r["amount"])
+        ident = (fy, (r.get("date") or "")[:10], payee, ws(r.get("description")),
+                 *(r.get(f) or "" for f in ("business_unit", "fund", "account", "expense_category")), c)
+        lines.append((ident, (agency, fy, payee, c)))
+    return keep_one("ca_riverside_county", lines)
 
 
 def expect_corona():
@@ -128,9 +152,15 @@ def expect_corona():
     raw = raw_json("ca_corona", "fire.json.gz")
     control = raw_json("ca_corona", "control.json.gz")
     assert len(raw) == sum(int(c["n"]) for c in control), "ca_corona: raw rows differ from control"
-    rows = drop_reloads([r for r in raw if r["department_code"] == "30"],
-                        lambda r: (r.get("payment_id"), r.get("invoice_id")))
-    return [(agency, str(int(r["fiscal_year"])), published(r["vendor"]), cents(r["amount"])) for r in rows]
+    lines = []
+    for r in raw:
+        if r["department_code"] != "30":
+            continue
+        fy, payee, c = str(int(r["fiscal_year"])), published(r["vendor"]), cents(r["amount"])
+        ident = (fy, (r.get("payment_date") or "")[:10], payee, ws(r.get("description")),
+                 *(r.get(f) or "" for f in ("department_activity", "fund_name", "expense_category")), c)
+        lines.append((ident, (agency, fy, payee, c)))
+    return keep_one("ca_corona", lines)
 
 
 def expect_moreno_valley():
@@ -139,13 +169,27 @@ def expect_moreno_valley():
     control = raw_json("ca_moreno_valley", "control.json.gz")
     assert len(raw) == sum(int(c["n"]) for c in control), "ca_moreno_valley: raw rows differ from control"
     assert {c["department"] for c in control} == set(link), "ca_moreno_valley: a fire-named department is not linked"
-    return [(link[r["department"]], str(int(r["fiscal_year"])), published(r.get("vendor")), cents(r["amount"]))
-            for r in drop_exact(raw)]
+    lines = []
+    for r in raw:
+        agency, fy, payee, c = link[r["department"]], str(int(r["fiscal_year"])), published(r.get("vendor")), cents(r["amount"])
+        ident = (agency, fy, (r.get("payment_date") or "")[:10], payee, ws(r.get("description")),
+                 *(r.get(f) or "" for f in ("department", "program", "fund", "expense_category")), c)
+        lines.append((ident, (agency, fy, payee, c)))
+    return keep_one("ca_moreno_valley", lines)
 
 
 def scprs_money(s):
     s = (s or "").replace("$", "").replace(",", "").strip()
     return -cents(s.strip("()")) if s.startswith("(") else cents(s or "0")
+
+
+def scprs_day(s, fy_end):
+    """m/d/yyyy as yyyy-mm-dd when the year is 2000 to the fiscal year's end (typos such as 1912 or 2511 aside)."""
+    s = (s or "").strip()
+    if not s:
+        return ""
+    m, d, y = (int(x) for x in s.split("/"))
+    return f"{y:04d}-{m:02d}-{d:02d}" if 2000 <= y <= fy_end else ""
 
 
 def expect_scprs():
@@ -156,21 +200,37 @@ def expect_scprs():
     assert len(rows) == manifest["kept_rows"], "ca_scprs: raw rows differ from manifest"
     dept = manifest["kept_department"]
     assert all(r["Department Name"] == dept for r in rows) and dept in link
-    rows = drop_reloads(rows, lambda r: (r["Purchase Order Number"], r["Fiscal Year"]))
-    return [(link[dept], r["Fiscal Year"][5:], published(r["Supplier Name"]), scprs_money(r["Total Price"]))
-            for r in rows if scprs_money(r["Total Price"]) != 0]
+    lines = []
+    for r in rows:
+        c = scprs_money(r["Total Price"])
+        if c == 0:
+            continue
+        fy_end = int(r["Fiscal Year"][5:])
+        payee = published(r["Supplier Name"])
+        unit = r["Unit Price"].replace("$", "").replace(",", "").strip()
+        unit = (-Decimal(unit.strip("()")) if unit.startswith("(") else Decimal(unit)) if unit else ""
+        # item-line identity: date, vendor, product type, description, quantity, unit price, amount (no brand field)
+        ident = (str(fy_end), scprs_day(r["Purchase Date"], fy_end) or scprs_day(r["Creation Date"], fy_end), payee,
+                 next((r[k] for k in ("Commodity Title", "Class Title", "Family Title", "Segment Title") if r[k]), ""),
+                 ws(r["Item Description"] or r["Item Name"]), r["Quantity"].strip(), unit, c)
+        lines.append((ident, (link[dept], str(fy_end), payee, c)))
+    return keep_one("ca_scprs", lines)
 
 
 def expect_fiscal():
-    """{(agency, fy, payee): cents} from the Open FI$Cal files, exact duplicate lines dropped within a file."""
+    """[(agency, fy, payee, cents)] rows of the Open FI$Cal files: exact duplicate lines dropped within a file, lines
+    summed per voucher, payee, accounting date, program, sub-program, fund and account, $0 sums left out, then the
+    owner rule on the summed rows (equal but for the voucher: one kept)."""
     agency = links("ca_fiscal", "source_entity_id")["3540"]
     d = common.latest_raw(ST, "ca_fiscal")
     manifest = json.loads(gzip.decompress((d / "manifest.json.gz").read_bytes()))
-    out = collections.Counter()
+    sums = collections.Counter()
     for entry in manifest:
         reader = csv.reader(io.StringIO(gzip.decompress((d / (entry["file"] + ".gz")).read_bytes()).decode("utf-8-sig")))
         header = next(reader)
         ix = {c: i for i, c in enumerate(header)}
+        fields = [ix[c] for c in ("program_description", "sub_program_description", "fund_code", "fund_description",
+                                  "account", "account_description", "account_category")]
         seen, n, total = set(), 0, 0
         for r in reader:
             n += 1
@@ -182,9 +242,17 @@ def expect_fiscal():
             assert r[ix["business_unit"]] == "3540", r
             fy = str(int(r[ix["fiscal_year_begin"]]) + 1)
             assert fy == str(entry["fiscal_year"]), (entry["file"], fy)
-            out[(agency, fy, published(r[ix["VENDOR_NAME"]]))] += cents(r[ix["monetary_amount"]])
+            voucher = r[ix["document_id"]].rsplit(".", 2)[0]
+            sums[(fy, voucher, r[ix["VENDOR_NAME"]], r[ix["accounting_date"]][:10], *(r[i] for i in fields))] += \
+                cents(r[ix["monetary_amount"]])
         assert n == entry["rows"] and total == cents(entry["dollars"]), f"ca_fiscal {entry['file']}: differs from manifest"
-    return out
+        del seen
+    lines = []
+    for (fy, _voucher, vendor, day, *acct), c in sorted(sums.items()):
+        if c:
+            payee = published(vendor)
+            lines.append(((fy, day, payee, *acct, c), (agency, fy, payee, c)))
+    return keep_one("ca_fiscal", lines)
 
 
 def expect_sco(source, name_field, year_field):
@@ -263,18 +331,26 @@ def main():
         report.append(f"{source}: {sum(want.values())} lines, ${sum(per.values()) / 100:,.2f}, "
                       f"{len({a for a, _ in per})} agencies, FY{min(fy for _, fy in per)}-FY{max(fy for _, fy in per)}")
 
-    # ca_fiscal: summed rows, so dollars per fiscal year and payee
-    want = {k: v for k, v in expect_fiscal().items() if v}
-    got = collections.Counter()
-    for r in tx:
-        if r["source"] == "ca_fiscal":
-            got[(r["agency_id"], r["fiscal_year"], r["payee_name"])] += cents(r["amount"])
-    got = {k: v for k, v in got.items() if v}
-    assert got == want, f"ca_fiscal: payee dollars differ: {sorted(set(got.items()) ^ set(want.items()))[:4]}"
+    # ca_fiscal: rows summed per voucher (then the owner rule), as a multiset of (agency, fy, payee, amount) rows
+    want = collections.Counter(expect_fiscal())
+    got = collections.Counter((r["agency_id"], r["fiscal_year"], r["payee_name"], cents(r["amount"]))
+                              for r in tx if r["source"] == "ca_fiscal")
+    assert got == want, (f"ca_fiscal: rows differ from raw: {sorted((want - got).items())[:3]} missing, "
+                         f"{sorted((got - want).items())[:3]} extra")
     assert all(cents(r["amount"]) != 0 for r in tx if r["source"] == "ca_fiscal"), "ca_fiscal: a $0 row"
     years = sorted({k[1] for k in want})
-    report.append(f"ca_fiscal: {sum(r['source'] == 'ca_fiscal' for r in tx)} rows, ${sum(want.values()) / 100:,.2f}, "
+    report.append(f"ca_fiscal: {sum(want.values())} rows, ${sum(k[3] * n for k, n in want.items()) / 100:,.2f}, "
                   f"FY{years[0]}-FY{years[-1]}")
+
+    # the owner rule on the published rows: no two rows of one source equal in every column but source_record_id.
+    # SCPRS transaction rows are copies of its item lines, which the rule compares (with quantity, unit price and
+    # product type), so two SCPRS transaction rows may be equal where their item lines differ
+    for table, rows in [("transactions.csv.gz", [r for r in tx if r["source"] != "ca_scprs"]), ("line_items.csv.gz", li)]:
+        same = collections.Counter(tuple(v for k, v in r.items() if k != "source_record_id") for r in rows)
+        twice = [k for k, n in same.items() if n > 1]
+        assert not twice, f"{table}: {len(twice)} sets of identical rows remain, e.g. {twice[:2]}"
+    for source, (sets, n, dropped) in sorted(DROPPED.items()):
+        report.append(f"{source}: {n} identical lines dropped (${dropped / 100:,.2f}, {sets} sets; owner rule of 2026-10-07)")
 
     # tier 3 totals
     for source, name_field, year_field in [("ca_sco_districts", "entityname", "fiscalyear"),
