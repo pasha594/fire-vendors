@@ -206,6 +206,8 @@ button.sort:hover { text-decoration: underline; }
 .sarr { color: var(--muted); }
 .more { margin: 8px 0; font-size: .8125rem; }
 .empty { color: var(--muted); }
+.loading { color: var(--muted); }
+.loading .btn { margin-left: 6px; }
 td.desc { min-width: 16em; max-width: 40em; }
 
 /* About */
@@ -343,6 +345,7 @@ td.desc { min-width: 16em; max-width: 40em; }
         <button type="button" class="btn ftoggle" id="ftoggle" aria-expanded="false" aria-controls="fpanel">Filters</button>
         <section class="fbar" id="fpanel" aria-labelledby="fp-h">
           <h2 class="vh" id="fp-h">Filters</h2>
+          <div class="field"><label for="f-state">State</label><select id="f-state"></select></div>
           <div class="field" role="group" aria-labelledby="f-yrs-l">
             <span class="flabel" id="f-yrs-l">Fiscal years</span>
             <span class="range">
@@ -1384,7 +1387,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   const SHOW_ALL_MAX = 5000;                         // above this, rows are added 1,000 at a time
 
   const $ = id => document.getElementById(id);
-  let ix = null;          // index from Core.buildIndex
+  let store = null;       // data/index.json and the state files loaded so far (Core.buildStore)
+  let ix = null;          // the view of the current scope (Core.view): one state, or all states
   let S = null;           // current state (Core.normState)
   let view = null;        // 'explore' or 'about'
   let loaded = false;
@@ -1395,7 +1399,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   let statusTimer = null;
   let urlTimer = null;
   let vendorByName = new Map();
+  let vendorNames = null; // sorted vendor names of a view with too many vendors for the list (see fillVendors)
   let catOptsKey = null;
+  const ctlFor = {};      // what the scope-dependent controls were last filled for
   const openDetails = new Set();
 
   /* ---- Formatting ---- */
@@ -1455,7 +1461,18 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   const V = () => ix.D.vendors;
   const vendorOf = id => V()[ix.vendorPos.get(id)];
   const agName = id => ix.agency.get(id).name;
-  const tuLink = () => A(safeUrl(ix.meta.transparent_utah) || LINKS.tu, 'Transparent Utah');
+  const tuLink = () => A(safeUrl((store.meta.sources.ut_transparent_utah || {}).url) || safeUrl(store.meta.states.UT.transparent_utah) || LINKS.tu, 'Transparent Utah');
+  // A source of meta.sources by id, as a link; a list of them
+  const srcLink = id => { const m = store.meta.sources[id] || {}; const u = safeUrl(m.url); return u ? A(u, esc(m.name || id)) : esc(m.name || id); };
+  const srcList = ids => andList(ids.filter(id => store.meta.sources[id]).map(srcLink));
+  // The payment sources (payee lines and item lines) of some states
+  const paySources = sts => {
+    const out = [];
+    for (const st of sts) for (const id of store.meta.states[st].sources || []) { const m = store.meta.sources[id]; if (m && m.tier <= 2 && !out.includes(id)) out.push(id); }
+    return out;
+  };
+  const stName = st => store.st[st].name;
+  const utOnly = () => ix.scope === 'UT';                       // Utah's own notes and links apply
   const gh = p => A(BLOB + p, esc(p));                         // a file in the repository, by its path
   const staffingText = a => (a.usfa ? (a.staffing || 'Unknown') : 'Not in USFA registry');
   const staffingCell = a => (a.usfa ? (a.staffing || 'Unknown') : 'Not listed');
@@ -1688,6 +1705,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   /* ---- Main table: one per grouping ---- */
   function fileName() {
     const parts = [{ category: 'categories', vendor: 'vendors', agency: 'agencies', year: 'fiscal-years', none: 'yearly-totals' }[S.g]];
+    if (S.state) parts.push(S.state.toLowerCase());
     if (S.cat) parts.push(S.cat.length <= 3 ? S.cat.join('+') : S.cat.length + '-categories');
     if (S.group) parts.push(S.group.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
     if (S.purch === 'no') parts.push('non-purchasing');
@@ -1710,12 +1728,15 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const ys = yearList(S);
     const byYear = S.years && g !== 'year' && g !== 'none';   // year columns shown: descriptive columns move to the CSV
     const union = (rows, k) => { const s = new Set(); for (const o of rows) for (const x of o[k]) s.add(x); return s; };
+    // Precomputed default table (m.pre): the vendor and agency counts are known for all rows only
     const total = rows => {
       let spend = 0;
       const yr = {};
       for (const o of rows) { spend += o.spend; for (const y in o.yr) yr[y] = (yr[y] || 0) + o.yr[y]; }
+      if (m.pre) return rows.length === m.items.length ? { spend, yr, ve: m.sum.ve, ag: m.sum.ag } : { spend, yr, ve: null, ag: null };
       return { spend, yr, ve: union(rows, 've'), ag: union(rows, 'ag') };
     };
+    const cnt = x => (x ? int(x.size) : '');
     const yearCols = () => ys.map(y => ({
       key: 'y' + y, label: fy(y), num: true, hidden: !byYear,
       val: o => (o.yr[y] == null ? null : o.yr[y]), html: o => (o.yr[y] == null ? '' : money(o.yr[y])),
@@ -1738,7 +1759,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     });
     const oneCat = !!S.cat && S.cat.length === 1;          // the category column would repeat one value
     const t = {
-      id: 'main-' + g, file: fileName(), wide: true, labelId: 'page-h', allRows: m.items, rows: m.items, byYear,
+      id: 'main-' + g, file: fileName(), wide: true, labelId: 'page-h', allRows: m.items, rows: m.items, byYear, pre: m.pre,
       hint: 'Select a row to filter to it and ' + then + '.',
       empty: !m.peers.size ? 'No agencies match the agency filters.' : 'No payments match these filters.',
       notes: '',
@@ -1773,7 +1794,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       });
       t.filter = (rows, re) => { t.hits = new Map(Core.searchCategories(ix, re).map(x => [x.id, x.term])); return rows.filter(o => t.hits.has(o.key)); };
       t.searchHint = 'Category or item, e.g. air pack';
-      t.foot = rows => { const a = total(rows); const s = share(a.spend); return [Object.assign({ _label: totalLabel(), vendors: int(a.ve.size), agencies: int(a.ag.size), paid: money(a.spend), share: s == null ? '' : pct(s) }, yearFoot(a))]; };
+      t.foot = rows => { const a = total(rows); const s = share(a.spend); return [Object.assign({ _label: totalLabel(), vendors: cnt(a.ve), agencies: cnt(a.ag), paid: money(a.spend), share: s == null ? '' : pct(s) }, yearFoot(a))]; };
     } else if (g === 'vendor') {
       const isNeris = o => !!V()[o.key].neris;
       const nerisCol = { key: 'neris', label: 'NERIS partner', nw: true, opt: true, val: o => (isNeris(o) ? 'Yes' : null), html: o => (isNeris(o) ? 'Yes' : '') };
@@ -1801,7 +1822,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         value: o => V()[o.key].id,
         after: o => {
           if (!t.re || t.re.test(V()[o.key].name.toLowerCase())) return '';
-          const al = V()[o.key].aliases.map(i => ix.D.aliases[i]).find(s => t.re.test(s.toLowerCase()));
+          const al = ix.valiases(o.key).map(i => ix.D.aliases[i]).find(s => t.re.test(s.toLowerCase()));
           return al ? ' <span class="muted">(paid as ' + esc(al) + ')</span>' : '';
         },
       });
@@ -1904,12 +1925,14 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         { key: 'amount', label: 'Net amount', num: true, val: r => r[4], html: r => cents(r[4]) },
       ];
       t.sort = S.agency != null || S.vendor != null ? [['year', 'desc'], ['amount', 'desc']] : [['amount', 'desc'], ['agency', 'asc']];
-      t.hint = 'Each row is the net total one agency paid one payee name in one fiscal year and category, from the transaction lines reported to Transparent Utah.';
+      t.hint = 'Each row is the net total one agency paid one payee name in one fiscal year and category, from the transaction lines ' +
+        (utOnly() ? 'reported to Transparent Utah.' : 'the sources publish.');
       t.searchHint = 'Payee, vendor or agency';
       t.filter = (rows, re) => rows.filter(r => re.test(payee(r).toLowerCase()) || re.test(V()[r[1]].name.toLowerCase()) || re.test(agName(r[0]).toLowerCase()));
       t.foot = rows => [{ _label: totalLabel(), amount: cents(rows.reduce((s, r) => s + r[4], 0)) }];
-      t.notes += '<p class="note">Source: ' + tuLink() + ' transaction lines (' + A(BLOB + 'pipeline/sql/fire_transactions.sql', 'query') + '), fetched ' +
-        esc(dateText(ix.meta.transactions_fetched || ix.meta.fetched)) + '. ' + A(BLOB + ix.meta.transactions_file, 'Raw data file') + ' (gzipped CSV, all agencies).</p>';
+      t.notes += utOnly() ? '<p class="note">Source: ' + tuLink() + ' transaction lines (' + A(BLOB + 'pipeline/sql/fire_transactions.sql', 'query') + '), fetched ' +
+        esc(dateText(ix.meta.transactions_fetched || ix.meta.fetched)) + '. ' + A(BLOB + ix.meta.transactions_file, 'Raw data file') + ' (gzipped CSV, all agencies).</p>'
+        : '<p class="note">Sources: ' + srcList(paySources(ix.states)) + '.</p>';
     }
     if (g !== 'none') {
       t.notes += '<p class="note">Amounts are net of credits and corrections. Vendors and agencies are counted when the net payment is positive in at least one fiscal year and category of the range.</p>';
@@ -1995,12 +2018,14 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   }
   function ctxVendor(vid) {
     const v = vendorOf(vid);
+    const vi = ix.vendorPos.get(vid);
+    const vcat = ix.vcategory(vi), valiases = ix.valiases(vi);
     const method = vid === 'individuals' ? 'payee names that look like a person'
       : v.method === 'map' ? 'the vendor map (config/vendor_map.csv)'
       : v.method === 'rule' ? 'a vendor or keyword rule (config/vendor_rules.csv, config/keyword_rules.csv)'
       : 'no rule (Unclassified)';
     // Categories of the vendor's rows (all years and agencies), the main one (vendor.category) first
-    const cats = Core.vendorCats(ix, vid).sort((a, b) => (b === v.category) - (a === v.category));
+    const cats = Core.vendorCats(ix, vid).sort((a, b) => (b === vcat) - (a === vcat));
     const names = cats.map(id => esc(ix.cat.get(id).name));
     const catText = !cats.length ? ''
       : cats.length === 1 ? (S.cat && S.cat.length === 1 && S.cat[0] === cats[0] ? '' : 'Category: ' + names[0])
@@ -2012,9 +2037,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     ]);
     const how = 'Vendor category from ' + esc(method) + '.' +
       (cats.length > 1 ? ' Account and description rules put some of its payments in other categories.' : '');
-    if (v.aliases.length) {
-      h += details('d-names', 'Names as paid (' + int(v.aliases.length) + ')',
-        '<ul class="plain">' + v.aliases.map(i => '<li>' + esc(ix.D.aliases[i]) + '</li>').join('') + '</ul>' +
+    if (valiases.length) {
+      h += details('d-names', 'Names as paid (' + int(valiases.length) + ')',
+        '<ul class="plain">' + valiases.map(i => '<li>' + esc(ix.D.aliases[i]) + '</li>').join('') + '</ul>' +
         '<p class="note">' + how + '</p>');
     } else {
       h += '<p class="note">Payee names withheld. ' + how + '</p>';
@@ -2054,7 +2079,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const size = sizeOf(id);
     const range = size && (/^(Under|Over) /.test(size.label) ? size.label.charAt(0).toLowerCase() + size.label.slice(1) : 'of ' + size.label);
     h += details('d-facts', 'Agency details', '<dl class="facts">' + f + '</dl>' + (size
-      ? '<p><button type="button" class="btn" data-like="' + id + '">Filter to agencies with annual expenses ' + esc(range) + '</button></p>'
+      ? '<p><button type="button" class="btn" data-like="' + esc(id) + '">Filter to agencies with annual expenses ' + esc(range) + '</button></p>'
       : ''));
     return h + '</section>';
   }
@@ -2064,6 +2089,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   function moreAgency(id) {
     const a = ix.agency.get(id);
     const dl = districtLike(a);
+    const ut = a.state === 'UT', um = store.meta.states.UT;
+    const tu = a.tu_id;                                        // Transparent Utah entity id, in the raw file names
     let h = '';
     let b;
     // Staff: people paid, wages and benefits per fiscal year, and job titles
@@ -2096,7 +2123,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       }
       if (sm.rows.length) {
         b += '<p class="note">From ' + tuLink() + ' compensation reports. People paid: everyone with pay that year, including part-time staff, paid-per-call firefighters and board members. Wages leave out reimbursements; benefits are employer-paid. ' +
-          A(REPO + '/tree/main/' + ix.meta.raw_path + '/transparent_utah/compensation/' + id, 'Raw data files') + ' (gzipped JSON, one per year).</p>';
+          A(REPO + '/tree/main/' + um.raw_path + '/transparent_utah/compensation/' + tu, 'Raw data files') + ' (gzipped JSON, one per year).</p>';
       }
       h += details('d-staff', 'Staff', b);
     }
@@ -2122,7 +2149,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       if (rm.rows.length) {
         b += '<p class="note">As reported to ' + tuLink() + ', in the agency\'s own account names. Totals leave out borrowing, transfers between the agency\'s own funds and donated infrastructure' +
           (rm.anyExcluded ? ' (rows marked "not in total")' : '') + '. Some names are expense accounts where refunds were recorded. ' +
-          A(BLOB + ix.meta.raw_path + '/transparent_utah/revenue_categories/' + id + '.json.gz', 'Raw data file') + ' (gzipped JSON).</p>';
+          A(BLOB + um.raw_path + '/transparent_utah/revenue_categories/' + tu + '.json.gz', 'Raw data file') + ' (gzipped JSON).</p>';
       }
       h += details('d-rev', 'Revenue', b);
     }
@@ -2131,7 +2158,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     // expenses of a city, town or county
     const years = Object.keys(a.budget || {}).map(Number).sort((x, y) => x - y);
     const fx = fireExp(a);
-    if (dl || years.length) {
+    if (ut && (dl || years.length)) {
       const what = fx ? 'Fire expenses' : 'Total expenses';
       b = table({
         id: 'ag-b', title: what, hideTitle: true, file: 'agency-' + id + (fx ? '-fire-expenses' : '-expenses'),
@@ -2146,9 +2173,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       b += fx
         ? '<p class="note">Source: ' + tuLink() + ' transaction lines coded fire (function 2009xx in the account number, or "fire" in the department names), all accounts including payroll (' +
           A(BLOB + 'pipeline/sql/fire_expenses_by_year.sql', 'query') + ').' +
-          (ix.meta.fire_expenses_file ? ' ' + A(BLOB + ix.meta.fire_expenses_file, 'Raw data file') + ' (gzipped CSV, all cities, towns and counties).' : '') + '</p>'
+          (um.fire_expenses_file ? ' ' + A(BLOB + um.fire_expenses_file, 'Raw data file') + ' (gzipped CSV, all cities, towns and counties).' : '') + '</p>'
         : '<p class="note">Source: ' + tuLink() + ' expense totals for the agency, all categories. ' +
-          A(BLOB + ix.meta.raw_path + '/transparent_utah/expense_categories/' + id + '.json.gz', 'Raw data file') + ' (gzipped JSON).</p>';
+          A(BLOB + um.raw_path + '/transparent_utah/expense_categories/' + tu + '.json.gz', 'Raw data file') + ' (gzipped JSON).</p>';
       h += details('d-exp', what, b);
     }
 
@@ -2170,12 +2197,18 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     } else {
       b = '<p>No FEMA firefighter grants matched to this agency.</p>';
     }
-    b += '<p class="note">Source: ' + A(LINKS.grants, 'OpenFEMA firefighter grants') + ', matched to agencies by recipient name (' + gh('config/grant_recipients.csv') + '). ' +
-      A(BLOB + ix.meta.raw_path + '/openfema/firefighter_grants_ut.json.gz', 'Raw data file') + ' (gzipped JSON).</p>';
+    const sm_ = store.meta.states[a.state] || {};
+    b += ut
+      ? '<p class="note">Source: ' + A(LINKS.grants, 'OpenFEMA firefighter grants') + ', matched to agencies by recipient name (' + gh('config/grant_recipients.csv') + '). ' +
+        A(BLOB + um.raw_path + '/openfema/firefighter_grants_ut.json.gz', 'Raw data file') + ' (gzipped JSON).</p>'
+      : '<p class="note">Source: ' + A(LINKS.grants, 'OpenFEMA firefighter grants') + ', matched to agencies by recipient name (' +
+        gh('data/states/' + a.state.toLowerCase() + '/grants.csv') + ').' + (sm_.grants_raw ? ' ' + A(BLOB + sm_.grants_raw, 'Raw data file') + ' (gzipped JSON).' : '') + '</p>';
     h += details('d-grants', 'FEMA grants (' + int(grants.length) + ')', b);
-    h += '<p class="note">Vendor payments of ' + esc(a.name) + ': ' + tuLink() + ' transaction lines, ' +
-      (dl ? 'every expense line' : 'the lines coded fire') + ' except payroll, benefits and refunds (' +
-      A(BLOB + 'pipeline/sql/fire_transactions.sql', 'query') + '). ' + A(BLOB + ix.meta.transactions_file, 'Raw data file') + ' (gzipped CSV, all agencies).</p>';
+    h += ut
+      ? '<p class="note">Vendor payments of ' + esc(a.name) + ': ' + tuLink() + ' transaction lines, ' +
+        (dl ? 'every expense line' : 'the lines coded fire') + ' except payroll, benefits and refunds (' +
+        A(BLOB + 'pipeline/sql/fire_transactions.sql', 'query') + '). ' + A(BLOB + um.transactions_file, 'Raw data file') + ' (gzipped CSV, all agencies).</p>'
+      : '<p class="note">Sources for ' + esc(a.name) + ': ' + srcList(a.sources || []) + '.</p>';
     return h;
   }
 
@@ -2194,17 +2227,21 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     amount: { key: 'amount', label: 'Amount', num: true, val: p => p[4], html: p => money(p[4]) },
     payee: { key: 'payee', label: 'Payee as reported', val: p => (p[6] < 0 ? null : ix.D.aliases[p[6]]) },
   };
-  // Payments load on demand (data/payments.json), the first time a view shows them
-  let payLoad = null;     // the pending or finished load
+  // Payments load on demand (data/<st>-payments.json), the first time a view shows them: in one state's view
+  // as soon as the section is drawn, with all states when the section is opened (several MB)
+  const payLoads = {};    // state -> pending or finished load
+  let payLoad = null;     // the pending load for the current view
   let payError = null;    // why the last load failed
   function loadPayments() {
     if (payLoad) return payLoad;
+    const sts = ix.states.filter(st => !store.st[st].payments);
+    if (!sts.length) return Promise.resolve();
     payError = null;
-    payLoad = fetch(ix.meta.payments_file || 'data/payments.json', { cache: 'no-cache' })
-      .then(r => { if (!r.ok) throw new Error('data/payments.json returned HTTP ' + r.status); return r.json(); })
-      .then(P => { Core.setPayments(ix, P); })
-      .catch(err => { console.error(err); payError = err; payLoad = null; })   // the next view that needs them tries again
-      .then(() => { if (view === 'explore' && S && $('d-pay')) renderMore(true); });
+    payLoad = Promise.all(sts.map(st => payLoads[st] || (payLoads[st] = fetchJson(store.meta.states[st].files.payments)
+      .then(P => { Core.addPayments(store, st, P); })
+      .catch(err => { payLoads[st] = null; throw err; }))))   // the next view that needs them tries again
+      .catch(err => { console.error(err); payError = err; })
+      .then(() => { payLoad = null; if (view === 'explore' && S && $('d-pay')) renderMore(true); });
     return payLoad;
   }
   function morePayments() {
@@ -2219,6 +2256,10 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     if (!ix.P) {
       if (payError) {
         return details('d-pay', title + ' <span class="muted">(did not load)</span>', '<p>Payments did not load' + (payError.message ? ': ' + esc(payError.message) : '') + '. Change a filter to try again.</p>');
+      }
+      if (ix.states.length > 1 && !payLoad && !openDetails.has('d-pay')) {
+        const bytes = ix.states.filter(st => !store.st[st].payments).reduce((n, st) => n + ((store.meta.states[st].bytes_gz || {}).payments || 0), 0);
+        return details('d-pay', title, '<p>Opening this section loads the single payments of ' + esc(andList(ix.states.map(stName))) + ' (' + fileSize(bytes) + ').</p>');
       }
       loadPayments();
       return details('d-pay', title + ' <span class="muted">(Loading payments...)</span>', '<p>Loading payments...</p>');
@@ -2245,8 +2286,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     b += '<p class="note">Single transaction lines of $1,000 or more in purchasing categories, as posted. One line can cover several items, and an invoice can be split over several lines. ' +
       'A line is left out when a credit or reversal of the same amount to the same payee cancels it. Smaller credits, such as discounts and trade-ins, are not matched to a line, so these lines can add up to more than the net amount paid in the table above. ' +
       'Fiscal year: the year the agency reported the line in. ' +
-      'A blank description was not reported, or was withheld because it may identify a person. ' +
-      tuLink() + ' (' + A(BLOB + 'pipeline/sql/fire_transactions.sql', 'query') + '); ' + A(BLOB + ix.meta.transactions_file, 'raw data file') + ' (gzipped CSV, all agencies).</p>';
+      (utOnly()
+        ? 'A blank description was not reported, or was withheld because it may identify a person. ' +
+          tuLink() + ' (' + A(BLOB + 'pipeline/sql/fire_transactions.sql', 'query') + '); ' + A(BLOB + ix.meta.transactions_file, 'raw data file') + ' (gzipped CSV, all agencies).</p>'
+        : (ix.states.includes('UT') ? 'A blank description was not reported or, in Utah, was withheld because it may identify a person. ' : 'A blank description was not reported. ') +
+          'Sources: ' + srcList(paySources(ix.states)) + '.</p>');
     return details('d-pay', title + ' (' + int(pm.n) + ')', b);
   }
   function renderContext() {
@@ -2290,6 +2334,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     if (S.vendor) out.push(['vendor', 'Vendor: ' + vendorOf(S.vendor).name]);
     if (S.agency != null) out.push(['agency', 'Agency: ' + agName(S.agency)]);
     const na = S.agency != null ? ' (not applied)' : '';
+    if (S.state) out.push(['state', 'State: ' + stName(S.state) + na]);
     if (S.county) out.push(['county', 'County: ' + S.county + na]);
     if (S.size) out.push(['size', 'Annual expenses: ' + Core.SIZES.find(z => z.id === S.size).label + na]);
     if (S.np) out.push(['np', 'Non-purchasing payments included']);
@@ -2300,6 +2345,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     if (key === 'years') return withS({ from: ix.years[0], to: ix.years[ix.years.length - 1] });
     if (key === 'np') return withS({ np: false });
     if (key === 'county' || key === 'size') return withS({ [key]: '' });
+    if (key === 'state') return withS({ state: '', county: '' });
     if (key.startsWith('cat:')) {
       const rest = (S.cat || []).filter(id => id !== key.slice(4));
       return withS({ cat: rest.length ? rest : null });
@@ -2323,16 +2369,62 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   /* ---- Filter bar ---- */
   const opt = (v, label) => '<option value="' + esc(v) + '">' + esc(label) + '</option>';
   function fillControls() {
-    const yrs = ix.years.map(y => opt(y, fy(y))).join('');
-    $('f-from').innerHTML = yrs;
-    $('f-to').innerHTML = yrs;
-    $('f-agency').innerHTML = opt('', 'All agencies') +
-      ix.D.agencies.slice().sort((x, y) => coll.compare(x.name, y.name)).map(a => opt(a.id, a.name)).join('');
-    $('f-county').innerHTML = opt('', 'All') + ix.counties.map(c => opt(c, c)).join('');
+    $('f-state').innerHTML = opt('', 'All states') + store.order.map(st => opt(st, stName(st))).join('');
     $('f-size').innerHTML = opt('', 'All') + Core.SIZES.map(t => opt(t.id, t.label)).join('');
-    const names = V().map(v => v.name).sort(coll.compare);
-    $('vendor-list').innerHTML = names.map(n => '<option value="' + esc(n) + '"></option>').join('');
-    vendorByName = new Map(V().map(v => [v.name.toLowerCase(), v.id]));
+  }
+  // Controls that depend on the view: years and counties of the scope, agencies of the state filter (by state
+  // when there are several), vendors of the scope once its states are loaded
+  function fillScopeControls() {
+    if (ctlFor.years !== ix.scope) {
+      const yrs = ix.years.map(y => opt(y, fy(y))).join('');
+      $('f-from').innerHTML = yrs;
+      $('f-to').innerHTML = yrs;
+      ctlFor.years = ix.scope;
+    }
+    const as = S.state || 'ALL';
+    if (ctlFor.agencies !== as) {
+      const list = sts => store.agencies.filter(a => sts.includes(a.state)).sort((x, y) => coll.compare(x.name, y.name)).map(a => opt(a.id, a.name)).join('');
+      $('f-agency').innerHTML = opt('', 'All agencies') + (as === 'ALL'
+        ? store.order.map(st => '<optgroup label="' + esc(stName(st)) + '">' + list([st]) + '</optgroup>').join('')
+        : list([as]));
+      ctlFor.agencies = as;
+    }
+    if (ctlFor.counties !== ix.scope) {
+      const none = ix.scope === 'ALL';
+      $('f-county').innerHTML = none ? opt('', 'Choose a state') : opt('', 'All') + ix.counties.map(c => opt(c, c)).join('');
+      $('f-county').disabled = none;
+      ctlFor.counties = ix.scope;
+    }
+    const vk = ix.scope + ':' + store.version;
+    if (ctlFor.vendors !== vk) { fillVendors(); ctlFor.vendors = vk; }
+  }
+  // The vendor list: every vendor of the view (as before for Utah), or with more than VLIST_MAX of them,
+  // up to VLIST_SHOW that match the typed text (suggestVendors)
+  const VLIST_MAX = 15000, VLIST_SHOW = 200;
+  function fillVendors() {
+    const vs = [...ix.vendorPos.values()].map(vi => V()[vi]);
+    vendorByName = new Map(vs.map(v => [v.name.toLowerCase(), v.id]));
+    const names = vs.map(v => v.name).sort(coll.compare);
+    vendorNames = names.length > VLIST_MAX ? names : null;
+    $('vendor-list').innerHTML = vendorNames ? '' : names.map(n => '<option value="' + esc(n) + '"></option>').join('');
+  }
+  function suggestVendors() {
+    if (!vendorNames) return;
+    const re = Core.searchRe($('f-vendor').value);
+    const out = [];
+    if (re) for (const n of vendorNames) if (re.test(n.toLowerCase()) && out.push(n) >= VLIST_SHOW) break;
+    $('vendor-list').innerHTML = out.map(n => '<option value="' + esc(n) + '"></option>').join('');
+  }
+  // Load the states of the current view (when the precomputed table is shown), then run fn
+  function whenLoaded(fn, onError) {
+    if (ix.loaded) { fn(); return; }
+    const scope = ix.scope;
+    loadStates(ix.states).then(() => {
+      if (view !== 'explore' || !S || S.scope !== scope) return;
+      ix = Core.view(store, scope);
+      fillScopeControls();
+      fn();
+    }, err => { console.error(err); if (onError) onError(err); });
   }
   // Category checkboxes under their group headings; non-purchasing ones only with the checkbox on
   // (or when selected). Rebuilt only when that list changes, so focus stays on the box just toggled.
@@ -2368,11 +2460,17 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     $('f-vendor').value = S.vendor ? vendorOf(S.vendor).name : '';
     $('f-vendor-msg').textContent = '';
     $('f-agency').value = S.agency != null ? String(S.agency) : '';
+    $('f-state').value = S.state;
     $('f-county').value = S.county;
     $('f-size').value = S.size;
     $('f-np').checked = S.np;
-    const txt = S.agency != null ? 'Not applied while one agency is selected.'
-      : int(Core.peerIds(ix, S).size) + ' of ' + int(ix.D.agencies.length) + ' agencies match';
+    let txt = 'Not applied while one agency is selected.';
+    if (S.agency == null) {
+      const peers = Core.peerIds(ix, S);
+      let nd = 0;
+      for (const id of peers) if (ix.agency.get(id).coverage <= 2) nd++;
+      txt = int(peers.size) + ' of ' + int(ix.D.agencies.length) + ' agencies match' + (nd < peers.size ? '; ' + int(nd) + ' with vendor data' : '');
+    }
     $('f-count').textContent = txt;
     // Announced only after a change to the agency filters, where focus stays on the select
     $('f-live').textContent = announcePeers ? txt : '';
@@ -2407,6 +2505,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const raw = $('f-vendor').value.trim();
     const msg = $('f-vendor-msg');
     msg.textContent = '';
+    if (raw && !ix.loaded) {                                    // the precomputed table: vendors are not loaded yet
+      msg.textContent = 'Loading vendors...';
+      whenLoaded(vendorCommit, err => { msg.textContent = 'Vendors did not load' + (err && err.message ? ': ' + err.message : '') + '.'; });
+      return;
+    }
     if (!raw) { if (S.vendor) go(setVendor(null)); return; }
     const id = vendorByName.get(raw.toLowerCase());
     if (id) { if (id !== S.vendor) go(setVendor(id)); return; }
@@ -2423,7 +2526,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   }
   function likeState(id) {
     const size = sizeOf(id);
-    return withS({ agency: null, county: '', size: size ? size.id : '' });
+    return withS({ agency: null, county: '', size: size ? size.id : '', state: ix.agency.get(id).state });
   }
   // Category checkboxes, opened from the Category button. On a phone they open in place, in the panel.
   const catOpen = () => !$('f-cat-pop').hidden;
@@ -2465,8 +2568,19 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
           break;
         }
         case 'f-vendor': vendorCommit(); return;
-        case 'f-agency': n = setAgency(el.value ? Number(el.value) : null); break;
-        case 'f-county': case 'f-size': n = withS({ [el.id.slice(2)]: el.value }); announcePeers = true; break;
+        case 'f-agency': n = setAgency(el.value || null); break;
+        case 'f-state': {
+          // The county stays when the new state has it; an agency of another state is cleared
+          const st = el.value;
+          const a = S.agency != null ? ix.agency.get(S.agency) : null;
+          n = withS({ state: st, county: st && store.st[st].counties.includes(S.county) ? S.county : '' });
+          if (a && st && a.state !== st) n.agency = null;
+          announcePeers = true;
+          break;
+        }
+        // A county belongs to the state of the view: picking one sets the state filter when it is empty
+        case 'f-county': n = withS({ county: el.value, state: S.state || (el.value && ix.scope !== 'ALL' ? ix.scope : '') }); announcePeers = true; break;
+        case 'f-size': n = withS({ size: el.value }); announcePeers = true; break;
         case 'f-np': n = withS({ np: el.checked }); break;
         default: return;
       }
@@ -2477,11 +2591,14 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       $('f-vendor-msg').textContent = '';
       if (e.inputType === 'insertReplacementText' || e.inputType == null) {
         const id = vendorByName.get(vin.value.trim().toLowerCase());
-        if (id && id !== S.vendor) go(setVendor(id));
+        if (id && id !== S.vendor) { go(setVendor(id)); return; }
       }
+      suggestVendors();
     });
+    // The vendor list needs the view's states: load them when the box gets focus
+    vin.addEventListener('focus', () => { if (!ix.loaded) whenLoaded(suggestVendors); });
     vin.addEventListener('keydown', e => { if (e.key === 'Enter') vendorCommit(); });
-    $('f-clear').addEventListener('click', () => go(Core.normState(ix, { g: S.g, years: S.years ? '1' : '' })));
+    $('f-clear').addEventListener('click', () => go(Core.normState(store, { g: S.g, years: S.years ? '1' : '' })));
     // Clear categories: focus moves to the first checkbox, since this button is disabled with none selected
     $('f-cat-clear').addEventListener('click', () => {
       if (!S.cat) return;
@@ -2544,6 +2661,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       const t = TABLES['main-' + S.g];
       if (!t) return;
       S.q = e.target.value;
+      // The precomputed table counts vendors and agencies for all its rows only: load the rows, then draw it again
+      if (t.pre && !t.loading) {
+        t.loading = true;
+        whenLoaded(() => { if (TABLES['main-' + S.g] === t) refresh(); }, () => { t.loading = false; });
+      }
       applySearch(t);
       TSTATE[t.id].all = false;
       TSTATE[t.id].limit = 0;
@@ -2568,7 +2690,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
 
   // Buttons anywhere: sort, Show all/more, CSV, drill-down, remove filter, agencies of the same size
   function drillTo(raw) {
-    const v = S.g === 'agency' || S.g === 'year' ? Number(raw) : raw;
+    const v = S.g === 'year' ? Number(raw) : raw;
     openDetails.clear();                                        // a drill-down shows the new table, not sections left open
     go(Core.drill(ix, S, v));
   }
@@ -2605,7 +2727,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       } else if (d.clear) {
         $('f-clear').click();
       } else if (d.like) {
-        go(likeState(Number(d.like)));
+        go(likeState(d.like));
+      } else if (d.retry) {                                     // a state file did not load
+        route(true);
       } else if (b.id === 'tpay') {                             // open the single payments below the table
         const dp = $('d-pay');
         if (!dp) return;
@@ -2639,6 +2763,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     if (!d.id || d.tagName !== 'DETAILS') return;
     if (d.open) openDetails.add(d.id); else openDetails.delete(d.id);
     if (d.open) fitRegions(d);
+    // All states: single payments load when their section is opened
+    if (d.id === 'd-pay' && d.open && view === 'explore' && !ix.P && !payLoad && !payError) { loadPayments(); renderMore(true); }
   }, true);
 
   /* ---- Views ---- */
@@ -2657,11 +2783,17 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     let s;
     if (S.agency == null && !m.peers.size) s = 'No agencies match the agency filters.';
     else {
+      // Agencies without vendor data (totals or directory only) are not counted
+      const pd = m.peersData;
       s = S.agency != null
         ? money(sum.spend) + ' paid by ' + esc(agName(S.agency)) + ' to ' + plural(sum.ve.size, 'vendor', 'vendors')
         : money(sum.spend) + ' paid to ' + plural(sum.ve.size, 'vendor', 'vendors') + ' by ' +
-          (m.peers.size === 1 ? esc(agName([...m.peers][0])) : agOf(sum.ag.size, m.peers.size));
+          (pd.size === 1 ? esc(agName([...pd][0])) : agOf(sum.ag.size, pd.size));
       s += ', ' + esc(yearSpan(S)) + (S.cat ? ', in ' + catsText(S.cat, true) : '') + (m.onlyPurch ? '; purchasing categories only.' : '.');
+      if (S.agency == null && m.nodata.size) {
+        s += ' ' + (m.nodata.size === 1 ? '1 agency in these filters has' : int(m.nodata.size) + ' agencies in these filters have') + ' no vendor data and ' +
+          (m.nodata.size === 1 ? 'is' : 'are') + ' not counted.';
+      }
     }
     $('summary').innerHTML = s;
     renderContext();
@@ -2687,8 +2819,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     h += '<p>This prototype shows what Utah fire agencies paid to vendors: fire districts and service areas, interlocal fire agencies, and the fire departments of cities, towns and counties. It is for a fire chief or purchasing officer who wants to see, for one kind of purchase, which vendors similar agencies use, how many agencies use each, and what they paid.</p>';
     h += '<p>Pick filters and a grouping for the table. Selecting a row adds it as a filter and moves to the next grouping. Yearly totals shows the rows every number is built from: what one agency paid one payee name in one fiscal year and category. With a category, vendor or agency selected, the largest single payments are listed below the table, with date and description.</p>';
 
-    // Agencies by kind
-    const withLines = new Set(ix.D.rows.map(r => r[0]));
+    // Agencies by kind (with payments: transaction lines in the source)
+    const withLines = new Set(ix.D.agencies.filter(a => a.lines > 0).map(a => a.id));
     const kinds = new Map();
     for (const a of ix.D.agencies) {
       const k = kinds.get(a.kind) || { kind: a.kind, n: 0, lines: 0 };
@@ -2836,14 +2968,20 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     clearTimeout(scrollTimer);
     try {
       if (L.page === 'about') {
+        ix = Core.view(store, 'UT');                     // About describes Utah's data until it covers every state
         view = 'about';
         $('explore').hidden = true;
         $('page').hidden = false;
         $('page').innerHTML = viewAbout();
         document.title = 'About – ' + SITE;
       } else {
+        // A view that needs state files not loaded yet waits for them (the default view of a scope is precomputed)
+        const need = Core.needs(store, L.p);
+        if (need.missing.length && !need.pre) { waitFor(need, own); return; }
         view = 'explore';
-        S = Core.normState(ix, L.p);
+        S = Core.normState(store, L.p);
+        ix = Core.view(store, S.scope);
+        fillScopeControls();
         const notes = S.bad.slice();
         if (L.unknown) notes.unshift('page "' + L.unknown + '"');
         const canon = stateHash(S);
@@ -2935,6 +3073,62 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     (target || $('main')).focus();
   });
 
+  /* ---- Loading state files ---- */
+  function fetchJson(f) {
+    return fetch(f, { cache: 'no-cache' })                     // revalidate, so a new page never runs on old cached data
+      .then(r => { if (!r.ok) throw new Error(f + ' returned HTTP ' + r.status); return r.json(); });
+  }
+  const fileSize = n => (n >= 950000 ? (n / 1e6).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1000)) + ' kB');
+  const stLoads = {};     // state -> pending or finished load of its rows
+  function loadState(st) {
+    if (Core.isLoaded(store, st)) return Promise.resolve();
+    if (!stLoads[st]) {
+      stLoads[st] = fetchJson(store.meta.states[st].files.rows)
+        .then(D => { Core.addState(store, st, D); })
+        .catch(err => { stLoads[st] = null; throw err; });   // Retry loads it again
+    }
+    return stLoads[st];
+  }
+  const loadStates = sts => Promise.all(sts.map(loadState));
+  // While the states a view needs load: a message in place of the table (or the page, before the first table),
+  // then the view, unless another one was asked for meanwhile. On failure, a Retry button.
+  function waitFor(need, own) {
+    const h = location.hash;
+    rendered = h;
+    const names = andList(need.missing.map(stName));
+    const bytes = need.missing.reduce((n, st) => n + ((store.meta.states[st].bytes_gz || {}).rows || 0), 0);
+    showWait('<p class="loading" role="status">Loading ' + esc(names) + ' (' + fileSize(bytes) + ')...</p>');
+    loadStates(need.missing).then(() => { if (location.hash === h) route(own); }, err => {
+      console.error(err);
+      if (location.hash !== h) return;
+      showWait('<p class="loading" role="alert">' + esc(names) + ' did not load' + (err && err.message ? ': ' + esc(err.message) : '') +
+        '. <button type="button" class="btn" data-retry="1">Retry</button></p>');
+    });
+  }
+  function showWait(html) {
+    if (view === 'explore' && S) {
+      for (const k in TABLES) delete TABLES[k];
+      $('summary').innerHTML = html;
+      $('tbar').innerHTML = '';
+      $('context').innerHTML = '';
+      $('tbl-main').innerHTML = '';
+      $('more').innerHTML = '';
+    } else {
+      $('explore').hidden = true;
+      $('page').hidden = false;
+      $('page').innerHTML = '<div class="prose">' + html + '</div>';
+    }
+  }
+  // Draw the current state again, now that data it needs has arrived (the URL may be up to 300 ms behind)
+  function refresh() {
+    const a = document.activeElement;
+    const caret = a && a.id === 'tq' ? a.selectionStart : null;
+    try { history.replaceState(history.state, '', stateHash(S)); } catch (e) { /* rate limited */ }
+    route(true);
+    const q = $('tq');
+    if (caret != null && q && document.activeElement === q) q.setSelectionRange(caret, caret);
+  }
+
   /* ---- Load ---- */
   function fail(err) {
     $('page').innerHTML = '<div class="prose"><h1 tabindex="-1">Data did not load</h1>' +
@@ -2944,11 +3138,13 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
           'From the project folder run <code>python3 -m http.server</code> and open <a href="http://localhost:8000/">http://localhost:8000/</a>.</p>'
         : '') + '</div>';
   }
-  fetch('data/data.json', { cache: 'no-cache' })                // revalidate, so a new page never runs on old cached data
-    .then(r => { if (!r.ok) throw new Error('data/data.json returned HTTP ' + r.status); return r.json(); })
-    .then(D => {
-      ix = Core.buildIndex(D);
-      $('asof').textContent = 'Prototype. Data as of ' + dateText(ix.meta.fetched) + '.';
+  // data/index.json first: agencies of every state, categories and the precomputed default tables
+  fetchJson('data/index.json')
+    .then(I => {
+      store = Core.buildStore(I);
+      ix = Core.view(store, 'ALL');
+      const fetched = store.order.map(st => store.meta.states[st].fetched).filter(Boolean).sort();
+      $('asof').textContent = 'Prototype. Data as of ' + dateText(fetched[fetched.length - 1] || store.meta.built) + '.';
       fillControls();
       bindControls();
       route(false);
