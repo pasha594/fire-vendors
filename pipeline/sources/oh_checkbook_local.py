@@ -2,6 +2,7 @@
 funds and fire departments.
 
     python3 pipeline/sources/oh_checkbook_local.py fetch [--date YYYY-MM-DD] [--only NAME ...]
+    python3 pipeline/sources/oh_checkbook_local.py fetch220 --date YYYY-MM-DD [--only NAME ...]
     python3 pipeline/sources/oh_checkbook_local.py normalize
 
 Source: Ohio Checkbook (checkbook.ohio.gov; ohiocheckbook.gov and the old <entity>.ohiocheckbook.com hosts
@@ -24,6 +25,9 @@ intermediate. fetch downloads that intermediate once from the leaf certificate's
 verification store. Verification stays on: the partial-chain flag Python 3.13 sets is cleared, so the chain must
 still end at a root in the system store.
 
+fetch220   raw/<date>/oh/oh_checkbook_local/program220_<id>.json.gz   per township with program 220 values not
+             named for fire: the program 220 lines of its funds not named for fire, and the summary totals of its
+             police-named funds and departments (pass --date of the folder the entity files are in)
 fetch      raw/<date>/oh/oh_checkbook_local/
              sectigo_ov_r36_intermediate.crt.gz    the missing intermediate certificate (DER)
              participants_<kind>.json.gz           participant lists (MunicipalitiesByCategory web service)
@@ -41,15 +45,19 @@ normalize  data/states/oh/transactions.csv.gz     one row per published payment 
 
 What is fire spend (docs/sources/oh.md): a fire district's whole checkbook (special districts named as fire
 districts; an EMS-only district is not a fire agency, owner decision 2026-10-06); for townships, cities and
-villages only the lines whose fund or department is named for fire (FIRE_NAME, minus NOT_FIRE_NAME: shared
-police-and-fire names, fire-loss insurance escrow, hydrants). A township's general-fund "Public Safety" lines are
-never included, even under program code 220 (fire protection in the township chart of accounts), because the
-name does not say fire; nor are EMS-only funds or departments. When a participant's fire-named department also
-carries lines of a police fund, its department code is shared with police and only its fire funds count
-(dept_trusted). Only participants linked in config/states/oh/agency_sources.csv reach the data: a participant
-is linked when it runs the fire department named in the registry (place name and county) and its fire lines are
-that department's spending; townships that pay another department by contract, and participants whose
-fire-named lines are only a grant, capital or debt fund, are not linked (docs/sources/oh.md lists them).
+villages the lines whose fund or department is named for fire (FIRE_NAME, minus NOT_FIRE_NAME: shared
+police-and-fire names, fire-loss insurance escrow, hydrants). Townships also count every line of program 220
+(fire protection in the township chart of accounts, shown as "Public Safety - 220" or "220 - 220"; owner
+decision of 2026-10-07), fetched by fetch220 for the funds not named for fire; a township line whose fund or
+department is named for police never counts, so a township that also runs police (a police-named fund or
+department with lines from FIRST_FY on, from the dashboard's summary totals) has its mixed Public Safety lines
+left out, and its link note says so. EMS-only funds or departments are not fire lines. When a participant's
+fire-named department also carries lines of a police fund, its department code is shared with police and only
+its fire funds count (dept_trusted). Only participants linked in config/states/oh/agency_sources.csv reach the
+data: a participant is linked when it runs the fire department named in the registry (place name and county)
+and its fire lines are that department's spending; townships that pay another department by contract, and
+participants whose fire lines are only a grant, capital or debt fund, are not linked (docs/sources/oh.md lists
+them).
 
 Fiscal year: Ohio local governments use the calendar year (fy_start 01); fiscal_year is the transaction date's
 year. Years 2021 on.
@@ -128,6 +136,10 @@ ESCROW_NAME = re.compile(r"FIRE ?LOSS|ESCROW|DAMAGED? STRUCTURE|FIRE DAMAGE|REPA
 # firefighter reimbursements) are real lines and do not count.
 BROKEN_SHARE = decimal.Decimal("0.5")
 POLICE_FUND = re.compile(r"POLICE", re.I)
+# Owner decision of 2026-10-07 (Ohio Public Safety): a linked township's program 220 lines count as fire spend
+# (program 220 is fire protection in the township chart of accounts), except lines in a police-named fund or
+# department; police-named lines of a township never count
+PROGRAM_220 = "220"
 DOUBLED_MIN = 10  # lines in a month before the month can be judged as uploaded twice
 # Reloads: TransactionIds are numbered in upload order, so a participant's lines sorted by TransactionId fall into
 # uploads, a new one starting where the TransactionId jumps by more than RELOAD_GAP. A later upload's lines of one
@@ -146,6 +158,7 @@ SKIP = {"City of Cincinnati": "Cincinnati Fire Department comes from the City's 
 SOURCE_COLUMNS = ["source", "name", "tier", "url", "years", "fiscal_year", "fetched", "note"]
 CENTS = decimal.Decimal("0.01")
 IDENTICAL = {}  # participant -> (identical lines dropped, dollars), for the normalize report
+PROGRAM220 = {}  # township -> program 220 lines added, police years, police-named program 220 lines left out
 
 
 def fire_line_name(name):
@@ -552,6 +565,81 @@ def fetch(date=None, only=None, cache=None):
         save_sample(date)
 
 
+def program_220(depts):
+    """A township's program 220 values (fire protection in the township chart of accounts, shown as "Public
+    Safety - 220" or "220 - 220") whose name does not say fire; fire-named ones ("Fire Protection - 220") were
+    fetched with the fire slices already."""
+    return [d for d in depts if d.rsplit(" - ", 1)[-1] == PROGRAM_220 and not FIRE_NAME.search(d)]
+
+
+def fetch_program_220(date=None, only=None):
+    """Owner decision of 2026-10-07 (Ohio Public Safety): for each fetched township with program 220 values not
+    named for fire, fetch the lines of program 220 in the funds not named for fire (the fire funds were fetched
+    whole by the fire slices, so nothing overlaps) and the dashboard's summary totals of every police-named fund
+    and department from FIRST_FY on (does the township run police?). One raw file per township:
+    program220_<id>.json.gz, same layout as entity_<id>.json.gz (request kinds rows, summary, police)."""
+    date = date or common.TODAY
+    folder = common.raw_dir(ST, SOURCE, date)
+    client, viz = Client(date), None
+    todo = []
+    for path in sorted(folder.glob("entity_*.json.gz"), key=lambda p: int(re.sub(r"\D", "", p.name))):
+        e = json.loads(common.read_gz(path))["entity"]
+        if e["kind"] == "townships" and program_220(e["departments"]) and (not only or e["name"] in only):
+            todo.append(e)
+    print(f"{ST}: {SOURCE}: {len(todo)} townships with program 220 lines not named for fire")
+    for e in todo:
+        if (folder / f"program220_{e['id']}.json.gz").exists():
+            continue
+        for attempt in range(3):
+            try:
+                if viz is None:
+                    if attempt:
+                        client.jar.clear()
+                        time.sleep(30 * attempt)
+                    viz = Viz(client, "townships")
+                    dom = viz.start(e["name"])
+                else:
+                    dom = viz.set_filter("Municipality Name", [e["name"]]) or {}
+                funds, depts = dom.get("Select Fund", []), dom.get("Select Department", [])
+                years = dom.get("Select Transaction Date Year", [])
+                if not funds or not depts:
+                    raise RuntimeError(f"{e['name']}: no filter lists in the response")
+                if (funds, depts) != (e["funds"], e["departments"]):
+                    print(f"  {e['name']}: filter values differ from the entity file (new uploads); using today's")
+                recent = [y for y in years if y.isdigit() and int(y) >= FIRST_FY]
+                other_funds = [f for f in funds if not FIRE_NAME.search(f)]
+                log = []
+                if recent and other_funds:
+                    n = fetch_slice(viz, {"Fund": other_funds, "Department": program_220(depts),
+                                          "Year Of Transaction Date": recent}, years, log)
+                    print(f"  {e['name']}: program 220: {n} rows")
+                police = [("Fund", [f for f in funds if POLICE_FUND.search(f)]),
+                          ("Department", [d for d in depts if POLICE_FUND.search(d)])]
+                for cap, values in police:
+                    if values and recent:
+                        filters = {cap: values, "Year Of Transaction Date": recent}
+                        for c in ("Fund", "Department", "Year Of Transaction Date", "Object"):
+                            viz.set_filter(c, filters.get(c))
+                        raw, data = viz.summary()
+                        log.append({"kind": "police", "filters": filters, "body": raw.decode("utf-8")})
+                        print(f"  {e['name']}: police-named {cap.lower()}s: {len(values)}, "
+                              f"{sum(1 for r in table_rows(data) if r['SUM(Amount)'] != 'null')} fund-year totals")
+                for c in ("Fund", "Department", "Year Of Transaction Date"):
+                    viz.set_filter(c, None)
+                entry = {**e, "funds": funds, "departments": depts, "years": years,
+                         "slices": ["program_220"] if recent and other_funds else []}
+                common.save_raw(ST, SOURCE, f"program220_{e['id']}.json", json.dumps(
+                    {"entity": entry,
+                     "fetched": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+                     "requests": log}, ensure_ascii=False).encode("utf-8"), date=date)
+                break
+            except (RuntimeError, AssertionError, KeyError, ValueError, OSError) as err:
+                print(f"  {e['name']}: attempt {attempt + 1} failed: {err}", file=sys.stderr)
+                viz = None
+        else:
+            raise RuntimeError(f"{e['name']}: program 220 fetch failed three times; run again")
+
+
 def save_sample(date):
     folder = common.raw_dir(ST, SOURCE, date)
     files = sorted(folder.glob("entity_*.json.gz"), key=lambda p: int(re.sub(r"\D", "", p.name)))
@@ -568,12 +656,19 @@ def save_sample(date):
 # --- normalize ---------------------------------------------------------------------------------------------
 
 def entity_requests(path):
-    """(entity, [(filters, rows)], [(filters, summary rows)]) from one entity file."""
+    """(entity, [(filters, rows)], [(filters, summary rows)], [(filters, police summary rows)]) from one entity
+    file and, when there is one, its program220_<id> file (fetch220)."""
     d = json.loads(common.read_gz(path))
-    rows, sums = [], []
-    for req in d["requests"]:
-        (rows if req["kind"] == "rows" else sums).append((req["filters"], table_rows(json.loads(req["body"]))))
-    return d["entity"], rows, sums
+    reqs = d["requests"]
+    extra = path.parent / path.name.replace("entity_", "program220_")
+    if extra.exists():
+        e = json.loads(common.read_gz(extra))
+        assert (e["entity"]["id"], e["entity"]["name"]) == (d["entity"]["id"], d["entity"]["name"]), extra.name
+        reqs = reqs + e["requests"]
+    out = {"rows": [], "summary": [], "police": []}
+    for req in reqs:
+        out[req["kind"]].append((req["filters"], table_rows(json.loads(req["body"]))))
+    return d["entity"], out["rows"], out["summary"], out["police"]
 
 
 NULL = "%null%"  # Tableau's marker for an empty cell
@@ -584,12 +679,29 @@ def label(r, part):
     return " - ".join(v for v in (r[part + "Description"], r[part + "Code"]) if v and v != NULL)
 
 
+def police_named(r):
+    return bool(POLICE_FUND.search(r["FundDescription"] or "") or POLICE_FUND.search(r["DeptDescription"] or ""))
+
+
 def is_fire_line(kind, r, dept_trusted=True):
+    """Fire districts: every line. Townships, cities and villages: a fire-named fund or department (minus the
+    excluded names and escrow funds). Townships also: program 220 (owner decision of 2026-10-07), and never a line
+    whose fund or department is named for police."""
     if kind == "special_districts":
         return True
     if ESCROW_NAME.search(r["FundDescription"] or "") or ESCROW_NAME.search(r["DeptDescription"] or ""):
         return False
-    return fire_line_name(r["FundDescription"]) or (dept_trusted and fire_line_name(r["DeptDescription"]))
+    if kind == "townships" and police_named(r):
+        return False
+    return fire_line_name(r["FundDescription"]) or (dept_trusted and fire_line_name(r["DeptDescription"])) \
+        or (kind == "townships" and r["DeptCode"] == PROGRAM_220)
+
+
+def runs_police(police):
+    """Years (FIRST_FY on) in which a police-named fund or department of the participant has lines, from the
+    dashboard's summary totals fetched by fetch220."""
+    return sorted({s["YEAR(Transaction Date)"] for _, rows in police for s in rows
+                   if s["SUM(Amount)"] != "null" and int(s["YEAR(Transaction Date)"]) >= FIRST_FY})
 
 
 def dept_trusted(by_id):
@@ -606,7 +718,7 @@ def money(v):
 
 def entity_lines(path):
     """Every fetched row of one entity, once per row Id, checked against the summary totals of its slice."""
-    entity, reqs, sums = entity_requests(path)
+    entity, reqs, sums, police = entity_requests(path)
     by_id = {}
     for filters, rows in reqs:
         for r in rows:
@@ -627,7 +739,8 @@ def entity_lines(path):
                 got[r["TransDate"][:4]] += money(r["Amt"])
         for y in set(want) | set(got):
             assert abs(want[y] - got[y]) <= CENTS, f"{path.name}: {filters} {y}: rows {got[y]} vs summary {want[y]}"
-    return entity, by_id
+    has_220 = (path.parent / path.name.replace("entity_", "program220_")).exists()
+    return {**entity, "program_220_fetched": has_220, "police_years": runs_police(police)}, by_id
 
 
 def broken_months(rows):
@@ -760,6 +873,11 @@ def entity_rows(eid, entity, by_id, stats):
         r = by_id[rid]
         if int(r["TransDate"][:4]) < FIRST_FY or not is_fire_line(entity["kind"], r, trusted):
             stats["outside"] += 1
+            if int(r["TransDate"][:4]) >= FIRST_FY and entity["kind"] == "townships" and police_named(r) \
+                    and is_fire_line("cities_villages", r, trusted):
+                # a township line named for fire and for police: never counted (owner decision of 2026-10-07)
+                stats["township_police_lines"] += 1
+                stats["township_police_dollars"] += money(r["Amt"])
             continue
         key = (r["TransactionId"], r["TransDate"], r["Payee"], r["FundCode"], r["DeptCode"], r["ObjCode"], r["Amt"])
         if key in seen:
@@ -780,6 +898,17 @@ def entity_rows(eid, entity, by_id, stats):
     rows, dropped = unidentical(entity, [r for r in rows if r["TransDate"][:7] not in broken], stats)
     if dropped:
         IDENTICAL[entity["name"]] = (len(dropped), sum(money(r["Amt"]) for r in dropped))
+    if entity["kind"] == "townships" and entity["program_220_fetched"]:
+        # what the program 220 rule adds (lines not named for fire), and what it leaves out as police-named
+        added = [r for r in rows if not (fire_line_name(r["FundDescription"])
+                                         or (trusted and fire_line_name(r["DeptDescription"])))]
+        assert all(r["DeptCode"] == PROGRAM_220 for r in added), entity["name"]
+        mixed = [r for r in by_id.values() if int(r["TransDate"][:4]) >= FIRST_FY and r["DeptCode"] == PROGRAM_220
+                 and police_named(r)]
+        PROGRAM220[entity["name"]] = {
+            "lines": len(added), "dollars": sum(money(r["Amt"]) for r in added),
+            "police_years": entity["police_years"], "mixed_lines": len(mixed),
+            "mixed_dollars": sum(money(r["Amt"]) for r in mixed)}
     return rows
 
 
@@ -792,6 +921,12 @@ def normalize():
         link = links[eid]
         entity, by_id = entity_lines(d / f"entity_{eid}.json.gz")
         assert entity["name"] == link["source_entity_name"], f"link {eid}: {entity['name']!r} != {link}"
+        if entity["kind"] == "townships" and entity["program_220_fetched"]:
+            # the link's note says that program 220 counts and, when the township also runs police, that its
+            # mixed Public Safety lines (program 220 in police-named funds or departments) are left out
+            assert "program 220" in link["note"], f"{entity['name']}: note does not mention program 220"
+            assert ("mixed Public Safety lines" in link["note"]) == bool(entity["police_years"]), \
+                f"{entity['name']}: police from 2021 on {entity['police_years']}; note: {link['note']!r}"
         for r in entity_rows(eid, entity, by_id, stats):
             out.append({
                 "agency_id": link["agency_id"], "fiscal_year": r["TransDate"][:4], "posting_date": r["TransDate"][:10],
@@ -811,11 +946,14 @@ def normalize():
         "source": SOURCE, "name": "Ohio Checkbook, local governments", "tier": "1",
         "url": f"{CHECKBOOK}/Local/", "years": f"{years[0]}-{years[-1]}",
         "fiscal_year": "Calendar year (Ohio local governments)", "fetched": d.parent.parent.name,
-        "note": f"{len(links)} participating fire agencies. Fire districts: whole checkbook. Townships, cities and "
-                "villages: only lines whose fund or department is named for fire; fire spending they book under "
-                "general 'Public Safety' lines is not included. Most of the dollars are payroll, pensions and "
-                "benefits paid through the checkbook. Participation is voluntary and uploads lag by "
-                f"entity (latest payment {last}); FY{years[-1]} partial"})
+        "note": f"{len(links)} participating fire agencies. Fire districts: whole checkbook. Townships: lines whose "
+                "fund or department is named for fire and lines of program 220 (Public Safety, fire protection in "
+                "the township chart of accounts), never lines named for police, so where a township also runs "
+                "police its mixed Public Safety lines are left out. Cities and villages: only lines whose fund or "
+                "department is named for fire; fire spending they book under general 'Public Safety' lines is not "
+                "included. Lines identical in every published field are shown once. Most of the dollars are "
+                "payroll, pensions and benefits paid through the checkbook. Participation is voluntary and uploads "
+                f"lag by entity (latest payment {last}); FY{years[-1]} partial"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in out)
     neg = [r for r in out if r["amount"].startswith("-")]
@@ -827,8 +965,13 @@ def normalize():
           f"{stats['identical_lines']} identical lines dropped (${stats['identical_dollars']:,.2f}, "
           f"{stats['identical_groups']} groups, {len(IDENTICAL)} agencies; of them {stats['identical_voided_lines']} "
           f"lines (${stats['identical_voided_dollars']:,.2f}) are copies of a line that is also reversed); "
-          f"{stats['outside']} fetched lines outside the rule or years; {len(neg)} negative lines "
+          f"{stats['outside']} fetched lines outside the rule or years (of them {stats['township_police_lines']} "
+          f"township lines named for fire and police, ${stats['township_police_dollars']:,.2f}); {len(neg)} negative lines "
           f"(${sum(decimal.Decimal(r['amount']) for r in neg):,.2f}) kept")
+    for name, v in sorted(PROGRAM220.items()):
+        print(f"  program 220: {name}: {v['lines']} lines (${v['dollars']:,.2f}) added; police "
+              f"{','.join(v['police_years']) or 'none'}; {v['mixed_lines']} police-named program 220 lines "
+              f"(${v['mixed_dollars']:,.2f}) left out")
     top = sorted(IDENTICAL.items(), key=lambda kv: -abs(kv[1][1]))[:5]
     print("  identical lines dropped, largest: " + "; ".join(f"{k} {n} (${v:,.2f})" for k, (n, v) in top))
 
@@ -841,12 +984,14 @@ def register_source(row):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("step", choices=["fetch", "normalize"])
+    ap.add_argument("step", choices=["fetch", "fetch220", "normalize"])
     ap.add_argument("--date")
     ap.add_argument("--only", nargs="*")
     ap.add_argument("--cache", help="optional JSON file that keeps screening progress across interrupted runs")
     a = ap.parse_args()
     if a.step == "fetch":
         fetch(a.date, a.only, a.cache)
+    elif a.step == "fetch220":
+        fetch_program_220(a.date, a.only)
     else:
         normalize()

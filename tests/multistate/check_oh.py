@@ -82,6 +82,7 @@ BROKEN = set()  # (participant, month) left out as broken uploads, for the summa
 DOUBLED = set()  # (participant, month) uploaded more than once
 RELOADED = set()  # (participant, date) uploaded again in a later upload
 IDENTICAL = {}  # participant (or source) -> identical lines dropped (owner rule of 2026-10-07)
+POLICE_TOWNSHIPS = {}  # township with a program220 file -> years with police-named lines (2021 on)
 
 
 def rows_of(path):
@@ -210,6 +211,11 @@ def fire_line(kind, r, by_department=True):
         return True
     if any(ESCROW_WORDS.search(r[f]) for f in ("FundDescription", "DeptDescription")):
         return False
+    # townships (owner decision 2026-10-07, Ohio Public Safety): never a police-named line; program 220 counts
+    if kind == "townships" and any(re.search(r"police", r[f], re.I) for f in ("FundDescription", "DeptDescription")):
+        return False
+    if kind == "townships" and r["DeptCode"] == "220":
+        return True
     fields = ("FundDescription", "DeptDescription") if by_department else ("FundDescription",)
     return any(FIRE_WORD.search(r[f]) and not NOT_FIRE_WORDS.search(r[f]) for f in fields)
 
@@ -240,8 +246,43 @@ def expected_checkbook_local(agency_county):
             assert re.search(r"\bfire\b", p["Name"], re.I), f"special district that is not a fire district: {link}"
         doc = json.loads(gzip.decompress((d / f"entity_{eid}.json.gz").read_bytes()))
         assert doc["entity"]["name"] == p["Name"] and doc["entity"]["kind"] == kind, f"entity file {eid}"
+        requests = list(doc["requests"])
+        # townships: program 220 lines of the funds not named for fire, and police-named funds and departments
+        # (fetch220); every township whose program 220 values include one not named for fire has that file
+        p220 = [x for x in doc["entity"]["departments"] if x.rsplit(" - ", 1)[-1] == "220" and not FIRE_WORD.search(x)]
+        police_years = set()
+        extra = d / f"program220_{eid}.json.gz"
+        if kind == "townships" and p220:
+            assert extra.exists(), f"{eid} {p['Name']}: program 220 values {p220} but no program220 file"
+        if extra.exists():
+            doc220 = json.loads(gzip.decompress(extra.read_bytes()))
+            e220 = doc220["entity"]
+            assert e220["name"] == p["Name"] and kind == "townships", f"{extra.name}: not this township"
+            years220 = [y for y in e220["years"] if y.isdigit() and int(y) >= FIRST_FY]
+            others = [f for f in e220["funds"] if not FIRE_WORD.search(f)]
+            p220_now = [x for x in e220["departments"] if x.rsplit(" - ", 1)[-1] == "220" and not FIRE_WORD.search(x)]
+            row_filters = [q["filters"] for q in doc220["requests"] if q["kind"] != "police"]
+            if years220 and others:
+                assert {"Fund": others, "Department": p220_now, "Year Of Transaction Date": years220} in row_filters, \
+                    f"{extra.name}: the program 220 slice is not every non-fire fund and program 220 value"
+            want_police = [(c, [x for x in e220[k] if re.search(r"police", x, re.I)])
+                           for c, k in (("Fund", "funds"), ("Department", "departments"))]
+            got_police = [q["filters"] for q in doc220["requests"] if q["kind"] == "police"]
+            assert got_police == [{c: v, "Year Of Transaction Date": years220} for c, v in want_police
+                                  if v and years220], f"{extra.name}: police-named funds or departments not all checked"
+            for q in doc220["requests"]:
+                if q["kind"] == "police":
+                    police_years |= {s["YEAR(Transaction Date)"] for s in tableau_table(q["body"])
+                                     if s["SUM(Amount)"] != "null" and int(s["YEAR(Transaction Date)"]) >= FIRST_FY}
+            requests += [q for q in doc220["requests"] if q["kind"] != "police"]
+            # the link's note says program 220 counts and, when the township runs police, that its mixed Public
+            # Safety lines are left out
+            assert "program 220" in link["note"], f"{p['Name']}: link note does not mention program 220"
+            assert ("mixed Public Safety lines" in link["note"]) == bool(police_years), \
+                f"{p['Name']}: police years {sorted(police_years)}, note {link['note']!r}"
+            POLICE_TOWNSHIPS[p["Name"]] = sorted(police_years)
         by_id, sums = {}, []
-        for req in doc["requests"]:
+        for req in requests:
             rows = tableau_table(req["body"])
             if req["kind"] == "summary":
                 sums.append((req["filters"], rows))
@@ -539,6 +580,8 @@ def main():
         by_source[s] += n
     print(f"{ST}: oh_checkbook_local: months uploaded twice {sorted(DOUBLED)}; dates reloaded {sorted(RELOADED)}; "
           f"broken uploads left out {sorted(BROKEN)}")
+    print(f"{ST}: program 220 townships linked: {len(POLICE_TOWNSHIPS)}, of them running police: "
+          f"{sorted(k for k, v in POLICE_TOWNSHIPS.items() if v)}")
     print(f"{ST}: identical lines dropped: oh_cincinnati {IDENTICAL.pop('oh_cincinnati')}, oh_checkbook_local "
           f"{sum(IDENTICAL.values())} ({sum(1 for v in IDENTICAL.values() if v)} participants)")
     print(f"{ST}: ok ({len(tx)} transaction lines, ${dollars:,.2f}, {len(with_rows)} agencies at tier 1 "

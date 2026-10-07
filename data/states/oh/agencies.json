@@ -9,7 +9,7 @@
    "years": "2021-2026",
    "fiscal_year": "Calendar year (Ohio local governments)",
    "fetched": "2026-10-06",
-   "note": "183 participating fire agencies. Fire districts: whole checkbook. Townships, cities and villages: only lines whose fund or department is named for fire; fire spending they book under general 'Public Safety' lines is not included. Most of the dollars are payroll, pensions and benefits paid through the checkbook. Participation is voluntary and uploads lag by entity (latest payment 2026-09-30); FY2026 partial"
+   "note": "186 participating fire agencies. Fire districts: whole checkbook. Townships: lines whose fund or department is named for fire and lines of program 220 (Public Safety, fire protection in the township chart of accounts), never lines named for police, so where a township also runs police its mixed Public Safety lines are left out. Cities and villages: only lines whose fund or department is named for fire; fire spending they book under general 'Public Safety' lines is not included. Lines identical in every published field are shown once. Most of the dollars are payroll, pensions and benefits paid through the checkbook. Participation is voluntary and uploads lag by entity (latest payment 2026-09-30); FY2026 partial"
   },
   {
    "source": "oh_cincinnati",
@@ -23,10 +23,10 @@
   }
  ],
  "coverage_counts": {
-  "1": 184,
+  "1": 187,
   "2": 0,
   "3": 0,
-  "4": 969
+  "4": 966
  },
  "agencies": [
   {
@@ -2866,11 +2866,12 @@
    "county": "Butler",
    "city": "Liberty TWP",
    "usfa_fdid": "09107",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -3939,11 +3940,12 @@
    "county": "Clermont",
    "city": "Cincinnati",
    "usfa_fdid": "13115",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Mostly volunteer",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
@@ -7159,11 +7161,12 @@
    "county": "Delaware",
    "city": "Delaware",
    "usfa_fdid": "21121",
-   "coverage": 4,
+   "coverage": 1,
    "sources": [
+    "oh_checkbook_local",
     "usfa"
    ],
-   "fy_start": null,
+   "fy_start": "01",
    "usfa": {
     "dept_type": "Career",
     "organization_type": "Local (includes career, combination, and volunteer fire departments and fire districts)",
