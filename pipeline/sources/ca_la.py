@@ -29,11 +29,16 @@ ambulance charges, fire department services and plan checking fees to "PRIVACY-F
 12,802 of 12,808 ambulance-charge refund lines); the few refund payees it names are shown as named.
 common.withhold_person cuts only email and bank account text.
 
-Duplicates and reversals: lines identical in every kept column other than the Socrata row id are kept once.
-Cancelled checks appear as their own negative lines (payment_status CANCELLED) and are kept, so a cancelled
-payment nets to zero (in the 2026-10-06 pull 677 of the 698 cancellation lines carry the same transaction id,
-invoice line and distribution line as the payment they cancel). The record id is transaction id, invoice line
-and distribution line, with "-cancelled" on a cancellation (plus a running number if one still repeats).
+Duplicates and reversals: owner rule of 2026-10-07 (ca_common.drop_identical): lines identical in every
+published column but the source's ids (transaction id, invoice number, invoice line and distribution line,
+purchase order number and line) are kept once: payment date, payee, description, program, fund, account,
+expenditure type and amount. Invoices that bill several identical items on separate lines (for example
+several ambulances or engines at one price) therefore keep one line; normalize prints the count and
+docs/sources/ca.md gives the numbers. Cancelled checks appear as their own negative lines (payment_status
+CANCELLED) and are kept, so a cancelled payment nets to zero (in the 2026-10-06 pull 677 of the 698 cancellation
+lines carry the same transaction id, invoice line and distribution line as the payment they cancel). The record
+id is transaction id, invoice line and distribution line, with "-cancelled" on a cancellation (plus a running
+number if one still repeats).
 """
 import collections
 import decimal
@@ -97,14 +102,10 @@ def normalize():
     assert d, f"{ST}: run fetch first"
     links = {r["source_entity_name"]: r["agency_id"] for r in ca_common.links(SOURCE)}
     raw = read_raw(d)
-    unique = {}
     for r in raw:
         assert r["department_name"] in links and int(r["fiscal_year"]) >= FIRST_FY, f"row outside the filter: {r}"
-        unique.setdefault(line_key(r), r)
-    dropped = len(raw) - len(unique)
     ids, rows = collections.Counter(), []
-    for key in sorted(unique):
-        r = unique[key]
+    for r in sorted(raw, key=line_key):
         if r.get("dollar_amount") in (None, ""):
             continue
         rid = f"{r.get('transaction_id', '')}-{r.get('inv_line', '')}-{r.get('inv_dist_line', '')}"
@@ -124,6 +125,7 @@ def normalize():
             "amount": ca_common.money(r["dollar_amount"]),
             "source_record_id": rid,
         })
+    rows, dropped = ca_common.drop_identical(rows, "transactions.csv.gz")
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
 
     years = sorted({int(r["fiscal_year"]) for r in rows})
@@ -134,13 +136,14 @@ def normalize():
         "fiscal_year": "City of Los Angeles FY, Jul-Jun", "fetched": d.parent.parent.name,
         "note": "Los Angeles Fire Department (department 38) invoice lines; cancelled checks are negative lines; "
                 "the City publishes most refunds of ambulance and fire service charges to PRIVACY-FIRE instead of "
-                "the payee; purchases other City "
+                "the payee; identical lines (same date, payee, description, account and amount) kept once, so "
+                "several identical items on one invoice count once; purchases other City "
                 f"departments make for Fire are not included; FY{years[-1]} partial (payments through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
     withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
-    print(f"{ST}: {SOURCE}: {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {dropped} exact duplicate "
-          f"lines dropped; {withheld} lines with the payee withheld")
+    print(f"{ST}: {SOURCE}: {len(raw)} source lines -> {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; "
+          f"{ca_common.dropped_text(dropped)}; {withheld} lines with the payee withheld")
 
 
 if __name__ == "__main__":

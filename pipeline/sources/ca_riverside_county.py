@@ -25,15 +25,14 @@ county's cooperative agreement), linked to CA-33090 in agency_sources.csv. The r
 operation a second time as "Cal Fire - Riverside County Fire Department" (CA-33555), which is not linked.
 The department's largest payee is the State (CAL FIRE) for contract staffing.
 
-Duplicates and reversals: the source has no line number, and identical lines are ordinary in it: one
-invoice often carries several identical charges to the same account and business unit (one line per phone
-on a wireless bill, per vehicle at a car wash, per seat of a licence). In the 2026-10-06 pull 25,211 lines
-($9.5 million, 0.6% of the dollars) repeat another line exactly, spread evenly over every fiscal period (3-19%
-of each period's lines, no reload burst), and in 2,239 of the 2,524 invoices concerned only some lines repeat,
-which a reloaded batch cannot produce. ca_common.collapse_reloads keeps those; only an invoice whose every line
-repeats the same number of times is treated as loaded twice and kept once (929 lines, $725,008 in that pull).
-Credits and reversals are their own negative lines and are kept. The record id is the invoice id plus a
-running number in the sorted order of the invoice's lines.
+Duplicates and reversals: owner rule of 2026-10-07 (ca_common.drop_identical): lines identical in every
+published column but the source's ids (invoice and payment id) are kept once: date, payee, description,
+business unit, fund, account, expense category and amount. The source has no line number, and identical lines
+are ordinary in it (one line per phone on a wireless bill, per vehicle at a car wash, per seat of a licence,
+several items at one price), so the rule also drops repeat charges that were probably real (normalize prints
+the count; docs/sources/ca.md gives the numbers). Credits and reversals are their own negative lines and are
+kept. The record id is the invoice id plus a running number in the sorted order of the invoice's lines (before
+identical lines are dropped).
 """
 import collections
 import decimal
@@ -93,10 +92,8 @@ def normalize():
     raw = read_raw(d)
     for r in raw:
         assert r["department"] in links and int(r["fiscal_year"]) >= FIRST_FY and r.get("vendor_name"), r
-    lines, dropped, repeats = ca_common.collapse_reloads([line_key(r) for r in raw],
-                                                         lambda k: k[COLUMNS.index("invoice_id")])
     seq, rows = collections.Counter(), []
-    for key in lines:
+    for key in sorted(line_key(r) for r in raw):
         r = dict(zip(COLUMNS, key))
         base = r.get("invoice_id") or r.get("payment_id") or "noinvoice"
         seq[base] += 1
@@ -110,6 +107,7 @@ def normalize():
             "amount": ca_common.money(r["amount"]),
             "source_record_id": f"{base}-{seq[base]}",
         })
+    rows, dropped = ca_common.drop_identical(rows, "transactions.csv.gz")
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
 
     years = sorted({int(r["fiscal_year"]) for r in rows})
@@ -120,13 +118,13 @@ def normalize():
         "fiscal_year": "County of Riverside FY, Jul-Jun", "fetched": d.parent.parent.name,
         "note": "County Fire Department (department Fire Protection) accounts-payable lines with a vendor; payroll, "
                 "journal entries and internal charges are not included; the largest payee is the State (CAL FIRE) "
-                f"for contract staffing; FY{years[-1]} partial (lines through {last})"})
+                "for contract staffing; identical lines (same date, payee, description, account and amount) kept "
+                f"once; FY{years[-1]} partial (lines through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
     withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
-    print(f"{ST}: {SOURCE}: {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {dropped} "
-          f"lines dropped as reloaded invoices; {repeats} identical lines kept as separate charges; {withheld} lines "
-          "with the payee withheld")
+    print(f"{ST}: {SOURCE}: {len(raw)} source lines -> {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; "
+          f"{ca_common.dropped_text(dropped)}; {withheld} lines with the payee withheld")
 
 
 if __name__ == "__main__":

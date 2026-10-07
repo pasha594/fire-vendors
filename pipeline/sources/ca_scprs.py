@@ -34,9 +34,12 @@ Amounts: "Total Price" as published ("$1,234.56", negatives in parentheses). The
 purchase date, else the creation date, when it falls between 2000 and the end of the fiscal year (a few
 purchase dates are typos such as 1912 or 2511); otherwise empty.
 
-Duplicates and reversals: no line number, so ca_common.collapse_reloads applies: a PO whose every line repeats
-the same number of times is kept once (27 POs in the 2026-10-06 file, for example a $952,295 Nomex line listed
-twice as the only line of its PO); identical lines inside a larger PO are kept. Negative lines are kept.
+Duplicates and reversals: owner rule of 2026-10-07 (ca_common.drop_identical) on the item lines: lines
+identical in every published column but the source's ids (purchase order and requisition number) are kept once:
+date, supplier, product type, description, quantity, unit price and amount; the transaction copy of a dropped
+item line is dropped with it. There is no line number, so identical lines inside one PO (one line per circuit
+on a network maintenance order, several identical licences) and repeat orders of the same item on the same day
+count once; normalize prints the count and docs/sources/ca.md gives the numbers. Negative lines are kept.
 """
 import collections
 import csv
@@ -130,9 +133,8 @@ def normalize():
     c = {name: i for i, name in enumerate(header)}
     assert all(r[c["Department Name"]] == DEPARTMENT for r in raw)
     po = lambda r: (r[c["Purchase Order Number"]], r[c["Fiscal Year"]])
-    lines, dropped, repeats = ca_common.collapse_reloads(raw, po)
     seq, items, txns, zero = collections.Counter(), [], [], 0
-    for r in lines:
+    for r in sorted(raw):
         fy = r[c["Fiscal Year"]]
         assert re.fullmatch(r"20\d\d-20\d\d", fy), fy
         number, year = po(r)
@@ -155,6 +157,9 @@ def normalize():
                      "account": " / ".join(x for x in [r[c["Acquisition Type"]], r[c["Acquisition Method"]],
                                                        r[c["Sub-Acquisition Method"]]] if x),
                      "category_published": r[c["Segment Title"]], "amount": amount, "source_record_id": rid})
+    items, dropped = ca_common.drop_identical(items, "line_items.csv.gz")
+    kept = {r["source_record_id"] for r in items}
+    txns = [r for r in txns if r["source_record_id"] in kept]
     common.upsert_rows(ST, "line_items.csv.gz", SOURCE, items)
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, txns)
 
@@ -165,11 +170,12 @@ def normalize():
         "fetched": d.parent.parent.name,
         "note": "CAL FIRE (state fire agency) purchase order lines with quantity, unit price and UNSPSC commodity; "
                 "FY2012-13 to FY2014-15 only (the State publishes no later bulk extract); purchase order amounts, "
-                "not payments; no brand field"})
+                "not payments; no brand field; identical lines (same date, supplier, item, quantity, unit price and "
+                "amount) kept once"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in items)
-    print(f"{ST}: {SOURCE}: {len(items)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {dropped} lines dropped as "
-          f"reloaded POs; {repeats} identical lines kept as separate PO lines; {zero} $0 lines left out")
+    print(f"{ST}: {SOURCE}: {len(raw)} source lines -> {len(items)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; "
+          f"{ca_common.dropped_text(dropped)}; {zero} $0 lines left out")
 
 
 if __name__ == "__main__":

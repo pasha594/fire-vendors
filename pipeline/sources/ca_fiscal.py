@@ -39,9 +39,15 @@ and distribution numbers), payee, account, fund, program and accounting date, wh
 field but the line number (about 142,000 rows a year). source_record_id is the voucher plus a running number
 in the sorted order of its rows. Rows that sum to $0.00 are dropped.
 
-Duplicates and reversals: lines identical in every column (same document id, line and distribution, amount
-and date) are kept once (22 in FY2023-24). Lines that repeat a document id with a different date or amount are
-later postings to the same line (corrections, reversals) and are kept, as negative amounts where published so.
+Duplicates and reversals: source lines identical in every column (same document id, line and distribution,
+amount and date) are kept once (22 in FY2023-24) before lines are summed. Then the owner rule of 2026-10-07
+(ca_common.drop_identical): summed rows identical in every published column but the voucher number are kept
+once: accounting date, payee, program, sub-program, fund, account, account category and amount. Open FI$Cal has
+no description field, so vouchers of one amount paid to one payee on one day from one account count once
+(several vehicles or aircraft bought at one price, cooperative fire protection installments to a county, and
+employee reimbursements paid to CONFIDENTIAL); normalize prints the count and docs/sources/ca.md gives the
+numbers. Lines that repeat a document id with a different date or amount are later postings to the same line
+(corrections, reversals) and are kept, as negative amounts where published so.
 """
 import collections
 import csv
@@ -154,6 +160,7 @@ def normalize():
             "category_published": f"{acat}: {adesc}", "amount": str(amount),
             "source_record_id": f"{vch}/{seq[vch]}",
         })
+    rows, identical = ca_common.drop_identical(rows, "transactions.csv.gz")
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
 
     years = sorted({int(r["fiscal_year"]) for r in rows})
@@ -165,13 +172,15 @@ def normalize():
         "note": "CAL FIRE (state fire agency, business unit 3540), whole department: fire protection, State Fire "
                 "Marshal and resource management; lines summed per voucher, payee, account, fund, program and date; "
                 "CalCard purchases appear as payments to US Bank; the State publishes employee travel and training "
-                "reimbursements to CONFIDENTIAL; "
+                "reimbursements to CONFIDENTIAL; no description field, so identical rows (same date, payee, account, "
+                "fund, program and amount) are kept once and equal payments on one day count once; "
                 f"FY{years[-1]} partial (postings through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
     withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
     print(f"{ST}: {SOURCE}: {lines} source lines -> {len(rows)} rows (${total:,.2f}), FY{years[0]}-FY{years[-1]}; "
-          f"{dropped} exact duplicate lines dropped; {zero} rows summing to $0 dropped; {withheld} rows withheld")
+          f"{dropped} exact duplicate source lines dropped; {zero} rows summing to $0 dropped; "
+          f"{ca_common.dropped_text(identical)}; {withheld} rows withheld")
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@
    "years": "2021-2026",
    "fiscal_year": "City of Corona FY, Jul-Jun",
    "fetched": "2026-10-06",
-   "note": "Corona Fire Department (department 30) payment lines, including pension and benefit payments; FY2026 partial (payments through 2026-06-30)"
+   "note": "Corona Fire Department (department 30) payment lines, including pension and benefit payments; identical lines (same date, payee, description, account and amount) kept once; FY2026 partial (payments through 2026-06-30)"
   },
   {
    "source": "ca_fiscal",
@@ -19,7 +19,7 @@
    "years": "2021-2026",
    "fiscal_year": "California state FY, Jul-Jun",
    "fetched": "2026-10-06",
-   "note": "CAL FIRE (state fire agency, business unit 3540), whole department: fire protection, State Fire Marshal and resource management; lines summed per voucher, payee, account, fund, program and date; CalCard purchases appear as payments to US Bank; the State publishes employee travel and training reimbursements to CONFIDENTIAL; FY2026 partial (postings through 2026-06-30)"
+   "note": "CAL FIRE (state fire agency, business unit 3540), whole department: fire protection, State Fire Marshal and resource management; lines summed per voucher, payee, account, fund, program and date; CalCard purchases appear as payments to US Bank; the State publishes employee travel and training reimbursements to CONFIDENTIAL; no description field, so identical rows (same date, payee, account, fund, program and amount) are kept once and equal payments on one day count once; FY2026 partial (postings through 2026-06-30)"
   },
   {
    "source": "ca_la",
@@ -29,7 +29,7 @@
    "years": "2021-2027",
    "fiscal_year": "City of Los Angeles FY, Jul-Jun",
    "fetched": "2026-10-06",
-   "note": "Los Angeles Fire Department (department 38) invoice lines; cancelled checks are negative lines; the City publishes most refunds of ambulance and fire service charges to PRIVACY-FIRE instead of the payee; purchases other City departments make for Fire are not included; FY2027 partial (payments through 2026-09-09)"
+   "note": "Los Angeles Fire Department (department 38) invoice lines; cancelled checks are negative lines; the City publishes most refunds of ambulance and fire service charges to PRIVACY-FIRE instead of the payee; identical lines (same date, payee, description, account and amount) kept once, so several identical items on one invoice count once; purchases other City departments make for Fire are not included; FY2027 partial (payments through 2026-09-09)"
   },
   {
    "source": "ca_moreno_valley",
@@ -39,7 +39,7 @@
    "years": "2021-2026",
    "fiscal_year": "City of Moreno Valley FY, Jul-Jun",
    "fetched": "2026-10-06",
-   "note": "Moreno Valley Fire Department (departments Fire Operations, Fire Prevention and Fire - Office of Emergency Mgmt) invoice lines; most dollars are the City's contract payments to the County of Riverside for fire staffing (CAL FIRE operated); purchases other City departments make for Fire are not included; FY2026 partial (payments through 2026-06-24)"
+   "note": "Moreno Valley Fire Department (departments Fire Operations, Fire Prevention and Fire - Office of Emergency Mgmt) invoice lines; most dollars are the City's contract payments to the County of Riverside for fire staffing (CAL FIRE operated); identical lines (same date, payee, description, account and amount) kept once; purchases other City departments make for Fire are not included; FY2026 partial (payments through 2026-06-24)"
   },
   {
    "source": "ca_riverside_county",
@@ -49,7 +49,7 @@
    "years": "2021-2027",
    "fiscal_year": "County of Riverside FY, Jul-Jun",
    "fetched": "2026-10-06",
-   "note": "County Fire Department (department Fire Protection) accounts-payable lines with a vendor; payroll, journal entries and internal charges are not included; the largest payee is the State (CAL FIRE) for contract staffing; FY2027 partial (lines through 2026-08-26)"
+   "note": "County Fire Department (department Fire Protection) accounts-payable lines with a vendor; payroll, journal entries and internal charges are not included; the largest payee is the State (CAL FIRE) for contract staffing; identical lines (same date, payee, description, account and amount) kept once; FY2027 partial (lines through 2026-08-26)"
   },
   {
    "source": "ca_sco_cities",
@@ -79,7 +79,7 @@
    "years": "2013-2015",
    "fiscal_year": "California state FY, Jul-Jun",
    "fetched": "2026-10-06",
-   "note": "CAL FIRE (state fire agency) purchase order lines with quantity, unit price and UNSPSC commodity; FY2012-13 to FY2014-15 only (the State publishes no later bulk extract); purchase order amounts, not payments; no brand field"
+   "note": "CAL FIRE (state fire agency) purchase order lines with quantity, unit price and UNSPSC commodity; FY2012-13 to FY2014-15 only (the State publishes no later bulk extract); purchase order amounts, not payments; no brand field; identical lines (same date, supplier, item, quantity, unit price and amount) kept once"
   },
   {
    "source": "ca_sf",
@@ -89,7 +89,7 @@
    "years": "2021-2027",
    "fiscal_year": "City and County of San Francisco FY, Jul-Jun",
    "fetched": "2026-10-06",
-   "note": "Fire Department (FIR) voucher lines, amounts paid; the Controller removes payments to employees, jurors, witnesses, refunds, judgments and claims before publishing; purchases other departments make for Fire are not included; FY2027 partial (data loaded 2026-10-05)"
+   "note": "Fire Department (FIR) voucher lines, amounts paid; the Controller removes payments to employees, jurors, witnesses, refunds, judgments and claims before publishing; no payment date, so identical lines (same fiscal year, payee, contract, account and amount) are kept once and repeat payments of one amount in a year count once; purchases other departments make for Fire are not included; FY2027 partial (data loaded 2026-10-05)"
   }
  ],
  "coverage_counts": {

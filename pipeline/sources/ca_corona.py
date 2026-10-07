@@ -22,13 +22,13 @@ Attribution: department code 30 (FIRE), linked to CA-33025 (Corona Fire Departme
 Payees: shown as published (owner decision of 2026-10-06), private persons included (pension, benefit, refund
 and reimbursement payments name the person paid); common.withhold_person cuts only email and bank account text.
 
-Duplicates and reversals: the source has no line number, and identical lines are ordinary in it (one copier
-invoice bills several machines at the same price; a hotel folio bills several rooms at the same rate). In the
-2026-10-06 pull 944 lines ($391,008) repeat another line exactly; in 239 of the 250 invoices concerned only
-some lines repeat, which a reloaded batch cannot produce. ca_common.collapse_reloads keeps those; only a
-payment-invoice whose every line repeats the same number of times is treated as loaded twice and kept once.
-Negative lines (voids, credits) are kept. The record id is payment id, invoice id and a running number in the
-sorted order of the invoice's lines.
+Duplicates and reversals: owner rule of 2026-10-07 (ca_common.drop_identical): lines identical in every
+published column but the source's ids (payment and invoice id) are kept once: date, payee, description,
+department activity, fund, expense category and amount. The source has no line number, and identical lines are
+ordinary in it (one copier invoice bills several machines at the same price; a hotel folio bills several rooms
+at the same rate), so the rule also drops repeat charges that were probably real (normalize prints the count;
+docs/sources/ca.md gives the numbers). Negative lines (voids, credits) are kept. The record id is payment id,
+invoice id and a running number in the sorted order of the invoice's lines (before identical lines are dropped).
 """
 import collections
 import decimal
@@ -83,10 +83,8 @@ def normalize():
     raw = read_raw(d)
     for r in raw:
         assert r["department_code"] in links and int(r["fiscal_year"]) >= FIRST_FY, f"row outside the filter: {r}"
-    lines, dropped, repeats = ca_common.collapse_reloads(
-        [line_key(r) for r in raw], lambda k: (k[COLUMNS.index("payment_id")], k[COLUMNS.index("invoice_id")]))
     seq, rows = collections.Counter(), []
-    for key in lines:
+    for key in sorted(line_key(r) for r in raw):
         r = dict(zip(COLUMNS, key))
         base = f"{r.get('payment_id', '')}-{r.get('invoice_id', '')}"
         seq[base] += 1
@@ -100,6 +98,7 @@ def normalize():
             "amount": ca_common.money(r["amount"]),
             "source_record_id": f"{base}-{seq[base]}",
         })
+    rows, dropped = ca_common.drop_identical(rows, "transactions.csv.gz")
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
 
     years = sorted({int(r["fiscal_year"]) for r in rows})
@@ -109,13 +108,13 @@ def normalize():
         "url": f"{DOMAIN}/d/{DATASET}", "years": f"{years[0]}-{years[-1]}",
         "fiscal_year": "City of Corona FY, Jul-Jun", "fetched": d.parent.parent.name,
         "note": "Corona Fire Department (department 30) payment lines, including pension and benefit payments; "
+                "identical lines (same date, payee, description, account and amount) kept once; "
                 f"FY{years[-1]} partial (payments through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
     withheld = sum(r["payee_name"] == "Payee name withheld" for r in rows)
-    print(f"{ST}: {SOURCE}: {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {dropped} "
-          f"lines dropped as reloaded invoices; {repeats} identical lines kept as separate charges; {withheld} lines "
-          "with the payee withheld")
+    print(f"{ST}: {SOURCE}: {len(raw)} source lines -> {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; "
+          f"{ca_common.dropped_text(dropped)}; {withheld} lines with the payee withheld")
 
 
 if __name__ == "__main__":

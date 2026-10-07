@@ -32,11 +32,11 @@ spending booked to other departments (Fleet & Facilities, Technology Services) i
 Payees: shown as published (owner decision of 2026-10-06); common.withhold_person cuts only email and bank
 account text.
 
-Duplicates and reversals: the line is identified by payment id, invoice id, invoice line and distribution
-line. Lines identical in every published column are kept once; lines that share the identifier but differ in
-another column are kept (normalize reports how many). Voids and credits are their own negative lines and are
-kept. The record id is payment id, invoice id, invoice line and distribution line (plus a running number if
-one still repeats).
+Duplicates and reversals: owner rule of 2026-10-07 (ca_common.drop_identical): lines identical in every
+published column but the source's ids (payment id, invoice id, invoice line and distribution line) are kept
+once: payment date, payee, description, department, program, fund, expense category and amount (normalize prints
+the count). Voids and credits are their own negative lines and are kept. The record id is payment id, invoice
+id, invoice line and distribution line (plus a running number if one still repeats).
 """
 import collections
 import decimal
@@ -99,14 +99,10 @@ def normalize():
     links = {r["source_entity_name"]: r["agency_id"] for r in ca_common.links(SOURCE)}
     assert set(links) == set(DEPARTMENTS), "agency_sources.csv rows must name each Fire department"
     raw = read_raw(d)
-    unique = {}
     for r in raw:
         assert r["department"] in links and int(r["fiscal_year"]) >= FIRST_FY, f"row outside the filter: {r}"
-        unique.setdefault(line_key(r), r)
-    dropped = len(raw) - len(unique)
     ids, rows = collections.Counter(), []
-    for key in sorted(unique):
-        r = unique[key]
+    for r in sorted(raw, key=line_key):
         rid = line_id(r)
         ids[rid] += 1
         if ids[rid] > 1:
@@ -121,6 +117,7 @@ def normalize():
             "amount": ca_common.money(r.get("amount")),
             "source_record_id": rid,
         })
+    rows, dropped = ca_common.drop_identical(rows, "transactions.csv.gz")
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
 
     years = sorted({int(r["fiscal_year"]) for r in rows})
@@ -131,13 +128,14 @@ def normalize():
         "fiscal_year": "City of Moreno Valley FY, Jul-Jun", "fetched": d.parent.parent.name,
         "note": "Moreno Valley Fire Department (departments Fire Operations, Fire Prevention and Fire - Office of "
                 "Emergency Mgmt) invoice lines; most dollars are the City's contract payments to the County of "
-                "Riverside for fire staffing (CAL FIRE operated); purchases other City departments make for Fire are "
+                "Riverside for fire staffing (CAL FIRE operated); identical lines (same date, payee, description, "
+                "account and amount) kept once; purchases other City departments make for Fire are "
                 f"not included; FY{years[-1]} partial (payments through {last})"})
     common.assemble_agencies(ST)
     total = sum(decimal.Decimal(r["amount"]) for r in rows)
     repeated = sum(n - 1 for n in ids.values() if n > 1)
-    print(f"{ST}: {SOURCE}: {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; {dropped} exact duplicate "
-          f"lines dropped; {repeated} lines share an identifier with another line but differ in another column")
+    print(f"{ST}: {SOURCE}: {len(raw)} source lines -> {len(rows)} lines (${total:,.2f}), FY{years[0]}-FY{years[-1]}; "
+          f"{ca_common.dropped_text(dropped)}; {repeated} lines share an identifier with another line")
 
 
 if __name__ == "__main__":
