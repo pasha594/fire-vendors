@@ -20,17 +20,26 @@ normalize  data/states/tx/transactions.csv.gz   one row per Fire department paym
 Attribution: department code 83, "Fire", linked to TX-WP801 in agency_sources.csv. Austin-Travis County EMS
 (department 93) and Public Safety & Emergency Management (96) are separate departments and are not linked.
 
-Duplicates and reversals: lines identical in every column except the Socrata row id are kept once. Checks of
-every status are kept (Outstanding = issued, not yet cashed; Escheat = uncashed and sent to the state as
+Duplicates and reversals: owner rule of 2026-10-07 (tx_common.drop_identical): lines identical in every published
+column but the source's ids are kept once: fiscal year, check or EFT issue date, payee, accounting line description
+(or commodity description), account (fund, division, group, object), object category and amount. The source's ids
+are the Socrata row id, the payment document id (rfed_doc_*) with its vendor, commodity and accounting line
+numbers, and the referenced purchase order, delivery order or contract id (rf_doc_*); in the 2026-10-06 pull every
+dropped line differs from the kept one only in those ids (mostly commodity or accounting lines of one payment
+document with the same description and amount), and none is identical in every raw column.
+source_record_id counts every raw line of the document, so a kept line's id does not move when a copy is dropped.
+Checks of every status are kept (Outstanding = issued, not yet cashed; Escheat = uncashed and sent to the state as
 unclaimed property; the City's expense stands either way). Payee names are published as the source publishes
 them, employees and customer (non-vendor) payees included (owner decision, 2026-10-06); common.withhold_person
 only cuts email addresses and bank account text.
 """
 import collections
+import decimal
 import json
 import sys
 
 import common
+import tx_common
 
 ST = "TX"
 SOURCE = "tx_austin"
@@ -70,14 +79,11 @@ def normalize():
     assert len(links) == 1 and links[0]["source_entity_id"] == DEPARTMENT, "agency_sources.csv: one Fire row expected"
     aid = links[0]["agency_id"]
     lines = json.loads(common.read_gz(raw / "fire.json.gz"))
-    seen, rows, per_doc, stats = set(), [], collections.Counter(), collections.Counter()
+    seen, rows, per_doc, exact = set(), [], collections.Counter(), 0
     for r in sorted(lines, key=lambda r: r[":id"]):
         assert str(r["dept_cd"]) == DEPARTMENT
         k = tuple(sorted((f, v) for f, v in r.items() if f != ":id"))
-        if k in seen:
-            stats["duplicate lines dropped"] += 1
-            stats["duplicate dollars dropped"] += float(r["amount"])
-            continue
+        exact += k in seen  # identical in every raw column; drop_identical drops it below (counted for the report)
         seen.add(k)
         doc = "-".join(r.get(f, "") for f in ("rfed_doc_cd", "rfed_doc_dept_cd", "rfed_doc_id"))
         per_doc[doc] += 1
@@ -91,13 +97,17 @@ def normalize():
             "category_published": r.get("ocat_nm", ""), "amount": f"{float(r['amount']):.2f}",
             "source_record_id": f"{doc}:{per_doc[doc]}",
         })
+    n_raw = len(rows)
+    rows, dropped = tx_common.drop_identical(rows)
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
     common.assemble_agencies(ST)
     by_fy = collections.Counter()
     for r in rows:
         by_fy[r["fiscal_year"]] += float(r["amount"])
-    print(f"{ST} {SOURCE}: {len(rows)} lines; " + ", ".join(f"FY{y} ${v:,.0f}" for y, v in sorted(by_fy.items()))
-          + f"; {stats['duplicate lines dropped']} duplicate lines dropped (${stats['duplicate dollars dropped']:,.2f})")
+    total = sum(decimal.Decimal(r["amount"]) for r in rows)
+    print(f"{ST} {SOURCE}: {n_raw} raw lines -> {len(rows)} lines (${total:,.2f}); "
+          + ", ".join(f"FY{y} ${v:,.0f}" for y, v in sorted(by_fy.items()))
+          + f"; {tx_common.dropped_text(dropped)}, of which {exact} identical in every raw column")
 
 
 if __name__ == "__main__":

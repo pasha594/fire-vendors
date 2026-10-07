@@ -19,15 +19,22 @@ normalize  data/states/tx/transactions.csv.gz   one row per DFD payment line
 
 Attribution: department code DFD, "Dallas Fire-Rescue", linked to TX-DH807 in agency_sources.csv.
 
-Duplicates and reversals: lines identical in every column except the Socrata row id are kept once (none in
-the 2026-10-06 pull). Negative lines are kept. Payee names are published as the source publishes them
+Duplicates and reversals: owner rule of 2026-10-07 (tx_common.drop_identical): lines identical in every published
+column but the source's ids are kept once: fiscal year, run date, payee, description (commodity, activity),
+account (fund type, activity, object), object group and amount. The source's ids are the Socrata row id and the
+payment document id (docid); in the 2026-10-06 pull every dropped line differs from the kept one only in docid
+(the same payment to one vendor on one run date under another document), and none is identical in every raw
+column. source_record_id counts every raw line of the document. Negative lines are kept and never equal the
+payment they reverse. Payee names are published as the source publishes them
 (owner decision, 2026-10-06); common.withhold_person only cuts email addresses and bank account text.
 """
 import collections
+import decimal
 import json
 import sys
 
 import common
+import tx_common
 
 ST = "TX"
 SOURCE = "tx_dallas"
@@ -67,13 +74,11 @@ def normalize():
     assert len(links) == 1 and links[0]["source_entity_id"] == DEPARTMENT, "agency_sources.csv: one DFD row expected"
     aid = links[0]["agency_id"]
     lines = json.loads(common.read_gz(raw / "dfd.json.gz"))
-    seen, rows, per_doc, stats = set(), [], collections.Counter(), collections.Counter()
+    seen, rows, per_doc, exact = set(), [], collections.Counter(), 0
     for r in sorted(lines, key=lambda r: r[":id"]):
         assert r["dpt"] == DEPARTMENT
         k = tuple(sorted((f, v) for f, v in r.items() if f != ":id"))
-        if k in seen:
-            stats["duplicate lines dropped"] += 1
-            continue
+        exact += k in seen  # identical in every raw column; drop_identical drops it below (counted for the report)
         seen.add(k)
         per_doc[r["docid"]] += 1
         obj = r.get("object", "")
@@ -85,13 +90,17 @@ def normalize():
             "category_published": r.get("objectgroup", ""), "amount": f"{float(r['chksubtot']):.2f}",
             "source_record_id": f"{r['docid']}:{per_doc[r['docid']]}",
         })
+    n_raw = len(rows)
+    rows, dropped = tx_common.drop_identical(rows)
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, rows)
     common.assemble_agencies(ST)
     by_fy = collections.Counter()
     for r in rows:
         by_fy[r["fiscal_year"]] += float(r["amount"])
-    print(f"{ST} {SOURCE}: {len(rows)} lines; " + ", ".join(f"FY{y} ${v:,.0f}" for y, v in sorted(by_fy.items()))
-          + f"; {stats['duplicate lines dropped']} duplicate lines dropped")
+    total = sum(decimal.Decimal(r["amount"]) for r in rows)
+    print(f"{ST} {SOURCE}: {n_raw} raw lines -> {len(rows)} lines (${total:,.2f}); "
+          + ", ".join(f"FY{y} ${v:,.0f}" for y, v in sorted(by_fy.items()))
+          + f"; {tx_common.dropped_text(dropped)}, of which {exact} identical in every raw column")
 
 
 if __name__ == "__main__":
