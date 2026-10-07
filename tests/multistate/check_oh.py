@@ -14,6 +14,11 @@ csv and json, applies each source's published rule and compares
   months uploaded k times (every group of identical lines a multiple of k) once, a date's lines repeated in a
   later upload (TransactionId jump over 100,000) once, and months whose upload carries batch totals instead of
   line amounts left out;
+- both sources: the owner's rule of 2026-10-07 as corrected the same day: lines equal in every raw column except
+  the columns that only identify the row (Ohio Checkbook: row Id and TransactionId; Cincinnati: none, its
+  trans_id, line and check numbers are content) are kept once, the lowest row Id; void-safe, n identical positive
+  lines keep min(n, distinct reversals + 1), a reversal being a negative line of the same payee and account with
+  the amount negated in the same or next fiscal year;
 - lines and dollars per agency, source and fiscal year with data/states/oh/transactions.csv.gz;
 - every published line, field by field, with its raw line (agency, fiscal year, date, payee, account, amount).
 Also checks: the contract's column names and order; attribution (Cincinnati: every linked code is a fire
@@ -83,6 +88,34 @@ BROKEN = set()  # (participant, month) left out as broken uploads, for the summa
 DOUBLED = set()  # (participant, month) uploaded more than once
 RELOADED = set()  # (participant, date) uploaded again in a later upload
 IDENTICAL = {}  # participant (or source) -> identical lines dropped (owner rule of 2026-10-07)
+VOID_KEPT = collections.defaultdict(lambda: [0, D(0)])  # source -> identical copies kept by the void rule
+KEEP = {}  # (source, raw identity) -> copies the rule keeps
+# owner rule of 2026-10-07 (corrected): raw columns that only identify the row or the load. Ohio Checkbook: the row
+# Id and the TransactionId (numbered by the checkbook in upload order); Cincinnati's raw file has none (trans_id,
+# trans_line_no and check_no are the financial system's document, line and check or EFT numbers: content)
+LOCAL_ROW_IDS = {"Id", "TransactionId"}
+CINCINNATI_ROW_IDS = set()
+
+
+def copies_kept(lines, amount, year, reversal_of):
+    """Owner rule of 2026-10-07 (corrected), written independently of the adapters. lines: raw lines that are
+    identical to each other (every raw column but the row ids equal), grouped as {identity: [lines]}. Every
+    identity is kept once; a positive identity with copies keeps min(copies, reversals + 1), reversals being the
+    distinct negative identities with the same reversal fields, the amount negated, dated in the positive line's
+    fiscal year or the next."""
+    negative = collections.defaultdict(list)
+    for ident, g in lines.items():
+        if amount(g[0]) < 0:
+            negative[reversal_of(g[0])].append((ident, amount(g[0]), year(g[0])))
+    keep = {}
+    for ident, g in lines.items():
+        a, y = amount(g[0]), year(g[0])
+        if a <= 0 or len(g) == 1:
+            keep[ident] = 1
+            continue
+        reversals = {i for i, na, ny in negative[reversal_of(g[0])] if na == -a and ny in (y, y + 1)}
+        keep[ident] = min(len(g), len(reversals) + 1)
+    return keep
 POLICE_TOWNSHIPS = {}  # township with a program220 file -> years with police-named lines (2021 on)
 
 
@@ -156,38 +189,39 @@ def expected_cincinnati():
         by[(r["fiscal_year"], r["dept_code"])][1] += D(r["amount"])
     assert {(c["fiscal_year"], c["dept_code"]): (int(c["n"]), D(c["amount"]).quantize(CENTS)) for c in control} \
         == {k: (n, a.quantize(CENTS)) for k, (n, a) in by.items()}, "raw pages differ from control_totals.json"
-    seen, out, lines, candidates = set(), collections.defaultdict(lambda: [0, D(0)]), {}, []
+    out, lines, candidates = collections.defaultdict(lambda: [0, D(0)]), {}, collections.defaultdict(list)
     for r in raw:
-        key = tuple(r.values())
-        if key in seen:
-            continue
-        seen.add(key)
         if int(r["fiscal_year"]) < FIRST_FY or r["dept_code"] not in links:
             continue
-        candidates.append(r)
-    # owner rule of 2026-10-07: identical lines (every published field equal; the source's trans_id, line number
-    # and check number are not compared) are kept once, the lowest trans_id and line number
-    first = {}
-    for r in sorted(candidates, key=lambda r: (r["trans_id"], int(r["trans_line_no"]))):
-        first.setdefault((r["fiscal_year"], r["record_date"][:10], " ".join(r["vendor_name"].split()), r["dept_desc"],
-                          r["fund_code"], r["fund_desc"], r["exp_acct_cat"], r["exp_acct_cat_desc"],
-                          str(D(r["amount"]).quantize(CENTS))), r)
-    IDENTICAL["oh_cincinnati"] = len(candidates) - len(first)
-    for r in first.values():
-        k = (links[r["dept_code"]], r["fiscal_year"])
-        out[k][0] += 1
-        out[k][1] += D(r["amount"])
-        rid = f"{r['trans_id']}-{r['trans_line_no']}"
+        candidates[tuple((k, v) for k, v in r.items() if k not in CINCINNATI_ROW_IDS)].append(r)
+    # owner rule of 2026-10-07 (corrected): lines equal in every raw column are identical and kept once; positive
+    # copies of a line that was reversed (credit of the same department, fund, account category and vendor) keep
+    # one more than its reversals
+    keep = copies_kept(candidates, lambda r: D(r["amount"]), lambda r: int(r["fiscal_year"]),
+                       lambda r: (r["dept_code"], r["dept_desc"], r["fund_code"], r["fund_desc"], r["exp_acct_cat"],
+                                  r["exp_acct_cat_desc"], r["vendor_name"]))
+    IDENTICAL["oh_cincinnati"] = sum(len(g) - keep[i] for i, g in candidates.items())
+    VOID_KEPT[src][0] += 0  # reported even when nothing is kept
+    for ident, g in candidates.items():
+        KEEP[(src, ident)] = keep[ident]
+        if keep[ident] > 1:
+            VOID_KEPT[src][0] += keep[ident] - 1
+            VOID_KEPT[src][1] += (keep[ident] - 1) * D(g[0]["amount"])
+        rid = f"{g[0]['trans_id']}-{g[0]['trans_line_no']}"
         assert rid not in lines, f"raw record id {rid} is not unique"
-        r = dict(r)
-        r["_want"] = {"agency_id": links[r["dept_code"]], "fiscal_year": r["fiscal_year"],
-                      "posting_date": r["record_date"][:10], "description": "",
-                      "account": f"{r['dept_desc']} / {r['fund_code']} {r['fund_desc']} / "
-                                 f"{r['exp_acct_cat']} {r['exp_acct_cat_desc']}",
-                      "category_published": r["exp_acct_cat_desc"], "payee_name": redacted(r["vendor_name"]),
-                      "amount": str(D(r["amount"]).quantize(CENTS))}
-        r["_payee"] = r["vendor_name"]
-        lines[rid] = r
+        for copy in range(1, keep[ident] + 1):
+            r = dict(g[0])
+            k = (links[r["dept_code"]], r["fiscal_year"])
+            out[k][0] += 1
+            out[k][1] += D(r["amount"])
+            r["_want"] = {"agency_id": links[r["dept_code"]], "fiscal_year": r["fiscal_year"],
+                          "posting_date": r["record_date"][:10], "description": "",
+                          "account": f"{r['dept_desc']} / {r['fund_code']} {r['fund_desc']} / "
+                                     f"{r['exp_acct_cat']} {r['exp_acct_cat_desc']}",
+                          "category_published": r["exp_acct_cat_desc"], "payee_name": redacted(r["vendor_name"]),
+                          "amount": str(D(r["amount"]).quantize(CENTS))}
+            r["_ident"] = ident
+            lines[rid if copy == 1 else f"{rid}#{copy}"] = r
     return out, lines
 
 
@@ -380,16 +414,25 @@ def expected_checkbook_local(agency_county):
         pension = [r for r in kept if re.search(r"pension|disab", r["FundDescription"], re.I)
                    and not (by_department and FIRE_WORD.search(r["DeptDescription"]))]
         assert len(pension) < 0.9 * len(kept), f"{eid} {p['Name']}: fire lines are a pension fund only"
-        # owner rule of 2026-10-07: lines identical in every published field (date, payee as published, fund,
-        # department and object labels, object description, amount) are one line; the lowest row Id is kept
-        first = {}
+        # owner rule of 2026-10-07 (corrected): lines equal in every raw column but the row Id and TransactionId
+        # (payment Type, date, payee, fund, department, object, amount and the dashboard's labels) are identical and
+        # kept once, the lowest row Id; positive copies of a line that was reversed (a negative line of the same
+        # payee, fund, department and object) keep one more than its distinct reversals, the lowest row Ids
+        groups = collections.defaultdict(list)
         for r in sorted((r for r in kept if r["TransDate"][:7] not in broken), key=lambda r: int(r["Id"])):
-            first.setdefault((r["TransDate"][:10], " ".join(r["Payee"].split()) if r["Payee"] != "%null%" else "",
-                              *[(r[d], r[c]) for d, c in (("FundDescription", "FundCode"), ("DeptDescription", "DeptCode"),
-                                                          ("ObjDescription", "ObjCode"))],
-                              str(D(r["Amt"]).quantize(CENTS))), r)
-        IDENTICAL[p["Name"]] = sum(r["TransDate"][:7] not in broken for r in kept) - len(first)
-        for r in first.values():
+            groups[tuple((k, v) for k, v in r.items() if k not in LOCAL_ROW_IDS)].append(r)
+        keep = copies_kept(groups, lambda r: D(r["Amt"]).quantize(CENTS), lambda r: int(r["TransDate"][:4]),
+                           lambda r: tuple(r[c] for c in ("MuniName", "Payee", "FundCode", "FundDescription", "DeptCode",
+                                                          "DeptDescription", "ObjCode", "ObjDescription")))
+        IDENTICAL[p["Name"]] = sum(len(g) - keep[i] for i, g in groups.items())
+        first = []
+        for ident, g in groups.items():
+            KEEP[(src, ident)] = keep[ident]
+            if keep[ident] > 1:
+                VOID_KEPT[src][0] += keep[ident] - 1
+                VOID_KEPT[src][1] += (keep[ident] - 1) * D(g[0]["Amt"]).quantize(CENTS)
+            first += [dict(r, _ident=ident) for r in g[:keep[ident]]]
+        for r in first:
             fy = r["TransDate"][:4]
             amount = D(r["Amt"]).quantize(CENTS)
             k = (link["agency_id"], fy)
@@ -404,7 +447,6 @@ def expected_checkbook_local(agency_county):
                               for d, c in (("FundDescription", "FundCode"), ("DeptDescription", "DeptCode"),
                                            ("ObjDescription", "ObjCode"))) if x),
                           "category_published": "" if r["ObjDescription"] == "%null%" else r["ObjDescription"]}
-            r["_payee"] = "" if r["Payee"] == "%null%" else r["Payee"]
             lines[f"{eid}-{r['Id']}"] = r
     return out, lines
 
@@ -501,12 +543,11 @@ def main():
     assert not dupes, f"duplicate source_record_id: {dupes[:5]}"
     keys = [tuple(r[c] for c in TX_COLUMNS) for r in tx]
     assert keys == sorted(keys), "transactions.csv.gz is not sorted"
-    # owner rule of 2026-10-07 (no exception in Ohio): no two published lines identical in every field but the
-    # record id; payees compared as the source has them, so two withheld payees would not count as identical
-    same = collections.Counter((*[r[c] for c in TX_COLUMNS if c not in ("payee_name", "source_record_id")],
-                                " ".join(raw_lines[(r["source"], r["source_record_id"])]["_payee"].split()))
-                               for r in tx)
-    assert max(same.values()) == 1, f"identical lines published: {[k for k, n in same.items() if n > 1][:3]}"
+    # owner rule of 2026-10-07 (corrected; no exception in Ohio): published lines identical in every raw column but
+    # the row ids appear once, or as often as the void rule keeps them
+    same = collections.Counter((r["source"], raw_lines[(r["source"], r["source_record_id"])]["_ident"]) for r in tx)
+    over = [k for k, n in same.items() if n != KEEP[k]]
+    assert not over, f"identical lines published more often than the rule keeps: {over[:2]}"
 
     # 5. no email address in any published text (payee text with one is withheld)
     for r in tx:
@@ -552,7 +593,8 @@ def main():
     print(f"{ST}: program 220 townships linked: {len(POLICE_TOWNSHIPS)}, of them running police: "
           f"{sorted(k for k, v in POLICE_TOWNSHIPS.items() if v)}")
     print(f"{ST}: identical lines dropped: oh_cincinnati {IDENTICAL.pop('oh_cincinnati')}, oh_checkbook_local "
-          f"{sum(IDENTICAL.values())} ({sum(1 for v in IDENTICAL.values() if v)} participants)")
+          f"{sum(IDENTICAL.values())} ({sum(1 for v in IDENTICAL.values() if v)} participants); identical copies kept "
+          f"by the void rule: " + ", ".join(f"{s} {n} (${a:,.2f})" for s, (n, a) in sorted(VOID_KEPT.items())))
     print(f"{ST}: ok ({len(tx)} transaction lines, ${dollars:,.2f}, {len(with_rows)} agencies at tier 1 "
           f"({', '.join(f'{s}: {n}' for s, n in sorted(by_source.items()))}); config/vendor_map.csv and the rules give "
           f"a real category to {share:.1%} of ${cov['purchasing']:,.0f} purchasing dollars (map "
