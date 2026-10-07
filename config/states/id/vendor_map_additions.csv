@@ -1,5 +1,5 @@
 name_key,vendor,category,confidence,spend,agencies
-,No vendor named,placeholder,high,2254793.55,1
+,No vendor named,placeholder,high,2256323.42,1
 2923 W CESSNA,2923 W Cessna LLC (lessor),facilities,low,309066.00,1
 307 TACTICAL FIRE,307 Tactical Fire,wildland,medium,83250.00,1
 310 DUST CONTROL,310 Dust Control,wildland,low,151206.00,1
@@ -67,7 +67,6 @@ BROWNS LOGGING,Browns Logging,wildland,low,202800.00,1
 BRYCE DELAY,Bryce Delay,wildland,low,55762.01,1
 BULLDOG ON SITE SERVICES,Bulldog On Site Services,facilities,low,192584.79,1
 BUREAU OF INDIAN AFFAIRS,U.S. Bureau of Indian Affairs,government,high,509649.41,1
-BUREAU OF LAND MANAGEMENT,U.S. Bureau of Land Management,government,high,9949785.93,1
 BUREAU OF RISK MANAGEMENT,Idaho Bureau of Risk Management,government,medium,113020.10,1
 BUSCH DISTRIBUTORS,Busch Distributors,general,low,202686.31,1
 C2M2,C2M2,wildland,low,75200.00,1
@@ -206,7 +205,6 @@ GREATER SWAN VALLEY FIRE DEPARTMENT,Greater Swan Valley Fire Department,governme
 GREGORY R HOLT,Gregory R Holt,wildland,low,50999.75,1
 GREY WILDLAND,Grey Wildland,wildland,medium,123000.00,1
 GRUB BOX,The Grub Box,general,medium,67783.40,1
-H AND E EQUIPMENT SERVICES,H & E Equipment Services,general,low,80408.86,1
 H AND J,H&J Inc,general,low,39227.50,1
 HAGERMAN FIRE PROTECTION DISTRICT,Hagerman Fire Protection District,government,medium,1163892.09,1
 HAHN RENTAL CENTER,Hahn Rental Center,general,low,67563.73,1
@@ -247,7 +245,6 @@ JEREMY HESTER,Jeremy Hester,wildland,low,86611.88,1
 JOE HESTER LOGGING,Joe Hester Logging,wildland,low,140348.88,1
 JOHN RINCON,John Rincon,general,low,98939.40,1
 JOHN W LIGHT,John W Light,general,low,93555.00,1
-JOHNSON CONTROLS,Johnson Controls,facilities,high,121328.42,1
 JOSH STEINER,Josh Steiner,wildland,low,53039.60,1
 JR WILDFIRE,JR Wildfire,wildland,medium,98438.72,1
 JUELLA MEYER,Juella Meyer,wildland,low,186527.81,1
@@ -305,8 +302,7 @@ MOORES QUALITY EARTHMOVING,Moores Quality Earthmoving,wildland,low,106600.00,1
 MOSCOW RURAL FIRE DISTRICT,Moscow Rural Fire District,government,medium,68561.75,1
 MOSCOW VOLUNTEER FIRE DEPT,Moscow Volunteer Fire Dept,government,medium,59405.44,1
 MOSQUEDA REFORESTATION,Mosqueda Reforestation,wildland,low,215645.24,1
-MOTION AND FLOW CONTROL PRODUCTS,Motion and Flow Control Products,general,medium,55408.51,1
-MOUNTAIN HOME AUTO RANCH,Mountain Home Auto Ranch,fleet,medium,3505797.39,1
+MOUNTAIN HOME AUTO RANCH,Mountain Home Auto Ranch,fleet,medium,3408419.19,1
 MOUNTAIN VILLAGE RESORT,Mountain Village Resort,training,low,6717.00,1
 MUD LAKE OIL,Mud Lake Oil,fleet,medium,50488.70,1
 MULLAN VOLUNTEER FIRE DEPARTMENT,Mullan Volunteer Fire Department,government,medium,67440.00,1
@@ -322,7 +318,7 @@ NORTH BENCH VOLUNTEER FIRE ASSOCIATION,North Bench Volunteer Fire Association,go
 NORTH CASSIA RURAL FIRE DISTRICT,North Cassia Rural Fire District,government,medium,315234.64,1
 NORTH IDAHO BLUEPRINT,North Idaho Blueprint,general,medium,39309.00,1
 NORTH IDAHO FIRE,North Idaho Fire,wildland,medium,1629442.69,1
-NORTH WEST TRUCKING,North West Trucking,wildland,low,1029308.98,1
+NORTH WEST TRUCKING,North West Trucking,wildland,low,1025782.29,1
 NORTHERN COLUMBIA REFORESTATION,Northern Columbia Reforestation,wildland,low,97952.85,1
 NORTHERN LAKES FIRE PROTECTIVE DISTRICT,Northern Lakes Fire Protective District,government,medium,160215.17,1
 NORTHERN ROCKIES FIRE EQUIPMENT,Northern Rockies Fire Equipment,fire-equipment,medium,51681.90,1
@@ -372,7 +368,6 @@ RAGAN EQUIPMENT,Ragan Equipment,wildland,low,397809.99,1
 RAY DAY JR LOGGING,Ray Day JR Logging,wildland,low,305995.00,1
 REDACTED,Payee redacted by the State,placeholder,high,11689144.31,1
 RICHARDSON TREE CARE,Richardson Tree Care,wildland,low,131644.94,1
-RICOH USA,Ricoh,it,medium,60225.13,1
 RIVERVIEW CONSTRUCTION,Riverview Construction,wildland,low,108982.50,1
 ROCK CREEK RURAL FIRE DISTRICT,Rock Creek Rural Fire District,government,medium,2631370.78,1
 ROCK CREEK WILDFIRE,Rock Creek Wildfire,wildland,medium,124531.00,1
@@ -385,7 +380,6 @@ RULE 62 TRANSPORT,Rule 62 Transport,wildland,low,163441.33,1
 RYAN STATON,Ryan Staton,wildland,low,129297.00,1
 S AND D HUCK,S & D Huck,wildland,low,130205.15,1
 S AND S DISTRIBUTORS,S&S Distributors,general,low,39151.83,1
-SAFETY KLEEN SYSTEMS,Safety-Kleen Systems,fleet,medium,50909.26,1
 SAGLE FIRE DISTRICT,Sagle Fire District,government,medium,1496305.55,1
 SAM OWEN FIRE DISTRICT,Sam Owen Fire District,government,medium,75614.93,1
 SAND HOLLOW FIRE DEISTRICT,Sand Hollow Fire Deistrict,government,medium,58598.88,1
@@ -394,7 +388,7 @@ SAVORY BEE,The Savory Bee,general,low,404997.59,1
 SAYLOR CREEK RANGELAND FIRE PROTECTION A,Saylor Creek Rangeland Fire Protection A,government,medium,53095.60,1
 SCHOLL FIRE AND FUELS MANAGEMENT,Scholl Fire and Fuels Management,wildland,medium,225959.13,1
 SCOTT STETTLER,Scott Stettler,wildland,low,63100.00,1
-SEAN ANDREWS,Sean Andrews,wildland,low,1973490.13,1
+SEAN ANDREWS,Sean Andrews,wildland,low,1941990.13,1
 SGS NORTH WEST,SGS North West,wildland,low,805408.13,1
 SHAMROCK SEPTIC SERVICE,Shamrock Septic Service,facilities,medium,47400.00,1
 SHANE CAMPBELL TRUCKING,Shane Campbell Trucking,wildland,low,281853.47,1
@@ -435,7 +429,7 @@ SUMMIT CONTRACTING,Summit Contracting,wildland,low,80389.00,1
 SUNNYSIDE RURAL FIRE DISTRICT,Sunnyside Rural Fire District,government,medium,65855.28,1
 SUPER 1 FOODS COUER,Super 1 Foods,general,high,51089.51,1
 SUPER 8 GRANGEVILLE,Super 8,training,medium,23699.95,1
-SUPER 8 MOTELS,Super 8,training,medium,36011.55,1
+SUPER 8 MOTELS,Super 8,training,medium,36095.55,1
 SUPERIOR EVENTS,Superior Events,wildland,low,289245.99,1
 SWEDBERG CONTRACTING,Swedberg Contracting,wildland,low,85659.00,1
 TALBOTT ENTERPRISES,Talbott Enterprises,wildland,low,50254.71,1
@@ -460,7 +454,7 @@ TRIPLED LOG INN,Tripled Log Inn,general,low,40098.38,1
 UNDERDOG TIMBER FALLING,Underdog Timber Falling,wildland,medium,57662.62,1
 UNITED STATES DEPT OF INTERIOR,U.S. Department of the Interior,government,high,847020.12,1
 UPPER VALLEY CONTRACTING,Upper Valley Contracting,wildland,low,118196.80,1
-US BANK NATIONAL ASSOCIATION PCARD,U.S. Bank,finance,high,3474467.59,1
+US BANK NATIONAL ASSOCIATION PCARD,U.S. Bank,finance,high,3474329.86,1
 US DEPARTMENT OF INTERIOR,U.S. Department of the Interior,government,high,105452.58,1
 US DEPT OF AGRICULTURE,U.S. Department of Agriculture (Forest Service),government,high,46704948.64,1
 VERIZON WIRELESS SERVICES,Verizon,telecom,high,308166.72,1

@@ -42,24 +42,26 @@ normalize  data/states/id/transactions.csv.gz   one row per line in a payment ca
 Attribution: all lines go to the registry's "Idaho Department of Lands Fire Department" (no FDID) through
 config/states/id/agency_sources.csv. IDL is a state fire agency (PRD open question: main table or separate view).
 
-Duplicates and reversals: the source holds reloaded copies. (a) The same line (same unique_id, every column equal)
-loaded again by a later extract: 108 lines, $4.6 million, from the extracts of 2024-12-07 and 2025-11-15 (for
-example a $3,451,591 payment to the US Department of Agriculture twice). (b) Purchase-card lines loaded again under
-new unique_ids in later loads, with no reversal: about 460 lines, $0.27 million, mostly the loads of 2024-08-21 and
-2024-08-22, which consist almost entirely of such copies. (c) Blocks of purchase-card lines inserted twice inside
-one load batch: 116 lines, $75,206, in 8 batches (2024-08-19 to 2025-07-07); the copies' unique_ids run in a
-parallel series at a near-constant offset (all 26 copies of 2025-07-07 at +14,313 or +14,764) and include the same
-airline ticket and marketplace order numbers twice. Rule (reloads): among lines identical in every column but
-unique_id, date_of_load and zz_extract_date, keep the copies of the earliest load batch (date_of_load,
-zz_extract_date) and drop copies from later batches (567 lines, $4.88 million); inside that batch keep only the
-lowest unique_id when the batch inserts BLOCK_COPIES (4) or more such copies (116 lines). Identical lines inside a
-batch with fewer copies are kept as possible repeat purchases (26 lines, $138,820, among them two $97,378.20
-vehicles from one dealer on one day). In all 683 lines ($4.96 million) are dropped. fetch asserts each year's paging
-matches the row count, normalize that no line appears twice in the raw files. unique_id can also be reused by a
-different line (FY2021: a transfer and its reversal), so source_record_id is unique_id, or unique_id-<n> when the id
-repeats (record_ids). Negative lines (credits, reversals, refunds) are kept, so amounts are net. Lines in
-EXCLUDED_CATEGORIES are accounting entries, not payments (encumbrances, accrual adjustments, transfers), and are
-dropped with their totals printed.
+Duplicates and reversals: owner rule of 2026-10-07, drop identical lines and identical (doubled) days (function
+identical). Lines identical in every column but unique_id, date_of_load and zz_extract_date (the source's own id and
+load stamps) are kept once: the copy of the earliest load batch with the lowest unique_id. Applied before the
+payment-category filter, it drops 709 lines ($5,094,771.54, 559 sets) from the raw files of 2026-10-06: (a) copies
+loaded again by a later batch, 567 lines, $4,880,745.10: the same line (same unique_id) loaded again by a later
+extract (108 lines, $4.6 million, extracts of 2024-12-07 and 2025-11-15, for example a $3,451,591 payment to the US
+Department of Agriculture twice), and purchase-card lines loaded again under new unique_ids, mostly in the loads of
+2024-08-21 and 2024-08-22, with no reversal; (b) copies inside one load batch, 142 lines, $214,026.44: blocks of
+purchase-card lines inserted twice (116 lines in 8 batches from 2024-08-19 to 2025-07-07, unique_ids in a parallel
+series at a near-constant offset, the same airline ticket and marketplace order numbers twice) and 26 lines
+($138,820.11) in smaller sets that were kept as possible repeat purchases before the owner's rule (among them two
+$97,378.20 vehicles from one dealer on one day). On these files, grouping on the normalized columns (agency, fiscal
+year, posting date, payee as published, description, account, published category, amount) gives the same sets;
+normalize then drops any normalized row equal to an earlier one in every column but source_record_id (none now), so
+the rule holds on the published fields too. fetch asserts each year's paging matches the row count, normalize that
+no line appears twice in the raw files. unique_id can also be reused by a different line (FY2021: a transfer and its
+reversal), so source_record_id is unique_id, or unique_id-<n> when the id repeats (record_ids). Negative lines
+(credits, reversals, refunds) are kept and are never identical to the payment they reverse, so amounts are net.
+Lines in EXCLUDED_CATEGORIES are accounting entries, not payments (encumbrances, accrual adjustments, transfers),
+and are dropped with their totals printed.
 
 Payees: shown as published, private persons included (owner decision of 2026-10-06): every vendor goes through
 common.withhold_person, which only replaces payee text matching config/payee_name_redactions.csv (e-mail addresses,
@@ -81,7 +83,6 @@ REPORT = "2b17eed6-3282-4416-ab38-656795512745"
 CONFIG = "9711ec09-4057-47c6-8ebc-1f27ee4261d3"   # saved view "Expenditure Transactions"
 FUNCTION = "320-07H"
 FIRST_FY = 2021
-BLOCK_COPIES = 4  # same-batch identical copies that make a reloaded block (see reloads)
 PAGE = 250
 AGENCY_ID = "ID-X-IDAHO-DEPARTMENT-OF-LANDS-FIRE-DEPARTMENT-COEUR-D-ALENE"
 PAYMENT_CATEGORIES = {"Operating", "Capital Expenditures", "Trustee & Benefit Payments", "FED PAYMENTS TO SUBGRANTES",
@@ -188,30 +189,34 @@ def lines(raw):
     return out
 
 
-def reloads(rows):
-    """Indexes of reloaded copies among lines identical in every column but unique_id and the load dates:
-    (1) copies from a later load batch (date_of_load, zz_extract_date) than the first copy are dropped;
-    (2) copies inside one batch are dropped, keeping the lowest unique_id, when that batch inserts BLOCK_COPIES or
-    more lines twice (a block reloaded within one load: the copies' unique_ids run in a parallel series at a
-    near-constant offset, and include airline tickets and marketplace orders with their own order numbers);
-    identical lines inside a batch with fewer such copies are kept as possible repeat purchases."""
+def identical(rows):
+    """Owner decision of 2026-10-07 (dedup rule): drop identical lines and identical (doubled) days.
+
+    Two lines are identical when every column but the source's own ids and load stamps (unique_id, date_of_load,
+    zz_extract_date) is equal: fund, function, account category, account, vendor, fiscal year, effective date,
+    amount and the rest. On the raw files of 2026-10-06 these are the same sets as the lines whose normalized rows
+    are equal in every column but source_record_id (agency, fiscal year, posting date, payee as published,
+    description, account, published category, amount); normalize repeats the rule on the normalized rows, which
+    drops nothing more today. Of each set, the copy of the earliest load batch
+    (date_of_load, zz_extract_date) with the lowest unique_id is kept and the rest dropped, whether a copy came in a
+    later batch (a reload) or in the same batch (a doubled block, or what could be a repeat purchase: the rule no
+    longer tells them apart). A negative line is never identical to the payment it reverses (the amount differs).
+    Returns {index of a dropped line: "later batch" or "same batch"} and the number of sets with a dropped line."""
     batch = lambda i: (rows[i]["date_of_load"] or "", rows[i]["zz_extract_date"] or "")
     groups = collections.defaultdict(list)
     for i, r in enumerate(rows):
         groups[tuple((k, v) for k, v in sorted(r.items())
                      if k not in ("unique_id", "date_of_load", "zz_extract_date"))].append(i)
-    drop, same_batch = set(), collections.defaultdict(list)  # batch -> [extra copies]
+    drop, sets = {}, 0
     for idx in groups.values():
         if len(idx) < 2:
             continue
-        first = min(batch(i) for i in idx)
-        drop |= {i for i in idx if batch(i) != first}
-        kept = sorted((i for i in idx if batch(i) == first), key=lambda i: int(rows[i]["unique_id"]))
-        same_batch[first] += kept[1:]
-    for b, extra in same_batch.items():
-        if len(extra) >= BLOCK_COPIES:
-            drop |= set(extra)
-    return drop
+        sets += 1
+        keep = min(idx, key=lambda i: (batch(i), int(rows[i]["unique_id"])))
+        for i in idx:
+            if i != keep:
+                drop[i] = "later batch" if batch(i) != batch(keep) else "same batch"
+    return drop, sets
 
 
 def record_ids(rows):
@@ -237,8 +242,11 @@ def normalize():
     rows_in = lines(raw)
     exact = collections.Counter(json.dumps(r, sort_keys=True) for r in rows_in)
     assert max(exact.values()) == 1, "a line appears twice in the raw files"
-    drop = reloads(rows_in)
-    print(f"  reloaded copies dropped: {len(drop)} lines, ${sum(rows_in[i]['amount'] or 0 for i in drop):,.0f}")
+    drop, sets = identical(rows_in)
+    cents = lambda idx: sum(round((rows_in[i]["amount"] or 0) * 100) for i in idx)
+    print(f"  identical lines dropped (owner rule of 2026-10-07): {len(drop)} lines, ${cents(drop) / 100:,.2f}, "
+          f"{sets} sets; " + ", ".join(f"{k} {len(v)} lines ${cents(v) / 100:,.2f}" for k, v in sorted(
+              {k: [i for i, w in drop.items() if w == k] for k in set(drop.values())}.items())))
     rows_in = [r for i, r in enumerate(rows_in) if i not in drop]
     record_id = record_ids(rows_in)
     excluded, out = collections.defaultdict(lambda: [0, 0.0]), []
@@ -259,6 +267,16 @@ def normalize():
             "category_published": r["summary_account"] or "",
             "amount": f"{r['amount']:.2f}", "source_record_id": record_id[i],
         })
+    fields = [f for f in common.TABLES["transactions.csv.gz"] if f not in ("source", "source_record_id")]
+    seen, kept = set(), []
+    for r in out:  # the owner's rule on the published fields: none left after identical() on these raw files
+        key = tuple(r[f] for f in fields)
+        if key not in seen:
+            seen.add(key)
+            kept.append(r)
+    if len(kept) < len(out):
+        print(f"  identical normalized rows dropped: {len(out) - len(kept)}")
+    out = kept
     years = sorted({r["fiscal_year"] for r in out})
     write_source_row(f"{years[0]}-{years[-1]}", raw.parent.parent.name)
     common.upsert_rows(ST, "transactions.csv.gz", SOURCE, out)

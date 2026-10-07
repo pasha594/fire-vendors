@@ -11,10 +11,11 @@ own filters and duplicate rules; shared with the adapters are only the hand-revi
     fiscal year equal to the district's filed actual expenditures; every county copy of a multi-county district
     equal; no row for a null or zero actual
   - id_state: fetched lines per year equal the control file's non-Personnel line count, and raw dollars per year and
-    account category equal the control file's server-side sums; reloaded copies removed (a line identical but for
-    unique_id and load dates arriving in a later load batch, or inside one batch that inserts 4 or more lines
-    twice); then, line by line, every kept payment line is in transactions.csv.gz under its own unique_id (or
-    unique_id-<n>) with the same fiscal year, date, amount, account title and payee
+    account category equal the control file's server-side sums; identical lines dropped (owner rule of 2026-10-07:
+    lines equal in every column but unique_id and the load dates are kept once, the earliest load batch's lowest
+    unique_id, whether the copy came in a later batch or the same one); then, line by line, every kept payment
+    line is in transactions.csv.gz under its own unique_id (or unique_id-<n>) with the same fiscal year, date,
+    amount, account title and payee; and no two id_state rows are equal in every column but source_record_id
   - payee names as published (owner decision 2026-10-06): payee_name is the raw vendor with whitespace collapsed,
     or "Payee name withheld" exactly when it matches config/payee_name_redactions.csv; no column holds text those
     patterns match; no "Individual (name withheld)" left from the old rule
@@ -44,7 +45,6 @@ ST = "ID"
 IDL = "ID-X-IDAHO-DEPARTMENT-OF-LANDS-FIRE-DEPARTMENT-COEUR-D-ALENE"
 NOT_PAYMENTS = {"Encumbrances", "GAAP Expenses", "Loss", "Operating Transfers Out", "Other Financing Uses", "Personnel"}
 LOAD_COLS = ("unique_id", "date_of_load", "zz_extract_date")
-BLOCK = 4  # identical copies inside one load batch that make it a reloaded block
 
 
 def cents(x):
@@ -136,25 +136,18 @@ def raw_state_lines():
 
 
 def kept_state_lines(lines):
-    """Lines left after removing reloaded copies (rule in the module docstring)."""
+    """Lines left after dropping identical lines (owner rule of 2026-10-07, see the module docstring): one line per
+    set equal in every column but LOAD_COLS, the earliest load batch's lowest unique_id."""
     content = lambda r: json.dumps({k: v for k, v in r.items() if k not in LOAD_COLS}, sort_keys=True)
-    batch = lambda r: (r["date_of_load"] or "", r["zz_extract_date"] or "")
-    copies = collections.defaultdict(list)
+    order = lambda r: (r["date_of_load"] or "", r["zz_extract_date"] or "", int(r["unique_id"]))
+    first = {}
     for r in lines:
-        copies[content(r)].append(r)
-    keep, block_extra = [], collections.defaultdict(list)
-    for group in copies.values():
-        first = min(batch(r) for r in group)
-        same = sorted((r for r in group if batch(r) == first), key=lambda r: int(r["unique_id"]))
-        keep.append(same[0])
-        if len(same) > 1:
-            block_extra[first].append(same[1:])
-    for b, extra in block_extra.items():
-        if sum(len(e) for e in extra) < BLOCK:
-            for e in extra:
-                keep += e
+        c = content(r)
+        if c not in first or order(r) < order(first[c]):
+            first[c] = r
+    keep = list(first.values())
     dropped = len(lines) - len(keep)
-    assert dropped < 0.02 * len(lines), f"id_state: {dropped} reloaded copies, more than 2% of lines"
+    assert dropped < 0.02 * len(lines), f"id_state: {dropped} identical lines, more than 2% of lines"
     return keep, dropped
 
 
@@ -189,6 +182,9 @@ def check_state_lines(tx, rx):
               r["payee_name"])] += 1
     diff = (want - have) + (have - want)
     assert not diff, f"id_state: {sum(diff.values())} lines differ from raw, e.g. {list(diff)[:3]}"
+    same = collections.Counter(tuple(v for k, v in r.items() if k != "source_record_id")
+                               for r in tx if r["source"] == "id_state")
+    assert max(same.values()) == 1, f"id_state: {sum(n - 1 for n in same.values() if n > 1)} identical rows left"
     return len(lines), dropped
 
 
@@ -308,7 +304,7 @@ def main():
     by_source = collections.Counter()
     for r in tx + tot:
         by_source[r["source"]] += float(r["amount"])
-    print(f"{ST}: ok ({len(tx)} payment lines from {n_raw} raw lines, {dropped} reloaded copies dropped; "
+    print(f"{ST}: ok ({len(tx)} payment lines from {n_raw} raw lines, {dropped} identical lines dropped; "
           f"{len(tot)} totals rows; " + ", ".join(f"{s} ${v:,.0f}" for s, v in sorted(by_source.items()))
           + f"; vendor maps cover {mapped / purch:.1%} of purchasing; "
           + f"tiers {dict(sorted(agencies['coverage_counts'].items()))})")
