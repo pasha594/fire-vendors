@@ -516,19 +516,28 @@ city payments dataset; Cleveland's and Columbus's open data hubs have no payment
   special districts. Not verified here (the 2022 files are not in the old `www2.census.gov/.../datasets/`
   folders, which stop at 2018) and outside the Ohio PRD list; better handled once for all states.
 
-## Vendor map additions
+## Vendor names and categories (merged into `config/vendor_map.csv`)
 
-`config/states/oh/vendor_map_additions.csv`: 6,186 payees of both Ohio sources with proposed canonical name and
-category, `spend` and `agencies` recomputed from the published lines, sorted by `name_key`. Payees that
-`config/vendor_map.csv` already maps are not repeated (as in the other states; the cross-state check of
-2026-10-07 removed 216 rows that repeated a `config/vendor_map.csv` row word for word, and 65 more were removed
-on 2026-10-07 after main's larger `config/vendor_map.csv` was merged into this branch), except three overrides of
-that file: KEVIN WARD and TODD SMITH (its `individuals` rows, see below) and ACROSS STREET PRODUCTIONS
-(`unclassified` there, `training` here). With `config/vendor_map.csv` (518 Ohio payee keys, $61.6 million of
-purchasing), the file covers 92.0% of Ohio's purchasing dollars ($395.2 million), 76.4% on its own, as
-`tests/multistate/check_oh.py` counts it (by payee, net spend above zero; a payee in neither file, including
-small payroll ones, counts as purchasing). 2,522 purchasing payees ($302.0 million) are in the file; the
-largest purchasing payee in neither file is Cabol, Inc ($149,207); payees in neither file hold $31.6 million.
+Ohio proposed 6,186 payees of both sources with a canonical name and category in
+`config/states/oh/vendor_map_additions.csv` (with `spend` and `agencies` recomputed from the published lines).
+On 2026-10-07 `pipeline/sources/merge_vendor_maps.py` folded them, with the other states' proposals, into the
+shared `config/vendor_map.csv` and the file was deleted; every decision is in `docs/multistate/vendor-merge.md`.
+For Ohio: spellings of one company now share one name across the five states (Charter Communications for
+Spectrum and Time Warner Cable, Huntington Bank, PNC Bank, Change Healthcare, Cincinnati Bell, OTARMA, the Ohio
+Fire & Emergency Services Foundation, NAPA stores and others); of the three overrides of the old Utah rows,
+ACROSS STREET PRODUCTIONS took `training` (the Utah row was `unclassified`), while KEVIN WARD and TODD SMITH keep
+Utah's `individuals` rows (one key carries one row and Utah withholds persons), so those two payees ($15,229)
+are no longer purchasing; three Ohio payroll payees whose names are also Utah payees (Jason Brown, Matthew Evans,
+Tyler Anderson) are mapped to `individuals` for the same reason; and Ohio payees published exactly as
+"SPECTRUM" show under Utah's newspaper The Spectrum (the key's Utah row). Coverage after the merge, as
+`tests/multistate/check_oh.py` counts it (by payee, net spend above zero, a payee in no row counted as
+purchasing; payees classified the way `pipeline/build.py` does, `config/vendor_map.csv` first and then the vendor
+and keyword rules): a real category for 93.7% of $395,598,494 purchasing dollars (90.2% by map rows, 3.4% by
+rules); before the merge, 92.0% of $395,198,185 with the two files.
+
+History of the proposals (how the rows were made, kept for the record): 2,522 purchasing payees ($302.0
+million) were in the file; the largest purchasing payee in neither file was Cabol, Inc ($149,207); payees in
+neither file held $31.6 million.
 The other 3,664 rows are non-purchasing payees (payroll, pension, benefits and taxes 3,209; government 298;
 finance 146; placeholder 11), listed so they leave the purchasing base: $1.56 billion of the local checkbooks'
 $1.91 billion is payroll, the Ohio Police & Fire Pension Fund ($235.3 million under that canonical name), health
@@ -551,9 +560,8 @@ the company sells, low when it is a guess from the name and the objects it is pa
 the published object descriptions (a payee paid 80% or more under salary, benefit or pension objects is
 payroll; 70% or more under one object family gives that category; low confidence). Payee names were not
 classified as persons or companies (owner decision 1): a payee that is a person is classed by what it is paid
-for (salary or reimbursement objects: payroll; a repair: facilities) or left unclassified, and no row uses the
-`individuals` category (one `config/vendor_map.csv` row that would label a payee "Individuals (names withheld)"
-is overridden). Payments to another fire department or government
+for (salary or reimbursement objects: payroll; a repair: facilities) or left unclassified, and no proposed row
+used the `individuals` category (the merge kept `config/vendor_map.csv`'s two `individuals` rows, see above). Payments to another fire department or government
 (contract payments, a village's lump payments to its own volunteer department) are `government`. Canonical
 names reuse `config/vendor_map.csv` where it is the same company and merge spellings of the large ones
 (Atlantic Emergency Solutions, Sutphen, Stryker incl. Howmedica, Municipal Emergency Services, Ohio Police & Fire
@@ -568,8 +576,8 @@ payments to the Mineral Ridge and M.M.B.A. fire departments and "County Fees" (a
 `apparatus`, not `fleet`; the Auman, Mahan & Furry law firm is `professional`); canonical names reused from `config/vendor_map.csv` for Zoll Medical, Rosenbauer,
 Cummins, Shell, Rush Truck Centers, Fleetcor, Staples, AT&T (FirstNet), Enbridge Gas, Cintas, Aetna, Guardian,
 Airgas and Aflac; and naming artifacts removed (a leading "- " left by vendor numbers on 106 names, "Johnson'S",
-"Llc"). `check_oh.py` now also fails when a row's `name_key` is in `config/vendor_map.csv` (except to override that
-file's `individuals` and `unclassified` rows) and on a vendor name starting with "-". The
+"Llc"). `check_oh.py` then also failed when a row's `name_key` was in `config/vendor_map.csv` and on a vendor name starting
+with "-" (since the merge it checks the shared map's coverage instead). The
 low-confidence rows (mostly payroll payees named after people, and object-based guesses) were not all reviewed.
 
 ## Checks
@@ -605,17 +613,18 @@ only) it recomputes lines and dollars per agency, source and fiscal year and com
   (owner decision 2026-10-06).
 - The contract's column names and order for every Ohio file; agency ids, links, `coverage_counts` and tiers (an
   agency without rows stays at tier 4); added agency ids; unique `source_record_id`s and sort order; no email in
-  any published text; `vendor_map_additions.csv` spend and agency counts equal the raw sums, known categories,
-  normalized keys sorted, with `config/vendor_map.csv` at least 90% of purchasing dollars; raw files only under `raw/<date>/oh/<source>/`, each under
+  any published text; no unmerged `config/states/oh/vendor_map_additions.csv`, and `config/vendor_map.csv` with
+  the vendor and keyword rules gives a real category to at least 90% of purchasing dollars; raw files only under
+  `raw/<date>/oh/<source>/`, each under
   50 MB (150 MB for Ohio in all), and a sample of at most 100 rows for every reachable source (the state
   checkbook sample without address columns).
 - Added in review: an added agency (`agencies_added.csv`) may not share its place name with a registry
-  department of the same county unless the pair is listed as reviewed; Forestry keeps kind "State fire agency";
-  `vendor_map_additions.csv` does not repeat keys of `config/vendor_map.csv` (except the three overrides).
+  department of the same county unless the pair is listed as reviewed; Forestry keeps kind "State fire agency".
 
 Result after the owner's rules of 2026-10-07 (identical lines, program 220): `OH: ok (719173 transaction lines,
-$1,953,022,621.88, 187 agencies at tier 1 (oh_checkbook_local: 696305, oh_cincinnati: 22868); vendor maps cover
-92.0% of $395,198,185 purchasing dollars, vendor_map_additions alone 76.4%)` (before them: 707,567 lines,
+$1,953,022,621.88, 187 agencies at tier 1 (oh_checkbook_local: 696305, oh_cincinnati: 22868); config/vendor_map.csv
+and the rules give a real category to 93.7% of $395,598,494 purchasing dollars (map 90.2%, rules 3.4%))` (after the
+vendor merge; before it the two files covered 92.0% of $395,198,185; before the owner's rules: 707,567 lines,
 $1,840,788,454.03, 184 agencies). Fault tests for the local source, on scratch copies of the repository files (never the
 working tree), one fault each: a published amount changed by one cent, a payee changed, a link moved to an
 agency in another county, the local sample deleted, a vendor map spend changed, an extra published line with no

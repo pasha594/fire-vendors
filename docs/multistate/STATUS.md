@@ -113,19 +113,27 @@ Coverage: 1,604 agencies (1,530 registry, 74 added): tier 1 3, tier 2 316, tier 
 
 ## Vendor map coverage of purchasing dollars
 
+On 2026-10-07 `pipeline/sources/merge_vendor_maps.py` folded the four states' proposals
+(`config/states/<st>/vendor_map_additions.csv`, 9,627 rows) into the shared `config/vendor_map.csv` and the proposal
+files were deleted: the map now has 14,676 rows (5,172 Utah rows, 9,493 from the states, 11 Utah rows added in
+review), and one company has one canonical name across the five states (reviewed name decisions in
+`config/vendor_name_merges.csv`). Decisions, the Utah impact (vendors 9,990 to 9,966, classified share of purchasing
+97.21% to 97.23%) and the top vendors across the states are in `docs/multistate/vendor-merge.md`.
+
 Purchasing dollars: net spend per payee key (`common.norm(payee_name)`) over `transactions.csv.gz`, payees with net
-spend above zero whose category (vendor_map_additions.csv first, then config/vendor_map.csv) is a purchasing category
-or who are in neither file. Same rule as check_ca.py, check_tx.py and (since 2026-10-07) check_oh.py.
+spend above zero whose category is a purchasing category or who are unmapped. Payees are classified the way
+`pipeline/build.py` classifies them: `config/vendor_map.csv` first, then `config/vendor_rules.csv` and
+`config/keyword_rules.csv`. Every `check_<st>.py` uses this rule (`tests/multistate/vendor_coverage.py`) and requires
+at least 90% with a real category.
 
-| State | Rows in vendor_map_additions.csv | Purchasing dollars | Additions alone | Additions + config/vendor_map.csv | Of which a real category (not unclassified) |
-| --- | --- | --- | --- | --- | --- |
-| OH | 6,183 | $384,958,073.22 | 78.3% | 92.8% | 92.8% |
-| CA | 2,777 | $6,250,184,818.05 | 84.1% | 91.4% | 90.4% |
-| ID | 494 | $158,924,038.76 | 86.3% | 90.7% | 88.6% |
-| TX | 210 | $502,266,293.91 | 77.4% | 95.4% | 95.2% |
+| State | Proposed rows merged | Purchasing dollars | Real category | Of which by rules | Unclassified | Unmapped | Before the merge (proposals + map, any category) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| OH | 6,186 | $395,598,494 | 93.7% | 3.4% | 0.1% | 6.2% | 92.0% of $395,198,185 |
+| CA | 2,753 | $5,927,730,905 | 92.9% | 2.8% | 1.1% | 6.0% | 91.3% of $5,930,353,140 (real category 90.2%) |
+| ID | 488 | $158,010,689 | 91.3% | 2.6% | 2.0% | 6.7% | 90.7% of $158,783,827 (real category 88.7%) |
+| TX | 200 | $479,006,883 | 97.4% | 1.5% | 0.0% | 2.6% | 95.4% of $484,549,732 (real category 95.2%) |
 
-`config/states/<st>/vendor_map_additions.csv` proposes canonical names and categories; merge into the shared
-`config/vendor_map.csv` at step 1. Rows marked low confidence were inferred from the account or object name.
+Rows marked low confidence were inferred from the account or object name and are not all reviewed.
 
 ## Federal layer
 
@@ -192,6 +200,7 @@ python3 pipeline/sources/federal.py fetch OH CA ID TX      # USFA registry and O
 python3 pipeline/sources/federal.py normalize OH CA ID TX
 python3 pipeline/sources/<st>_<source>.py fetch             # each adapter; raw files are never overwritten
 python3 pipeline/sources/<st>_<source>.py normalize
+python3 pipeline/sources/merge_vendor_maps.py              # only when a state wrote vendor_map_additions.csv
 python3 tests/multistate/check_<st>.py
 ```
 

@@ -456,19 +456,28 @@ to employees). `check_ca.py` reports 126,232 lines whose payee looks like a pers
 - **Two tiers on one agency:** Los Angeles Fire Department and Corona Fire Department have both tier-1 lines and
   `ca_sco_cities` totals; CAL FIRE has FI$Cal lines and older SCPRS lines (FY2013-FY2015 do not overlap FY2021 on).
 
-## Vendor categories (`config/states/ca/vendor_map_additions.csv`)
+## Vendor names and categories (merged into `config/vendor_map.csv`)
 
-2,753 rows proposing canonical names and categories for California payees, with `spend` and `agencies` recomputed
-from `transactions.csv.gz` after the dedup rule of 2026-10-07. 24 keys that `config/vendor_map.csv` now carries
-(merged from `main` with the Utah BigQuery work: US Bank, Allstar Fire Equipment, US Foods, Braun Northwest, Tablet
-Command and others) were removed from this file; 9 of them take that file's category instead of the one proposed
-here (Carahsoft software, Entenmann-Rovin and Sun Badge uniforms, OHD scba, Sigtronics radios, Highway Products
-apparatus, Vortex Industries facilities, Lawson Products fleet, Ricoh it). "Purchasing dollars" = net positive spend per `common.norm(payee)` key, excluding keys
-mapped (in `config/vendor_map.csv` or this file) to a category whose `purchasing` is `no` (government, payroll,
-finance, placeholder, individuals). Mapped share: **91.3%** of $5.93B purchasing dollars (by source: FI$Cal 91.9%,
-LA 94.5%, SF 89.2%, Riverside County 86.7%, SCPRS 87.1%, Moreno Valley 75.3%, Corona 69.2%); this file alone 80.7%.
-$62.6M of that is mapped to `unclassified` (mostly CAL FIRE forest-health and urban-forestry grantees); mapped to a
-real category: **90.2%**.
+California proposed 2,753 payees with a canonical name and category in `config/states/ca/vendor_map_additions.csv`
+(with `spend` and `agencies` recomputed after the dedup rule of 2026-10-07; 24 keys that `config/vendor_map.csv`
+already carried after main's merge were dropped then, 9 of them taking that file's category: Carahsoft software,
+Entenmann-Rovin and Sun Badge uniforms, OHD scba, Sigtronics radios, Highway Products apparatus, Vortex Industries
+facilities, Lawson Products fleet, Ricoh it). On 2026-10-07 `pipeline/sources/merge_vendor_maps.py` folded them,
+with the other states' proposals, into the shared `config/vendor_map.csv` and the file was deleted; every decision
+is in `docs/multistate/vendor-merge.md`. For California: CAL FIRE is one name (Cal Fire and "CAL FIRE (State of
+California)"); helicopter operators keep `apparatus` (Heli-1, HeliQwest International, Timberline Helicopters,
+where Idaho had proposed `wildland`); Snap-on Industrial is Snap-on; Recology is `utilities`; Harris & Harris is
+`ems-billing`; Regents of the University of California covers the UC campuses; US Foodservice is US Foods; the
+CANOPY payee was left out of the shared map (the key also names an unrelated Utah payee). Coverage after the merge,
+as `tests/multistate/check_ca.py` counts it ("purchasing dollars" = net positive spend per `common.norm(payee)` key,
+excluding keys whose category is not purchasing; payees classified the way `pipeline/build.py` does,
+`config/vendor_map.csv` first and then the vendor and keyword rules): a real category for **92.9%** of
+$5,927,730,905 purchasing dollars (90.1% by map rows, 2.8% by rules; 1.1% `unclassified`, mostly CAL FIRE
+forest-health and urban-forestry grantees). Before the merge the two files mapped 91.3% of $5.93B (real category
+90.2%; by source: FI$Cal 91.9%, LA 94.5%, SF 89.2%, Riverside County 86.7%, SCPRS 87.1%, Moreno Valley 75.3%,
+Corona 69.2%).
+
+How the proposals were made (kept for the record):
 Categories: names first (keywords: aviation, apparatus makers, logging and water tenders, vehicles, utilities,
 telecom, governments), else the payee's dominant published account (confidence low); the top payees were reviewed by
 hand. Review of 2026-10-06 added 441 rows for payees of $25,000 or more that are governments or public fire agencies
@@ -498,8 +507,8 @@ sharing only `agency_sources.csv`, the redaction patterns and common's file help
    resembles a registry fire district of its county by name; a city's SCO fire line goes only to a fire department;
 4. no duplicate or empty `source_record_id` per source; SCPRS item lines equal their transaction rows;
 5. every source is registered in `sources.csv` with the years present and the raw folder date as `fetched`;
-6. vendor map spend and agency counts are current, categories valid, no key repeats `config/vendor_map.csv`, mapped
-   share at least 90%;
+6. vendor map: no unmerged `config/states/ca/vendor_map_additions.csv`; `config/vendor_map.csv` with the vendor and
+   keyword rules (as `pipeline/build.py` applies them) gives a real category to at least 90% of purchasing dollars;
 7. raw files under 50 MB each and California under 150 MB (97 MB), every source folder has a sample of at most 100 rows;
 8. contract conformance: table, `sources.csv` and `agency_sources.csv` columns in the contract's order (read from
    `docs/multistate/data-contract.md`), dates `YYYY-MM-DD`, amounts with two decimals, and every payment date inside

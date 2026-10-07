@@ -17,7 +17,9 @@ from the same raw files is byte-identical. `<st>` is the lower-case state code (
 | `config/states/<st>/sources.csv` | adapter | One row per vendor-data source and its coverage tier |
 | `config/states/<st>/grant_recipients.csv` | `federal.py normalize` | FEMA recipient name to agency id, strict matches |
 | `config/states/<st>/grant_recipients_unmatched.csv` | `federal.py normalize` | Recipients not matched, with award counts and dollars |
-| `config/states/<st>/vendor_map_additions.csv` | adapter (hand-reviewed) | Proposed canonical names and categories for payees |
+| `config/states/<st>/vendor_map_additions.csv` | adapter (hand-reviewed), transient | A state's proposed canonical names and categories for payees, until `merge_vendor_maps.py` folds them into `config/vendor_map.csv` (then deleted) |
+| `config/vendor_map.csv` | hand-reviewed; `merge_vendor_maps.py` | Shared map, all states: payee key to canonical vendor name and category |
+| `config/vendor_name_merges.csv` | hand-reviewed | Reviewed name decisions the merge applies (which spellings are one company) |
 | `data/states/<st>/agencies.json` | `common.assemble_agencies` | Agencies with coverage tier and sources |
 | `data/states/<st>/grants.csv` | `federal.py normalize` | Matched FEMA firefighter grant awards |
 | `data/states/<st>/transactions.csv.gz` | adapters, tiers 1 and 2 | Payment lines |
@@ -132,12 +134,34 @@ work the same way for every tier.
 | `amount` | Dollars |
 | `source` | Source id |
 
-## `config/states/<st>/vendor_map_additions.csv`
+## Vendor names and categories (`config/vendor_map.csv`)
 
-Same columns as `config/vendor_map.csv` (`name_key,vendor,category,confidence`) plus `spend` and `agencies`.
-`name_key` is `common.norm(payee)`. Rows cover the payees that make up 90% of the state's purchasing dollars.
-`vendor` reuses the canonical name in `config/vendor_map.csv` when the company is the same; `category` is an id
-from `config/categories.csv`. Merge into the shared files at step 1.
+One shared map for Utah and every state: `name_key,vendor,category,confidence`, sorted by `name_key`. `name_key` is
+`common.norm(payee)` (the same key as `pipeline/build.py`'s `norm()`), `vendor` the canonical vendor name (the site's
+vendor id is a slug of it, so names decide which payees add up to one vendor), `category` an id from
+`config/categories.csv`, `confidence` `high`, `medium` or `low`. `pipeline/build.py` classifies a payee by its row
+here first, then by the first matching pattern of `config/vendor_rules.csv` and `config/keyword_rules.csv`.
+
+A state adds vendors the same way as before, then merges:
+
+1. Write `config/states/<st>/vendor_map_additions.csv` with the same four columns plus `spend` and `agencies` (net
+   dollars and agency count per key over `transactions.csv.gz`), for the payees that make up at least 90% of the
+   state's purchasing dollars, reusing a canonical name already in `config/vendor_map.csv` when the company is the
+   same.
+2. Run `python3 pipeline/sources/merge_vendor_maps.py`. It folds the proposals into `config/vendor_map.csv` (rules
+   in its docstring: a key already in the map keeps its row; one canonical name per company, with judgment calls in
+   `config/vendor_name_merges.csv`; a key a vendor rule names uses the rule's vendor; one category per vendor) and
+   writes the decisions to `docs/multistate/vendor-merge.md`. Review the report, add rows to
+   `config/vendor_name_merges.csv` for spellings that are one company (or a different company that a rule
+   catches), restore `config/vendor_map.csv` and run it again until the report reads right.
+3. Delete the additions file, rebuild Utah (`python3 pipeline/build.py`) and compare: a state row for a person's
+   name shows a Utah payee with the same key under that name, and every Utah change must be intended.
+4. `tests/multistate/check_<st>.py` fails while an additions file is left, and requires `config/vendor_map.csv`
+   with the rules to give a real category (not `unclassified`) to at least 90% of the state's purchasing dollars
+   (net spend per payee key above zero, in a purchasing category or unmapped).
+
+`python3 pipeline/sources/merge_vendor_maps.py --check` checks the map alone (sorted unique keys, known
+categories, no name that `config/vendor_name_merges.csv` renames).
 
 ## Checks
 

@@ -303,24 +303,29 @@ publishes a bulk file.
 Owner decision 1 (2026-10-06): payee names are shown as published, private persons included. Every payee and item vendor goes
 through `common.withhold_person` directly, which now only replaces payee text matching `config/payee_name_redactions.csv` (email
 addresses, bank transfer text with account numbers) by "Payee name withheld"; no Texas payee matches, and no description, account or
-category text does either. The earlier local `payee()` wrappers (which trusted `vendor_map_additions.csv`) and the forced
+category text does either. The earlier local `payee()` wrappers (which trusted the old `vendor_map_additions.csv`) and the forced
 `person_flag` rules on employee, refund, claims and reimbursement accounts were removed from all four adapters. Names are not
 classified as persons or companies. `tests/multistate/check_tx.py` checks every published payee against the raw name (whitespace
 collapsed) and asserts that no redaction pattern matches any published text.
 
-## Vendor map additions
+## Vendor names and categories (merged into `config/vendor_map.csv`)
 
-`config/states/tx/vendor_map_additions.csv`: 200 payee keys (78 high, 93 medium, 29 low confidence), reusing `config/vendor_map.csv`
-canonical names when the company is the same (16 rows, among them Grainger, AT&T, Verizon, Stryker, SHI International, Esri, Staples,
-Home Depot, Rush Truck Centers, Jones & Bartlett Learning); no remaining name differs from `vendor_map.csv`'s spelling of the same
-company. Payees already in `vendor_map.csv` under the same key are not repeated: after main's vendor map merge (2026-10-07) 10 keys
-were removed for that reason (Carahsoft Technology, CDW, Digitech Computer, Firetrol Protection Systems, Frazer, FTS Forest Technology
-Systems, Gear Grid, MES I Acquisition, RS Hughes, SWCA). `spend` and `agencies` are recomputed from the data after the dedup rule (41
-keys changed, -$9.53M, mostly Houston fleet dealers; agency counts unchanged). Texas purchasing dollars (positive net spend of payees
-not mapped to a non-purchasing category) are $484,549,731.91; the additions cover 67.7% and keys already in `vendor_map.csv` another
-27.7%: 95.4% together (95.2% with a real category, not unclassified; `check_tx.py` asserts at least 90%). Unmapped: $22.4M across
-1,551 smaller payees, the largest being Houston's masked `*` vendor ($5.46M) and payees named after a person or a person's firm (now
-shown by name).
+Texas proposed 200 payee keys (78 high, 93 medium, 29 low confidence) in `config/states/tx/vendor_map_additions.csv`,
+reusing `config/vendor_map.csv` canonical names when the company was the same (16 rows, among them Grainger, AT&T,
+Verizon, Stryker, SHI International, Esri, Staples, Home Depot, Rush Truck Centers, Jones & Bartlett Learning); 10
+keys that `vendor_map.csv` carried after main's merge had been removed (Carahsoft Technology, CDW, Digitech Computer,
+Firetrol Protection Systems, Frazer, FTS Forest Technology Systems, Gear Grid, MES I Acquisition, RS Hughes, SWCA). On
+2026-10-07 `pipeline/sources/merge_vendor_maps.py` folded them, with the other states' proposals, into the shared
+`config/vendor_map.csv` and the file was deleted; every decision is in `docs/multistate/vendor-merge.md`. For Texas:
+JE Dunn Construction ($57.6M) keeps its own row, because the keyword rule for journal entries (`^JE\b`) would
+otherwise call it "No vendor named"; Harris & Harris is `ems-billing` (California had proposed `finance`); Medical
+Priority Consultants and Priority Dispatch are one name (Priority Dispatch); Public Consulting Group is
+`ems-billing`; Honeywell takes `config/vendor_map.csv`'s `fire-equipment` although Texas's lines are building
+controls (one category per vendor). Coverage after the merge, as `tests/multistate/check_tx.py` counts it (payees
+classified the way `pipeline/build.py` does, `config/vendor_map.csv` first and then the vendor and keyword rules;
+purchasing dollars = positive net spend of payees not mapped to a non-purchasing category): a real category for
+**97.4%** of $479,006,883 purchasing dollars (95.9% by map rows, 1.5% by rules), against 95.2% of $484,549,731.91
+before the merge with the two files. The largest unmapped payee is still Houston's masked `*` vendor ($5.46M).
 
 ## Open questions
 

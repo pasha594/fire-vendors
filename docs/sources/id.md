@@ -225,15 +225,27 @@ unmatched (`grant_recipients_unmatched.csv`). This run did not change it; `check
   employees reimbursed for travel. "REDACTED" ($11.7M, 26 lines, account "Misc Payments As Agent") is the State's
   own mask and is kept as published; 1,871 lines have no vendor.
 - **Data quality:** amounts are cash basis. Vendor names are free text with store numbers and card-processor
-  prefixes ("PCARD - …", "SQ *…"), so one company appears under several names; `vendor_map_additions.csv` folds the
+  prefixes ("PCARD - …", "SQ *…"), so one company appears under several names; the vendor map (`config/vendor_map.csv`) folds the
   large ones. Purchase-card payments to U.S. Bank ($3.5M) also appear as merchant lines, so they are tagged
   "finance".
 - **Sample:** `raw/2026-10-06/id/id_state/sample.json.gz` (first 100 lines of the unfiltered saved view).
 - **Decision:** built (`pipeline/sources/id_state.py`).
 
-## Vendor categories (`config/states/id/vendor_map_additions.csv`)
+## Vendor categories (merged into `config/vendor_map.csv`)
 
-488 proposed rows (61 high, 212 medium, 215 low confidence). With the 149 payee names `config/vendor_map.csv`
+Idaho's proposals (`config/states/id/vendor_map_additions.csv`, 488 rows) were folded, with the other states', into
+the shared `config/vendor_map.csv` by `pipeline/sources/merge_vendor_maps.py` on 2026-10-07 and the file was
+deleted; every decision is in `docs/multistate/vendor-merge.md`. For Idaho: the U.S. Department of Agriculture is
+one name (the Forest Service proposal and California's USDA rows); helicopter operators shared with California
+(Heli-1, HeliQwest International, Timberline Helicopters) take California's `apparatus` by spend, not `wildland`;
+Expeditors by Lindale and Axcess Fire and Safety Supply are one name each across states; the Oregon Department of
+Forestry is one name with California's spelling. Coverage after the merge, as `tests/multistate/check_id.py`
+counts it (payees classified the way `pipeline/build.py` does, `config/vendor_map.csv` first and then the vendor
+and keyword rules; every unmapped payee with net spend above zero counted as purchasing): a real category for
+**91.3%** of $158,010,689 purchasing dollars (88.6% by map rows, 2.6% by rules), up from 88.7% before the merge,
+when only the two files counted.
+
+The proposals, for the record: 488 rows (61 high, 212 medium, 215 low confidence). With the 149 payee names `config/vendor_map.csv`
 already maps (after the merge of main on 2026-10-07), they cover 90.7% of `id_state`'s purchasing dollars ($144.0M of
 $158.8M, counting every unmapped payee with net spend above zero as purchasing, the rule the other states' checks use;
 the additions alone 86.1%; 88.7% with a real category, not `unclassified`). After the dedup rule of 2026-10-07, spend
@@ -295,5 +307,6 @@ merging. Low-confidence rows were inferred from the account the payment was code
   although robots.txt allows all): acceptable, or should the project ask the SCO to allow its plain agent?
 - Should `id_state` also carry the State Fire Marshal, or IDL's forestry function 03H?
 - Fire district fiscal year start (October or January) is unknown per district; `fy_start` is empty.
-- A wildland suppression services / aviation category (see Vendor categories).
+- A wildland suppression services / aviation category (see Vendor categories): helicopter and air tanker services
+  are `apparatus` in the shared map (California's choice, by spend) and contract crews and equipment `wildland`.
 - Yellow Pine: one district registered twice in the Local Government Registry, or two? (see `id_lgr` data quality)
