@@ -8,7 +8,12 @@ common.py is used only to read files (read_gz, latest_raw, read_config, read_dat
   1. totals per source, agency and fiscal year (transactions, line items, published totals) match the raw files, and so do the
      row counts and, per source, every (agency, fiscal year, payee, amount) line: payee names are published as the source
      publishes them (owner decision, 2026-10-06), except payee text matching config/payee_name_redactions.csv (email
-     addresses, bank account text), which reads "Payee name withheld"
+     addresses, bank account text), which reads "Payee name withheld". City sources (Houston, Austin, Dallas) follow the
+     owner's dedup rule of 2026-10-07: of the raw lines equal in every published field but the source's own ids (built
+     here from the raw columns: fiscal year, date, payee, description fields, account fields, category, amount), one is
+     kept; a doubled day is such a set; negative lines compare like any other. No two published rows of a city source
+     are equal in every column but source_record_id. tx_dir is exempt (owner decision 2 of 2026-10-06): only lines
+     re-reported in a later month are dropped
   2. no published text column (payee, vendor, description, account, category) still matches a redaction pattern
   3. every agency_id in the tables, agency_sources.csv and grants exists in agencies.json; agencies_added.csv ids are new
   4. DIR attribution: every fire-filtered DIR customer name in the raw files is either linked in agency_sources.csv or listed
@@ -119,10 +124,31 @@ def expect_dir():
     return e, names
 
 
+DROPPED = {}  # source -> (identical sets, lines dropped, cents dropped), for the report
+
+
+def keep_one(source, lines):
+    """Owner rule of 2026-10-07: of lines with equal identity (every published field but the source's own row, payment
+    document, invoice, line or PO ids), keep the first. lines: (identity, (agency, fy, payee, amount)) in raw order."""
+    e, seen, sets, n, dropped = Expect(), set(), set(), 0, 0
+    for ident, (aid, fy, payee, amount) in lines:
+        if ident in seen:
+            sets.add(ident)
+            n += 1
+            dropped += cents(amount)
+            continue
+        seen.add(ident)
+        e.add(aid, fy, payee, amount)
+    DROPPED[source] = (len(sets), n, dropped)
+    return e
+
+
 def expect_houston():
+    """Identity: fiscal year, clearing date, payee, type of procurement, WBS description, PO number and item, contract,
+    fund name, GL account and amount. Payment document number, vendor invoice, WBS and fund codes are left out."""
     raw, aid = common.latest_raw(ST, "tx_houston"), next(iter(links("tx_houston").values()))
     manifest = {m["fiscal_year"]: m for m in json.loads(common.read_gz(raw / "manifest.json.gz"))}
-    e, seen = Expect(), set()
+    lines = []
     files = sorted(raw.glob("checkbook-*-hfd.csv.gz"))
     assert {int(p.name.split("-")[1]) for p in files} == set(manifest), "Houston files differ from the manifest"
     for path in files:
@@ -133,24 +159,30 @@ def expect_houston():
         col = {h: i for i, h in enumerate(header)}
         for row in body:
             assert row[col["Department ID"]] == "1200" and int(row[col["Fiscal Year"]]) == fy
-            if tuple(row) in seen:  # exact duplicate line
-                continue
-            seen.add(tuple(row))
-            e.add(aid, fy, row[col["Vendor Name"]], row[col["Amount"]])
-    return e
+            v = lambda h: row[col[h]]
+            ident = (fy, v("Clearing Date"), published(v("Vendor Name")), v("Type of procurement"), v("WBS Description"),
+                     *(x if x.strip("0") else "" for x in (v("Purchase Order Number"), v("Purchase Order Item"))),
+                     v("Contract Number"),
+                     v("Fund Name"), v("GL Account Number"), v("GL Account Description"), cents(v("Amount")))
+            lines.append((ident, (aid, fy, v("Vendor Name"), v("Amount"))))
+    return keep_one("tx_houston", lines)
 
 
-def expect_socrata(source, name, dept_field, dept, fy_field, amount_field, payee_field):
+def expect_socrata(source, name, dept_field, dept, fy_field, amount_field, payee_field, ident_fields):
+    """ident_fields: the raw published fields (besides fiscal year, payee and amount) whose equality makes two lines
+    identical; a value 'a|b' means field a, or field b when a is empty. Date fields compare on the day."""
     raw, aid = common.latest_raw(ST, source), next(iter(links(source).values()))
-    e, seen = Expect(), set()
-    for r in json.loads(common.read_gz(raw / name)):
+    lines = []
+    for r in sorted(json.loads(common.read_gz(raw / name)), key=lambda r: r[":id"]):
         assert str(r[dept_field]) == dept
-        k = tuple(sorted((f, v) for f, v in r.items() if f != ":id"))
-        if k in seen:
-            continue
-        seen.add(k)
-        e.add(aid, int(r[fy_field]), r.get(payee_field, ""), r[amount_field])
-    return e
+        fields = []
+        for f in ident_fields:
+            a, _, b = f.partition("|")
+            x = r.get(a) or (r.get(b) if b else "") or ""
+            fields.append(x[:10] if "dt" in a or "date" in a else x)
+        ident = (int(r[fy_field]), published(r.get(payee_field, "")), *fields, cents(r[amount_field]))
+        lines.append((ident, (aid, int(r[fy_field]), r.get(payee_field, ""), r[amount_field])))
+    return keep_one(source, lines)
 
 
 def expect_cpa():
@@ -222,12 +254,19 @@ def main():
     assert e.n == sum(r["source"] == "tx_dir" for r in tx) == sum(r["source"] == "tx_dir" for r in li), "tx_dir row counts"
     for source, e in {
         "tx_houston": expect_houston(),
-        "tx_dallas": expect_socrata("tx_dallas", "dfd.json.gz", "dpt", "DFD", "fy", "chksubtot", "vendor"),
-        "tx_austin": expect_socrata("tx_austin", "fire.json.gz", "dept_cd", "83", "fy_dc", "amount", "lgl_nm"),
+        "tx_dallas": expect_socrata("tx_dallas", "dfd.json.gz", "dpt", "DFD", "fy", "chksubtot", "vendor",
+                                    ("rundate", "commoditydscr", "activity", "fundtype", "obj", "object", "objectgroup")),
+        "tx_austin": expect_socrata("tx_austin", "fire.json.gz", "dept_cd", "83", "fy_dc", "amount", "lgl_nm",
+                                    ("chk_eft_iss_dt", "actg_ln_dscr|comm_dscr", "fund_nm", "div_nm", "gp_nm", "obj_cd",
+                                     "obj_nm", "ocat_nm")),
     }.items():
         same(f"{source} totals", e.totals, got_totals(tx, source))
         same(f"{source} lines", e.lines, got_lines(tx, source, "payee_name"))
         assert e.n == sum(r["source"] == source for r in tx), f"{source}: row count {e.n} raw vs normalized"
+        cols = [c for c in contract_columns()["transactions.csv.gz"] if c != "source_record_id"]
+        twins = collections.Counter(tuple(r[c] for c in cols) for r in tx if r["source"] == source)
+        extra = sum(n - 1 for n in twins.values())
+        assert not extra, f"{source}: {extra} published rows equal to another in every column but source_record_id"
     same("tx_cpa totals", expect_cpa(), got_totals(tot, "tx_cpa"))
 
     # 2. Redaction patterns no longer match any published text
@@ -338,7 +377,9 @@ def main():
         by_source[r["source"]] += cents(r["amount"])
     print(f"{ST}: ok ({len(tx)} payment lines, {len(li)} item lines, {len(tot)} totals rows; "
           + ", ".join(f"{s} ${v / 100:,.0f}" for s, v in sorted(by_source.items()))
-          + f"; vendor maps cover {share:.1%} of purchasing; tiers {dict(sorted(agencies['coverage_counts'].items()))})")
+          + f"; vendor maps cover {share:.1%} of purchasing; tiers {dict(sorted(agencies['coverage_counts'].items()))}; "
+          + "identical lines dropped (owner rule of 2026-10-07): "
+          + ", ".join(f"{s} {n} (${c / 100:,.2f}, {g} sets)" for s, (g, n, c) in sorted(DROPPED.items())) + ")")
 
 
 if __name__ == "__main__":
