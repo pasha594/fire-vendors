@@ -934,8 +934,9 @@ def unidentical(entity, rows, stats):
     kept = [r for r in rows if r["Id"] not in drop]
     stats["identical_lines"] += len(lines)
     stats["identical_dollars"] += sum(money(r["Amt"]) for r in lines)
-    # reported: payment and reversal families (REVERSAL fields and amount, both signs present) whose net the rule
-    # raised; none since the identical-void fix (a negative copy goes only with a positive copy)
+    # reported: groups of the REVERSAL fields and amount with both signs present, any years, whose net the rule
+    # raised. A family with a payment keeps its net since the identical-void fix; what is left are negative lines
+    # with no payment of the amount in their year or the year before (negative-only families keep rule 2)
     net = collections.defaultdict(lambda: [decimal.Decimal(0), decimal.Decimal(0), set()])
     for r in rows:
         f = net[(tuple(r[c] for c in REVERSAL), abs(money(r["Amt"])))]
