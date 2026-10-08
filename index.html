@@ -2410,6 +2410,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
   const payLoads = {};    // state -> pending or finished load
   let payLoad = null;     // the pending load for the current view
   let payError = null;    // why the last load failed
+  const PAY_EAGER_MAX = 1000000;   // gzipped bytes of payments a single-state view loads without the section being opened
   function loadPayments() {
     if (payLoad) return payLoad;
     const sts = ix.states.filter(st => !store.st[st].payments);
@@ -2436,8 +2437,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
       if (payError) {
         return details('d-pay', title + ' <span class="muted">(did not load)</span>', '<p>Payments did not load' + (payError.message ? ': ' + esc(payError.message) : '') + '. Change a filter to try again.</p>');
       }
-      if (ix.states.length > 1 && !payLoad && !openDetails.has('d-pay')) {
-        const bytes = ix.states.filter(st => !store.st[st].payments).reduce((n, st) => n + ((store.meta.states[st].bytes_gz || {}).payments || 0), 0);
+      // Several states, or one large file (California's), load when the section is opened; Utah's loads at once
+      const bytes = ix.states.filter(st => !store.st[st].payments).reduce((n, st) => n + ((store.meta.states[st].bytes_gz || {}).payments || 0), 0);
+      if ((ix.states.length > 1 || bytes > PAY_EAGER_MAX) && !payLoad && !openDetails.has('d-pay')) {
         return details('d-pay', title, '<p>Opening this section loads the single payments of ' + esc(andList(ix.states.map(stName))) + ' (' + fileSize(bytes) + ').</p>');
       }
       loadPayments();
