@@ -1,10 +1,12 @@
 # Multi-state sources: status
 
-PRD (product requirements document) build-order steps 2, 3 and 4 for Ohio, California, Idaho and Texas
-(`docs/prd/multistate-expansion.md`). Branch `multistate-sources`, run of 2026-10-06 to 2026-10-07. Output format:
-`docs/multistate/data-contract.md`. One source note per state: `docs/sources/<st>.md`.
+PRD (product requirements document) build-order steps 2 to 7 (sources) for Ohio, California, Idaho and Texas
+(`docs/prd/multistate-expansion.md`): branch `multistate-sources`, run of 2026-10-06 to 2026-10-07, merged to main as
+`de1e5cf`. Steps 1 and 8 (multi-state build and page): branch `claude/artifact-implementation-kgowml`, 2026-10-07 to
+2026-10-08, section "Steps 1 and 8" below. Output format: `docs/multistate/data-contract.md`. One source note per
+state: `docs/sources/<st>.md`.
 
-Files that existed on `main` and changed: `config/vendor_map.csv` (the states' vendor names merged in) and
+Sources step: files that existed on `main` and changed: `config/vendor_map.csv` (the states' vendor names merged in) and
 `data/data.json`, `data/payments.json` (Utah rebuilt from the merged map). `config/vendor_name_merges.csv` is new.
 Everything else is new and under `raw/2026-10-06/<st>/`, `config/states/`, `data/states/`, `pipeline/sources/`,
 `tests/multistate/`, `docs/sources/` and `docs/multistate/`.
@@ -13,6 +15,92 @@ Numbers below were recomputed on 2026-10-07 from the committed files, after the 
 voids fixed, SCPRS purchase-order lines kept) and after every normalize step was run twice with byte-identical
 output. Dollars are net (refunds and reversals negative). Years are fiscal years named for the year
 they end in, as each source defines them.
+
+## Steps 1 and 8: build and page (done, 2026-10-08)
+
+- Build (step 1). `pipeline/build.py` builds Utah as before (agency ids `UT-<Transparent Utah id>`) and Ohio,
+  California, Idaho and Texas from `data/states/<st>/` with the same vendor, keyword, account and description rules;
+  states, fiscal years and partial years come from `config/states.csv`. It writes `data/index.json` (the first load:
+  meta per state and source, categories, every agency with its tier, the precomputed default table of each scope)
+  and per state `data/<st>.json`, `data/<st>-payments.json` and, for Texas and California, `data/<st>-items.json`
+  (format: `docs/multistate/data-contract.md`, "Site files"). `data/data.json` and `data/payments.json` are no
+  longer written; the tests read them from `de1e5cf` (`--base`) to prove Utah reads as before.
+- Page (step 8). Renamed "Fire Agency Vendor Finances". State filter (all states by default; the county filter
+  follows the state), coverage badges and "No vendor data" in place of $0 for tiers 3 and 4, a coverage summary on
+  the home view and a coverage table by state on the About page, annual totals for tier 3 agencies, item lines
+  (brand, product type, quantity, unit price) for vendors and agencies of Texas and California, source links and
+  notes from `meta.sources`. The first view loads only `data/index.json`; a state's files load when a view needs
+  them. Older links keep working: `agency=359` is `UT-359`, and a Utah county without a state means Utah.
+- Utah unchanged: rows, vendors, payee names, payments, grants and meta equal the files of `de1e5cf` after mapping
+  ids; the page shows the same summary, table, details and CSV for 22 Utah views as the page of `de1e5cf` (apart
+  from the site name, the State chip, the Coverage and Sources facts and the CSV's Coverage column).
+- A browser that still has the old `index.html` cached (GitHub Pages lets it keep the page for 10 minutes,
+  `cache-control: max-age=600`) gets the old page's own message "Data did not load. Could not load the data:
+  data/data.json returned HTTP 404." in place of a page; a reload gets the new page. A clearer text would need a
+  stub `data/data.json` that the old page reads, and only browser-specific error texts can carry it, so none is kept.
+  A tab opened before the switch keeps its data and shows "Payments did not load" when it first opens single
+  payments.
+
+Decisions on the design's open questions (orchestrator defaults of 2026-10-07, consistent with the owner's earlier
+answers; the owner may revisit them):
+1. Utah agencies with no lines (Rockville Springdale, UT-1141, and Thompson, UT-1577) keep $0, as before.
+2. Utah's description-privacy withholding is not applied to other states (names and text as published; only
+   `config/payee_name_redactions.csv` text, which the adapters remove).
+3. "Individuals (names withheld)" stays Utah's category; the About page says other states publish payee names.
+4. Partial years: Utah 2026; Ohio, California and Texas 2026 and 2027; Idaho 2027 (`config/states.csv`).
+5. California single payments: no threshold; loaded when the payments section is opened in an all-states view.
+6. Texas DIR-only (tier 2) agencies count as peers, with a note that DIR covers IT and telecom only.
+7. Old links without a state show all states; a numeric agency id or a Utah county means Utah.
+8. Vendor slug collisions across states: the Utah name wins.
+9. The repository keeps its name; only the site is renamed.
+
+Output of the build of 2026-10-08 (every file under 50 MB; `data/index.json` must stay under 1,000,000 bytes
+gzipped, the build stops otherwise):
+
+| File | Size | Gzipped |
+| --- | --- | --- |
+| `data/index.json` | 2.07 MB | 0.20 MB (198,879 bytes) |
+| `data/ut.json` | 4.10 MB | 1.02 MB |
+| `data/ut-payments.json` | 3.23 MB | 0.65 MB |
+| `data/oh.json` | 6.10 MB | 1.44 MB |
+| `data/oh-payments.json` | 2.76 MB | 0.50 MB |
+| `data/ca.json` | 4.67 MB | 0.98 MB |
+| `data/ca-payments.json` | 17.23 MB | 2.75 MB |
+| `data/ca-items.json` | 2.24 MB | 0.49 MB |
+| `data/id.json` | 2.06 MB | 0.33 MB |
+| `data/id-payments.json` | 0.71 MB | 0.07 MB |
+| `data/tx.json` | 0.57 MB | 0.12 MB |
+| `data/tx-payments.json` | 1.50 MB | 0.21 MB |
+| `data/tx-items.json` | 2.07 MB | 0.09 MB |
+| All | 49.3 MB | 8.86 MB |
+
+| State | Agencies (tiers 1/2/3/4) | Rows | Vendors | Single payments | Item lines |
+| --- | --- | --- | --- | --- | --- |
+| Utah | 185/0/0/0 | 63,962 | 9,966 | 58,726 | 0 |
+| Ohio | 187/0/0/966 | 74,696 | 19,158 | 52,401 | 0 |
+| California | 6/0/584/336 | 38,891 | 15,825 | 323,079 | 22,798 |
+| Idaho | 1/0/156/101 | 11,657 | 5,924 | 6,841 | 0 |
+| Texas | 3/316/0/1,285 | 4,810 | 1,825 | 18,619 | 28,491 |
+
+Default table (`home`), purchasing categories, all years: all states $8,054,382,429.21 in 164,025 rows, 43,278
+vendors, 693 agencies; Utah $677,373,536.21, 56,821 rows, 8,886 vendors, 183 agencies.
+
+Tests of 2026-10-08 (container with Node 22, Playwright 1.56 and Chromium; times are wall clock):
+
+| Command | Result | Time |
+| --- | --- | --- |
+| `python3 pipeline/build.py`, twice | the 13 files byte-identical between the runs; 185 of 185 Utah agencies and every other state's agencies with lines match their lines | 182 s, 180 s |
+| `python3 tests/check_build.py` (base `de1e5cf`) | all checks pass | 34 s |
+| `python3 tests/multistate/check_oh.py`, `check_ca.py`, `check_id.py`, `check_tx.py`, `check_federal.py` | all pass | 152 s, 148 s, 5 s, 11 s, 0.4 s |
+| `python3 pipeline/sources/merge_vendor_maps.py --check` | 14,676 rows, 0 problems | 0.1 s |
+| `node tests/core_test.js` | 26,868 checks, 0 failed (1,962 generated states) | 49 s |
+| `node tests/page/compare_utah.js` | 392 checks, 0 failed (22 Utah views, 60 state views, controls, the cached old page) | 55 s |
+| `node tests/page/screens.js` | 111 checks, 0 failed (13 views at 1366x900 and 390x844) | 46 s |
+
+Page timings in Chromium (desktop, local server): `#/` renders in about 250 ms from `data/index.json` alone; a
+drill-down from `#/` that loads every state's rows (`#/?g=vendor&cat=apparatus`) takes about 0.65 s; the slowest
+views are the agency and vendor groupings over all states (about 1 s) and CAL FIRE with its payments and item lines
+(about 1.5 s).
 
 ## Coverage
 
@@ -120,7 +208,8 @@ can still net less than raw where more payment copies are dropped than there are
 
 1. Payee names are shown as published, private persons included. `common.withhold_person` only withholds payee
    text with an email address or bank account text (`config/payee_name_redactions.csv`). Utah's `build.py` still
-   withholds names; align the two at step 1.
+   withholds names; at step 1 Utah kept its withholding (Utah unchanged) and the other states are shown as
+   published (decision 2 of "Steps 1 and 8").
 2. Texas DIR (Department of Information Resources): identical lines inside one monthly report are kept as real
    repeat purchases; only lines re-reported in a later month are dropped.
 3. ESDs (emergency services districts) that provide only EMS (emergency medical services) are excluded.
@@ -186,8 +275,8 @@ at least 90% in a real category (`tests/multistate/vendor_coverage.py`).
   follow the rule with no exception in Ohio local, Riverside County, Corona, Houston and Idaho; samples of 20 void
   families per state net as raw; SCPRS publishes all 22,798 non-zero raw lines (PO CF140541: 40 lines of $6,500 in raw
   and published); `tx_dir` rows are identical to those before the fixes.
-- `python3 pipeline/build.py`: `data/data.json` and `data/payments.json` byte-identical to the committed files (Utah
-  unchanged in this step; 185 of 185 agencies match the raw file).
+- `python3 pipeline/build.py`: `data/data.json` and `data/payments.json` (the files the page read until step 8)
+  byte-identical to the committed files (Utah unchanged in this step; 185 of 185 agencies match the raw file).
 
 ## Sizes
 
@@ -219,7 +308,7 @@ Duplicates:
   (Houston 2,536, Austin 433, Dallas 96; also Cincinnati and California) although `source_record_id` differs. Add
   the invoice or document number to the description?
 - Utah's `pipeline/build.py` keeps lines that repeat inside one upload batch and drops only copies uploaded again in
-  a later batch. Apply the owner's rule to Utah at step 1?
+  a later batch. Step 1 left Utah unchanged. Apply the owner's rule to Utah?
 
 Vendor names (`docs/multistate/vendor-merge.md`):
 - The key SPECTRUM is Utah's St. George newspaper (The Spectrum), so $165K of Ohio Charter Spectrum payments show
@@ -250,7 +339,17 @@ Counting and matching:
   District" agencies are separate from the city departments; Sonoma County Fire District is added while its
   predecessors remain registry rows at tier 4.
 
-PRD questions still open: first cities beyond those built, and whether to rename the repository.
+Site (steps 1 and 8):
+- California's single payments are 2.75 MB gzipped (323,079 lines), the largest file a view loads; they load only
+  when the payments section is opened in an all-states view. A threshold above $1,000 for California would shrink
+  it.
+- The nine defaults under "Steps 1 and 8" (Utah's two agencies at $0, Utah-only withholding, the "Individuals (names
+  withheld)" label, partial years, DIR-only agencies as peers, old links, name collisions, repository name) stand
+  until the owner decides otherwise.
+- PRD step 9 (per-state metrics on the About page and in the README): the About page has coverage, sources, fiscal
+  years and categorization per state; the README describes tiers and sources and points to the About page for counts.
+
+PRD question still open: first cities beyond those built.
 
 ## How to rebuild
 
@@ -261,6 +360,11 @@ python3 pipeline/sources/<st>_<source>.py fetch             # each adapter; raw 
 python3 pipeline/sources/<st>_<source>.py normalize
 python3 pipeline/sources/merge_vendor_maps.py --check      # folds proposals only if a state wrote vendor_map_additions.csv
 python3 tests/multistate/check_<st>.py
+python3 pipeline/build.py                                  # data/index.json and the per-state site files
+python3 tests/check_build.py
+node tests/core_test.js
+PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers NODE_PATH=/opt/node22/lib/node_modules node tests/page/compare_utah.js
+PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers NODE_PATH=/opt/node22/lib/node_modules node tests/page/screens.js
 ```
 
 Python standard library only. Adapters: `oh_cincinnati`, `oh_checkbook_local`; `ca_sco_districts`, `ca_sco_cities`,
