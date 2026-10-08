@@ -5,7 +5,8 @@
 //   PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers NODE_PATH=/opt/node22/lib/node_modules node tests/page/screens.js \
 //     [--base REF] [--base-url URL --new-url URL] [--shots DIR] [--only 1,2,...]
 //
-// Without URLs, the script serves the working tree (the new page) and `git archive REF index.html data/data.json
+// The new page is the table page, explore.html (the site's index.html before the vendor page); --new-url is its
+// URL (http://host/explore.html). Without URLs, the script serves the working tree (the new page) and `git archive REF index.html data/data.json
 // data/payments.json favicon.svg favicon-32.png` (the page before the states were added; REF defaults to de1e5cf,
 // main before the multi-state page) with python3 -m http.server on two free ports, and stops them at
 // the end. Screenshots go to DIR (default: <tmp>/fire-screens).
@@ -159,7 +160,7 @@ async function shoot(ctxs, url, name, prep, log) {
       execFileSync('tar', ['-x', '-C', tmp], { input: tar });
       baseUrl = await serve(tmp);
     }
-    if (!newUrl) newUrl = await serve(ROOT);
+    if (!newUrl) newUrl = (await serve(ROOT)) + 'explore.html';
     console.log('new page ' + newUrl + ', old page ' + baseUrl + ' (' + BASE_REF + '), screenshots in ' + SHOTS);
     const browser = await chromium.launch();
     const desk = await browser.newContext({ viewport: { width: 1366, height: 900 }, acceptDownloads: true });

@@ -53,7 +53,8 @@ answers; the owner may revisit them):
 6. Texas DIR-only (tier 2) agencies count as peers, with a note that DIR covers IT and telecom only.
 7. Old links without a state show all states; a numeric agency id or a Utah county means Utah.
 8. Vendor slug collisions across states: the Utah name wins.
-9. The repository keeps its name; only the site is renamed.
+9. The repository keeps its name; only the site is renamed. (Revisited 2026-10-08: the owner renamed the repository
+   to `fire-vendors`, so the page is https://pasha594.github.io/fire-vendors/.)
 
 Output of the build of 2026-10-08 (every file under 50 MB; `data/index.json` must stay under 1,000,000 bytes
 gzipped, the build stops otherwise):

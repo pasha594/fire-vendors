@@ -226,6 +226,13 @@ line left out when a credit of the same amount to the same payee cancels it; `de
 unit price, amount, category index (the category of the item's transaction line), source index]`. Items before the
 state's first fiscal year (SCPRS, FY2013 to FY2015) are kept here and shown apart; they are in no row or payment.
 
+`data/stack.json` and `data/stack-tail.json` (the vendor page, `index.html`): written by `pipeline/build_stack.py`
+from `data/index.json` and the state files at the end of `pipeline/build.py`, with the same `built`. Net amounts of
+purchasing categories by agency, vendor (by id), category and fiscal year; the format is in the script's docstring.
+`data/stack.json` (vendors used by two agencies or more) loads with `data/index.json` and must stay under 1,000,000
+bytes gzipped; `data/stack-tail.json` (the other vendors, and `vmap`: each state file's vendor indexes mapped to the
+stack's, so the page reads payments and item lines without the state files) loads after the first view.
+
 Until the multi-state page (commit `de1e5cf` on main), the build wrote Utah alone to `data/data.json` and
 `data/payments.json`, which the page read. They are no longer written. `tests/check_build.py`,
 `tests/core_test.js` and `tests/page/compare_utah.js` read them from that commit (`--base`) to prove Utah reads
