@@ -16,7 +16,7 @@ Outputs
   docs/multistate/vendor-merge.md              report; the block between the 'manual' markers is kept as written
 
 When no additions file exists, nothing is folded: the map is only checked, and the report's cross-state section
-(top vendors by spend over data/data.json and data/states/<st>/transactions.csv.gz) is refreshed.
+(top vendors by spend over data/ut.json and data/states/<st>/transactions.csv.gz) is refreshed.
 
 Rules
   1. Key conflicts. A name_key already in config/vendor_map.csv keeps that row (hand-reviewed for Utah). The only
@@ -571,8 +571,18 @@ BRANDS = [("Zoll", r"\bzoll\b"), ("Stryker / Physio-Control", r"\bstryker\b|\bph
           ("ESO", r"^eso\b"), ("Lexipol", r"^lexipol"), ("Vector Solutions", r"^vector solutions|^target ?solutions")]
 
 
+def utah_rows():
+    """Utah's built rows and vendors (data/ut.json) with the categories of data/index.json; None before a build."""
+    ut, index = ROOT / "data" / "ut.json", ROOT / "data" / "index.json"
+    if not (ut.exists() and index.exists()):
+        return None
+    d = json.loads(ut.read_text(encoding="utf-8"))
+    d["categories"] = json.loads(index.read_text(encoding="utf-8"))["categories"]
+    return d
+
+
 def cross_state(rows, rules, categories):
-    """Spend and agencies per canonical vendor in Utah (data/data.json) and each state's transactions."""
+    """Spend and agencies per canonical vendor in Utah (data/ut.json) and each state's transactions."""
     purchasing = {c["id"] for c in categories if c["purchasing"] == "yes"}
     classify = classifier(rows, rules)
     vcat = {}
@@ -580,9 +590,8 @@ def cross_state(rows, rules, categories):
         vcat.setdefault(r["vendor"], collections.Counter())[r["category"]] += 1
     spend = collections.defaultdict(lambda: collections.defaultdict(float))
     agencies = collections.defaultdict(lambda: collections.defaultdict(set))
-    data = ROOT / "data" / "data.json"
-    if data.exists():
-        d = json.loads(data.read_text(encoding="utf-8"))
+    d = utah_rows()
+    if d:
         by_slug = {}
         for r in rows:
             by_slug.setdefault(slug(r["vendor"]), r["vendor"])
@@ -625,7 +634,7 @@ def cross_state(rows, rules, categories):
 def cross_state_md(rows, rules, categories, n=50):
     table = cross_state(rows, rules, categories)
     out = [CROSS[0], "",
-           f"Top {n} canonical vendors by purchasing spend over the five states: Utah from `data/data.json` (rows in",
+           f"Top {n} canonical vendors by purchasing spend over the five states: Utah from `data/ut.json` (rows in",
            "purchasing categories), the states from `data/states/<st>/transactions.csv.gz` (payee key through",
            "config/vendor_map.csv, then the vendor rules; payees in a purchasing category). Each cell: net dollars",
            "(agencies). Recomputed by every run of the script.", "",
@@ -820,9 +829,8 @@ def main(argv):
     assert not problems, problems[:10]
     write_csv(CONFIG / "vendor_map.csv", FIELDS, rows)
     spend_ut = collections.Counter()
-    data = ROOT / "data" / "data.json"
-    if data.exists():
-        d = json.loads(data.read_text(encoding="utf-8"))
+    d = utah_rows()
+    if d:
         for a, v, y, c, x, al in d["rows"]:
             spend_ut[d["vendors"][v]["id"]] += x
     prop_spend = collections.Counter()
