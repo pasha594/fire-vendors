@@ -5,7 +5,7 @@
     python3 tests/check_build.py --base none  # skip check 1 (after Utah's inputs change on purpose)
 
 1. Utah unchanged: Utah's files from before the multi-state split (data/data.json and data/payments.json, read with
-   git show from --base REF; default de1e5cf, the last commit on main that has them) against data/index.json,
+   git show from --base REF; default de1e5cf, main before the multi-state page) against data/index.json,
    data/ut.json and data/ut-payments.json after mapping ids (agency 359 = 'UT-359', vendor index = vendor id, payee
    name index = text): agencies apart from the added fields, rows in the same order, vendors (id, name, category,
    method, NERIS, payee-name sets), payments and descriptions, grants, categories and meta (built dates aside).
@@ -40,7 +40,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
-BASE = "de1e5cf"   # the last commit on main with data/data.json and data/payments.json (Utah before the split)
+BASE = "de1e5cf"   # main before the multi-state page: its data/data.json and data/payments.json are Utah before the split
 sys.path.insert(0, str(ROOT / "pipeline"))
 import build  # noqa: E402  (string helpers and Utah's dedupe rules, for check 2 and payee names)
 

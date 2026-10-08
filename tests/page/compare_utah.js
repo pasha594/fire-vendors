@@ -4,10 +4,10 @@
 //   PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers NODE_PATH=/opt/node22/lib/node_modules node tests/page/compare_utah.js \
 //     [--base REF] [--base-url URL --new-url URL] [--shots DIR] [--only utah,first,states,controls,cached]
 //
-// REF is a commit whose page read data/data.json, from before the states were split: default de1e5cf, the last
-// commit on main that has data/data.json and data/payments.json. Without URLs, the script serves the working tree
-// (the new page) and `git archive REF index.html data/data.json data/payments.json favicon.svg favicon-32.png`
-// (the old page) with python3 -m http.server on two free ports, and stops them at the end.
+// REF is a commit whose page read data/data.json, from before the states were split: default de1e5cf, main before
+// the multi-state page. Without URLs, the script serves the working tree (the new page) and `git archive REF
+// index.html data/data.json data/payments.json favicon.svg favicon-32.png` (the old page) with python3 -m http.server
+// on two free ports, and stops them at the end.
 //
 // 1. Utah: for each pair of URLs (the old page's URL, the same view on the new page: state=UT added unless a
 //    numeric agency id or a Utah county implies Utah) the innerText of #summary, #tbl-main, #context and #more

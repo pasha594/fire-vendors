@@ -7,7 +7,7 @@
 //
 // Without URLs, the script serves the working tree (the new page) and `git archive REF index.html data/data.json
 // data/payments.json favicon.svg favicon-32.png` (the page before the states were added; REF defaults to de1e5cf,
-// the last commit on main that has data/data.json) with python3 -m http.server on two free ports, and stops them at
+// main before the multi-state page) with python3 -m http.server on two free ports, and stops them at
 // the end. Screenshots go to DIR (default: <tmp>/fire-screens).
 //
 // Checks (every count is read from data/index.json, so a rebuilt data set needs no edit here):
