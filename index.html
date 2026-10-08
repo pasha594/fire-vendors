@@ -3235,6 +3235,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         h += '</ul></li>';
         h += '<li data-src="ut_query_service">' + srcLink('ut_query_service', esc(qs.name || 'Transparent Utah public query service')) + ', for fire districts and interlocal agencies: total expenses per year, revenue in each agency\'s own account names, compensation reports (wages, benefits and job title per employee; employee names are replaced by numbers in the raw files), fiscal year start and website. Revenue totals leave out borrowing, transfers between the agency\'s own funds and donated infrastructure (' + gh('config/revenue_exclusions.csv') + '). Fetched ' + esc(dateText(um.fetched)) + '. Raw files: ' + A(REPO + '/tree/main/' + um.raw_path, esc(um.raw_path)) + '.</li>';
         h += '<li>For cities, towns and counties, annual expenses are their expenses coded fire, including payroll, from the same BigQuery database (' + gh('pipeline/sql/fire_expenses_by_year.sql') + ').</li>';
+        h += '<li>OpenFEMA firefighter grants are matched to Utah agencies by recipient name (' + gh('config/grant_recipients.csv') + ').</li>';
         h += '</ul>' + srcNotes(own.filter(id => id !== 'ut_transparent_utah' && id !== 'ut_query_service'), st);
       } else {
         h += srcNotes(own, st);
