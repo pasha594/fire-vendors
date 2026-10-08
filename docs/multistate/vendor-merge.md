@@ -2304,119 +2304,119 @@ or more of proposed and Utah spend together are listed). Merge one by adding a r
 
 <!-- cross-state:start -->
 
-Top 50 canonical vendors by purchasing spend over the five states: Utah from `data/data.json` (rows in
+Top 50 canonical vendors by purchasing spend over the five states: Utah from `data/ut.json` (rows in
 purchasing categories), the states from `data/states/<st>/transactions.csv.gz` (payee key through
 config/vendor_map.csv, then the vendor rules; payees in a purchasing category). Each cell: net dollars
 (agencies). Recomputed by every run of the script.
 
 | # | Vendor | Category | Total | UT | OH | CA | ID | TX | States |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Amentum | apparatus | $652,315,090 |  |  | $652,315,090 (1) |  |  | 1 |
-| 2 | Logistic Specialties | apparatus | $269,469,982 |  |  | $269,469,982 (1) |  |  | 1 |
-| 3 | Air Methods (United Rotorcraft) | apparatus | $226,652,619 |  |  | $226,652,619 (1) |  |  | 1 |
-| 4 | Perimeter Solutions | wildland | $194,715,834 |  |  | $193,966,134 (1) | $749,700 (1) |  | 2 |
-| 5 | WEX | fleet | $101,607,418 | $518,280 (25) | $2,207,438 (41) | $96,998,386 (2) | $1,883,314 (1) |  | 4 |
-| 6 | L.N. Curtis & Sons | fire-equipment | $91,078,196 | $33,093,028 (165) | $5,932 (3) | $57,074,127 (5) | $905,109 (1) |  | 4 |
-| 7 | Allstar Fire Equipment | fire-equipment | $90,411,881 | $75,442 (2) |  | $90,336,439 (6) |  |  | 2 |
-| 8 | PJ Helicopters | apparatus | $88,766,216 |  |  | $88,766,216 (1) |  |  | 1 |
-| 9 | Helicopter Transport Services | apparatus | $82,540,029 |  |  | $82,540,029 (1) |  |  | 1 |
-| 10 | Siddons-Martin Emergency Group | apparatus | $79,704,448 | $43,256,660 (106) | $2,036 (2) |  |  | $36,445,753 (3) | 3 |
-| 11 | Metro Fire Apparatus Specialists | apparatus | $66,922,636 |  |  |  |  | $66,922,636 (3) | 1 |
-| 12 | Motorola Solutions | radios | $59,308,838 | $8,739,484 (82) | $6,628,475 (99) | $38,478,971 (5) | $97,254 (1) | $5,364,654 (53) | 5 |
-| 13 | Billings Flying Service | apparatus | $58,227,301 |  |  | $58,227,301 (1) |  |  | 1 |
+| 1 | Amentum | apparatus | $652,390,170 |  |  | $652,390,170 (1) |  |  | 1 |
+| 2 | Logistic Specialties | apparatus | $270,529,366 |  |  | $270,529,366 (1) |  |  | 1 |
+| 3 | Air Methods (United Rotorcraft) | apparatus | $251,127,093 |  |  | $251,127,093 (1) |  |  | 1 |
+| 4 | Perimeter Solutions | wildland | $213,015,549 |  |  | $212,265,849 (1) | $749,700 (1) |  | 2 |
+| 5 | WEX | fleet | $101,613,147 | $518,280 (25) | $2,212,965 (41) | $96,998,588 (2) | $1,883,314 (1) |  | 4 |
+| 6 | Helicopter Transport Services | apparatus | $95,120,743 |  |  | $95,120,743 (1) |  |  | 1 |
+| 7 | Allstar Fire Equipment | fire-equipment | $93,849,949 | $75,442 (2) |  | $93,774,508 (6) |  |  | 2 |
+| 8 | L.N. Curtis & Sons | fire-equipment | $92,642,300 | $33,093,028 (165) | $5,932 (3) | $58,638,232 (5) | $905,109 (1) |  | 4 |
+| 9 | PJ Helicopters | apparatus | $92,289,376 |  |  | $92,289,376 (1) |  |  | 1 |
+| 10 | Siddons-Martin Emergency Group | apparatus | $80,440,984 | $43,256,660 (106) | $2,036 (2) |  |  | $37,182,289 (3) | 3 |
+| 11 | Metro Fire Apparatus Specialists | apparatus | $66,925,136 |  |  |  |  | $66,925,136 (3) | 1 |
+| 12 | Billings Flying Service | apparatus | $63,269,142 |  |  | $63,269,142 (1) |  |  | 1 |
+| 13 | Motorola Solutions | radios | $59,418,074 | $8,739,484 (82) | $6,647,018 (99) | $38,569,369 (5) | $97,254 (1) | $5,364,948 (53) | 5 |
 | 14 | JE Dunn Construction | construction | $57,557,606 |  |  |  |  | $57,557,606 (1) | 1 |
-| 15 | US Foods | general | $55,446,000 | $1,417 (2) |  | $55,444,584 (1) |  |  | 2 |
-| 16 | Pacific Gas & Electric | utilities | $47,553,275 |  |  | $47,553,275 (1) |  |  | 1 |
-| 17 | Radiomobile | it | $47,132,772 |  |  | $47,132,772 (2) |  |  | 1 |
-| 18 | Coulson Aviation | apparatus | $46,805,449 |  |  | $46,805,449 (1) |  |  | 1 |
-| 19 | Advanced Data Processing (Intermedix) | ems-billing | $44,399,610 |  |  | $44,399,610 (2) |  |  | 1 |
-| 20 | Municipal Emergency Services | fire-equipment | $43,847,628 | $1,858,969 (65) | $3,634,138 (117) | $27,004,918 (6) |  | $11,349,602 (2) | 4 |
-| 21 | Rosenbauer | apparatus | $41,836,891 | $35,711,665 (18) | $4,685,524 (11) | $1,439,701 (2) |  |  | 3 |
-| 22 | Siller Helicopters | apparatus | $41,744,146 |  |  | $41,744,146 (1) |  |  | 1 |
-| 23 | Columbia Helicopters | apparatus | $38,067,505 |  |  | $38,067,505 (1) |  |  | 1 |
-| 24 | Rezek Equipment | general | $37,597,022 |  |  | $37,597,022 (1) |  |  | 1 |
-| 25 | Stryker | ems-equipment | $37,148,385 | $7,297,986 (55) | $12,444,346 (121) | $10,024,506 (6) |  | $7,381,547 (2) | 4 |
-| 26 | Bauer Compressors | scba | $36,725,596 |  |  | $36,725,596 (5) |  |  | 1 |
-| 27 | AT&T | telecom | $36,517,157 | $1,517,753 (47) | $1,815,831 (92) | $29,048,908 (5) | $345,679 (1) | $3,788,985 (170) | 5 |
-| 28 | Verizon | telecom | $35,113,506 | $1,557,617 (70) | $1,968,038 (125) | $29,895,423 (5) | $308,167 (1) | $1,384,261 (76) | 5 |
-| 29 | Peraton | it | $35,070,574 |  |  | $35,049,238 (2) |  | $21,336 (1) | 2 |
-| 30 | Digitech Computer | ems-billing | $34,719,706 | $174,009 (1) | $841,940 (3) |  |  | $33,703,757 (2) | 3 |
-| 31 | Life-Assist | ems-supplies | $34,087,982 | $2,342,095 (33) | $36,302 (7) | $19,307,689 (5) |  | $12,401,896 (3) | 4 |
-| 32 | ICL Performance Products | wildland | $33,677,540 |  |  | $33,677,540 (1) |  |  | 1 |
-| 33 | Bound Tree Medical | ems-supplies | $30,747,351 | $4,281,744 (55) | $7,557,598 (118) | $9,094,260 (5) |  | $9,813,749 (3) | 4 |
-| 34 | Tom's Equipment Rental | general | $30,516,271 |  |  | $30,516,271 (1) |  |  | 1 |
-| 35 | Hogan & Associates Construction | construction | $29,790,267 | $29,790,267 (6) |  |  |  |  | 1 |
-| 36 | Trust One Components | apparatus | $28,803,794 |  |  | $28,803,794 (1) |  |  | 1 |
-| 37 | Grainger | general | $28,802,984 | $1,159,248 (47) | $1,137,038 (71) | $23,664,713 (5) | $172,163 (1) | $2,669,821 (1) | 5 |
-| 38 | Courtney Aviation | apparatus | $27,864,231 |  |  | $27,864,231 (1) |  |  | 1 |
-| 39 | Flintco | construction | $27,352,466 |  |  |  |  | $27,352,466 (1) | 1 |
-| 40 | Neptune Aviation Services | apparatus | $27,329,166 |  |  | $27,329,166 (1) |  |  | 1 |
-| 41 | Erickson Air-Crane | apparatus | $25,849,873 |  |  | $25,849,873 (2) |  |  | 1 |
-| 42 | SIRQ | construction | $24,688,318 | $24,688,318 (5) |  |  |  |  | 1 |
-| 43 | Technosylva | software | $24,519,464 |  |  | $24,519,464 (1) |  |  | 1 |
-| 44 | All American Emergency Services | general | $24,407,402 |  |  | $24,407,402 (1) |  |  | 1 |
-| 45 | South Coast Fire Equipment | fire-equipment | $24,140,413 |  |  | $24,140,413 (1) |  |  | 1 |
-| 46 | Aero Air | apparatus | $22,854,462 |  |  | $22,854,462 (1) |  |  | 1 |
-| 47 | Big-D Construction | construction | $22,846,215 | $22,846,215 (2) |  |  |  |  | 1 |
-| 48 | Northrop Grumman | rms | $22,657,723 |  |  | $22,657,723 (2) |  |  | 1 |
-| 49 | Helimax Aviation | apparatus | $22,210,882 |  |  | $22,210,882 (1) |  |  | 1 |
-| 50 | Elk Grove Auto Group | fleet | $22,154,376 |  |  | $22,154,376 (2) |  |  | 1 |
+| 15 | US Foods | general | $55,452,234 | $1,417 (2) |  | $55,450,817 (1) |  |  | 2 |
+| 16 | Braun Northwest | ambulance | $49,076,050 | $961,933 (5) |  | $48,114,117 (3) |  |  | 2 |
+| 17 | Pacific Gas & Electric | utilities | $47,585,728 |  |  | $47,585,728 (1) |  |  | 1 |
+| 18 | Coulson Aviation | apparatus | $47,173,199 |  |  | $47,173,199 (1) |  |  | 1 |
+| 19 | Radiomobile | it | $47,132,772 |  |  | $47,132,772 (2) |  |  | 1 |
+| 20 | Municipal Emergency Services | fire-equipment | $45,398,398 | $1,858,969 (65) | $3,659,064 (117) | $28,488,293 (6) |  | $11,392,072 (2) | 4 |
+| 21 | Advanced Data Processing (Intermedix) | ems-billing | $44,399,610 |  |  | $44,399,610 (2) |  |  | 1 |
+| 22 | Siller Helicopters | apparatus | $44,134,170 |  |  | $44,134,170 (1) |  |  | 1 |
+| 23 | Rosenbauer | apparatus | $43,214,956 | $35,711,665 (18) | $4,685,524 (11) | $2,817,766 (2) |  |  | 3 |
+| 24 | Rezek Equipment | general | $38,923,411 |  |  | $38,923,411 (1) |  |  | 1 |
+| 25 | Stryker | ems-equipment | $38,109,053 | $7,297,986 (55) | $12,591,466 (121) | $10,263,183 (6) |  | $7,956,419 (2) | 4 |
+| 26 | AT&T | telecom | $38,095,879 | $1,517,753 (47) | $1,828,181 (92) | $30,615,281 (5) | $345,679 (1) | $3,788,985 (170) | 5 |
+| 27 | Columbia Helicopters | apparatus | $38,086,880 |  |  | $38,086,880 (1) |  |  | 1 |
+| 28 | Watsonville Fleet Group | fleet | $37,916,927 |  |  | $37,916,927 (2) |  |  | 1 |
+| 29 | Bauer Compressors | scba | $37,133,982 |  |  | $37,133,982 (5) |  |  | 1 |
+| 30 | Downtown Ford Sales | fleet | $36,967,382 |  |  | $36,967,382 (1) |  |  | 1 |
+| 31 | Peraton | it | $36,401,744 |  |  | $36,380,408 (2) |  | $21,336 (1) | 2 |
+| 32 | Verizon | telecom | $35,504,602 | $1,557,617 (70) | $1,986,991 (125) | $30,267,566 (5) | $308,167 (1) | $1,384,261 (76) | 5 |
+| 33 | Digitech Computer | ems-billing | $34,719,706 | $174,009 (1) | $841,940 (3) |  |  | $33,703,757 (2) | 3 |
+| 34 | Life-Assist | ems-supplies | $34,643,936 | $2,342,095 (33) | $36,892 (7) | $19,575,795 (5) |  | $12,689,155 (3) | 4 |
+| 35 | Holt of California | fleet | $34,552,298 |  |  | $34,552,298 (1) |  |  | 1 |
+| 36 | ICL Performance Products | wildland | $33,921,359 |  |  | $33,921,359 (1) |  |  | 1 |
+| 37 | Bound Tree Medical | ems-supplies | $31,584,008 | $4,281,744 (55) | $7,620,905 (118) | $9,805,999 (5) |  | $9,875,360 (3) | 4 |
+| 38 | Tom's Equipment Rental | general | $31,448,107 |  |  | $31,448,107 (1) |  |  | 1 |
+| 39 | Riverview International Trucks | fleet | $30,488,601 | $293 (1) |  | $30,488,308 (1) |  |  | 2 |
+| 40 | Elk Grove Auto Group | fleet | $30,461,423 |  |  | $30,461,423 (2) |  |  | 1 |
+| 41 | Hogan & Associates Construction | construction | $29,790,267 | $29,790,267 (6) |  |  |  |  | 1 |
+| 42 | Grainger | general | $29,007,600 | $1,159,248 (47) | $1,143,309 (71) | $23,838,780 (5) | $172,163 (1) | $2,694,099 (1) | 5 |
+| 43 | Trust One Components | apparatus | $28,960,685 |  |  | $28,960,685 (1) |  |  | 1 |
+| 44 | Boise Mobile Equipment | apparatus | $28,503,824 | $241 (1) |  | $27,962,741 (2) | $540,842 (1) |  | 3 |
+| 45 | Courtney Aviation | apparatus | $27,867,831 |  |  | $27,867,831 (1) |  |  | 1 |
+| 46 | Neptune Aviation Services | apparatus | $27,390,366 |  |  | $27,390,366 (1) |  |  | 1 |
+| 47 | Flintco | construction | $27,352,466 |  |  |  |  | $27,352,466 (1) | 1 |
+| 48 | Hme | apparatus | $26,200,776 |  |  | $26,200,776 (1) |  |  | 1 |
+| 49 | Erickson Air-Crane | apparatus | $25,849,873 |  |  | $25,849,873 (2) |  |  | 1 |
+| 50 | All American Emergency Services | general | $24,942,620 |  |  | $24,942,620 (1) |  |  | 1 |
 
-Vendors with purchasing spend in at least three of the five states: 322. The 50
+Vendors with purchasing spend in at least three of the five states: 323. The 50
 with the most spend (the national vendors, each under one name):
 
 | # | Vendor | Category | Total | UT | OH | CA | ID | TX | States |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | WEX | fleet | $101,607,418 | $518,280 (25) | $2,207,438 (41) | $96,998,386 (2) | $1,883,314 (1) |  | 4 |
-| 2 | L.N. Curtis & Sons | fire-equipment | $91,078,196 | $33,093,028 (165) | $5,932 (3) | $57,074,127 (5) | $905,109 (1) |  | 4 |
-| 3 | Siddons-Martin Emergency Group | apparatus | $79,704,448 | $43,256,660 (106) | $2,036 (2) |  |  | $36,445,753 (3) | 3 |
-| 4 | Motorola Solutions | radios | $59,308,838 | $8,739,484 (82) | $6,628,475 (99) | $38,478,971 (5) | $97,254 (1) | $5,364,654 (53) | 5 |
-| 5 | Municipal Emergency Services | fire-equipment | $43,847,628 | $1,858,969 (65) | $3,634,138 (117) | $27,004,918 (6) |  | $11,349,602 (2) | 4 |
-| 6 | Rosenbauer | apparatus | $41,836,891 | $35,711,665 (18) | $4,685,524 (11) | $1,439,701 (2) |  |  | 3 |
-| 7 | Stryker | ems-equipment | $37,148,385 | $7,297,986 (55) | $12,444,346 (121) | $10,024,506 (6) |  | $7,381,547 (2) | 4 |
-| 8 | AT&T | telecom | $36,517,157 | $1,517,753 (47) | $1,815,831 (92) | $29,048,908 (5) | $345,679 (1) | $3,788,985 (170) | 5 |
-| 9 | Verizon | telecom | $35,113,506 | $1,557,617 (70) | $1,968,038 (125) | $29,895,423 (5) | $308,167 (1) | $1,384,261 (76) | 5 |
+| 1 | WEX | fleet | $101,613,147 | $518,280 (25) | $2,212,965 (41) | $96,998,588 (2) | $1,883,314 (1) |  | 4 |
+| 2 | L.N. Curtis & Sons | fire-equipment | $92,642,300 | $33,093,028 (165) | $5,932 (3) | $58,638,232 (5) | $905,109 (1) |  | 4 |
+| 3 | Siddons-Martin Emergency Group | apparatus | $80,440,984 | $43,256,660 (106) | $2,036 (2) |  |  | $37,182,289 (3) | 3 |
+| 4 | Motorola Solutions | radios | $59,418,074 | $8,739,484 (82) | $6,647,018 (99) | $38,569,369 (5) | $97,254 (1) | $5,364,948 (53) | 5 |
+| 5 | Municipal Emergency Services | fire-equipment | $45,398,398 | $1,858,969 (65) | $3,659,064 (117) | $28,488,293 (6) |  | $11,392,072 (2) | 4 |
+| 6 | Rosenbauer | apparatus | $43,214,956 | $35,711,665 (18) | $4,685,524 (11) | $2,817,766 (2) |  |  | 3 |
+| 7 | Stryker | ems-equipment | $38,109,053 | $7,297,986 (55) | $12,591,466 (121) | $10,263,183 (6) |  | $7,956,419 (2) | 4 |
+| 8 | AT&T | telecom | $38,095,879 | $1,517,753 (47) | $1,828,181 (92) | $30,615,281 (5) | $345,679 (1) | $3,788,985 (170) | 5 |
+| 9 | Verizon | telecom | $35,504,602 | $1,557,617 (70) | $1,986,991 (125) | $30,267,566 (5) | $308,167 (1) | $1,384,261 (76) | 5 |
 | 10 | Digitech Computer | ems-billing | $34,719,706 | $174,009 (1) | $841,940 (3) |  |  | $33,703,757 (2) | 3 |
-| 11 | Life-Assist | ems-supplies | $34,087,982 | $2,342,095 (33) | $36,302 (7) | $19,307,689 (5) |  | $12,401,896 (3) | 4 |
-| 12 | Bound Tree Medical | ems-supplies | $30,747,351 | $4,281,744 (55) | $7,557,598 (118) | $9,094,260 (5) |  | $9,813,749 (3) | 4 |
-| 13 | Grainger | general | $28,802,984 | $1,159,248 (47) | $1,137,038 (71) | $23,664,713 (5) | $172,163 (1) | $2,669,821 (1) | 5 |
-| 14 | Zoll Medical | ems-equipment | $21,661,287 | $8,430,452 (47) | $1,801,404 (24) | $10,793,602 (6) |  | $635,830 (1) | 4 |
-| 15 | LION | ppe | $20,553,658 |  | $42,083 (1) | $365,838 (3) |  | $20,145,738 (2) | 3 |
-| 16 | Boise Mobile Equipment | apparatus | $17,929,883 | $241 (1) |  | $17,388,800 (2) | $540,842 (1) |  | 3 |
-| 17 | ImageTrend | rms | $12,970,087 | $2,540,445 (49) | $561,779 (12) | $9,705,622 (3) |  | $162,241 (2) | 4 |
-| 18 | McKesson Medical-Surgical | ems-supplies | $12,907,248 | $26,945 (6) | $42,979 (4) | $12,649,069 (3) |  | $188,255 (1) | 4 |
-| 19 | Insight Public Sector | it | $12,507,948 | $98,789 (7) | $5,508 (1) | $12,273,261 (4) |  | $130,392 (3) | 4 |
-| 20 | Ferrara Fire Apparatus | apparatus | $10,027,626 |  | $1,545,052 (1) | $8,481,160 (1) |  | $1,415 (1) | 3 |
-| 21 | Galls | uniforms | $9,744,636 | $16,516 (15) | $3,109,455 (57) | $6,520,130 (3) |  | $98,535 (2) | 4 |
-| 22 | Henry Schein | ems-supplies | $8,901,838 | $6,347,677 (53) | $2,329,274 (16) | $78,185 (3) |  | $146,701 (2) | 4 |
-| 23 | 49er Communications | radios | $8,144,947 | $210,259 (12) |  | $7,182,543 (3) | $752,145 (1) |  | 3 |
-| 24 | Western Fire Supply | fire-equipment | $7,661,253 | $76,451 (5) | $15,237 (4) | $7,569,565 (2) |  |  | 3 |
-| 25 | Pierce Manufacturing | apparatus | $7,536,638 | $2,410 (2) | $8,235 (3) | $7,525,994 (1) |  |  | 3 |
-| 26 | Vector Solutions | training-software | $7,163,847 | $1,233,062 (35) | $654,916 (23) | $5,275,869 (1) |  |  | 3 |
-| 27 | Tablet Command | rms | $6,859,918 | $57,822 (1) | $78,648 (5) | $6,723,447 (3) |  |  | 3 |
-| 28 | Rocky Mountain Power | utilities | $6,504,282 | $5,861,988 (88) |  | $635,378 (1) | $6,916 (1) |  | 3 |
-| 29 | CDW Government | it | $6,481,855 | $788,847 (22) | $487,859 (34) | $3,462,366 (4) | $21,819 (1) | $1,720,964 (27) | 5 |
-| 30 | Frazer | ambulance | $6,239,339 | $986,679 (1) | $192,621 (1) | $187,990 (1) |  | $4,872,049 (1) | 4 |
-| 31 | Comcast | telecom | $6,120,628 | $1,450,244 (24) | $43,205 (6) | $4,627,178 (1) |  |  | 3 |
-| 32 | National Auto Fleet Group | fleet | $5,455,481 | $459,468 (1) | $91,960 (1) | $4,904,053 (2) |  |  | 3 |
-| 33 | Teleflex | ems-supplies | $5,441,931 | $1,210,809 (39) | $856,300 (62) | $2,139,161 (4) |  | $1,235,662 (2) | 4 |
-| 34 | ESO Solutions | rms | $5,303,931 | $1,121,845 (33) | $3,075,745 (116) | $1,687 (1) |  | $1,104,654 (1) | 4 |
-| 35 | Snap-on | general | $5,186,262 | $9,210 (1) | $2,334 (2) | $5,173,903 (3) |  | $815 (1) | 4 |
-| 36 | Dell Technologies | it | $4,739,997 | $271,898 (26) | $357,456 (22) | $1,494,528 (3) | $23,630 (1) | $2,592,485 (49) | 5 |
+| 11 | Life-Assist | ems-supplies | $34,643,936 | $2,342,095 (33) | $36,892 (7) | $19,575,795 (5) |  | $12,689,155 (3) | 4 |
+| 12 | Bound Tree Medical | ems-supplies | $31,584,008 | $4,281,744 (55) | $7,620,905 (118) | $9,805,999 (5) |  | $9,875,360 (3) | 4 |
+| 13 | Grainger | general | $29,007,600 | $1,159,248 (47) | $1,143,309 (71) | $23,838,780 (5) | $172,163 (1) | $2,694,099 (1) | 5 |
+| 14 | Boise Mobile Equipment | apparatus | $28,503,824 | $241 (1) |  | $27,962,741 (2) | $540,842 (1) |  | 3 |
+| 15 | Zoll Medical | ems-equipment | $21,861,786 | $8,430,452 (47) | $1,802,048 (24) | $10,993,456 (6) |  | $635,830 (1) | 4 |
+| 16 | LION | ppe | $20,572,263 |  | $42,083 (1) | $365,838 (3) |  | $20,164,343 (2) | 3 |
+| 17 | Ferrara Fire Apparatus | apparatus | $14,177,971 |  | $1,545,052 (1) | $12,631,504 (1) |  | $1,415 (1) | 3 |
+| 18 | Frazer | ambulance | $13,404,325 | $986,679 (1) | $192,621 (1) | $195,691 (1) |  | $12,029,334 (1) | 4 |
+| 19 | McKesson Medical-Surgical | ems-supplies | $13,001,678 | $26,945 (6) | $42,996 (4) | $12,742,993 (3) |  | $188,744 (1) | 4 |
+| 20 | ImageTrend | rms | $12,989,796 | $2,540,445 (49) | $580,758 (12) | $9,706,352 (3) |  | $162,241 (2) | 4 |
+| 21 | Insight Public Sector | it | $12,513,316 | $98,789 (7) | $5,508 (1) | $12,278,628 (4) |  | $130,392 (3) | 4 |
+| 22 | Pierce Manufacturing | apparatus | $11,110,159 | $2,410 (2) | $9,360 (3) | $11,098,389 (1) |  |  | 3 |
+| 23 | Galls | uniforms | $10,413,904 | $16,516 (15) | $3,681,223 (57) | $6,617,630 (3) |  | $98,535 (2) | 4 |
+| 24 | Henry Schein | ems-supplies | $8,916,228 | $6,347,677 (53) | $2,343,616 (16) | $78,233 (3) |  | $146,701 (2) | 4 |
+| 25 | 49er Communications | radios | $8,145,001 | $210,259 (12) |  | $7,182,597 (3) | $752,145 (1) |  | 3 |
+| 26 | Western Fire Supply | fire-equipment | $7,714,258 | $76,451 (5) | $15,237 (4) | $7,622,570 (2) |  |  | 3 |
+| 27 | National Auto Fleet Group | fleet | $7,656,635 | $459,468 (1) | $91,960 (1) | $7,105,207 (2) |  |  | 3 |
+| 28 | Vector Solutions | training-software | $7,170,973 | $1,233,062 (35) | $662,042 (23) | $5,275,869 (1) |  |  | 3 |
+| 29 | Tablet Command | rms | $6,863,418 | $57,822 (1) | $82,148 (5) | $6,723,447 (3) |  |  | 3 |
+| 30 | Rocky Mountain Power | utilities | $6,504,282 | $5,861,988 (88) |  | $635,378 (1) | $6,916 (1) |  | 3 |
+| 31 | CDW Government | it | $6,483,756 | $788,847 (22) | $489,588 (34) | $3,462,538 (4) | $21,819 (1) | $1,720,964 (27) | 5 |
+| 32 | Comcast | telecom | $6,268,814 | $1,450,244 (24) | $43,570 (6) | $4,775,000 (1) |  |  | 3 |
+| 33 | Teleflex | ems-supplies | $5,665,207 | $1,210,809 (39) | $889,524 (62) | $2,329,213 (4) |  | $1,235,662 (2) | 4 |
+| 34 | Snap-on | general | $5,599,574 | $9,210 (1) | $2,334 (2) | $5,587,215 (3) |  | $815 (1) | 4 |
+| 35 | ESO Solutions | rms | $5,322,488 | $1,121,845 (33) | $3,094,302 (116) | $1,687 (1) |  | $1,104,654 (1) | 4 |
+| 36 | Dell Technologies | it | $4,745,588 | $271,898 (26) | $357,456 (22) | $1,495,016 (3) | $23,630 (1) | $2,597,588 (49) | 5 |
 | 37 | Carahsoft | software | $4,681,321 | $2,437 (2) |  | $4,392,227 (1) |  | $286,657 (4) | 3 |
-| 38 | Line Gear | uniforms | $4,558,932 | $409 (1) |  | $4,558,008 (3) | $515 (1) |  | 3 |
-| 39 | Amazon | general | $4,270,333 | $1,801,211 (75) | $1,169,793 (69) | $940,670 (4) | $303,761 (1) | $54,898 (1) | 5 |
-| 40 | Staples | general | $3,909,038 | $61,817 (27) | $300,883 (78) | $2,460,927 (4) | $4,995 (1) | $1,080,416 (1) | 5 |
-| 41 | T-Mobile | telecom | $3,804,698 | $269,974 (21) | $91,172 (19) | $3,443,551 (4) |  |  | 3 |
-| 42 | NAPA Auto Parts | fleet | $3,532,178 | $898,794 (56) | $427,833 (82) | $2,129,267 (4) | $76,284 (1) |  | 4 |
-| 43 | Ferno | ems-equipment | $3,396,633 | $217,576 (8) | $51,746 (6) | $3,127,311 (2) |  |  | 3 |
-| 44 | Cummins | facilities | $3,265,464 | $268,713 (20) | $933,397 (57) | $2,063,354 (3) |  |  | 3 |
-| 45 | Lexipol | training-software | $3,056,256 | $1,085,926 (51) | $1,100,282 (59) | $594,758 (1) |  | $275,290 (3) | 4 |
-| 46 | Axon | it | $3,023,366 | $2,505 (1) | $15,151 (2) | $2,825,927 (3) |  | $179,782 (1) | 4 |
-| 47 | HP | it | $3,021,606 | $87,537 (3) |  | $2,814,157 (2) | $1,146 (1) | $118,766 (5) | 4 |
-| 48 | Rush Truck Centers | fleet | $2,999,079 | $646,435 (25) | $299,357 (17) | $1,890,076 (2) | $28 (1) | $163,184 (1) | 5 |
+| 38 | Line Gear | uniforms | $4,595,319 | $409 (1) |  | $4,594,395 (3) | $515 (1) |  | 3 |
+| 39 | Amazon | general | $4,285,847 | $1,801,211 (75) | $1,183,756 (69) | $942,221 (4) | $303,761 (1) | $54,898 (1) | 5 |
+| 40 | Staples | general | $3,932,305 | $61,817 (27) | $302,584 (78) | $2,482,208 (4) | $4,995 (1) | $1,080,700 (1) | 5 |
+| 41 | T-Mobile | telecom | $3,852,681 | $269,974 (21) | $98,266 (19) | $3,484,441 (4) |  |  | 3 |
+| 42 | NAPA Auto Parts | fleet | $3,577,190 | $898,794 (56) | $434,295 (82) | $2,167,818 (4) | $76,284 (1) |  | 4 |
+| 43 | Ferno | ems-equipment | $3,408,776 | $217,576 (8) | $51,746 (6) | $3,139,454 (2) |  |  | 3 |
+| 44 | Cummins | facilities | $3,403,281 | $268,713 (20) | $945,074 (57) | $2,189,494 (3) |  |  | 3 |
+| 45 | Lexipol | training-software | $3,073,643 | $1,085,926 (51) | $1,117,670 (59) | $594,758 (1) |  | $275,290 (3) | 4 |
+| 46 | Axon | it | $3,049,161 | $2,505 (1) | $15,151 (2) | $2,851,723 (3) |  | $179,782 (1) | 4 |
+| 47 | HP | it | $3,023,816 | $87,537 (3) |  | $2,816,367 (2) | $1,146 (1) | $118,766 (5) | 4 |
+| 48 | Rush Truck Centers | fleet | $3,018,310 | $646,435 (25) | $299,437 (17) | $1,909,227 (2) | $28 (1) | $163,184 (1) | 5 |
 | 49 | Mud Lake Oil | fleet | $2,918,746 | $119 (1) |  | $2,868,138 (1) | $50,489 (1) |  | 3 |
-| 50 | FTS Forest Technology Systems | wildland | $2,841,105 | $55,592 (1) |  | $2,670,248 (1) |  | $115,264 (1) | 3 |
+| 50 | FTS Forest Technology Systems | wildland | $2,881,804 | $55,592 (1) |  | $2,710,948 (1) |  | $115,264 (1) | 3 |
 
 Large fire and EMS vendors: every vendor name with purchasing spend whose name matches the brand, so a
 second spelling would show here (Zoll Data Systems is Zoll's ePCR software company, kept apart as in
@@ -2424,33 +2424,33 @@ config/vendor_rules.csv).
 
 | Brand | Vendor names (states) | Total |
 | --- | --- | --- |
-| Zoll | Zoll Medical (UT, OH, CA, TX); Zoll Data Systems (UT, OH) | $21,674,732 |
-| Stryker / Physio-Control | Stryker (UT, OH, CA, TX) | $37,148,385 |
-| L.N. Curtis | L.N. Curtis & Sons (UT, OH, CA, ID) | $91,078,196 |
-| MSA | MSA Safety (UT, OH, CA) | $127,390 |
-| Pierce | Pierce Manufacturing (UT, OH, CA) | $7,536,638 |
-| Motorola | Motorola Solutions (UT, OH, CA, ID, TX) | $59,308,838 |
-| Verizon | Verizon (UT, OH, CA, ID, TX) | $35,113,506 |
-| AT&T | AT&T (UT, OH, CA, ID, TX) | $36,517,157 |
-| Municipal Emergency Services | Municipal Emergency Services (UT, OH, CA, TX) | $43,847,628 |
-| Bound Tree | Bound Tree Medical (UT, OH, CA, TX) | $30,747,351 |
-| Henry Schein | Henry Schein (UT, OH, CA, TX) | $8,901,838 |
-| Life-Assist | Life-Assist (UT, OH, CA, TX) | $34,087,982 |
+| Zoll | Zoll Medical (UT, OH, CA, TX); Zoll Data Systems (UT, OH) | $21,875,295 |
+| Stryker / Physio-Control | Stryker (UT, OH, CA, TX) | $38,109,053 |
+| L.N. Curtis | L.N. Curtis & Sons (UT, OH, CA, ID) | $92,642,300 |
+| MSA | MSA Safety (UT, OH, CA) | $127,620 |
+| Pierce | Pierce Manufacturing (UT, OH, CA) | $11,110,159 |
+| Motorola | Motorola Solutions (UT, OH, CA, ID, TX) | $59,418,074 |
+| Verizon | Verizon (UT, OH, CA, ID, TX) | $35,504,602 |
+| AT&T | AT&T (UT, OH, CA, ID, TX) | $38,095,879 |
+| Municipal Emergency Services | Municipal Emergency Services (UT, OH, CA, TX) | $45,398,398 |
+| Bound Tree | Bound Tree Medical (UT, OH, CA, TX) | $31,584,008 |
+| Henry Schein | Henry Schein (UT, OH, CA, TX) | $8,916,228 |
+| Life-Assist | Life-Assist (UT, OH, CA, TX) | $34,643,936 |
 | Fire-Dex | Fire-Dex (UT, OH, CA) | $375,387 |
-| LION | LION (OH, CA, TX); Lion Creative Studios (OH); LION ENERGY LLC (UT) | $20,591,685 |
-| Rosenbauer | Rosenbauer (UT, OH, CA) | $41,836,891 |
-| Ferrara | Ferrara Fire Apparatus (OH, CA, TX) | $10,027,626 |
-| Sutphen | Sutphen (OH) | $14,823,166 |
-| KME | KME Fire Apparatus (CA) | $7,834,352 |
+| LION | LION (OH, CA, TX); Lion Creative Studios (OH); LION ENERGY LLC (UT) | $20,610,290 |
+| Rosenbauer | Rosenbauer (UT, OH, CA) | $43,214,956 |
+| Ferrara | Ferrara Fire Apparatus (OH, CA, TX) | $14,177,971 |
+| Sutphen | Sutphen (OH) | $14,824,906 |
+| KME | KME Fire Apparatus (CA) | $8,539,771 |
 | Spartan | Spartan Fire (UT, CA) | $447,244 |
-| Grainger | Grainger (UT, OH, CA, ID, TX) | $28,802,984 |
-| Galls | Galls (UT, OH, CA, TX) | $9,744,636 |
-| Teleflex | Teleflex (UT, OH, CA, TX) | $5,441,931 |
-| Ferno | Ferno (UT, OH, CA) | $3,396,633 |
-| ImageTrend | ImageTrend (UT, OH, CA, TX) | $12,970,087 |
-| ESO | ESO Solutions (UT, OH, CA, TX) | $5,303,931 |
-| Lexipol | Lexipol (UT, OH, CA, TX) | $3,056,256 |
-| Vector Solutions | Vector Solutions (UT, OH, CA) | $7,163,847 |
+| Grainger | Grainger (UT, OH, CA, ID, TX) | $29,007,600 |
+| Galls | Galls (UT, OH, CA, TX) | $10,413,904 |
+| Teleflex | Teleflex (UT, OH, CA, TX) | $5,665,207 |
+| Ferno | Ferno (UT, OH, CA) | $3,408,776 |
+| ImageTrend | ImageTrend (UT, OH, CA, TX) | $12,989,796 |
+| ESO | ESO Solutions (UT, OH, CA, TX) | $5,322,488 |
+| Lexipol | Lexipol (UT, OH, CA, TX) | $3,073,643 |
+| Vector Solutions | Vector Solutions (UT, OH, CA) | $7,170,973 |
 
 <!-- cross-state:end -->
 
