@@ -2438,8 +2438,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         return details('d-pay', title + ' <span class="muted">(did not load)</span>', '<p>Payments did not load' + (payError.message ? ': ' + esc(payError.message) : '') + '. Change a filter to try again.</p>');
       }
       // Several states, or one large file (California's), load when the section is opened; Utah's loads at once
+      // whatever its size, as on the page before the other states (a rebuild may grow it past PAY_EAGER_MAX)
       const bytes = ix.states.filter(st => !store.st[st].payments).reduce((n, st) => n + ((store.meta.states[st].bytes_gz || {}).payments || 0), 0);
-      if ((ix.states.length > 1 || bytes > PAY_EAGER_MAX) && !payLoad && !openDetails.has('d-pay')) {
+      if ((ix.states.length > 1 || (bytes > PAY_EAGER_MAX && ix.states[0] !== 'UT')) && !payLoad && !openDetails.has('d-pay')) {
         return details('d-pay', title, '<p>Opening this section loads the single payments of ' + esc(andList(ix.states.map(stName))) + ' (' + fileSize(bytes) + ').</p>');
       }
       loadPayments();

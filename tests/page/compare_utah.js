@@ -249,6 +249,24 @@ async function controls(ctx, newUrl, I) {
     ok(!log.errors.length, 'About: console errors ' + JSON.stringify(log.errors));
     await page.close();
   }
+  // Utah's single payments load with the view, as on the old page, even if a rebuild grows the file past the size
+  // above which another state's payments wait for the section to be opened (meta's size raised here to 2.5 MB)
+  {
+    const c2 = await ctx.browser().newContext({ viewport: { width: 1366, height: 900 } });
+    await c2.route(u => /\/data\/index\.json$/.test(u.pathname), async route => {
+      const r = await route.fetch();
+      const j = await r.json();
+      j.meta.states.UT.bytes_gz.payments = 2500000;
+      await route.fulfill({ response: r, body: JSON.stringify(j) });
+    });
+    const log = { errors: [], data: [] };
+    const page = await open(c2, newUrl + '#/?g=vendor&agency=UT-359', log);
+    await page.waitForFunction(() => { const d = document.getElementById('d-pay'); return d && /\(\d[\d,]*\)/.test(d.querySelector('summary').textContent); }, null, { timeout: 60000 }).catch(() => {});
+    ok(log.data.includes('data/ut-payments.json'), 'Utah payments over the size limit: not loaded with the view (' + log.data.join(' ') + ')');
+    ok(/Largest single payments \(\d/.test(await page.textContent('#d-pay summary')), 'Utah payments over the size limit: no count in Largest single payments');
+    ok(!log.errors.length, 'Utah payments over the size limit: console errors ' + JSON.stringify(log.errors));
+    await c2.close();
+  }
 }
 
 (async () => {
