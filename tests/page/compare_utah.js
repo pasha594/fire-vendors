@@ -4,6 +4,9 @@
 //   PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers NODE_PATH=/opt/node22/lib/node_modules node tests/page/compare_utah.js \
 //     [--base REF] [--base-url URL --new-url URL] [--shots DIR] [--only utah,first,states,controls,cached]
 //
+// The new page is the table page, explore.html (the site's index.html before the vendor page); --new-url is its
+// URL (http://host/explore.html).
+//
 // REF is a commit whose page read data/data.json, from before the states were split: default de1e5cf, main before
 // the multi-state page. Without URLs, the script serves the working tree (the new page) and `git archive REF
 // index.html data/data.json data/payments.json favicon.svg favicon-32.png` (the old page) with python3 -m http.server
@@ -273,7 +276,7 @@ async function controls(ctx, newUrl, I) {
     const c3 = await ctx.browser().newContext({ viewport: { width: 1366, height: 900 } });
     const nUt = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'ut.json'), 'utf8')).vendors.length;
     let patched = false;
-    await c3.route(u => /^\/(index\.html)?$/.test(u.pathname), async route => {
+    await c3.route(u => /^\/explore\.html$/.test(u.pathname), async route => {
       const r = await route.fetch();
       const html = await r.text();
       patched = /VLIST_MAX = \d+/.test(html);
@@ -281,7 +284,7 @@ async function controls(ctx, newUrl, I) {
     });
     const log = { errors: [], data: [] };
     const page = await open(c3, newUrl + '#/?g=vendor&state=UT', log);
-    ok(patched, 'vendor list cap: VLIST_MAX not found in index.html');
+    ok(patched, 'vendor list cap: VLIST_MAX not found in explore.html');
     const n = await page.$$eval('#vendor-list option', o => o.length);
     ok(n > nUt / 2, 'Utah vendor list over the cap: ' + n + ' options, not every Utah vendor');
     await page.goto(newUrl + '#/?g=vendor&state=OH');
@@ -303,7 +306,7 @@ async function controls(ctx, newUrl, I) {
       execFileSync('tar', ['-x', '-C', tmp], { input: tar });
       baseUrl = await serve(tmp);
     }
-    if (!newUrl) newUrl = await serve(ROOT);
+    if (!newUrl) newUrl = (await serve(ROOT)) + 'explore.html';
     console.log('old page ' + baseUrl + ' (' + BASE_REF + '), new page ' + newUrl);
     const browser = await chromium.launch();
     const ctx = await browser.newContext({ viewport: { width: 1366, height: 900 }, acceptDownloads: true });
@@ -390,7 +393,7 @@ async function controls(ctx, newUrl, I) {
       const old = execFileSync('git', ['show', BASE_REF + ':index.html'], { cwd: ROOT, maxBuffer: 1 << 30 });
       const page = await ctx.newPage();
       await page.route(u => /^\/(index\.html)?$/.test(u.pathname), r => r.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: old }));
-      await page.goto(newUrl + '#/');
+      await page.goto(newUrl.replace(/explore\.html$/, '') + '#/');    // the site's root, where the old page was
       let msg = '';
       try {
         await page.waitForFunction(() => /Data did not load/.test(document.body.innerText), null, { timeout: 30000 });

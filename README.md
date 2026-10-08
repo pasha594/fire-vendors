@@ -7,7 +7,20 @@ state and city spending data (one source note per state in `docs/sources/<st>.md
 [OpenFEMA firefighter grants](https://www.fema.gov/openfema-data-page/non-disaster-assistance-firefighter-grants-v1)
 and the [NERIS integration partner list](https://neris.fsri.org/integration-partners).
 
-Page: https://pasha594.github.io/utah-fire-procurement/ (the repository keeps its Utah name).
+Page: https://pasha594.github.io/fire-vendors/ (repository `pasha594/fire-vendors`, named `utah-fire-procurement` until
+2026-10-08; GitHub redirects the old repository URL, but not the old page URL).
+
+The site has two pages:
+
+- `index.html`, the vendor page: which vendors are most used in each category (ranked by how many agencies paid
+  them), each vendor's agencies with what they bought and what they paid (yearly amounts, single payments, item
+  lines with unit prices), and each agency's vendors by category (its stack). Scope by state and county. Fire and
+  EMS categories come first, the rest (fleet, IT, utilities, general supplies...) under "Other spending"
+  (`config/page_sections.csv`). Card issuers, banks and payments without a vendor name are not shown as vendors.
+  Vendor logos come from `logos/` (`config/vendor_logos.csv`).
+- `explore.html`, All data: the filterable, groupable table of every row (the site's `index.html` until the vendor
+  page), with payee names as reported, FEMA grants, annual totals, CSV downloads and the About page. Links made
+  for it before the vendor page (`#/?g=...`, `#/about`) open it from `index.html`.
 
 ## Coverage
 
@@ -60,7 +73,11 @@ references are removed, `config/payee_name_redactions.csv`). Their lines are rea
 
 | Path | What |
 | --- | --- |
-| `index.html` | The page: plain JavaScript, no build step |
+| `index.html` | The vendor page: plain JavaScript, no build step |
+| `explore.html` | All data: the table page (plain JavaScript) |
+| `data/stack.json` | The vendor page's first load with `data/index.json` (about 0.55 MB gzipped): vendors used by two agencies or more, their net amounts by agency, category and fiscal year, and sums for the rest (`pipeline/build_stack.py`) |
+| `data/stack-tail.json` | Vendors used by one agency and their amounts, and each state file's vendor index map; loaded after the first view (agency pages need it) |
+| `logos/` | Vendor logos (site icons), downloaded once by `pipeline/fetch_logos.py` |
 | `data/index.json` | The first load (under 1 MB gzipped): meta per state and per source, categories, every agency of every state with its coverage tier, and the precomputed default table of each scope (all states, each state) |
 | `data/<st>.json` | One state's vendors, payee names, rows, FEMA grants and published annual totals (`ut`, `oh`, `ca`, `id`, `tx`); loaded when a view needs the state |
 | `data/<st>-payments.json` | One state's single payments; loaded when a view shows them (when the section is opened in an all-states view, or for a file over 1 MB gzipped: California) |
@@ -88,7 +105,9 @@ python3 pipeline/fetch.py    # Utah: downloads into raw/<today>/ (about 2 minute
 python3 pipeline/sources/federal.py fetch OH CA ID TX && python3 pipeline/sources/federal.py normalize OH CA ID TX
 python3 pipeline/sources/<st>_<source>.py fetch      # each state adapter (see docs/multistate/STATUS.md)
 python3 pipeline/sources/<st>_<source>.py normalize  # writes data/states/<st>/
-python3 pipeline/build.py    # rebuilds data/index.json and the per-state files (about 3 minutes)
+python3 pipeline/build.py    # rebuilds data/index.json, the per-state files and data/stack*.json (about 3 minutes)
+python3 pipeline/build_stack.py   # data/stack.json and data/stack-tail.json alone (after a config/vendor_logos.csv change)
+python3 pipeline/fetch_logos.py   # downloads logos for config/vendor_logos.csv rows with a domain and no logo yet
 python3 pipeline/build.py --worklist DIR   # also writes DIR/worklist_<st>.csv: payees that need a vendor_map row
 ```
 
@@ -105,8 +124,10 @@ file 50 MB or more. The raw files keep payee names exactly as published, includi
 
 ```
 python3 tests/check_build.py                    # the build output (after python3 pipeline/build.py)
+python3 tests/check_stack.py                    # data/stack*.json against the state files and the default tables
 python3 tests/multistate/check_<st>.py          # each state's normalized files against its raw files; also check_federal.py
-node tests/core_test.js                         # the page's Core in Node
+node tests/stack_test.js                        # the vendor page's VCore in Node
+node tests/core_test.js                         # the table page's Core in Node
 node tests/page/compare_utah.js                 # the page in Chromium (Playwright)
 node tests/page/screens.js                      # views and screenshots, desktop and phone
 ```
@@ -114,10 +135,16 @@ node tests/page/screens.js                      # views and screenshots, desktop
 - `tests/check_build.py`: Utah unchanged against `data/data.json` and `data/payments.json` at `--base REF` (default
   `de1e5cf`; `--base none` skips it after Utah's inputs change on purpose), Utah against its raw file, each other
   state against `data/states/<st>/`, coverage, file sizes, and the precomputed default tables recomputed.
+- `tests/check_stack.py`: every amount of `data/stack*.json` against the state files to the cent, vendor flags and
+  logos, the vendor index maps, and per scope and category the vendor and agency counts and amounts against the
+  default tables of `data/index.json`.
+- `tests/stack_test.js`: the vendor page shows the same numbers before and after `data/stack-tail.json` loads;
+  categories against the default tables; vendor pages, agency stacks and the agencies list agree; payments and item
+  lines map to vendors; search.
 - `tests/core_test.js`: the old page's Core (at `--base`, default `de1e5cf`) on the old Utah files against the new
   Core in the Utah view for about 2,000 generated filter states; the precomputed tables against computed ones.
-- `tests/page/compare_utah.js` and `tests/page/screens.js` serve the working tree and the old page (at `--base`) on
-  free ports, so nothing else needs to run. Both need Node and Playwright with Chromium; for a global install, set
+- `tests/page/compare_utah.js` and `tests/page/screens.js` test the table page (`explore.html`): they serve the working
+  tree and the old page (at `--base`) on free ports, so nothing else needs to run. Both need Node and Playwright with Chromium; for a global install, set
   `NODE_PATH` to the global modules folder (`NODE_PATH=$(npm root -g)`) and `PLAYWRIGHT_BROWSERS_PATH` to the folder
   that holds Chromium, if it is not Playwright's default.
 - The tests read the old files with `git` from `de1e5cf`, so they need a clone with history (not `--depth 1`).
@@ -142,6 +169,8 @@ node tests/page/screens.js                      # views and screenshots, desktop
 | `config/revenue_exclusions.csv` | Utah revenue accounts left out of revenue totals (borrowing, transfers, donated infrastructure) |
 | `config/grant_recipients.csv` | Utah: FEMA grant recipient names matched to agencies (`agency_id`) |
 | `config/neris_partners.csv` | NERIS integration partners, used to flag vendors |
+| `config/page_sections.csv` | The vendor page: purchasing categories in page order, `fire` (Fire and EMS) or `other` (Other spending) |
+| `config/vendor_logos.csv` | The vendor page: each vendor's website domain (researched by hand for the vendors most agencies use), its logo file in `logos/` and where it was downloaded from |
 
 ## Sources
 

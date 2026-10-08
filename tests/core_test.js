@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Core of index.html in node: Utah is unchanged, and the precomputed default tables match the computed ones.
+// Core of explore.html (the table page; index.html before the vendor page) in node: Utah is unchanged, and the precomputed default tables match the computed ones.
 //
 //   node tests/core_test.js [--base REF]
 //
@@ -34,7 +34,7 @@ const readData = f => JSON.parse(fs.readFileSync(path.join(ROOT, 'data', f), 'ut
 const readLegacy = f => JSON.parse(git(BASE, 'data/' + f));
 
 const OldCore = loadCore(git(BASE, 'index.html'));
-const Core = loadCore(fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'));
+const Core = loadCore(fs.readFileSync(path.join(ROOT, 'explore.html'), 'utf8'));
 
 let checks = 0, failures = 0;
 const fail = (what, a, b) => {

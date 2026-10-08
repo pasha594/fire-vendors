@@ -59,6 +59,8 @@ import pathlib
 import re
 import sys
 
+import build_stack                                           # the vendor page's files, written at the end of main()
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CONFIG = ROOT / "config"
 DATA = ROOT / "data"
@@ -1445,6 +1447,8 @@ def main(worklist_dir=None):
     bad = sum(report_state(b) for b in builds[1:])
     home = home_tables(builds, categories)
     write_outputs(builds, categories, home)
+    print()
+    build_stack.main()                                        # data/stack.json and data/stack-tail.json (the vendor page)
     if worklist_dir:
         out = pathlib.Path(worklist_dir)
         out.mkdir(parents=True, exist_ok=True)
