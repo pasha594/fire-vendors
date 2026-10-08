@@ -359,6 +359,9 @@ def check_home(I, files, states_cfg):
 
 
 def main(argv):
+    if argv and (argv[0] != "--base" or len(argv) != 2):
+        sys.exit("usage: python3 tests/check_build.py [--base REF | --base none]")
+    base = argv[1] if argv else BASE
     I = load("index.json")
     states_cfg = build.read_states()
     check(list(states_cfg) == I["meta"]["states_order"], "states_order differs from config/states.csv")
@@ -371,7 +374,6 @@ def main(argv):
     cat_ids = [c["id"] for c in I["categories"]]
     purchasing = {c["id"] for c in I["categories"] if c["purchasing"] == "yes"}
     U, UP = files["ut.json"], files["ut-payments.json"]
-    base = argv[argv.index("--base") + 1] if "--base" in argv else BASE
     if base == "none":
         print("1. Utah against the files from before the split: skipped (--base none)")
     else:

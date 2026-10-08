@@ -107,8 +107,8 @@ file 50 MB or more. The raw files keep payee names exactly as published, includi
 python3 tests/check_build.py                    # the build output (after python3 pipeline/build.py)
 python3 tests/multistate/check_<st>.py          # each state's normalized files against its raw files; also check_federal.py
 node tests/core_test.js                         # the page's Core in Node
-PLAYWRIGHT_BROWSERS_PATH=... NODE_PATH=... node tests/page/compare_utah.js   # the page in Chromium (Playwright)
-PLAYWRIGHT_BROWSERS_PATH=... NODE_PATH=... node tests/page/screens.js        # views and screenshots, desktop and phone
+node tests/page/compare_utah.js                 # the page in Chromium (Playwright)
+node tests/page/screens.js                      # views and screenshots, desktop and phone
 ```
 
 - `tests/check_build.py`: Utah unchanged against `data/data.json` and `data/payments.json` at `--base REF` (default
@@ -117,7 +117,10 @@ PLAYWRIGHT_BROWSERS_PATH=... NODE_PATH=... node tests/page/screens.js        # v
 - `tests/core_test.js`: the old page's Core (at `--base`, default `de1e5cf`) on the old Utah files against the new
   Core in the Utah view for about 2,000 generated filter states; the precomputed tables against computed ones.
 - `tests/page/compare_utah.js` and `tests/page/screens.js` serve the working tree and the old page (at `--base`) on
-  free ports, so nothing else needs to run. Both need Node and Playwright with Chromium.
+  free ports, so nothing else needs to run. Both need Node and Playwright with Chromium; for a global install, set
+  `NODE_PATH` to the global modules folder (`NODE_PATH=$(npm root -g)`) and `PLAYWRIGHT_BROWSERS_PATH` to the folder
+  that holds Chromium, if it is not Playwright's default.
+- The tests read the old files with `git` from `de1e5cf`, so they need a clone with history (not `--depth 1`).
 
 ## Config files
 

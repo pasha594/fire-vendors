@@ -195,7 +195,8 @@ when `data/index.json` would be 1,000,000 bytes gzipped or more, or any file 50 
     `transactions_fetched`, `transactions_file`, `fire_expenses_file`, `transparent_utah`).
   - `meta.sources.<id>`: `state` (null for federal), `name`, `tier` (null for a source that sets no tier), `url`,
     `note` and `raw` (a path, or one per state for `usfa` and `openfema`); state sources also `years`, `fiscal_year`
-    and `fetched`, from `config/states/<st>/sources.csv`.
+    and `fetched`, from `config/states/<st>/sources.csv` (Utah's two from build.py); other states' sources also
+    `raw_dir` (the source's newest `raw/<date>/<st>/<source>/` folder, which the page links).
 - `categories`: `config/categories.csv` rows.
 - `agencies`: Utah first in its old order, then each state in `agencies.json` order. Every agency has `id`, `state`,
   `name`, `kind`, `county`, `city`, `type`, `staffing`, `staffing_group`, `usfa` (`fdid`, `name`, stations and
