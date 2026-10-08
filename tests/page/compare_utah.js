@@ -267,6 +267,30 @@ async function controls(ctx, newUrl, I) {
     ok(!log.errors.length, 'Utah payments over the size limit: console errors ' + JSON.stringify(log.errors));
     await c2.close();
   }
+  // Utah's vendor box lists every Utah vendor, as on the old page, even with more vendors than the cap above which
+  // another state's box suggests matches as the user types (the page's VLIST_MAX lowered here below Utah's count)
+  {
+    const c3 = await ctx.browser().newContext({ viewport: { width: 1366, height: 900 } });
+    const nUt = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'ut.json'), 'utf8')).vendors.length;
+    let patched = false;
+    await c3.route(u => /^\/(index\.html)?$/.test(u.pathname), async route => {
+      const r = await route.fetch();
+      const html = await r.text();
+      patched = /VLIST_MAX = \d+/.test(html);
+      await route.fulfill({ response: r, body: html.replace(/VLIST_MAX = \d+/, 'VLIST_MAX = ' + Math.floor(nUt / 2)) });
+    });
+    const log = { errors: [], data: [] };
+    const page = await open(c3, newUrl + '#/?g=vendor&state=UT', log);
+    ok(patched, 'vendor list cap: VLIST_MAX not found in index.html');
+    const n = await page.$$eval('#vendor-list option', o => o.length);
+    ok(n > nUt / 2, 'Utah vendor list over the cap: ' + n + ' options, not every Utah vendor');
+    await page.goto(newUrl + '#/?g=vendor&state=OH');
+    await page.waitForFunction(DONE, null, { timeout: 60000 });
+    const m = await page.$$eval('#vendor-list option', o => o.length);
+    ok(m === 0, 'Ohio vendor list over the cap: ' + m + ' options before typing');
+    ok(!log.errors.length, 'vendor list cap: console errors ' + JSON.stringify(log.errors));
+    await c3.close();
+  }
 }
 
 (async () => {

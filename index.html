@@ -2714,14 +2714,14 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const vk = ix.scope + ':' + store.version;
     if (ctlFor.vendors !== vk) { fillVendors(); ctlFor.vendors = vk; }
   }
-  // The vendor list: every vendor of the view (as before for Utah), or with more than VLIST_MAX of them,
-  // up to VLIST_SHOW that match the typed text (suggestVendors)
+  // The vendor list: every vendor of the view (as before for Utah, whatever its count), or with more than
+  // VLIST_MAX of them, up to VLIST_SHOW that match the typed text (suggestVendors)
   const VLIST_MAX = 15000, VLIST_SHOW = 200;
   function fillVendors() {
     const vs = [...ix.vendorPos.values()].map(vi => V()[vi]);
     vendorByName = new Map(vs.map(v => [v.name.toLowerCase(), v.id]));
     const names = vs.map(v => v.name).sort(coll.compare);
-    vendorNames = names.length > VLIST_MAX ? names : null;
+    vendorNames = names.length > VLIST_MAX && !(ix.states.length === 1 && ix.states[0] === 'UT') ? names : null;
     $('vendor-list').innerHTML = vendorNames ? '' : names.map(n => '<option value="' + esc(n) + '"></option>').join('');
   }
   function suggestVendors() {
