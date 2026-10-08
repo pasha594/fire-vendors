@@ -1841,7 +1841,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     const t = {
       id: 'main-' + g, file: fileName(), wide: true, labelId: 'page-h', allRows: m.items, rows: m.items, byYear, pre: m.pre,
       hint: m.nodata || (m.noneData && !m.items.length) ? '' : 'Select a row to filter to it and ' + then + '.',
-      empty: !m.peers.size ? 'No agencies match the agency filters.'
+      empty: !m.peers.size ? noPeersText()
         : m.nodata ? 'No vendor data: ' + (m.nodata === 3 ? 'this agency has published annual totals only (below).' : 'this agency is in the directory only.')
         : m.noneData ? 'No vendor data: the agencies in these filters have published annual totals only or are in the directory only' +
           (S.g !== 'agency' ? ' (Group by Agency lists them).' : '.')
@@ -2062,7 +2062,12 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
         andList(ids.map(id => srcLink(id) + ' (' + firstClause(id) + ')')) + ', so ' + (S.agency != null ? 'its' : 'their') + ' other purchases are not here.</p>';
     }
     if (S.np) {
-      t.notes += '<p class="note">Non-purchasing payments include transfers between agencies in this list (for example Unified Fire Service Area to Unified Fire Authority), so totals can count that money twice.</p>';
+      // The example names agencies of a state in scope (Utah's text as before)
+      t.notes += ix.states.includes('UT')
+        ? '<p class="note">Non-purchasing payments include transfers between agencies in this list (for example Unified Fire Service Area to Unified Fire Authority), so totals can count that money twice.</p>'
+        : '<p class="note">Non-purchasing payments can include transfers between agencies in this list' +
+          (ix.states.includes('CA') ? ' (for example Riverside County Fire Department to CAL FIRE)' : '') +
+          ', so totals can count that money twice.</p>';
     }
     if (m.nodata) t.hint = '';
     if (m.noneData && !m.items.length) t.notes = '';          // no rows: the notes on columns and amounts do not apply
@@ -2828,6 +2833,15 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     msg.textContent = hits.length ? 'Several vendors match. Pick one from the list.' : 'No vendor matches "' + raw + '".';
   }
   // The annual expenses range an agency is in, or undefined without an expense figure
+  // No agency matches (plain text): outside Utah, say when it is because no agency in the scope (and county) has annual expenses
+  function noPeersText() {
+    let t = 'No agencies match the agency filters.';
+    if (!S.size || ix.states.includes('UT')) return t;
+    const any = ix.D.agencies.some(a => (!S.county || a.county === S.county) && ix.latest.get(a.id));
+    if (!any) t = 'No agencies match the agency filters: no agency ' + (S.county ? 'in ' + S.county + ' County, ' : 'in ') + andList(ix.states.map(stName)) +
+      ' has published annual expenses, which the Annual expenses filter uses.';
+    return t;
+  }
   function sizeOf(id) {
     const lat = ix.latest.get(id);
     return lat ? Core.SIZES.find(z => lat.amount >= z.lo && lat.amount < z.hi) : undefined;
@@ -3091,7 +3105,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') (function 
     // Summary sentence
     const sum = m.sum;
     let s;
-    if (S.agency == null && !m.peers.size) s = 'No agencies match the agency filters.';
+    if (S.agency == null && !m.peers.size) s = esc(noPeersText());
     else {
       // Agencies without vendor data (totals or directory only) are not counted
       const pd = m.peersData;
