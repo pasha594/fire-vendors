@@ -1,13 +1,14 @@
 """Checks of the multi-state build output (pipeline/build.py). Run after a build:
 
-    python3 tests/check_build.py                 # check data/ as built
-    python3 tests/check_build.py --base de1e5cf  # also: data/data.json and data/payments.json equal that commit's
-                                                 # files, apart from meta.built and payments.json's built
+    python3 tests/check_build.py              # check data/ as built
+    python3 tests/check_build.py --base REF   # check 1 against another commit that has data/data.json
+    python3 tests/check_build.py --base none  # skip check 1 (after Utah's inputs change on purpose)
 
-1. Utah unchanged: the legacy files (data/data.json, data/payments.json) against data/index.json, data/ut.json and
-   data/ut-payments.json after mapping ids (agency 359 = 'UT-359', vendor index = vendor id, payee name index = text):
-   agencies apart from the added fields, rows in the same order, vendors (id, name, category, method, NERIS,
-   payee-name sets), payments and descriptions, grants, categories and meta.
+1. Utah unchanged: Utah's files from before the multi-state split (data/data.json and data/payments.json, read with
+   git show from --base REF; default de1e5cf, the last commit on main that has them) against data/index.json,
+   data/ut.json and data/ut-payments.json after mapping ids (agency 359 = 'UT-359', vendor index = vendor id, payee
+   name index = text): agencies apart from the added fields, rows in the same order, vendors (id, name, category,
+   method, NERIS, payee-name sets), payments and descriptions, grants, categories and meta (built dates aside).
 2. Utah against the raw file: per agency, the net of its rows equals its raw transaction lines (lines left out by
    build.py's reupload_copies and police_only rules excluded), to half a cent per row.
 3. Other states against data/states/<st>/ (recomputed here from the normalized files):
@@ -22,7 +23,8 @@
 4. Coverage: every agency at tier 1 or 2 has rows, except the Utah agencies with no raw lines (kept at $0, owner
    decision); no agency at tier 3 or 4 has rows, payments or items; coverage counts agree with the agencies.
 5. Files: every file carries the same built date; data/index.json is under 1,000,000 bytes gzipped and every data
-   file under 50 MB; ids and indexes resolve; a vendor id has one name in every state.
+   file under 50 MB; no data/data.json or data/payments.json is left; ids and indexes resolve; a vendor id has one
+   name in every state.
 6. home: the default table per scope (ALL and each state) recomputed from the state files with exact sums
    (math.fsum), compared to data/index.json: spend within a cent, row, vendor and agency counts and last year exact.
 """
@@ -38,6 +40,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
+BASE = "de1e5cf"   # the last commit on main with data/data.json and data/payments.json (Utah before the split)
 sys.path.insert(0, str(ROOT / "pipeline"))
 import build  # noqa: E402  (string helpers and Utah's dedupe rules, for check 2 and payee names)
 
@@ -72,9 +75,17 @@ def legacy(aid):
 
 # --- 1. Utah unchanged ---------------------------------------------------------------------------------------------
 
-def check_utah_equivalence(I, U, UP):
-    D, LP = load("data.json"), load("payments.json")
-    print(f"1. Utah: legacy data.json ({len(D['rows'])} rows) against index.json and ut.json")
+def git_json(ref, path):
+    r = subprocess.run(["git", "show", f"{ref}:{path}"], cwd=ROOT, capture_output=True)
+    if r.returncode:
+        sys.exit(f"cannot read {path} at {ref}: {r.stderr.decode().strip()}\n"
+                 f"pass --base <a commit that has {path}>, or --base none to skip check 1")
+    return json.loads(r.stdout)
+
+
+def check_utah_equivalence(I, U, UP, ref):
+    D, LP = git_json(ref, "data/data.json"), git_json(ref, "data/payments.json")
+    print(f"1. Utah: data/data.json at {ref} ({len(D['rows'])} rows) against index.json and ut.json")
     check(D["categories"] == I["categories"], "categories differ")
     added = {"state", "coverage", "sources", "tu_id", "lines"}
     ut_ag = [a for a in I["agencies"] if a["state"] == "UT"]
@@ -99,20 +110,7 @@ def check_utah_equivalence(I, U, UP):
     same = [k for k in D["meta"] if k not in ("built", "payments_file")]
     check(all(m.get(k) == D["meta"][k] for k in same), "Utah meta differs: " +
           ", ".join(k for k in same if m.get(k) != D["meta"][k]))
-    check(D["meta"]["built"] == I["meta"]["built"] == LP["built"], "legacy built dates differ from index.json")
     check(U["totals"] == [] and m["coverage_counts"] == {"1": len(ut_ag), "2": 0, "3": 0, "4": 0}, "Utah totals or coverage")
-    return D
-
-
-def check_base(ref):
-    print(f"   data/data.json and data/payments.json against {ref}")
-    for name in ("data.json", "payments.json"):
-        old = json.loads(subprocess.run(["git", "show", f"{ref}:data/{name}"], cwd=ROOT, check=True,
-                                        capture_output=True).stdout)
-        new = load(name)
-        for x in (old, new):
-            (x["meta"] if "meta" in x else x)["built"] = None
-        check(old == new, f"data/{name} differs from {ref} (built ignored)")
 
 
 # --- 2. Utah against the raw file -----------------------------------------------------------------------------------
@@ -287,6 +285,8 @@ def check_files(I, files):
         check(x.get("built", (x.get("meta") or {}).get("built")) == built, f"data/{name}: built differs from index.json")
     gz = len(gzip.compress((DATA / "index.json").read_bytes(), compresslevel=9, mtime=0))
     check(gz < 1_000_000, f"data/index.json is {gz:,} bytes gzipped")
+    stale = [n for n in ("data.json", "payments.json") if (DATA / n).exists()]
+    check(not stale, f"files the build no longer writes (the page before the split read them): {stale}")
     big = [p.name for p in DATA.rglob("*") if p.is_file() and p.stat().st_size >= 50_000_000]
     check(not big, f"files of 50 MB or more: {big}")
     ids = [a["id"] for a in I["agencies"]]
@@ -371,10 +371,11 @@ def main(argv):
     cat_ids = [c["id"] for c in I["categories"]]
     purchasing = {c["id"] for c in I["categories"] if c["purchasing"] == "yes"}
     U, UP = files["ut.json"], files["ut-payments.json"]
-    D = check_utah_equivalence(I, U, UP)
-    files["data.json"], files["payments.json"] = D, load("payments.json")
-    if "--base" in argv:
-        check_base(argv[argv.index("--base") + 1])
+    base = argv[argv.index("--base") + 1] if "--base" in argv else BASE
+    if base == "none":
+        print("1. Utah against the files from before the split: skipped (--base none)")
+    else:
+        check_utah_equivalence(I, U, UP, base)
     check_utah_raw(U, I)
     for st in I["meta"]["states_order"][1:]:
         low = st.lower()

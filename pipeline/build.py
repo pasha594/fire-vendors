@@ -9,7 +9,6 @@ Output (all compact JSON, deterministic; every file carries the same "built" dat
   data/<st>.json           vendors, payee names, rows, grants and published totals of one state (ut, oh, ca, id, tx)
   data/<st>-payments.json  single payments of one state
   data/<st>-items.json     item lines (tier 2: Texas DIR, California SCPRS)
-  data/data.json, data/payments.json   Utah only, in the format the page read before the multi-state split
 States, their fiscal years and partial years are in config/states.csv. Other states are read from the normalized
 files of docs/multistate/data-contract.md (data/states/<st>/) and classified with the same rules as Utah, but with
 no person grouping and no withholding: their payee names and descriptions are shown as published.
@@ -378,12 +377,6 @@ def ut_sort_key(aid):
     """Today's Utah order: numeric ids in number order, then any slug ids."""
     t = aid[3:]
     return (0, int(t), "") if t.isdigit() else (1, 0, t)
-
-
-def legacy_id(aid):
-    """The id data/data.json used before the multi-state split: the number ('UT-359' -> 359)."""
-    t = aid[3:]
-    return int(t) if t.isdigit() else t
 
 
 class Rules:
@@ -904,7 +897,6 @@ def build_utah(rules, categories, cat_pos, neris):
         "raw_path": f"raw/{raw.name}",
         "transactions_file": rel(tx_path),
         "fire_expenses_file": rel(fx_path),
-        "payments_file": "data/payments.json",
         "transparent_utah": TU_SITE,
         "counts": {"agencies": len(agencies), "vendors": len(vendors), "rows": len(rows), "grants": len(grants),
                    "payments": len(payments), "lines": sum(raw_lines.values()),
@@ -983,7 +975,7 @@ def report_utah(ut):
     for r in rows:
         net[r[0]] += r[4]
     raw_total = R["raw_total"]
-    print(f"\n{'agency':58} {'lines':>7} {'raw file $':>15} {'data.json $':>15} {'diff':>6}")
+    print(f"\n{'agency':58} {'lines':>7} {'raw file $':>15} {'rows $':>15} {'diff':>6}")
     bad = 0
     for a in sorted(agencies, key=lambda a: -abs(raw_total.get(a["id"], 0))):
         diff = net.get(a["id"], 0) - raw_total.get(a["id"], 0)
@@ -992,22 +984,6 @@ def report_utah(ut):
               f" {diff:6.2f}" + ("" if raw_lines[a["id"]] else "  (no lines)"))
     print(f"{len(agencies) - bad} of {len(agencies)} agencies match the raw file")
     return bad
-
-
-def legacy_files(ut, categories, built):
-    """Today's data/data.json and data/payments.json bodies for Utah (numeric agency ids, no multi-state fields)."""
-    added = {"state", "coverage", "sources", "tu_id", "lines"}
-    agencies = [{"id": legacy_id(a["id"]), **{k: v for k, v in a.items() if k not in added and k != "id"}}
-                for a in ut["agencies"]]
-    rows = [[legacy_id(r[0])] + r[1:] for r in ut["rows"]]
-    grants = [{**g, "agency": legacy_id(g["agency"])} for g in ut["grants"]]
-    payments = [[legacy_id(p[0])] + p[1:] for p in ut["payments"]]
-    out = {"meta": {**ut["meta"], "built": built}, "categories": categories, "agencies": agencies,
-           "vendors": ut["vendors"], "aliases": ut["aliases"], "rows": rows, "grants": grants}
-    body = json.dumps(out, separators=(",", ":"), ensure_ascii=False).encode()
-    pbody = json.dumps({"built": built, "payments": payments, "descriptions": ut["descriptions"]},
-                       separators=(",", ":"), ensure_ascii=False).encode()
-    return body, pbody
 
 
 # --- Other states (data/states/<st>/, docs/multistate/data-contract.md) -----------------------------------------
@@ -1404,7 +1380,7 @@ def gz_size(body):
 
 def write_outputs(builds, categories, home):
     """Serialize every file, check the size limits, then write: data/index.json, data/<st>.json,
-    data/<st>-payments.json, data/<st>-items.json and Utah's legacy data/data.json and data/payments.json."""
+    data/<st>-payments.json and data/<st>-items.json."""
     built = datetime.date.today().isoformat()
     files = {}                                                # path relative to data/ -> body
     states_meta, sources = {}, {}
@@ -1443,8 +1419,7 @@ def write_outputs(builds, categories, home):
             "states": states_meta, "sources": sources}
     index = dumps({"meta": meta, "categories": categories, "agencies": [a for b in builds for a in b["agencies"]],
                    "home": home})
-    legacy, legacy_pay = legacy_files(builds[0], categories, built)
-    out = {"index.json": index, **files, "data.json": legacy, "payments.json": legacy_pay}
+    out = {"index.json": index, **files}
     problems = [f"data/index.json is {gz_size(index):,} bytes gzipped, over {INDEX_MAX_GZ:,}"] if gz_size(index) > INDEX_MAX_GZ else []
     problems += [f"data/{p} is {len(body):,} bytes, over {FILE_MAX:,}" for p, body in out.items() if len(body) > FILE_MAX]
     if problems:
