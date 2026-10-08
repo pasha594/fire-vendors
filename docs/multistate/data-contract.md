@@ -1,7 +1,8 @@
 # Multi-state data contract
 
-Format of the files the multi-state adapters write, so `pipeline/build.py` can merge them once the Utah
-rewrite lands (PRD build-order steps 1 and 8). PRD: `docs/prd/multistate-expansion.md`.
+Format of the files the multi-state adapters write, which `pipeline/build.py` merges with Utah, and of the site
+files the build writes from them (PRD build-order steps 1 and 8, done; section "Site files" below). PRD:
+`docs/prd/multistate-expansion.md`.
 
 All files are UTF-8. CSV files have a header row, comma separator, `\n` line ends and are sorted, so a rebuild
 from the same raw files is byte-identical. `<st>` is the lower-case state code (`oh`, `ca`, `id`, `tx`).
@@ -36,7 +37,8 @@ replaces only the rows whose `source` is that adapter's, so adapters can run in 
 - `<ST>-X-<name>-<city>` for registry rows without an FDID.
 - `<ST>-S-<slug>` for agencies added from a source (`agencies_added.csv`), for example a fire protection
   district the registry does not list.
-- Utah will use `UT-<Transparent Utah id>` when step 1 lands.
+- Utah: `UT-<Transparent Utah id>`, for example `UT-359` (`tu_id` 359). Older page links with a number
+  (`agency=359`) still resolve to the Utah agency.
 
 ## `config/states/<st>/sources.csv`
 
@@ -165,7 +167,71 @@ A state adds vendors the same way as before, then merges:
 `python3 pipeline/sources/merge_vendor_maps.py --check` checks the map alone (sorted unique keys, known
 categories, no name that `config/vendor_name_merges.csv` renames).
 
+## Site files (`data/`, written by `pipeline/build.py`)
+
+`python3 pipeline/build.py` reads `config/states.csv` (states in page order, `years`, `partial_years`), builds Utah
+from its raw files and every other state from `data/states/<st>/`, and writes the files below: compact JSON, UTF-8
+(`ensure_ascii=False`), sorted, so two builds from the same inputs are byte-identical. Every file carries the same
+`built` date, and the page refuses a file whose `built` differs from `data/index.json`'s. The build writes nothing
+when `data/index.json` would be 1,000,000 bytes gzipped or more, or any file 50 MB or more. Indexes below are
+0-based; a category index points into `categories`, a vendor or payee-name index into the same state file.
+
+| File | Loaded | Content |
+| --- | --- | --- |
+| `data/index.json` | First, always | `meta`, `categories`, `agencies` (every state), `home` |
+| `data/<st>.json` | When a view needs the state's rows | `{built, state, vendors, aliases, rows, grants, totals}` |
+| `data/<st>-payments.json` | When a view shows single payments | `{built, state, payments, descriptions}` |
+| `data/<st>-items.json` | For a vendor or agency of a state with item lines (`tx`, `ca`) | `{built, state, sources, strings, items}` |
+
+`data/index.json`:
+- `meta`: `built`, `site`, `states_order` (as `config/states.csv`), `years` and `partial_years` (all states), `states`
+  and `sources`.
+  - `meta.states.<ST>`: `name`, `years`, `partial_years`, `fetched`, `counts`, `purchasing_total`,
+    `purchasing_classified_share`, `coverage` (purchasing and all-line dollars and lines by how the category was
+    set), `coverage_counts` (agencies per tier), `payments_rule`, `sources` (source ids, federal ones included),
+    `files` (`rows`, `payments`, `items` paths or null), `bytes_gz` (gzipped sizes the page shows while loading),
+    `registry_raw`, `grants_raw`; other states also `lines_out_of_range` and `lines_out_of_range_by_source` (lines
+    outside the state's years). Utah also keeps the other keys its meta had before the split (`raw_path`,
+    `transactions_fetched`, `transactions_file`, `fire_expenses_file`, `transparent_utah`).
+  - `meta.sources.<id>`: `state` (null for federal), `name`, `tier` (null for a source that sets no tier), `url`,
+    `note` and `raw` (a path, or one per state for `usfa` and `openfema`); state sources also `years`, `fiscal_year`
+    and `fetched`, from `config/states/<st>/sources.csv`.
+- `categories`: `config/categories.csv` rows.
+- `agencies`: Utah first in its old order, then each state in `agencies.json` order. Every agency has `id`, `state`,
+  `name`, `kind`, `county`, `city`, `type`, `staffing`, `staffing_group`, `usfa` (`fdid`, `name`, stations and
+  firefighter counts, or null), `budget` (`{"<fy>": amount}`: Utah's expenses, other states' published annual totals
+  summed), `budget_source`, `fy_start` (month names), `notes`, `coverage` (1 to 4), `sources` (source ids) and
+  `lines` (transaction lines read). Utah agencies keep their other fields (`govt_lvl`, `website`, `revenue`, `staff`
+  and so on) and add `tu_id`.
+- `home.<scope>` for `ALL` and each state: the default table (all fiscal years, every agency, purchasing categories),
+  so the first view needs no state file. `from`, `to`; `cats`: `[category index, spend, rows, vendors, agencies, last
+  fiscal year, {"<fy>": spend}]`; `sum`: `[spend, rows, vendors, agencies, {"<fy>": spend}]`. Vendors and agencies
+  count where an agency, vendor, year and category net above $0.005, as the page does.
+
+`data/<st>.json`:
+- `vendors`: `{id, name, category, method, aliases, neris}`. `id` is a slug of the canonical name and is shared by
+  every state; `category` is the vendor's main category in this state; `aliases` are payee-name indexes.
+- `aliases`: payee names as shown (Utah withholds private persons; other states as published).
+- `rows`: `[agency id, vendor index, fiscal year, category index, net amount, payee-name index or -1]`.
+- `grants`: `{agency, recipient, year, program, amount, award}`.
+- `totals`: `[agency id, fiscal year, category as published, amount, source id]` (tier 3; empty for Utah and Ohio).
+
+`data/<st>-payments.json`: `payments`: `[agency id, date, vendor index, category index, amount, description index,
+payee-name index or -1, fiscal year]`: lines of $1,000 or more in purchasing categories within the state's years, a
+line left out when a credit of the same amount to the same payee cancels it; `descriptions`: texts.
+
+`data/<st>-items.json`: `sources` (source ids), `strings` (brand, product type and description texts), `items`:
+`[agency id, fiscal year, date, vendor index, brand, product type, description (string indexes or -1), quantity,
+unit price, amount, category index (the category of the item's transaction line), source index]`. Items before the
+state's first fiscal year (SCPRS, FY2013 to FY2015) are kept here and shown apart; they are in no row or payment.
+
+Until the multi-state page (commit `de1e5cf` on main), the build wrote Utah alone to `data/data.json` and
+`data/payments.json`, which the page read. They are no longer written. `tests/check_build.py`,
+`tests/core_test.js` and `tests/page/compare_utah.js` read them from that commit (`--base`) to prove Utah reads
+as before.
+
 ## Checks
 
 `tests/multistate/check_<st>.py` recomputes totals from the raw files and asserts the normalized files match.
-`tests/multistate/check_federal.py` does the same for the registry and grants.
+`tests/multistate/check_federal.py` does the same for the registry and grants. `tests/check_build.py` checks the
+site files against `data/states/<st>/` and Utah's raw file (see its docstring).
