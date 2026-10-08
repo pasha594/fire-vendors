@@ -48,7 +48,8 @@ answers; the owner may revisit them):
    `config/payee_name_redactions.csv` text, which the adapters remove).
 3. "Individuals (names withheld)" stays Utah's category; the About page says other states publish payee names.
 4. Partial years: Utah 2026; Ohio, California and Texas 2026 and 2027; Idaho 2027 (`config/states.csv`).
-5. California single payments: no threshold; loaded when the payments section is opened in an all-states view.
+5. California single payments: no threshold; loaded when the payments section is opened (in an all-states view, and in
+   any California view, since the file is over 1 MB gzipped).
 6. Texas DIR-only (tier 2) agencies count as peers, with a note that DIR covers IT and telecom only.
 7. Old links without a state show all states; a numeric agency id or a Utah county means Utah.
 8. Vendor slug collisions across states: the Utah name wins.
@@ -341,7 +342,7 @@ Counting and matching:
 
 Site (steps 1 and 8):
 - California's single payments are 2.75 MB gzipped (323,079 lines), the largest file a view loads; they load only
-  when the payments section is opened in an all-states view. A threshold above $1,000 for California would shrink
+  when the payments section is opened (every payments file over 1 MB gzipped does, and every all-states view). A threshold above $1,000 for California would shrink
   it.
 - The nine defaults under "Steps 1 and 8" (Utah's two agencies at $0, Utah-only withholding, the "Individuals (names
   withheld)" label, partial years, DIR-only agencies as peers, old links, name collisions, repository name) stand

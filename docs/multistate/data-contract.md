@@ -180,7 +180,7 @@ when `data/index.json` would be 1,000,000 bytes gzipped or more, or any file 50 
 | --- | --- | --- |
 | `data/index.json` | First, always | `meta`, `categories`, `agencies` (every state), `home` |
 | `data/<st>.json` | When a view needs the state's rows | `{built, state, vendors, aliases, rows, grants, totals}` |
-| `data/<st>-payments.json` | When a view shows single payments | `{built, state, payments, descriptions}` |
+| `data/<st>-payments.json` | When a view shows single payments (on opening the section in an all-states view, or for a file over 1 MB gzipped) | `{built, state, payments, descriptions}` |
 | `data/<st>-items.json` | For a vendor or agency of a state with item lines (`tx`, `ca`) | `{built, state, sources, strings, items}` |
 
 `data/index.json`:

@@ -63,7 +63,7 @@ references are removed, `config/payee_name_redactions.csv`). Their lines are rea
 | `index.html` | The page: plain JavaScript, no build step |
 | `data/index.json` | The first load (under 1 MB gzipped): meta per state and per source, categories, every agency of every state with its coverage tier, and the precomputed default table of each scope (all states, each state) |
 | `data/<st>.json` | One state's vendors, payee names, rows, FEMA grants and published annual totals (`ut`, `oh`, `ca`, `id`, `tx`); loaded when a view needs the state |
-| `data/<st>-payments.json` | One state's single payments; loaded when a view shows them |
+| `data/<st>-payments.json` | One state's single payments; loaded when a view shows them (when the section is opened in an all-states view, or for a file over 1 MB gzipped: California) |
 | `data/<st>-items.json` | Item lines (`tx`: DIR, `ca`: SCPRS); loaded for a vendor or an agency of that state |
 | `data/states/<st>/` | The normalized files of each state (agencies, transactions, item lines, totals, grants) |
 | `raw/<date>/` | Downloads, gzipped, never edited |
