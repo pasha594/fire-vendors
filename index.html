@@ -480,7 +480,7 @@ const Core = (function () {
   }
   const NONE = Object.freeze([]);
 
-  // Lookup tables for one set of rows (a view, or a legacy data.json).
+  // Lookup tables for one set of rows (a view).
   // D.rows: [agency id, vendor index, fiscal year, category index, net amount, payee name index (-1: withheld)]
   // o: {vendorPos (vendor id -> index, the vendors in this view), valiases(vi), vcategory(vi), latest, grantsBy, agency}
   function indexOf(D, o) {
@@ -511,19 +511,8 @@ const Core = (function () {
       grantsBy: o.grantsBy || grantsByAgency(D.grants),
       valiases: o.valiases,                                    // vendor index -> payee name indexes in this view
       vcategory: o.vcategory,                                  // vendor index -> main category id in this view
-      P: null,                                                 // single payments, set by setPayments
+      P: null,                                                 // single payments of the scope (a getter, see view)
     };
-  }
-  // Lookup tables for a legacy data/data.json (Utah only, numeric agency ids), as the page had them
-  // before the states were split. Kept for the tests.
-  function buildIndex(D) {
-    for (const v of D.vendors) v.name = decodeEntities(v.name);
-    D.aliases = D.aliases.map(decodeEntities);
-    return indexOf(D, {
-      vendorPos: new Map(D.vendors.map((v, i) => [v.id, i])),
-      valiases: vi => D.vendors[vi].aliases,
-      vcategory: vi => D.vendors[vi].category,
-    });
   }
 
   /* ---- Store: data/index.json plus every state file loaded so far ----
@@ -689,7 +678,7 @@ const Core = (function () {
   const scopeStates = (store, scope) => (scope === 'ALL' ? store.order.slice() : [scope]);
   const scopeYears = (store, scope) => (scope === 'ALL' ? store.meta.years : store.st[scope].meta.years).slice().sort((a, b) => a - b);
   // A view: the lookup tables of indexOf for one scope (one state, or 'ALL'), over the rows loaded so far.
-  // For scope UT it equals the index the page built from Utah's data.json before the split.
+  // For scope UT it equals the index the page built for Utah before the states were split.
   // loaded: every state in the scope is loaded. pre: the precomputed default table of the scope.
   function view(store, scope) {
     let v = store.views.get(scope);
@@ -823,27 +812,6 @@ const Core = (function () {
   }
   // The scope a state s (from normState) is in
   const scopeOf = (store, s) => (s.agency != null && store.agency.has(s.agency) ? store.agency.get(s.agency).state : s.state || 'ALL');
-
-  // Single payments from data/payments.json, loaded when a view first needs them:
-  // P.payments: [agency id, posting date, vendor index, category index, amount, description index, payee name index, fiscal year]
-  // The indexes point into the data.json of the same build, so a file from another build is refused.
-  function setPayments(ix, P) {
-    if (!P || !Array.isArray(P.payments) || !Array.isArray(P.descriptions)) throw new Error('data/payments.json has no payments list');
-    if (P.built !== ix.meta.built) {
-      throw new Error('data/payments.json (built ' + P.built + ') is not from the same build as data/data.json (built ' + ix.meta.built + ')');
-    }
-    const nv = ix.D.vendors.length, nc = ix.catIds.length, na = ix.D.aliases.length, nd = P.descriptions.length;
-    for (const p of P.payments) {
-      if (!ix.agency.has(p[0]) || !(p[2] >= 0 && p[2] < nv) || !(p[3] >= 0 && p[3] < nc) ||
-          !(p[5] >= 0 && p[5] < nd) || !(p[6] >= -1 && p[6] < na)) {
-        throw new Error('data/payments.json does not match data/data.json');
-      }
-    }
-    // Some descriptions carry control characters between items; show them as spaces
-    const descriptions = P.descriptions.map(s => decodeEntities(String(s)).replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/ {2,}/g, ' ').trim());
-    ix.P = { payments: P.payments, descriptions };
-    return ix.P;
-  }
 
   // Global filters from URL parameters (strings). Unknown values fall back to defaults.
   function normGlobal(ix, p) {
@@ -980,7 +948,7 @@ const Core = (function () {
         total.n++;
         total.yr[r[2]] = (total.yr[r[2]] || 0) + r[4];
       }
-      // Agency ids are strings ("UT-359"; numbers in a legacy data.json). A number key is faster than text.
+      // Agency ids are strings ("UT-359"). A number key is faster than text.
       let ai = AGI.get(r[0]);
       if (ai === undefined) AGI.set(r[0], (ai = AGI.size));
       const y = r[2] - 1950;
@@ -1013,7 +981,7 @@ const Core = (function () {
     return s;
   }
 
-  // Single payments (setPayments) matching global filters g and f = {cat, group, purch, vendor, agency, year}, with
+  // Single payments (ix.P) matching global filters g and f = {cat, group, purch, vendor, agency, year}, with
   // the same rules as selectRows; the fiscal year is the one the line was reported in, not the year of its date.
   // p = [agency id, posting date, vendor index, category index, amount, description index, alias index, fiscal year]:
   // transaction lines of $1,000 or more in purchasing categories.
@@ -1223,16 +1191,13 @@ const Core = (function () {
   }
 
   // URL parameters (strings) -> state. Ids that do not match the data are dropped and listed in bad.
-  // With the store (the page), the state also has state (the state filter, '' for all states) and scope
-  // (see resolve); everything else is checked against the scope's view. With a legacy index (tests), as before.
+  // The state also has state (the state filter, '' for all states) and scope (see resolve); everything
+  // else is checked against the scope's view.
   function normState(store, p) {
     p = p || {};
-    let ix = store, R = null;
-    if (store.views) {
-      R = resolve(store, p);
-      ix = view(store, R.scope);
-    }
-    const bad = R ? R.bad.slice() : [];
+    const R = resolve(store, p);
+    const ix = view(store, R.scope);
+    const bad = R.bad.slice();
     const gp = Object.assign({}, p);
     const has = k => p[k] != null && p[k] !== '';
     if (has('year')) {
@@ -1251,15 +1216,11 @@ const Core = (function () {
     for (const id of pc.bad) bad.push('category "' + id + '"');
     take('group', 'category group', ix.groups.includes(p.group), p.group);
     take('purch', 'purchasing flag', p.purch === 'yes' || p.purch === 'no', p.purch);
-    if (R && has('vendor') && !ix.vendorPos.has(p.vendor) && store.vendorPos.has(p.vendor)) {
+    if (has('vendor') && !ix.vendorPos.has(p.vendor) && store.vendorPos.has(p.vendor)) {
       s.vendor = null;                                         // a vendor of another state
       bad.push('vendor "' + p.vendor + '" (no payments in ' + (R.scope === 'ALL' ? 'these states' : store.st[R.scope].name) + ')');
     } else take('vendor', 'vendor', ix.vendorPos.has(p.vendor), p.vendor);
-    if (R) take('agency', 'agency', R.agency != null, R.agency);
-    else {
-      const ag = Number(p.agency);
-      take('agency', 'agency', /^\d+$/.test(String(p.agency)) && ix.agency.has(ag), ag);
-    }
+    take('agency', 'agency', R.agency != null, R.agency);
     // Category and vendor together are an intersection (it can be empty). The category group and
     // purchasing flag from older links are dropped when they contradict every category of the
     // vendor's rows, or every selected category.
@@ -1281,7 +1242,8 @@ const Core = (function () {
     s.q = s.g !== 'year' && typeof p.q === 'string' ? p.q : '';
     s.years = p.years === '1';
     if (has('type') || has('staff')) bad.push('agency type and staffing filters (no longer available)');
-    if (R) { s.state = R.state; s.scope = R.scope; }
+    s.state = R.state;
+    s.scope = R.scope;
     s.bad = bad;
     return s;
   }
@@ -1427,7 +1389,7 @@ const Core = (function () {
   }
 
   return {
-    SIZES, decodeEntities, buildIndex, setPayments, normGlobal, peerIds, rowCat, payCat, purchOnly, catFilter, selectRows, vendorCats, catsByVendor, emptyAgg, agg, summary, grantsIn,
+    SIZES, decodeEntities, normGlobal, peerIds, rowCat, payCat, purchOnly, catFilter, selectRows, vendorCats, catsByVendor, emptyAgg, agg, summary, grantsIn,
     selectPayments, paymentsModel, selectItems, itemsModel, fullYear, rangeYears, staffModel, revenueModel, peopleIn, revenueIn, fyStarts,
     searchRe, searchCategories,
     homeModel, categoryModel, vendorModel, agencyModel, vendorsModel, agenciesModel, rowsModel,

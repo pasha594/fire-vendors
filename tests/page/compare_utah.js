@@ -2,11 +2,12 @@
 // The page in Chromium: Utah reads as it did before the states were added, and every state renders.
 //
 //   PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers NODE_PATH=/opt/node22/lib/node_modules node tests/page/compare_utah.js \
-//     [--base REF] [--base-url URL --new-url URL] [--shots DIR] [--only utah,first,states,controls]
+//     [--base REF] [--base-url URL --new-url URL] [--shots DIR] [--only utah,first,states,controls,cached]
 //
-// Without URLs, the script serves the working tree (the new page) and `git archive REF index.html data favicon.svg
-// favicon-32.png` (the old page; REF defaults to de1e5cf) with python3 -m http.server on two free ports, and stops
-// them at the end.
+// REF is a commit whose page read data/data.json, from before the states were split: default de1e5cf, the last
+// commit on main that has data/data.json and data/payments.json. Without URLs, the script serves the working tree
+// (the new page) and `git archive REF index.html data/data.json data/payments.json favicon.svg favicon-32.png`
+// (the old page) with python3 -m http.server on two free ports, and stops them at the end.
 //
 // 1. Utah: for each pair of URLs (the old page's URL, the same view on the new page: state=UT added unless a
 //    numeric agency id or a Utah county implies Utah) the innerText of #summary, #tbl-main, #context and #more
@@ -17,6 +18,10 @@
 // 2. #/ requests only data/index.json among data/* files.
 // 3. Every state, and all states, render without console errors: the default view, vendor and agency
 //    groupings, an agency of each coverage tier, a vendor, and single payments opened.
+// 4. Controls and loading (see controls()).
+// 5. The old page (index.html at REF), as a browser that still has it cached would run it on the new site
+//    (GitHub Pages lets browsers keep index.html for 10 minutes), shows its "Data did not load" message
+//    naming data/data.json, not an empty page.
 'use strict';
 const fs = require('fs');
 const os = require('os');
@@ -30,7 +35,7 @@ const args = process.argv.slice(2);
 const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : dflt; };
 const BASE_REF = opt('--base', 'de1e5cf');
 const SHOTS = opt('--shots', null);
-const ONLY = opt('--only', 'utah,first,states,controls').split(',');   // parts to run
+const ONLY = opt('--only', 'utah,first,states,controls,cached').split(',');   // parts to run
 
 let failures = 0, checks = 0;
 const fail = msg => { failures++; console.log('FAIL ' + msg); };
@@ -338,6 +343,21 @@ async function controls(ctx, newUrl, I) {
     const t4 = Date.now();
     if (ONLY.includes('controls')) await controls(ctx, newUrl, I);
     console.log('controls checked in ' + ((Date.now() - t4) / 1000).toFixed(1) + ' s');
+    // ---- 5. The old page, cached by a browser, on the new site ----
+    if (ONLY.includes('cached')) {
+      const old = execFileSync('git', ['show', BASE_REF + ':index.html'], { cwd: ROOT, maxBuffer: 1 << 30 });
+      const page = await ctx.newPage();
+      await page.route(u => /^\/(index\.html)?$/.test(u.pathname), r => r.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: old }));
+      await page.goto(newUrl + '#/');
+      let msg = '';
+      try {
+        await page.waitForFunction(() => /Data did not load/.test(document.body.innerText), null, { timeout: 30000 });
+        msg = (await page.evaluate(() => document.getElementById('page').innerText)).replace(/\s+/g, ' ').trim();
+      } catch (e) { /* msg stays empty */ }
+      ok(/data\/data\.json returned HTTP 404/.test(msg), 'old page on the new site: no "Data did not load" message naming data/data.json (' + msg + ')');
+      console.log('old page on the new site: ' + msg);
+      await page.close();
+    }
     await browser.close();
   } catch (e) {
     fail(e.stack || String(e));

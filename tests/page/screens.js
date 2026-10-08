@@ -5,9 +5,10 @@
 //   PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers NODE_PATH=/opt/node22/lib/node_modules node tests/page/screens.js \
 //     [--base REF] [--base-url URL --new-url URL] [--shots DIR] [--only 1,2,...]
 //
-// Without URLs, the script serves the working tree (the new page) and `git archive REF index.html data favicon.svg
-// favicon-32.png` (the page before the states were added; REF defaults to de1e5cf) with python3 -m http.server on
-// two free ports, and stops them at the end. Screenshots go to DIR (default: <tmp>/fire-screens).
+// Without URLs, the script serves the working tree (the new page) and `git archive REF index.html data/data.json
+// data/payments.json favicon.svg favicon-32.png` (the page before the states were added; REF defaults to de1e5cf,
+// the last commit on main that has data/data.json) with python3 -m http.server on two free ports, and stops them at
+// the end. Screenshots go to DIR (default: <tmp>/fire-screens).
 //
 // Checks (every count is read from data/index.json, so a rebuilt data set needs no edit here):
 //  1. #/: only data/index.json among data/* requests, under 1,000,000 bytes gzipped; title and header read the site

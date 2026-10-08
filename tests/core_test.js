@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 // Core of index.html in node: Utah is unchanged, and the precomputed default tables match the computed ones.
 //
-//   node tests/core_test.js [--base REF] [--legacy REF]
+//   node tests/core_test.js [--base REF]
 //
-// 1. The old Core (index.html at --base, default de1e5cf, before the states were split) on the legacy
-//    data/data.json and data/payments.json, against the new Core on data/index.json, data/ut.json and
-//    data/ut-payments.json in the Utah view, for about 2,000 generated states: normState, stateParams,
-//    tableModel (items, sum, peers, rows) and paymentsModel, after mapping ids (agency 359 -> "UT-359",
-//    vendor index -> vendor id, payee name and description index -> text). The legacy files are read from
-//    the working tree, or from --legacy REF (the last commit that has them) when they are gone.
+// 1. The old Core (index.html at --base, default de1e5cf: the last commit on main before the states were
+//    split) on that commit's data/data.json and data/payments.json (Utah only), against the new Core on
+//    data/index.json, data/ut.json and data/ut-payments.json in the Utah view, for about 2,000 generated
+//    states: normState, stateParams, tableModel (items, sum, peers, rows) and paymentsModel, after mapping ids
+//    (agency 359 -> "UT-359", vendor index -> vendor id, payee name and description index -> text).
 // 2. The precomputed default table of every scope (data/index.json home) against the table computed from
 //    the rows once every state is loaded: spend and spend per year within $0.01, counts and last year exact.
 //    For Utah, also exactly equal to the old Core.
@@ -23,7 +22,6 @@ const ROOT = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
 const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : dflt; };
 const BASE = opt('--base', 'de1e5cf');
-const LEGACY = opt('--legacy', null);
 
 const git = (ref, file) => execFileSync('git', ['show', ref + ':' + file], { cwd: ROOT, maxBuffer: 1 << 30 }).toString('utf8');
 function loadCore(src) {
@@ -33,10 +31,7 @@ function loadCore(src) {
   return new Function(src.slice(a, b + 6) + '\nreturn Core;')();
 }
 const readData = f => JSON.parse(fs.readFileSync(path.join(ROOT, 'data', f), 'utf8'));
-function readLegacy(f) {
-  if (!LEGACY && fs.existsSync(path.join(ROOT, 'data', f))) return readData(f);
-  return JSON.parse(git(LEGACY || BASE, 'data/' + f));
-}
+const readLegacy = f => JSON.parse(git(BASE, 'data/' + f));
 
 const OldCore = loadCore(git(BASE, 'index.html'));
 const Core = loadCore(fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'));
@@ -300,10 +295,10 @@ for (const a of [I.agencies.find(x => x.coverage === 3), I.agencies.find(x => x.
   const m = Core.tableModel(Core.view(store, S.scope), S);
   ok(m.nodata === (a.coverage > 2 ? a.coverage : 0) && m.peersData.size === (a.coverage > 2 ? 0 : 1), 'selected agency coverage ' + a.coverage, a.coverage, m.nodata);
 }
-// UT view meta is Utah's meta as data.json had it
+// UT view meta is Utah's meta as data.json had it (apart from the build date and the payments file)
 {
   const v = Core.view(storeUT, 'UT');
-  for (const k of Object.keys(D.meta)) if (k !== 'payments_file') same(D.meta[k], v.meta[k], 'UT meta ' + k);
+  for (const k of Object.keys(D.meta)) if (k !== 'payments_file' && k !== 'built') same(D.meta[k], v.meta[k], 'UT meta ' + k);
   same(v.years, ix0.years, 'UT years');
   same([...v.partial], [...ix0.partial], 'UT partial years');
   same(v.counties, ix0.counties, 'UT counties');
